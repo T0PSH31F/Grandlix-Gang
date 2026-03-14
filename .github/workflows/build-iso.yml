@@ -1,0 +1,70 @@
+name: Build Going-Merry ISO
+
+on:
+  workflow_dispatch:  # Manual trigger from GitHub UI
+  push:
+    paths:
+      - 'templates/iso/**'
+      - 'flake-parts/**'
+      - 'flake.nix'
+      - 'flake.lock'
+    branches: [main]
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Check disk space
+        run: df -h
+
+      - name: Build ISO
+        run: |
+          # Build and get JSON output
+          ISO_OUT=$(nix build .#packages.x86_64-linux.iso --no-link --json | jq -r '.[0].outputs.out')
+          
+          echo "Build output: $ISO_OUT"
+          
+          # Find the .iso file (usually in /iso/ subdirectory)
+          ISO_FILE=$(find "$ISO_OUT/iso" -name "*.iso" -print -quit)
+          
+          if [ -z "$ISO_FILE" ]; then
+            echo "::error::No ISO file found in $ISO_OUT/iso"
+            exit 1
+          fi
+          
+          echo "ISO_PATH=$ISO_FILE" >> $GITHUB_ENV
+          echo "ISO built: $ISO_FILE"
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Going-Merry-ISO
+          path: ${{ env.ISO_PATH }}
+          retention-days: 7
+          compression-level: 0  # Already compressed with zstd squashfs

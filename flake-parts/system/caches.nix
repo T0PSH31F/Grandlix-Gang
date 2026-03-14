@@ -1,0 +1,44 @@
+# flake-parts/system/caches.nix
+# Purpose:
+# - Centralize binary cache configuration (substituters and trusted keys)
+# - Ensure extra-trusted-substituters are correctly pulled in for all users
+
+{ ... }:
+{
+  nix.settings = {
+    # Set the main substituters list
+    substituters = [
+      "https://nix-community.cachix.org"
+      "https://cache.nixos.org"
+      "https://cache.numtide.com"
+      "https://numtide.cachix.org"
+      "https://vicinae.cachix.org"
+      "https://hyprland.cachix.org"
+      "https://niri.cachix.org"
+      "https://mic92.cachix.org"
+    ];
+
+    # Set the trusted public keys for the substituters above
+    trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "numtide.cachix.org-1:vSxzZPSh9OCpqJc572Mk9BdbrGMNSbR4F5O4/jVtHK8="
+      "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
+      "mic92.cachix.org-1:2Vf2WbWuQDWg9s2ykt8ZzNt6gtB+oqjEUo3vAqVM0GA="
+    ];
+
+    # Ensure these are trusted for non-root users (making sure extra-trusted-substituters are pulled in)
+    trusted-substituters = [
+      "https://nix-community.cachix.org"
+      "https://cache.numtide.com"
+      "https://numtide.cachix.org"
+      "https://vicinae.cachix.org"
+      "https://hyprland.cachix.org"
+      "https://niri.cachix.org"
+      "https://mic92.cachix.org"
+    ];
+  };
+}
