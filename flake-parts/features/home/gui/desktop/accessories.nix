@@ -22,7 +22,7 @@
     pgadmin4-desktopmode
     podman-desktop
     qutebrowser
-    shikane
+    nwg-displays
     tutanota-desktop
     webtorrent_desktop
     webull-desktop

@@ -16,6 +16,7 @@ in
       btop
       fastfetch
       gping
+      gotree
       htop
       iftop
       iotop
@@ -28,6 +29,14 @@ in
       # Image tools
       chafa
       imagemagick
+      ffmpeg
+
+      # Archive & document tools
+      p7zip
+      poppler-utils
+
+      # AI terminal assistant
+      tmuxai
 
       # CLI Fun & Utilities
       blahaj
@@ -36,6 +45,7 @@ in
       fortune-kind
       gum
       lolcat
+      sl
       neo-cowsay
       terminal-parrot
       toilet

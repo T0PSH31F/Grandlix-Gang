@@ -100,6 +100,10 @@
       url = "github:mrnossiom/wakatime-lsp";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    antigravity = {
+      url = "github:Jacopone/Antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -118,6 +122,7 @@
       yazelix,
       disko,
       wakatime-lsp,
+      antigravity,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (

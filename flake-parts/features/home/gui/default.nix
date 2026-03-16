@@ -9,5 +9,6 @@
     ./pentest-tools.nix
     ./spicetify.nix
     ./vscode.nix
+    ./antigravity.nix
   ];
 }

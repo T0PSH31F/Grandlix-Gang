@@ -7,8 +7,7 @@
 {
   imports = [
     ./cli
-    ./agent/opencode.nix
-    ./agent/mcp.nix
+    ./agent
     inputs.sops-nix.homeManagerModules.sops
   ];
 
@@ -28,11 +27,11 @@
   # GIT IDENTITY (Via SOPS)
   # ==========================================================
   sops.secrets.git_name = {
-    sopsFile = ../../treasure/secrets/git.yaml;
+    sopsFile = ../../../treasure/secrets/git.yaml;
     format = "yaml";
   };
   sops.secrets.git_email = {
-    sopsFile = ../../treasure/secrets/git.yaml;
+    sopsFile = ../../../treasure/secrets/git.yaml;
     format = "yaml";
   };
 
@@ -57,6 +56,16 @@
   # ==========================================================
   features.home.agent.opencode.enable = true;
   features.home.agent.mcp.enable = true;
+  features.home.agent.gemini-cli.enable = true;
+
+  # ==========================================================
+  # OLLAMA (User-level service via Home Manager)
+  # ==========================================================
+  services.ollama = {
+    enable = true;
+    host = "0.0.0.0";
+    port = 11434;
+  };
 
   # Home Manager requirements
   home.stateVersion = "25.05";

@@ -153,6 +153,9 @@
       enable = true;
       desktop = true;
     };
+    features.home.agent.gemini-cli.enable = true;
+    programs.cli-environment.pythonTools.enable = true;
+    home-config.antigravity.enable = true;
   };
 
   # ============================================================================

@@ -41,8 +41,24 @@ in
       };
     };
 
+    programs.lazygit = {
+      enable = true;
+      enableZshIntegration = true;
+      enableBashIntegration = true;
+    };
+
     home.packages = with pkgs; [
-      lazygit
+      github-mcp-server
+      git-big-picture
+      github-to-sops
+      github-desktop
+      github-runner
+      gitmoji-cli
+      git-secrets
+      git-hound
+      gitwatch
+      gitleaks
+      git-cola
       gitui
       gh
     ];

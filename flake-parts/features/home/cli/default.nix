@@ -16,6 +16,7 @@ in
     # ./multiplexers/tmux.nix
     ./multiplexers/zellij.nix
     ./prompt/starship.nix
+    ./services
     ./shells/bash.nix
     ./shells/common.nix
     ./shells/zsh.nix
@@ -25,6 +26,7 @@ in
     ./tools/gpg.nix
     ./tools/modern-utils.nix
     ./tools/nix-tools.nix
+    ./tools/python.nix
     ./tools/system-utils.nix
     ./yazelix.nix
     ./vivid.nix
@@ -70,6 +72,12 @@ in
       type = lib.types.bool;
       default = true;
       description = "Enable Nix-specific CLI tools";
+    };
+
+    pythonTools.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable Python and related tools (uv, etc.)";
     };
   };
 

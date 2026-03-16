@@ -9,7 +9,8 @@ let
 in
 {
   config = lib.mkIf (builtins.elem "desktop" clanTags) {
-    home.packages = [ pkgs.shikane ];
+    # Disabled in favor of nwg-displays for manual control
+    # home.packages = [ pkgs.shikane ];
 
     xdg.configFile."shikane/config.toml" = {
       force = true;
@@ -68,20 +69,20 @@ in
         scale = 1.6
       '';
     };
-    systemd.user.services.shikane = {
-      Unit = {
-        Description = "Dynamic output configuration for Wayland";
-        Documentation = "https://gitlab.com/w0rp/shikane";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${pkgs.shikane}/bin/shikane";
-        Restart = "always";
-      };
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-    };
+    # systemd.user.services.shikane = {
+    #   Unit = {
+    #     Description = "Dynamic output configuration for Wayland";
+    #     Documentation = "https://gitlab.com/w0rp/shikane";
+    #     PartOf = [ "graphical-session.target" ];
+    #     After = [ "graphical-session.target" ];
+    #   };
+    #   Service = {
+    #     ExecStart = "${pkgs.shikane}/bin/shikane";
+    #     Restart = "always";
+    #   };
+    #   Install = {
+    #     WantedBy = [ "graphical-session.target" ];
+    #   };
+    # };
   };
 }

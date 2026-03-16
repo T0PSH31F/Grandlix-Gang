@@ -15,6 +15,11 @@ in
   config = lib.mkIf cfg.enable {
     programs.fabric-ai = {
       enable = true;
+      enableZshIntegration = true;
+      enableBashIntegration = true;
+      enableYtAlias = true; 
+      enablePatternsAliases = true;
+      
     };
   };
 }

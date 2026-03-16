@@ -2,7 +2,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
@@ -23,16 +22,14 @@ in
         # LEFT PROMPT (Line 1 & 2)
         # =========================
         format = ''
-          [](black)$os[](bg:purple fg:black)$localip[](bg:cyan fg:purple)$directory[](bg:black fg:cyan)$env_var[ ](fg:black)
-          $sudo$character$fill$cmd_duration$time
+          [ ](black)$os[](bg:purple fg:black)$localip[](bg:cyan fg:purple)$directory[](bg:black fg:cyan)$env_var[ ](black)$fill[ ](purple)$git_branch$git_status[](bg:purple fg:cyan)$rust$nodejs$python$c$cpp$docker_context[ ](fg:cyan)
+          [](black)$sudo$character$fill[ ](purple)$cmd_duration[](bg:purple fg:cyan)$time[](cyan)
         '';
 
         # =========================
         # RIGHT PROMPT (Line 1)
         # =========================
-        right_format = ''
-          [ ](fg:black)[](bg:black fg:purple)$git_branch$git_status[](bg:purple fg:cyan)$rust$nodejs$python[](cyan)
-        '';
+        right_format = "";
 
         # =========================
         # STRUCTURAL & CHARACTER
@@ -43,9 +40,9 @@ in
         };
 
         character = {
-          # Google Space Invader (Normal vs Error with red background)
-          success_symbol = "👾 ";
-          error_symbol = "[👾 ](bg:red) ";
+          # Slanted bubble matching top row; slant included in symbol for prompt positioning
+          success_symbol = "[ 󰯉 ](bg:black fg:green)[](fg:black) ";
+          error_symbol = "[ 👾 ](bg:red fg:white)[](fg:red) ";
         };
 
         # =========================
@@ -53,10 +50,31 @@ in
         # =========================
         os = {
           disabled = false;
-          format = "[ $symbol](bg:black)";
+          format = "[$symbol](bg:black)";
           symbols = {
-            Ubuntu = "🐧";
-            NixOS = "[  ](bold cyan)"; # The authentic NixOS lambda! (Simplified for text representation)
+            Ubuntu = "🐧󰕈";
+            NixOS = "[](bold cyan)"; # The authentic NixOS lambda! (Simplified for text representation)
+            Windows = "󰍲";
+            SUSE = "";
+            Raspbian = "󰐿";
+            Mint = "󰣭";
+            Macos = "󰀵";
+            Manjaro = "";
+            Linux = "󰌽";
+            Gentoo = "󰣨";
+            Fedora = "󰣛";
+            Alpine = "";
+            Amazon = "";
+            Android = "";
+            AOSC = "";
+            Arch = "󰣇";
+            Artix = "󰣇";
+            EndeavourOS = "";
+            CentOS = "";
+            Debian = "󰣚";
+            Redhat = "󱄛";
+            RedHatEnterprise = "󱄛";
+            Pop = "";
           };
         };
 
@@ -70,12 +88,38 @@ in
           format = "[ 📂 $path ](bg:cyan fg:black bold)";
           truncation_length = 3;
           truncate_to_repo = false;
+          substitutions = {
+            #"" = " ";
+            "Documents" = " ";
+            "Downloads" = "󱃩 ";
+            "Music" = " ";
+            "Notes" = " ";
+            "Pictures" = "   ";
+            "Projects" = "  ";
+            "Videos" = " ";
+            "Agents" = " ";
+            "Games" = "  ";
+            "Clan" = " ";
+            ".config" = " ";
+            ".local" = " ";
+            ".nix" = "󱄅 ";
+            ".ssh" = "󰣀 ";
+            ".gemini" = "󰪁 ";
+            ".mozilla" = " ";
+            ".npm" = " ";
+            ".pnpm" = " ";
+            ".yarn" = " ";
+            ".rustup" = "󱘗 ";
+            ".cargo" = "󱣘 ";
+            ".git" = " ";
+          };
         };
 
         env_var = {
           USER = {
-            format = "[ 👤 $env_value ](bg:black fg:cyan)";
+            format = "[   $env_value  ](bg:black fg:cyan)";
             disabled = false;
+            ## other favs                              
           };
         };
 
@@ -83,25 +127,54 @@ in
         # TOP-RIGHT MODULES
         # =========================
         git_branch = {
-          format = "[ 🌿 $branch ](bg:purple fg:black bold)";
+          format = "[  $branch ](bg:purple fg:black bold)";
         };
 
         git_status = {
           format = "[$all_status$ahead_behind ](bg:purple fg:black)";
           conflicted = "🥊 ";
           up_to_date = "✅ ";
-          untracked = "🌱 ";
-          modified = "📝 ";
+          untracked = " ";
+          modified = " ";
         };
 
+        # =========================
+        # TOP-RIGHT MODULES
+        # =========================
+        golang = {
+          symbol = "";
+          style = "bg:color_blue";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+        };
         rust = {
-          format = "[ 🦀 ](bg:cyan)";
+          symbol = "";
+          style = "bg:color_blue";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
         };
         nodejs = {
-          format = "[ 📦 ](bg:cyan)";
+          symbol = "";
+          style = "bg:color_blue";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+        };
+        c = {
+          symbol = "";
+          style = "bg:color_blue";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+        };
+        cpp = {
+          symbol = "";
+          style = "bg:color_blue";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
         };
         python = {
-          format = "[ 🐍 ](bg:cyan)";
+          symbol = "🐍";
+          style = "bg:color_blue";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+        };
+        docker_context = {
+          symbol = "  ";
+          style = "bg:color_bg3";
+          format = "[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)";
         };
 
         # =========================
@@ -109,24 +182,26 @@ in
         # =========================
         sudo = {
           disabled = false;
-          symbol = "🧙 ";
+          symbol = "  ";
           format = "[$symbol]($style)";
-          style = "bold purple";
+          style = "bold yellow";
         };
 
         cmd_duration = {
           min_time = 500;
-          format = "[](fg:purple)[ ⏳ $duration ](bg:purple fg:black)";
+          format = "[⏳ $duration ](bg:purple fg:black)";
         };
 
         time = {
           disabled = false;
           use_12hr = true;
-          format = "[](bg:purple fg:cyan)[ ⌚ $time ](bg:cyan fg:black)[](cyan)";
+          format = "[   $time ](bg:cyan fg:black)";
         };
 
+        # transient_prompt requires Starship ≥1.17 and a format string
         transient_prompt = {
           enabled = true;
+          format = "[󰯉 ](bold green)";
         };
       };
     };

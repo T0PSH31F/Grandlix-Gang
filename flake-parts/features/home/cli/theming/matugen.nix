@@ -65,6 +65,7 @@ in
       ".config/matugen/templates/starship.toml".source = ./templates/starship.toml;
       ".config/matugen/templates/dunst.conf".source = ./templates/dunst.conf;
       ".config/matugen/templates/waybar.css".source = ./templates/waybar.css;
+      ".config/matugen/templates/waveterm-theme.json".source = ./templates/waveterm-theme.json;
     };
 
     # Matugen main configuration
@@ -148,6 +149,10 @@ in
       [templates.vivid]
       input_path = '~/.config/matugen/templates/vivid.yml'
       output_path = '~/.config/matugen/vivid.yml'
+
+      [templates.waveterm]
+      input_path = '~/.config/matugen/templates/waveterm-theme.json'
+      output_path = '~/.config/waveterm/themes/matugen-theme.json'
     '';
   };
 }

@@ -6,7 +6,7 @@
     ./browsers/librewolf.nix
     ./file-managers/dolphin.nix
     ./file-managers/nemo.nix
-    ./ghostty.nix
+    ./terminal-emulators
     ./hyprland/default.nix
     ./media/mpv.nix
     ./media/vlc.nix

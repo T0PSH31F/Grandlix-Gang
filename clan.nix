@@ -34,14 +34,7 @@
       #   ];
       #   deploy.targetHost = "root@nami.local";
       # };
-      # luffy = {
-      #   tags = [
-      #     "server"
-      #     "always-on"
-      #     "prod"
-      #   ];
-      #   deploy.targetHost = "root@93.188.162.110";
-      # };
+
     };
 
     instances = {
@@ -52,14 +45,14 @@
             input = "clan-core";
           };
           # roles.controller.machines.luffy = { };
-          # roles.moon.machines.luffy.settings.stableEndpoints = [
+          # roles.moon.machines."_luffy".settings.stableEndpoints = [
           #   "93.188.162.110"
           #   "93.188.162.110/9993"
           # ];
           roles.peer.machines = {
             z0r0 = { };
             nami = { };
-            # luffy = { };
+
           };
         };
       */
@@ -69,11 +62,11 @@
       #     name = "nix-cache";
       #     input = "self";
       #   };
-      #   roles.server.machines.luffy = { };
+
       #   roles.client.machines = {
       #     z0r0 = { };
       #     nami = { };
-      #     luffy = { };
+
       #   };
       # };
 
@@ -84,7 +77,7 @@
         };
         roles.sillytavern.machines = {
           z0r0 = { };
-          # luffy = { };
+
         };
       };
     };
@@ -102,10 +95,6 @@
         ./machines/nami/default.nix
       ];
     };
-    # luffy = {
-    #   imports = [
-    #     ./machines/luffy/default.nix
-    #   ];
-    # };
+
   };
 }
