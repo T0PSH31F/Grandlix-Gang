@@ -26,6 +26,15 @@
         ];
         deploy.targetHost = "root@nami.local";
       };
+      luffy = {
+        tags = [
+          "desktop"
+          "gaming"
+          "ai-heavy"
+          "nvidia"
+        ];
+        # deploy.targetHost = "root@luffy.local";
+      };
       # nami = {
       #   tags = [
       #     "server"
@@ -45,7 +54,7 @@
             input = "clan-core";
           };
           # roles.controller.machines.luffy = { };
-          # roles.moon.machines."_luffy".settings.stableEndpoints = [
+          # roles.moon.machines."luffy".settings.stableEndpoints = [
           #   "93.188.162.110"
           #   "93.188.162.110/9993"
           # ];
@@ -93,6 +102,11 @@
     nami = {
       imports = [
         ./machines/nami/default.nix
+      ];
+    };
+    luffy = {
+      imports = [
+        ./machines/luffy/default.nix
       ];
     };
 
