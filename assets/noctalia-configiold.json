@@ -1,10 +1,10 @@
 {
   "settingsVersion": 53,
   "bar": {
-    "barType": "framed",
+    "barType": "simple",
     "position": "top",
     "monitors": [],
-    "density": "comfortable",
+    "density": "default",
     "showOutline": true,
     "showCapsule": true,
     "capsuleOpacity": 1,
@@ -12,7 +12,6 @@
     "widgetSpacing": 8,
     "contentPadding": 5,
     "fontScale": 1,
-    "enableExclusionZoneInset": true,
     "backgroundOpacity": 0.89,
     "useSeparateOpacity": true,
     "floating": false,
@@ -125,9 +124,9 @@
           "compactShowAlbumArt": true,
           "compactShowVisualizer": false,
           "hideMode": "transparent",
-          "hideWhenIdle": true,
+          "hideWhenIdle": false,
           "id": "MediaMini",
-          "maxWidth": 500,
+          "maxWidth": 145,
           "panelShowAlbumArt": true,
           "panelShowVisualizer": true,
           "scrollingMode": "always",
@@ -138,76 +137,9 @@
           "textColor": "secondary",
           "useFixedWidth": false,
           "visualizerType": "wave"
-        },
-        {
-          "defaultSettings": {
-            "hideBackground": false,
-            "minimumThreshold": 10
-          },
-          "id": "plugin:catwalk"
         }
       ],
       "right": [
-        {
-          "defaultSettings": {
-            "errorIcon": "alert-circle",
-            "iconColor": "primary",
-            "loadingIcon": "loader",
-            "refreshInterval": 300,
-            "successIcon": "network"
-          },
-          "id": "plugin:ip-monitor"
-        },
-        {
-          "defaultSettings": {
-            "barCycleIntervalSec": 5,
-            "barDisplayMode": "active",
-            "barMetric": "prompts",
-            "providers": {
-              "claude": {
-                "credentialsPath": "~/.claude/.credentials.json",
-                "enabled": false,
-                "statsPath": "~/.claude/stats-cache.json"
-              },
-              "codex": {
-                "enabled": false
-              },
-              "openrouter": {
-                "apiKey": "",
-                "enabled": false
-              },
-              "zen": {
-                "apiKey": "",
-                "enabled": false
-              }
-            },
-            "refreshIntervalSec": 30
-          },
-          "id": "plugin:model-usage"
-        },
-        {
-          "defaultSettings": {
-            "borderRadius": 1,
-            "expandDirection": "down",
-            "focusBorderColor": "primary",
-            "mainIcon": "layout-grid",
-            "primaryPillColor": "none",
-            "primaryShowPill": false,
-            "primarySize": 0.9,
-            "primarySymbolColor": "none",
-            "secondaryPillColor": "primary",
-            "secondaryShowPill": true,
-            "secondarySize": 0.9,
-            "secondarySymbolColor": "none",
-            "workspaces": [
-              {
-                "icon": "message",
-                "name": "communication"
-              }
-            ]
-          },
-          "id": "plugin:special-workspaces"
-        },
         {
           "defaultSettings": {},
           "id": "plugin:openhue"
@@ -215,6 +147,12 @@
         {
           "defaultSettings": {},
           "id": "plugin:kde-connect"
+        },
+        {
+          "defaultSettings": {
+            "refreshInterval": 5000
+          },
+          "id": "plugin:mini-docker"
         },
         {
           "deviceNativePath": "__default__",
@@ -261,19 +199,10 @@
         }
       ]
     },
-    "mouseWheelAction": "workspace",
-    "reverseScroll": false,
-    "mouseWheelWrap": true,
-    "middleClickAction": "settings",
-    "middleClickFollowMouse": false,
-    "middleClickCommand": "",
-    "rightClickAction": "controlCenter",
-    "rightClickFollowMouse": true,
-    "rightClickCommand": "",
     "screenOverrides": []
   },
   "general": {
-    "avatarImage": "/home/t0psh31f/Pictures/png_ico/spike2.jpg",
+    "avatarImage": "/home/t0psh31f/.face",
     "dimmerOpacity": 0.35000000000000003,
     "showScreenCorners": false,
     "forceBlackScreenCorners": false,
@@ -291,7 +220,6 @@
     "showHibernateOnLockScreen": false,
     "enableLockScreenMediaControls": false,
     "enableShadows": true,
-    "enableBlurBehind": true,
     "shadowDirection": "bottom_right",
     "shadowOffsetX": 2,
     "shadowOffsetY": 3,
@@ -335,15 +263,13 @@
     "reverseScroll": false
   },
   "ui": {
-    "fontDefault": "JetBrainsMono NF Medium",
-    "fontFixed": "JetBrainsMono NF Medium",
+    "fontDefault": "Inter",
+    "fontFixed": "monospace",
     "fontDefaultScale": 1,
     "fontFixedScale": 1,
     "tooltipsEnabled": true,
-    "scrollbarAlwaysVisible": true,
     "boxBorderEnabled": true,
     "panelBackgroundOpacity": 0.93,
-    "translucentWidgets": false,
     "panelsAttachedToBar": true,
     "settingsPanelMode": "attached",
     "settingsPanelSideBarCardStyle": false
@@ -382,18 +308,7 @@
     "enabled": true,
     "overviewEnabled": false,
     "directory": "/home/t0psh31f/.background/4k Background",
-    "monitorDirectories": [
-      {
-        "directory": "/home/t0psh31f/.background/4k Background",
-        "name": "eDP-1",
-        "wallpaper": ""
-      },
-      {
-        "directory": "/home/t0psh31f/.background/4k Background",
-        "name": "DP-1",
-        "wallpaper": ""
-      }
-    ],
+    "monitorDirectories": [],
     "enableMultiMonitorDirectories": false,
     "showHiddenFiles": true,
     "viewMode": "recursive",
@@ -406,19 +321,15 @@
     "wallpaperChangeMode": "random",
     "randomIntervalSec": 900,
     "transitionDuration": 6900,
-    "transitionType": [
-      "random",
-      "honeycomb",
-      "pixelate"
-    ],
+    "transitionType": "random",
     "skipStartupTransition": false,
     "transitionEdgeSmoothness": 0.6900000000000001,
     "panelPosition": "follow_bar",
     "hideWallpaperFilenames": false,
     "overviewBlur": 0.4,
     "overviewTint": 0.6,
-    "useWallhaven": true,
-    "wallhavenQuery": "Neon Anime 8k",
+    "useWallhaven": false,
+    "wallhavenQuery": "",
     "wallhavenSorting": "relevance",
     "wallhavenOrder": "desc",
     "wallhavenCategories": "111",
@@ -436,12 +347,11 @@
     "autoPasteClipboard": false,
     "enableClipPreview": true,
     "clipboardWrapText": true,
-    "enableClipboardSmartIcons": true,
-    "enableClipboardChips": true,
     "clipboardWatchTextCommand": "wl-paste --type text --watch cliphist store",
     "clipboardWatchImageCommand": "wl-paste --type image --watch cliphist store",
     "position": "top_center",
     "pinnedApps": [],
+    "useApp2Unit": false,
     "sortByMostUsed": true,
     "terminalCommand": "ghostty -e",
     "customLaunchPrefixEnabled": false,
@@ -449,7 +359,7 @@
     "viewMode": "grid",
     "showCategories": true,
     "iconMode": "native",
-    "showIconBackground": true,
+    "showIconBackground": false,
     "enableSettingsSearch": true,
     "enableWindowsSearch": true,
     "enableSessionSearch": true,
@@ -541,14 +451,10 @@
     "criticalColor": "",
     "externalMonitor": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
   },
-  "noctaliaPerformance": {
-    "disableWallpaper": true,
-    "disableDesktopWidgets": true
-  },
   "dock": {
     "enabled": true,
     "position": "bottom",
-    "displayMode": "auto_hide",
+    "displayMode": "always_visible",
     "dockType": "floating",
     "backgroundOpacity": 1,
     "floatingRatio": 1,
@@ -557,24 +463,19 @@
     "monitors": [],
     "pinnedApps": [],
     "colorizeIcons": false,
-    "showLauncherIcon": true,
+    "showLauncherIcon": false,
     "launcherPosition": "end",
-    "launcherUseDistroLogo": false,
-    "launcherIcon": "",
     "launcherIconColor": "none",
     "pinnedStatic": false,
     "inactiveIndicators": false,
-    "groupApps": true,
+    "groupApps": false,
     "groupContextMenuMode": "extended",
     "groupClickAction": "cycle",
-    "groupIndicatorStyle": "number",
+    "groupIndicatorStyle": "dots",
     "deadOpacity": 0.6,
-    "animationSpeed": 1.52,
+    "animationSpeed": 1,
     "sitOnFrame": false,
-    "showDockIndicator": true,
-    "indicatorThickness": 6,
-    "indicatorColor": "primary",
-    "indicatorOpacity": 0.92
+    "showFrameIndicator": true
   },
   "network": {
     "wifiEnabled": true,
@@ -585,8 +486,7 @@
     "wifiDetailsViewMode": "grid",
     "bluetoothDetailsViewMode": "grid",
     "bluetoothHideUnnamedDevices": false,
-    "disableDiscoverability": false,
-    "bluetoothAutoConnect": true
+    "disableDiscoverability": false
   },
   "sessionMenu": {
     "enableCountdown": true,
@@ -645,13 +545,6 @@
         "countdownEnabled": true,
         "enabled": true,
         "keybind": "7"
-      },
-      {
-        "action": "userspaceReboot",
-        "command": "",
-        "countdownEnabled": true,
-        "enabled": false,
-        "keybind": ""
       }
     ]
   },
@@ -677,9 +570,9 @@
       "enabled": true,
       "volume": 0.75,
       "separateSounds": true,
-      "criticalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
+      "criticalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifycrit.wav",
       "normalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
-      "lowSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
+      "lowSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifylow.wav",
       "excludedApps": "discord"
     },
     "enableMediaToast": false,
@@ -703,7 +596,7 @@
   "audio": {
     "volumeStep": 5,
     "volumeOverdrive": false,
-    "spectrumFrameRate": 60,
+    "cavaFrameRate": 60,
     "visualizerType": "wave",
     "mprisBlacklist": [],
     "preferredPlayer": "Spotify",
@@ -815,17 +708,9 @@
       {
         "enabled": true,
         "id": "telegram"
-      },
-      {
-        "enabled": true,
-        "id": "fuzzel"
-      },
-      {
-        "enabled": true,
-        "id": "wezterm"
       }
     ],
-   "enableUserTheming": true,
+    "enableUserTheming": true,
     "userTemplates": [
       {
         "id": "hyprland-shader",
@@ -895,7 +780,7 @@
     ]
   },
   "nightLight": {
-    "enabled": true,
+    "enabled": false,
     "forced": false,
     "autoSchedule": true,
     "nightTemp": "4000",
@@ -912,12 +797,10 @@
     "performanceModeEnabled": "",
     "performanceModeDisabled": "",
     "startup": "",
-    "session": "",
-    "colorGeneration": ""
+    "session": ""
   },
   "plugins": {
-    "autoUpdate": true,
-    "notifyUpdates": true
+    "autoUpdate": true
   },
   "idle": {
     "enabled": false,
@@ -925,19 +808,12 @@
     "lockTimeout": 660,
     "suspendTimeout": 1800,
     "fadeDuration": 5,
-    "screenOffCommand": "",
-    "lockCommand": "",
-    "suspendCommand": "",
-    "resumeScreenOffCommand": "",
-    "resumeLockCommand": "",
-    "resumeSuspendCommand": "",
     "customCommands": "[]"
   },
   "desktopWidgets": {
     "enabled": false,
     "overviewEnabled": true,
     "gridSnap": false,
-    "gridSnapScale": false,
     "monitorWidgets": []
   }
 }

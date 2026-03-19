@@ -107,7 +107,7 @@ in
 
       misc = {
         enable_swallow = true;
-        swallow_regex = "(foot|kitty|allacritty|Alacritty|ghostty)";
+        swallow_regex = "^(mpv|foot|kitty|wezterm|alacritty|Alacritty|ghostty|warp-terminal)$";
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
         vfr = true; # Variable frame rate for battery saving

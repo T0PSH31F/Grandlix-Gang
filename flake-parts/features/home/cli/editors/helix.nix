@@ -274,13 +274,6 @@ in
             ];
           }
           {
-            name = "cuda";
-            language-servers = [
-              "typos"
-              "wakatime"
-            ];
-          }
-          {
             name = "toml";
             language-servers = [
               "taplo"
@@ -297,16 +290,6 @@ in
             ];
             formatter.command = lib.getExe pkgs.typstyle;
             auto-format = true;
-          }
-          {
-            name = "cuda";
-            scope = "source.cuda";
-            language-servers = [
-              "clangd"
-            ];
-            file-types = [
-              "cu"
-            ];
           }
         ];
 

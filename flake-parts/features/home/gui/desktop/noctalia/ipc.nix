@@ -9,23 +9,6 @@ let
 in
 {
   config = lib.mkIf (cfg.enable && cfg.backend == "hyprland") {
-    # Noctalia systemd service (recommended for reliability)
-    systemd.user.services.noctalia-shell = {
-      Unit = {
-        Description = "Noctalia Shell";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-      };
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${cfg.package}/bin/noctalia-shell";
-        Restart = "on-failure";
-        RestartSec = 3;
-      };
-    };
-
     # IPC helpers (wrap common calls)
     home.packages = [
       cfg.package
@@ -37,6 +20,10 @@ in
           noctalia-shell ipc "$cmd" "$@"
         '';
       })
+      (pkgs.writeShellScriptBin "noctalia-restart" ''
+        pkill noctalia-shell
+        noctalia-shell & disown
+      '')
     ];
 
     # Env vars for Noctalia IPC discovery/integration
@@ -44,9 +31,7 @@ in
       "NOCTALIA_SOCKET,~/.cache/noctalia/noctalia.sock" # If socket-based
     ];
 
-    # Startup order: Ensure Noctalia starts after Hyprland plugins
-    wayland.windowManager.hyprland.settings."exec-once" = lib.mkAfter [
-      "systemctl --user start noctalia-shell.service"
-    ];
+    # Startup order: Ensure Noctalia starts directly via exec-once in hyprland/default.nix
+    # (Moved to hyprland/default.nix to avoid double-launch or systemd timing issues)
   };
 }

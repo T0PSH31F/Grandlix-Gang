@@ -145,19 +145,20 @@
         input = "clan-core";
       };
       roles.default = {
-        machines.z0r0 = {
-          # Only on z0r0
-          settings = {
-            acmeEmail = "admin@grandlix.com";
-            server_tld = "grandlix.local";
-            app_domain = "matrix.grandlix.local";
-            users = {
-              t0psh31f = {
-                admin = true;
-              };
-            };
-          };
-        };
+        # Commented out to fix infinite recursion until clan-core fixes it
+        # machines.z0r0 = {
+        #   # Only on z0r0
+        #   settings = {
+        #     acmeEmail = "admin@grandlix.com";
+        #     server_tld = "grandlix.local";
+        #     app_domain = "matrix.grandlix.local";
+        #     users = {
+        #       t0psh31f = {
+        #         admin = true;
+        #       };
+        #     };
+        #   };
+        # };
       };
     };
 

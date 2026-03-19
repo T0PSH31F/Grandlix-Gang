@@ -388,5 +388,19 @@
     #   - Helix: ~/.config/helix/themes/matugen.toml
     #   - Zellij: ~/.config/zellij/themes/matugen.kdl
     #   - Yazi: ~/.config/yazi/theme.toml
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Workaround: upstream yazelix module (7cf826b) sets
+    # xdg.desktopEntries.yazelix.startupWMClass which doesn't exist in the
+    # current home-manager version. Override the desktop entry without it.
+    # ══════════════════════════════════════════════════════════════════════════
+    xdg.desktopEntries.yazelix = lib.mkForce {
+      name = "Yazelix";
+      comment = "Yazi + Zellij + Helix integrated terminal environment";
+      exec = "${config.xdg.configHome}/yazelix/nushell/scripts/core/desktop_launcher.nu";
+      icon = "yazelix";
+      categories = [ "Development" ];
+      type = "Application";
+    };
   };
 }

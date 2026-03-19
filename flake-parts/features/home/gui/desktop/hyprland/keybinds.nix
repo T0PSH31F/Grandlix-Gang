@@ -57,6 +57,9 @@ in
         # ── Screenshots (Grim + Slurp) ─────────────────────────────────
         ", Print, exec, grim -g \"$(slurp)\" - | swappy -f -"
         "SHIFT, Print, exec, grim - | swappy -f -"
+        "$mod CTRL, S, exec, grim -g \"$(slurp)\" - | swappy -f -"
+        ", XF86AudioEject, exec, grim -g \"$(slurp)\" - | swappy -f -"
+        "SHIFT, XF86AudioEject, exec, grim - | swappy -f -"
 
         # ── Theme & Layout Management ──────────────────────────────────
         "$mod SHIFT, P, exec, theme-switch --pick"
@@ -104,10 +107,10 @@ in
         "$mod SHIFT, 8, movetoworkspace, 8"
         "$mod SHIFT, 9, movetoworkspace, 9"
 
-        "$mod SHIFT, left, movewindow, l"
-        "$mod SHIFT, right, movewindow, r"
-        "$mod SHIFT, up, movewindow, u"
-        "$mod SHIFT, down, movewindow, d"
+        #"$mod SHIFT, left, movewindow, l"
+        #"$mod SHIFT, right, movewindow, r"
+        #"$mod SHIFT, up, movewindow, u"
+        #"$mod SHIFT, down, movewindow, d"
 
         "$mod, left, movefocus, l"
         "$mod, right, movefocus, r"
@@ -155,24 +158,24 @@ in
         "$mod CTRL SHIFT, Up, movetoworkspacesilent, special"
         "$mod ALT, S, movetoworkspacesilent, special"
 
-        "$mod, mouse_up, workspace, +1"
-        "$mod, mouse_down, workspace, -1"
-        "$mod CTRL, mouse_up, workspace, +1"
-        "$mod CTRL, mouse_down, workspace, -1"
+        #"$mod, mouse_up, workspace, +1"
+        #"$mod, mouse_down, workspace, -1"
+        ##"$mod CTRL, mouse_up, workspace, +1"
+        #"$mod CTRL, mouse_down, workspace, -1"
         "$mod CTRL, Backslash, resizeactive, exact 640 480"
 
-        "$mod CTRL, left, workspace, e-1"
-        "$mod CTRL, right, workspace, e+1"
-        "$mod CTRL SHIFT, left, movetoworkspace, r-1"
-        "$mod CTRL SHIFT, right, movetoworkspace, r+1"
+        # "$mod CTRL, left, workspace, e-1"
+        # "$mod CTRL, right, workspace, e+1"
+        # "$mod CTRL SHIFT, left, movetoworkspace, r-1"
+        # "$mod CTRL SHIFT, right, movetoworkspace, r+1"
 
         # ── External Monitor Quick Send ──
         "$mod ALT, H, movewindow, mon:HDMI-A-1"
         "$mod ALT, J, movewindow, mon:eDP-1"
         "$mod ALT, K, movewindow, mon:eDP-1"
         "$mod ALT, L, movewindow, mon:DP-2"
-        "$mod CTRL SHIFT, Left, movewindow, mon:l"
-        "$mod CTRL SHIFT, Right, movewindow, mon:r"
+        #"$mod CTRL SHIFT, Left, movewindow, mon:l"
+        #"$mod CTRL SHIFT, Right, movewindow, mon:r"
 
         # ── Media Keys (Non-repeating fallback) ────────────────────────
         ", XF86AudioPlay, exec, $ipc media playPause"

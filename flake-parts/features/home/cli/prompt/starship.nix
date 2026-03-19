@@ -16,44 +16,45 @@ in
       enableBashIntegration = true;
 
       settings = {
+        "$schema" = "https://starship.rs/config-schema.json";
         add_newline = true;
-
-        # =========================
-        # LEFT PROMPT (Line 1 & 2)
-        # =========================
         format = ''
-          [ ](black)$os[](bg:purple fg:black)$localip[](bg:cyan fg:purple)$directory[](bg:black fg:cyan)$env_var[ ](black)$fill[ ](purple)$git_branch$git_status[](bg:purple fg:cyan)$rust$nodejs$python$c$cpp$docker_context[ ](fg:cyan)
-          [](black)$sudo$character$fill[ ](purple)$cmd_duration[](bg:purple fg:cyan)$time[](cyan)
-        '';
+          [](color_red)$os[](bg:color_orange fg:color_red)$username[](bg:color_yellow fg:color_orange)$directory[](fg:color_yellow bg:color_green)$git_branch$git_status[](fg:color_green bg:color_aqua)$c$cpp$rust$golang$nodejs$python[](fg:color_aqua bg:color_bg3)$docker_context$fill[](color_purple)$memory[](fg:color_purple bg:color_aqua)$cmd_duration[](fg:color_aqua bg:color_bg1)$time[](fg:color_bg1)
+          $character '';
 
-        # =========================
-        # RIGHT PROMPT (Line 1)
-        # =========================
-        right_format = "";
+        palette = "matugen";
 
-        # =========================
-        # STRUCTURAL & CHARACTER
-        # =========================
+        palettes.matugen = {
+          # Fallback colors (will be overridden by matugen-generated file if STARSHIP_CONFIG is set)
+          color_fg0 = "#fbf1c7";
+          color_bg1 = "#3c3836";
+          color_bg3 = "#665c54";
+          color_blue = "#458588";
+          color_aqua = "#689d6a";
+          color_green = "#98971a";
+          color_orange = "#d65d0e";
+          color_purple = "#b16286";
+          color_red = "#cc241d";
+          color_yellow = "#d79921";
+        };
+
         fill = {
           symbol = " ";
           disabled = false;
         };
 
         character = {
-          # Slanted bubble matching top row; slant included in symbol for prompt positioning
-          success_symbol = "[ 󰯉 ](bg:black fg:green)[](fg:black) ";
-          error_symbol = "[ 👾 ](bg:red fg:white)[](fg:red) ";
+          success_symbol = "[ ](bold blue)";
+          error_symbol = "[ ](bold red)";
+          vimcmd_symbol = "[ ](bold yellow)";
         };
 
-        # =========================
-        # TOP-LEFT MODULES
-        # =========================
         os = {
           disabled = false;
-          format = "[$symbol](bg:black)";
+          style = "bg:color_red fg:color_fg0";
           symbols = {
             Ubuntu = "🐧󰕈";
-            NixOS = "[](bold cyan)"; # The authentic NixOS lambda! (Simplified for text representation)
+            NixOS = " ";
             Windows = "󰍲";
             SUSE = "";
             Raspbian = "󰐿";
@@ -78,18 +79,19 @@ in
           };
         };
 
-        localip = {
-          ssh_only = true;
-          format = "[ 🌐 $localipv4 ](bg:purple fg:black bold)";
-          disabled = false;
+        username = {
+          show_always = true;
+          style_user = "bg:color_orange fg:color_fg0";
+          style_root = "bg:color_orange fg:color_fg0";
+          format = "[ $user ]($style)";
         };
 
         directory = {
-          format = "[ 📂 $path ](bg:cyan fg:black bold)";
+          style = "fg:color_fg0 bg:color_yellow";
+          format = "[ 📂 $path ]($style)";
           truncation_length = 3;
-          truncate_to_repo = false;
+          truncation_symbol = "…/";
           substitutions = {
-            #"" = " ";
             "Documents" = " ";
             "Downloads" = "󱃩 ";
             "Music" = " ";
@@ -117,91 +119,95 @@ in
 
         env_var = {
           USER = {
-            format = "[   $env_value  ](bg:black fg:cyan)";
+            format = "[   $env_value  ](bg:color_bg3 fg:color_fg0)";
             disabled = false;
             ## other favs                              
           };
         };
 
-        # =========================
-        # TOP-RIGHT MODULES
-        # =========================
         git_branch = {
-          format = "[  $branch ](bg:purple fg:black bold)";
+          symbol = "";
+          style = "bg:color_green";
+          format = "[[ $symbol $branch ](fg:color_fg0 bg:color_green)]($style)";
         };
 
         git_status = {
-          format = "[$all_status$ahead_behind ](bg:purple fg:black)";
-          conflicted = "🥊 ";
-          up_to_date = "✅ ";
-          untracked = " ";
-          modified = " ";
+          style = "bg:color_green";
+          format = "[[($all_status$ahead_behind )](fg:color_fg0 bg:color_green)]($style)";
         };
 
-        # =========================
-        # TOP-RIGHT MODULES
-        # =========================
-        golang = {
-          symbol = "";
-          style = "bg:color_blue";
-          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+        memory_usage = {
+          disabled = false;
+          threshold = -1;
+          symbol = "🐏 ";
+          style = "bg:color_purple fg:color_fg0";
+          format = "[[ $symbol $ram ](fg:color_fg0 bg:color_purple)]($style)";
         };
+
+        nodejs = {
+          symbol = "";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+
+        c = {
+          symbol = " ";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+
+        cpp = {
+          symbol = " ";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+
         rust = {
           symbol = "";
-          style = "bg:color_blue";
-          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
         };
-        nodejs = {
-          symbol = "";
-          style = "bg:color_blue";
-          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+
+        golang = {
+          symbol = "";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
         };
-        c = {
-          symbol = "";
-          style = "bg:color_blue";
-          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
-        };
-        cpp = {
-          symbol = "";
-          style = "bg:color_blue";
-          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
-        };
+
         python = {
-          symbol = "🐍";
-          style = "bg:color_blue";
-          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+          symbol = "";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
         };
+
         docker_context = {
-          symbol = "  ";
+          symbol = "";
           style = "bg:color_bg3";
           format = "[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)";
         };
 
-        # =========================
-        # BOTTOM MODULES (Line 2)
-        # =========================
+        cmd_duration = {
+          min_time = 500;
+          style = "bg:color_aqua fg:color_fg0";
+          format = "[⏳ $duration ]($style)";
+        };
+
+        time = {
+          disabled = false;
+          time_format = "%R";
+          style = "bg:color_bg1 fg:color_fg0";
+          format = "[[ ∞ $time ]($style)]($style)";
+        };
+
+        line_break = {
+          disabled = false;
+        };
+
         sudo = {
           disabled = false;
           symbol = "  ";
           format = "[$symbol]($style)";
           style = "bold yellow";
-        };
-
-        cmd_duration = {
-          min_time = 500;
-          format = "[⏳ $duration ](bg:purple fg:black)";
-        };
-
-        time = {
-          disabled = false;
-          use_12hr = true;
-          format = "[   $time ](bg:cyan fg:black)";
-        };
-
-        # transient_prompt requires Starship ≥1.17 and a format string
-        transient_prompt = {
-          enabled = true;
-          format = "[󰯉 ](bold green)";
         };
       };
     };

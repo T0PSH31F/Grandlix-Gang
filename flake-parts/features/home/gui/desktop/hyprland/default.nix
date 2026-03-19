@@ -70,6 +70,7 @@ in
       swww
       udiskie
       warp-terminal
+      wev
       wl-clipboard
       xdg-user-dirs
       xdg-utils
@@ -125,19 +126,17 @@ in
         };
 
         exec-once = [
-          "noctalia-shell & disown"
-          "wl-paste --watch cliphist store & disown"
-          "${pkgs.hyprpolkitagent}/bin/hyprpolkitagent & disown"
           "pypr & disown"
           "hypr-sfx & disown"
           "udiskie & disown"
           #  "${pkgs.swww}/bin/swww-daemon & disown"
-          "${pkgs.mpv}/bin/mpv --no-video ~/Clan/NFP/assets/SFX/login-sound.mp3 & disown"
+          "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/assets/SFX/login-sound.mp3 & disown"
+          "noctalia-shell & disown"
         ];
 
         # Exec on shutdown
         exec-shutdown = [
-          "${pkgs.mpv}/bin/mpv --no-video ~/Clan/NFP/assets/SFX/shutdown-sound.mp3"
+          "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/assets/SFX/shutdown-sound.mp3"
         ];
 
         # General Layout Settings (Scrolling Layout)
@@ -181,6 +180,10 @@ in
         #    "float 1, match:title ^(Save As.*)$"
         #    "float 1, match:title ^(Choose Files)$"
         #  ];
+
+        input = {
+          kb_options = "caps:escape";
+        };
       };
     };
     xdg.configFile."hypr/vibrancy.frag".source = ../../../../../../assets/vibrancy.frag;

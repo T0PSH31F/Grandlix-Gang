@@ -23,7 +23,7 @@ in
         window-padding-color = "extend";
         window-padding-balance = true;
 
-        custom-shader = "${../../../../../assets/shaders/cursor_blaze_tapered.glsl}";
+        custom-shader = "${../../../../../../assets/shaders/cursor_smear_rainbow.glsl}";
 
         keybind = [
           "ctrl+alt+v=new_split:right"

@@ -1,7 +1,6 @@
 { ... }:
 {
   wayland.windowManager.hyprland.settings = {
-    # ######## Window Rules (Modern match: syntax) ########
     windowrule = [
       "match:title ^(Open File)(.*)$, center on"
       "match:title ^(Open File)(.*)$, float on"
@@ -77,83 +76,26 @@
       "match:namespace .*, xray on"
       "match:namespace vicinae, no_anim on"
       "match:namespace selection, no_anim on"
-      "match:namespace overview, no_anim on"
       "match:namespace anyrun, no_anim on"
-      "match:namespace indicator.*, no_anim on"
-      "match:namespace osk, no_anim on"
       "match:namespace hyprpicker, no_anim on"
-      "match:namespace noanim, no_anim on"
       "match:namespace gtk-layer-shell, blur on"
-      "match:namespace gtk-layer-shell, ignore_alpha 0"
       "match:namespace launcher, blur on"
-      "match:namespace launcher, ignore_alpha 0.5"
       "match:namespace notifications, blur on"
-      "match:namespace notifications, ignore_alpha 0.69"
       "match:namespace logout_dialog, blur on"
-
-      # ags
-      "match:namespace sideleft.*, animation slide left"
-      "match:namespace sideright.*, animation slide right"
-      "match:namespace session[0-9]*, blur on"
-      "match:namespace bar[0-9]*, blur on"
-      "match:namespace bar[0-9]*, ignore_alpha 0.6"
-      "match:namespace barcorner.*, blur on"
-      "match:namespace barcorner.*, ignore_alpha 0.6"
-      "match:namespace dock[0-9]*, blur on"
-      "match:namespace dock[0-9]*, ignore_alpha 0.6"
-      "match:namespace indicator.*, blur on"
-      "match:namespace indicator.*, ignore_alpha 0.6"
-      "match:namespace overview[0-9]*, blur on"
-      "match:namespace overview[0-9]*, ignore_alpha 0.6"
-      "match:namespace cheatsheet[0-9]*, blur on"
-      "match:namespace cheatsheet[0-9]*, ignore_alpha 0.6"
-      "match:namespace sideright[0-9]*, blur on"
-      "match:namespace sideright[0-9]*, ignore_alpha 0.6"
-      "match:namespace sideleft[0-9]*, blur on"
-      "match:namespace sideleft[0-9]*, ignore_alpha 0.6"
-      "match:namespace osk[0-9]*, blur on"
-      "match:namespace osk[0-9]*, ignore_alpha 0.6"
 
       # Quickshell
       "match:namespace quickshell:.*, blur_popups on"
       "match:namespace quickshell:.*, blur on"
-      "match:namespace quickshell:.*, ignore_alpha 0.79"
-      "match:namespace quickshell:bar, animation slide"
-      "match:namespace quickshell:actionCenter, no_anim on"
-      "match:namespace quickshell:cheatsheet, animation slide bottom"
-      "match:namespace quickshell:dock, animation slide bottom"
-      "match:namespace quickshell:screenCorners, animation popin 120%"
-      "match:namespace quickshell:lockWindowPusher, no_anim on"
-      "match:namespace quickshell:notificationPopup, animation fade"
-      "match:namespace quickshell:overlay, no_anim on"
-      "match:namespace quickshell:overlay, ignore_alpha 1"
-      "match:namespace quickshell:overview, no_anim on"
-      "match:namespace quickshell:osk, animation slide bottom"
-      "match:namespace quickshell:polkit, no_anim on"
-      "match:namespace quickshell:popup, xray off"
-      "match:namespace quickshell:popup, ignore_alpha 1"
-      "match:namespace quickshell:mediaControls, ignore_alpha 1"
-      "match:namespace quickshell:reloadPopup, animation slide"
-      "match:namespace quickshell:regionSelector, no_anim on"
-      "match:namespace quickshell:screenshot, no_anim on"
       "match:namespace quickshell:session, blur on"
-      "match:namespace quickshell:session, no_anim on"
-      "match:namespace quickshell:session, ignore_alpha 0"
-      "match:namespace quickshell:sidebarRight, animation slide right"
-      "match:namespace quickshell:sidebarLeft, animation slide left"
-      "match:namespace quickshell:verticalBar, animation slide"
-      "match:namespace quickshell:osk, order -1"
-
-      # Quickshell: waffles
-      "match:namespace quickshell:wallpaperSelector, animation slide top"
-      "match:namespace quickshell:wNotificationCenter, no_anim on"
-      "match:namespace quickshell:wOnScreenDisplay, no_anim on"
-      "match:namespace quickshell:wStartMenu, no_anim on"
-      "match:namespace quickshell:wTaskView, ignore_alpha 0"
-      "match:namespace quickshell:wTaskView, no_anim on"
-
+            
       # Fast Launchers
       "match:namespace gtk4-layer-shell, no_anim on"
+
+      # Noctalia Shell
+      "match:namespace ^(noctalia)$, blur on"
+      "match:namespace ^(noctalia)$, xray on"
+      "match:namespace ^(noctalia-shell)$, blur on"
+      "match:namespace ^(noctalia-shell)$, xray on"
     ];
   };
 }

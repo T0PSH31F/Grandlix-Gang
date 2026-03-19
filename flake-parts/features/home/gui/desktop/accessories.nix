@@ -11,7 +11,7 @@
     # GUI apps
 
     beekeeper-studio
-    bitwarden-desktop
+    # bitwarden-desktop
     file-roller
     jellyfin-desktop
     matugen
@@ -20,7 +20,7 @@
     obs-studio
     pavucontrol
     pgadmin4-desktopmode
-    podman-desktop
+    # podman-desktop
     qutebrowser
     nwg-displays
     tutanota-desktop

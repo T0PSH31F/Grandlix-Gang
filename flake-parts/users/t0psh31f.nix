@@ -114,8 +114,7 @@
       home-config.documents.enable = true;
 
       # Enable Yazelix inside Home Manager scope
-      # Disabled due to upstream yazelix flake incompatibility with HM `startupWMClass`
-      features.home.cli.yazelix.enable = false;
+      features.home.cli.yazelix.enable = true;
     };
 
 }

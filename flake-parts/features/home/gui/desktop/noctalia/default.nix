@@ -18,6 +18,7 @@ in
 {
   imports = [
     ./ipc.nix
+    ./mutable-includes.nix
     inputs.noctalia.homeModules.default
     # ./niri.nix # Disabled: missing niri flake input
   ];
@@ -40,7 +41,7 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = inputs.noctalia.packages.${pkgs.system}.default;
+      default = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
       description = "The noctalia package to use";
     };
   };

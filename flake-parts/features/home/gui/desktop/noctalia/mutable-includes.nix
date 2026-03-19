@@ -94,7 +94,7 @@ in
         theme = Matugen
 
         font-family = JetBrainsMono Nerd Font
-        font-size = 14
+        font-size = 16
         background-opacity = 0.92
         window-padding-x = 8
         window-padding-y = 8
@@ -278,6 +278,6 @@ in
     # ── Zsh color sourcing ─────────────────────────────────────────────
     # Our custom user-template generates zsh-colors.sh
     # Users can source this in their .zshrc:
-    #   [ -f ~/.config/noctalia/templates/zsh-colors.sh ] && source ~/.config/noctalia/templates/zsh-colors.sh
+    # [ -f ~/.config/noctalia/templates/zsh-colors.sh ] && source ~/.config/noctalia/templates/zsh-colors.sh
   };
 }

@@ -77,7 +77,7 @@ with lib;
       win-spice
 
       # Container tools
-      podman-compose
+      #podman-compose
       distrobox
       compose2nix
 

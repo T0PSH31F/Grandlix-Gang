@@ -38,10 +38,10 @@
     hyprland = {
       url = "github:hyprwm/Hyprland";
     };
-    # hypr-dynamic-cursors = {
-    #   url = "github:VirtCode/hypr-dynamic-cursors";
-    #   inputs.hyprland.follows = "hyprland";
-    # };
+    hypr-dynamic-cursors = {
+      url = "github:VirtCode/hypr-dynamic-cursors";
+      inputs.hyprland.follows = "hyprland";
+    };
     # hyprland-plugins = {
     #   url = "github:hyprwm/hyprland-plugins";
     #   inputs.hyprland.follows = "hyprland";
@@ -189,6 +189,8 @@
                 home.homeDirectory = "/home/t0psh31f";
                 # Standard age key location for NFP users
                 sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+                # Enable Yazelix on VPS
+                features.home.cli.yazelix.enable = true;
               }
             ];
           };

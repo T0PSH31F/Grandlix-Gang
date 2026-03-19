@@ -14,6 +14,11 @@ let
     # Listens on Hyprland's socket2 for window events and plays UI sounds
     # via PipeWire's pw-play.
 
+    # Ensure only one instance runs
+    LOCK="/tmp/hypr-sfx-$USER.lock"
+    exec 200>$LOCK
+    flock -n 200 || { echo "hypr-sfx: already running." >&2; exit 0; }
+
     SOUND_DIR="$HOME/Clan/NFP/assets/SFX"
     SOCKET="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
 
@@ -28,9 +33,23 @@ let
       exit 1
     fi
 
+    LAST_MOVE=0
     play_sound() {
       local file="$SOUND_DIR/$1"
-      [ -f "$file" ] && ${pkgs.pipewire}/bin/pw-play "$file" &
+      if [ -f "$file" ]; then
+        # Rate-limit movewindow sounds to 5 per second
+        if [[ "$1" == "move-window.wav" ]]; then
+           local now=$(date +%s%3N)
+           if (( now - LAST_MOVE < 200 )); then
+              return
+           fi
+           LAST_MOVE=$now
+        fi
+        # Kill any hanging pw-play processes if they take too long (avoiding build-up)
+        # timeout 5s ${pkgs.pipewire}/bin/pw-play "$file" &
+        # Or better: just play and disown, but the flock/single-instance check above already prevents script-level duplicates
+        ${pkgs.pipewire}/bin/pw-play "$file" &
+      fi
     }
 
     echo "hypr-sfx: Listening on $SOCKET"

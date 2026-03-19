@@ -47,6 +47,14 @@ with lib;
   };
 
   config = mkIf config.services.matrix-server.enable {
+    # Workaround: clan-core's clanServices/matrix-synapse/nginx.nix sets
+    # sslDhparam = config.security.dhparams.params.nginx.path which creates
+    # an infinite recursion with the updated nixpkgs nginx module (which does
+    # `mkIf (cfg.sslDhparam == true)` causing evaluation before merge).
+    # We break the cycle by force-setting sslDhparam and disabling dhparams.
+    services.nginx.sslDhparam = lib.mkForce null;
+    security.dhparams.enable = lib.mkForce false;
+
     services.matrix-synapse = {
       enable = true;
 
