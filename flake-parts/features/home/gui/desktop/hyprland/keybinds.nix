@@ -55,11 +55,12 @@ in
         "$mod, G, exec, pypr toggle gedit"
 
         # ── Screenshots (Grim + Slurp) ─────────────────────────────────
-        ", Print, exec, grim -g \"$(slurp)\" - | swappy -f -"
-        "SHIFT, Print, exec, grim - | swappy -f -"
-        "$mod CTRL, S, exec, grim -g \"$(slurp)\" - | swappy -f -"
-        ", XF86AudioEject, exec, grim -g \"$(slurp)\" - | swappy -f -"
-        "SHIFT, XF86AudioEject, exec, grim - | swappy -f -"
+        ", Print, exec, uwsm app -- grim -g \"$(slurp)\" - | swappy -f -"
+        "SHIFT, Print, exec, uwsm app -- grim - | swappy -f -"
+        "$mod CTRL, S, exec, uwsm app -- grim -g \"$(slurp)\" - | swappy -f -"
+        ", XF86AudioEject, exec, uwsm app -- grim -g \"$(slurp)\" - | swappy -f -"
+        "SHIFT, XF86AudioEject, exec, uwsm app -- grim - | swappy -f -"
+        "CTRL SHIFT, S, exec, uwsm app -- grim -g \"$(slurp)\" - | swappy -f -"
 
         # ── Theme & Layout Management ──────────────────────────────────
         "$mod SHIFT, P, exec, theme-switch --pick"

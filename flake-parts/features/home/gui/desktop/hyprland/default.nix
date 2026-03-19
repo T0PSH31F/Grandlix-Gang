@@ -67,6 +67,7 @@ in
       steam-rom-manager
       swayimg
       swaynotificationcenter
+      swappy
       swww
       udiskie
       warp-terminal

@@ -15,5 +15,6 @@
     nautilus
     alacritty
     fuzzel
+    swappy
   ];
 }
