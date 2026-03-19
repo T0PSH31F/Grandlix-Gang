@@ -190,6 +190,7 @@
                 # Standard age key location for NFP users
                 sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
                 # Enable Yazelix on VPS
+                programs.cli-environment.headless = true;
                 features.home.cli.yazelix.enable = true;
               }
             ];

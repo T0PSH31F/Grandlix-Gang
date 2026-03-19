@@ -59,6 +59,15 @@ in
       autocd = true;
       enableCompletion = true;
 
+      envExtra = lib.mkIf cfg.headless ''
+        # Ensure Nix environment is sourced on Ubuntu/Headless
+        if [ -e /etc/profile.d/nix.sh ]; then
+          . /etc/profile.d/nix.sh
+        elif [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
+          . $HOME/.nix-profile/etc/profile.d/nix.sh
+        fi
+      '';
+
       autosuggestion = {
         enable = true;
         highlight = "fg=#6c7086";
@@ -109,9 +118,11 @@ in
         ''}
 
         # Auto-attach to Zellij
-        if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-            if command -v zellij >/dev/null 2>&1; then
-                zellij attach -c
+        if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$SSH_CONNECTION" ]]; then
+            if [[ "$HOST" != "vps" ]] && [[ ! -v "cfg.headless" || "cfg.headless" == "false" ]]; then
+                if command -v zellij >/dev/null 2>&1; then
+                    zellij attach -c
+                fi
             fi
         fi
 

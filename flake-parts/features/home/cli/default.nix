@@ -79,10 +79,15 @@ in
       default = false;
       description = "Enable Python and related tools (uv, etc.)";
     };
+
+    headless = lib.mkEnableOption "Headless/VPS environment optimizations";
   };
 
   config = lib.mkIf cfg.enable {
     programs.cli-environment.theming.matugen.enable = cfg.theming.enable;
+    
+    # Simple direct toggle for headless color sourcing
+    programs.cli-environment.theming.matugen.source = lib.mkIf cfg.headless (lib.mkForce "tokyo-night");
 
     programs.vivid.matugen = {
       enable = true;
