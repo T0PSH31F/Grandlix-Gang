@@ -196,10 +196,19 @@ in
 
       # Screenshots
       "Print" = {
-        action = spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -";
+        action = spawn "uwsm" "app" "--" "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -";
       };
       "Shift+Print" = {
-        action = spawn "sh" "-c" "grim - | swappy -f -";
+        action = spawn "uwsm" "app" "--" "sh" "-c" "grim - | swappy -f -";
+      };
+      "XF86AudioEject" = {
+        action = spawn "uwsm" "app" "--" "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -";
+      };
+      "Shift+XF86AudioEject" = {
+        action = spawn "uwsm" "app" "--" "sh" "-c" "grim - | swappy -f -";
+      };
+      "Ctrl+Shift+S" = {
+        action = spawn "uwsm" "app" "--" "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -";
       };
 
       # Media
