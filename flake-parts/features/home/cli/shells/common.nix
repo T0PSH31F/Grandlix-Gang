@@ -64,6 +64,10 @@ in
       ports = "ss -tulanp";
       sysinfo = "fastfetch";
 
+      # xxh shortcuts
+      sex = "xxh root@93.188.162.110";
+      zshh = "xxh root@";
+
       # VPS management
       vpsu = "ssh t0psh31f@93.188.162.110 '. /etc/profile.d/nix.sh && cd ~/Clan/NFP && git pull && nix run home-manager -- switch --flake .#t0psh31f@vps'";
     };
