@@ -97,12 +97,12 @@ in
         # Theme configuration
         theme = {
           light = {
-            name = "vicinae-light";
+            name = "noctalia-light";
             icon_theme = "default";
           };
           dark = {
             name = "noctalia-dark";
-            icon_theme = "default";
+            icon_theme = "pkgs.beauty-line-icon-theme";
           };
         };
 

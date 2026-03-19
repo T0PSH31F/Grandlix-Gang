@@ -12,8 +12,8 @@ let
   
   # Multi-color precise theme mappings for headless/VPS
   allThemes = import ./themes.nix { inherit lib; };
-  # Selected theme name from cli-environment.theme
-  selectedThemeName = config.programs.cli-environment.theme or "tokyo-night";
+  # Selected theme name from cli-environment.theming.theme
+  selectedThemeName = config.programs.cli-environment.theming.theme or "tokyo-night";
   # Get the actual color set
   themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";
 
