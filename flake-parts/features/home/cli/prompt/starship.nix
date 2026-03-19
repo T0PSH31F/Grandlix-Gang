@@ -24,18 +24,33 @@ in
 
         palette = "matugen";
 
-        palettes.matugen = {
-          # Fallback colors (will be overridden by matugen-generated file if STARSHIP_CONFIG is set)
-          color_fg0 = "#fbf1c7";
-          color_bg1 = "#3c3836";
-          color_bg3 = "#665c54";
-          color_blue = "#458588";
-          color_aqua = "#689d6a";
-          color_green = "#98971a";
-          color_orange = "#d65d0e";
-          color_purple = "#b16286";
-          color_red = "#cc241d";
-          color_yellow = "#d79921";
+        palettes.matugen = let
+          allThemes = import ../theming/themes.nix { inherit lib; };
+          selectedThemeName = cfg.theming.theme or "tokyo-night";
+          themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";
+        in lib.mkIf cfg.headless {
+          color_fg0 = themeColors.onSurface;
+          color_bg1 = themeColors.terminal.black;
+          color_bg3 = themeColors.terminal.black; # Or something else
+          color_blue = themeColors.terminal.blue;
+          color_aqua = themeColors.terminal.cyan;
+          color_green = themeColors.terminal.green;
+          color_orange = themeColors.secondary;
+          color_purple = themeColors.terminal.magenta;
+          color_red = themeColors.error;
+          color_yellow = themeColors.terminal.yellow;
+        } // {
+          # Fallback colors for non-headless (will be overridden by matugen on desktop)
+          color_fg0 = lib.mkDefault "#fbf1c7";
+          color_bg1 = lib.mkDefault "#3c3836";
+          color_bg3 = lib.mkDefault "#665c54";
+          color_blue = lib.mkDefault "#458588";
+          color_aqua = lib.mkDefault "#689d6a";
+          color_green = lib.mkDefault "#98971a";
+          color_orange = lib.mkDefault "#d65d0e";
+          color_purple = lib.mkDefault "#b16286";
+          color_red = lib.mkDefault "#cc241d";
+          color_yellow = lib.mkDefault "#d79921";
         };
 
         fill = {
