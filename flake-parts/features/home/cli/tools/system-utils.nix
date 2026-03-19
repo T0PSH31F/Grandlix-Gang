@@ -25,6 +25,7 @@ in
       psmisc
       tree
       usbutils
+      tailscale
 
       # Image tools
       chafa
