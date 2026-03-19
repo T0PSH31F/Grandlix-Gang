@@ -101,7 +101,7 @@ in
             icon_theme = "default";
           };
           dark = {
-            name = "vicinae-dark";
+            name = "noctalia-dark";
             icon_theme = "default";
           };
         };

@@ -41,6 +41,39 @@ in
         default = true;
         description = "Enable dynamic theming for CLI tools";
       };
+      theme = lib.mkOption {
+        type = lib.types.enum [
+          "Catppuccin Lavender"
+          "Cherry Blossom"
+          "Cyberpunk"
+          "Everdeer"
+          "Everforest"
+          "GitHub Dark"
+          "Gruber Darker"
+          "GruvboxAlt"
+          "Hexa34C"
+          "Lilac AMOLED"
+          "Miasma"
+          "Monochrome"
+          "NaySayer"
+          "Noctalia legacy"
+          "Oasis Abyss"
+          "Occult Umbral"
+          "One"
+          "Osaka jade"
+          "Oxide"
+          "Oxocarbon"
+          "Peche"
+          "Rose Pine Moon"
+          "Rosey AMOLED"
+          "Solarized"
+          "Tokyo Night Moon"
+          "Vesper"
+          "tokyo-night"
+        ];
+        default = "tokyo-night";
+        description = "Static theme to use in headless mode";
+      };
     };
 
     shells = {
