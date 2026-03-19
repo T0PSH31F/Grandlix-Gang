@@ -124,7 +124,7 @@ in
 
         # Auto-attach to Zellij
         if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$SSH_CONNECTION" ]]; then
-            if [[ "$HOST" != "vps" ]] && [[ ! -v "cfg.headless" || "cfg.headless" == "false" ]]; then
+            if [[ "$HOST" != "vps" ]] && ${if cfg.headless then "false" else "true"}; then
                 if command -v zellij >/dev/null 2>&1; then
                     zellij attach -c
                 fi
