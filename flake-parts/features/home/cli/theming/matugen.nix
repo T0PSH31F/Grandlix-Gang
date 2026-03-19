@@ -90,6 +90,10 @@ in
         text = fillTemplate ./templates/starship.toml matugenReplacements;
       };
 
+      ".config/starship.toml" = lib.mkIf config.programs.cli-environment.headless {
+        text = fillTemplate ./templates/starship.toml matugenReplacements;
+      };
+
       ".config/noctalia/templates/zsh-colors.sh" = lib.mkIf config.programs.cli-environment.headless {
         text = ''
           # Generated Zsh colors for ${selectedThemeName}

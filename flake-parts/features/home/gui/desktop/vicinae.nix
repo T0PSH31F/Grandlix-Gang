@@ -98,11 +98,11 @@ in
         theme = {
           light = {
             name = "noctalia-light";
-            icon_theme = "default";
+            icon_theme = "candy-icons";
           };
           dark = {
             name = "noctalia-dark";
-            icon_theme = "pkgs.beauty-line-icon-theme";
+            icon_theme = "beauty-line-icon-theme";
           };
         };
 

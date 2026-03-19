@@ -117,6 +117,11 @@ in
           [ -f ~/.config/fzf/matugen.conf ] && source ~/.config/fzf/matugen.conf
         ''}
 
+        # Starship prompt initialization
+        if command -v starship >/dev/null 2>&1; then
+          eval "$(starship init zsh)"
+        fi
+
         # Auto-attach to Zellij
         if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$SSH_CONNECTION" ]]; then
             if [[ "$HOST" != "vps" ]] && [[ ! -v "cfg.headless" || "cfg.headless" == "false" ]]; then
