@@ -31,7 +31,7 @@ in
         scale = 1.6;
         position = {
           x = 1920;
-          y = 0;
+          y = 80; # Bottom aligned (1080 - 1000)
         };
       };
       "DP-2" = {

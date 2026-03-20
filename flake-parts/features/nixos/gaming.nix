@@ -65,7 +65,6 @@ with lib;
         # Wine and Proton alternatives
         lutris
         bottles
-        heroic
 
         # Performance overlays and tools
         mangohud
@@ -101,7 +100,7 @@ with lib;
         ppsspp # PSP
         rpcs3 # PS3
         pcsx2 # PS2
-        melonDS # DS
+        melonds # DS
         sixpair # Pair with SIXAXIS controllers over USB
 
         # Nintendo Switch

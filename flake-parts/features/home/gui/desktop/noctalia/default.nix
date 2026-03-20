@@ -53,6 +53,22 @@ in
       settings = ../../../../../../assets/noctalia-config.json;
     };
 
+    systemd.user.services.noctalia-shell = {
+      Unit = {
+        Description = "Noctalia Desktop Shell";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${cfg.package}/bin/noctalia-shell";
+        Restart = "always";
+        RestartSec = "3";
+      };
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
+    };
+
     home.file = {
       ".face".source = ../../../../../../assets/user_profile/cloud.gif;
       ".face.icon".source = ../../../../../../assets/user_profile/cloud.gif;

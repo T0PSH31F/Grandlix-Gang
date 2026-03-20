@@ -21,8 +21,7 @@ in
         '';
       })
       (pkgs.writeShellScriptBin "noctalia-restart" ''
-        pkill noctalia-shell
-        noctalia-shell & disown
+        systemctl --user restart noctalia-shell
       '')
     ];
 

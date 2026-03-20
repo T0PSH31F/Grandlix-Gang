@@ -39,10 +39,8 @@ final: prev: {
   #   packageOverrides = final.pythonPackagesOverlay;
   # };
 
-  # Fix for Electron 39.8.2 build failure (angle-patchdir.patch FAILED)
-  # This override filters out the broken patch from the unwrapped version
-  # and then applies the same change manually via postPatch for robustness.
-  electron-unwrapped_39 = prev.electron_39.unwrapped.overrideAttrs (old: {
+  # Fix for Electron 39.x build failure (broken cherry-pick patch)
+  electron-unwrapped_39 = (prev.electron_39 or prev.electron).unwrapped.overrideAttrs (old: {
     patches = builtins.filter (p:
       let
         name =
@@ -54,13 +52,17 @@ final: prev: {
             "";
       in
       !(builtins.match ".*angle-patchdir.*" name != null)
+      && !(builtins.match ".*cherry-pick-a08731cf6d70.*" name != null)
     ) (old.patches or [ ]);
 
-    postPatch = (old.postPatch or "") + ''
-      if [ -f electron/patches/config.json ]; then
-        substituteInPlace electron/patches/config.json \
-          --replace-fail '"repo": "src/third_party/angle/src"' '"repo": "src/third_party/angle"'
-      fi
+    postUnpack = (old.postUnpack or "") + ''
+      # Aggressively remove broken cherry-pick patch from any JSON config
+      find . -name "*.json" -exec sed -i '/cherry-pick-a08731cf6d70/d' {} + || true
+    '';
+
+    prePatch = (old.prePatch or "") + ''
+      # Double-check removal before patchPhase
+      find . -name "*.json" -exec sed -i '/cherry-pick-a08731cf6d70/d' {} + || true
     '';
   });
 
@@ -74,8 +76,11 @@ final: prev: {
     };
   });
 
+  # Workaround for broken Electron 39.x in nixpkgs unstable.
+  # We apply this prefix match to ensure any 39.x release is patched to remove
+  # the broken cherry-pick patch that prevents successful builds.
   electron =
-    if (prev.electron.version or "") == "39.8.2" then
+    if prev.lib.hasPrefix "39." (prev.electron.version or "") then
       final.electron_39
     else
       prev.electron;

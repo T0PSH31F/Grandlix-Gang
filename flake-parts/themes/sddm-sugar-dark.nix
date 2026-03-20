@@ -192,6 +192,18 @@ in
       }
     ];
 
+    # SDDM Sugar Dark activation
+    services.displayManager.sddm = {
+      theme = "sugar-dark";
+      # Include required libraries and the theme itself in SDDM's path
+      # Note: Switched to kdePackages (Qt6) to match the main SDDM package
+      extraPackages = with pkgs.kdePackages; [
+        qt5compat
+        qtsvg
+        sddm-sugar-dark-custom
+      ];
+    };
+
     environment.systemPackages = [
       sddm-sugar-dark-custom
     ];

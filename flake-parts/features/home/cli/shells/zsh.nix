@@ -90,14 +90,16 @@ in
 
       historySubstringSearch = {
         enable = true;
-        searchUpKey = "^P";
-        searchDownKey = "^N";
+        searchUpKey = "^[[A";   # Up Arrow
+        searchDownKey = "^[[B"; # Down Arrow
       };
 
       initContent = ''
         # Keybindings
         bindkey -v
         export KEYTIMEOUT=1
+        bindkey '^[[A' history-substring-search-up
+        bindkey '^[[B' history-substring-search-down
         bindkey '^Y' autosuggest-accept
         bindkey '^E' autosuggest-clear
 
@@ -123,13 +125,13 @@ in
         fi
 
         # Auto-attach to Zellij
-        if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$SSH_CONNECTION" ]]; then
-            if [[ "$HOST" != "vps" ]] && ${if cfg.headless then "false" else "true"}; then
-                if command -v zellij >/dev/null 2>&1; then
-                    zellij attach -c
-                fi
-            fi
-        fi
+        ${lib.optionalString (!cfg.headless) ''
+          if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$SSH_CONNECTION" ]]; then
+              if command -v zellij >/dev/null 2>&1; then
+                  zellij attach -c
+              fi
+          fi
+        ''}
 
       '';
 

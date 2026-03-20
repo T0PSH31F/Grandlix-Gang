@@ -129,11 +129,11 @@ let
     # Hyprland / Niri
     case "$COMPOSITOR" in
       Hyprland|hyprland)
-        hyprctl reload &
+        # hyprctl reload &
         # Force GPU shader recompile (toggle off then on)
-        hyprctl keyword decoration:screen_shader "" 2>/dev/null
-        sleep 0.3
-        hyprctl keyword decoration:screen_shader "$HOME/.config/hypr/vibrancy.frag" 2>/dev/null &
+        # hyprctl keyword decoration:screen_shader "" 2>/dev/null
+        # sleep 0.3
+        # hyprctl keyword decoration:screen_shader "$HOME/.config/hypr/vibrancy.frag" 2>/dev/null &
         ;;
       niri|Niri)
         niri msg action load-config-file &

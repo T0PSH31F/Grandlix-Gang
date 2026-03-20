@@ -12,7 +12,6 @@ in
     home.packages = with pkgs; [
       # Launchers
       cartridges
-      heroic
       lutris
       prismlauncher
       umu-launcher

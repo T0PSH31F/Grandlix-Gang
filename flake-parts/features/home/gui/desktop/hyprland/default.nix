@@ -132,7 +132,7 @@ in
           "udiskie & disown"
           #  "${pkgs.swww}/bin/swww-daemon & disown"
           "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/assets/SFX/login-sound.mp3 & disown"
-          "noctalia-shell & disown"
+          # "noctalia-shell & disown" # Managed by systemd
         ];
 
         # Exec on shutdown

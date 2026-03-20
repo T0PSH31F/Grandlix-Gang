@@ -9,22 +9,23 @@
 let
   cfg = config.programs.cli-environment.theming.matugen;
   hasNoctalia = config.programs.noctalia-shell.enable or false;
-  
+
   # Multi-color precise theme mappings for headless/VPS
   allThemes = import ./themes.nix { inherit lib; };
-  # Selected theme name from cli-environment.theming.theme
-  selectedThemeName = config.programs.cli-environment.theming.theme or "tokyo-night";
+  # Selected theme name from cli-environment.theme
+  selectedThemeName = config.programs.cli-environment.theming.theme;
   # Get the actual color set
   themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";
 
   # Helper to fill templates with precise colors
-  fillTemplate = templatePath: replacements: 
+  fillTemplate =
+    templatePath: replacements:
     let
       content = builtins.readFile templatePath;
       keys = builtins.attrNames replacements;
       values = builtins.attrValues replacements;
-    in 
-      lib.replaceStrings keys values content;
+    in
+    lib.replaceStrings keys values content;
 
   # Standard Matugen mapping for our templates
   matugenReplacements = {
@@ -61,17 +62,19 @@ in
 
     home.file = {
       # ── Standard Matugen Templates (Desktop/Dynamic) ────────────────
-      ".config/matugen/templates/helix.toml".source = pkgs.fetchurl {
-        url = "https://raw.githubusercontent.com/InioX/matugen-themes/main/templates/helix.toml";
-        sha256 = "0kh498w51mk47hxia7frc7c0a5a2lww6day3b8lz5dh5a1j1vxmq";
-      };
-      
+      ".config/matugen/templates/helix.toml".source = ./templates/helix.toml;
+
       ".config/matugen/templates/yazi.toml".source = ./templates/yazi.toml;
       ".config/matugen/templates/zellij-colors.kdl".source = ./templates/zellij-colors.kdl;
       ".config/matugen/templates/bat-theme.tmTheme".source = ./templates/bat-theme.tmTheme;
       ".config/matugen/templates/delta.gitconfig".source = ./templates/delta.gitconfig;
       ".config/matugen/templates/fzf-colors.conf".source = ./templates/fzf-colors.conf;
       ".config/matugen/templates/starship.toml".source = ./templates/starship.toml;
+      ".config/matugen/templates/btop.theme".source = ./templates/btop.theme;
+      ".config/matugen/templates/kitty-colors.conf".source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/InioX/matugen-themes/main/templates/kitty-colors.conf";
+        sha256 = "1fyr9phqvjci1pid0z9nzhima58sq0jnwx53jr7a33hc6w31jsha";
+      };
 
       # ── Headless Static Generator (VPS/1:1 Parity) ──────────────────
       ".config/noctalia/templates/zellij-colors.kdl" = lib.mkIf config.programs.cli-environment.headless {
@@ -88,6 +91,10 @@ in
 
       ".config/noctalia/templates/starship.toml" = lib.mkIf config.programs.cli-environment.headless {
         text = fillTemplate ./templates/starship.toml matugenReplacements;
+      };
+
+      ".config/noctalia/templates/btop.theme" = lib.mkIf config.programs.cli-environment.headless {
+        text = fillTemplate ./templates/btop.theme matugenReplacements;
       };
 
       ".config/noctalia/templates/zsh-colors.sh" = lib.mkIf config.programs.cli-environment.headless {

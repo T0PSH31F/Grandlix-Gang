@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   ...
 }:
@@ -59,6 +60,10 @@
   themes = {
     grub-lain.enable = true;
     plymouth-hellonavi.enable = true;
+    sddm-sugar-dark = {
+      enable = true;
+      background = "${./../../assets/sddm_background/roronoa-zoro_800.gif}";
+    };
   };
 
   # Mobile device support
@@ -68,7 +73,7 @@
   };
 
   # Gaming & Virtualization
-  gaming.enable = false;
+  gaming.enable = true;
   virtualization.enable = false;
 
   # Flatpak & AppImage
@@ -85,11 +90,11 @@
     # Desktop Services
     ssh-agent.enable = true;
     searxng.enable = true;
-    pastebin.enable = true;
+    pastebin.enable = false;
 
     # Home Automation & Infrastructure
     home-assistant-server.enable = true;
-    caddy-server.enable = false;
+    caddy-server.enable = true;
     n8n-server.enable = false;
 
     # AI Services - Granular toggles
@@ -123,7 +128,7 @@
     filebrowser-app.enable = true;
     deluge-server.enable = false; # Moved to Nami
     transmission-server.enable = false;
-    headscale-server.enable = false;
+    headscale-server.enable = true;
     harmonia.cache.enable = true;
   };
 
@@ -132,7 +137,7 @@
 
   # Services config (separate namespace for config-only services)
   services-config = {
-    adguard.enable = false; # Added explicit toggle
+    adguard.enable = true; # Added explicit toggle
     media-stack.enable = false; # Toggle for *arr suite
     karakeep.enable = false;
     your-spotify.enable = false;
@@ -162,12 +167,54 @@
   # SOPS SECRETS
   # ============================================================================
   sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+  sops.secrets."duckdns-token" = {
+    sopsFile = lib.mkForce ../../treasure/secrets/duckdns.yaml;
+    format = lib.mkForce "yaml";
+  };
 
   # ============================================================================
-  # SECURITY / ACME
+  # SECURITY / ACME / DUCKDNS
   # ============================================================================
   security.acme = {
     acceptTerms = true;
-    defaults.email = "admin@grandlix.com";
+    defaults.email = "admin@lovelain.duckdns.org";
+    certs."lovelain.duckdns.org" = {
+      domain = "*.lovelain.duckdns.org";
+      extraDomainNames = [
+        "lovelain.duckdns.org"
+        "t0psh31f.duckdns.org"
+        "nixfp.duckdns.org"
+      ];
+      dnsProvider = "duckdns";
+      environmentFile = config.sops.secrets."duckdns-token".path;
+    };
+  };
+
+  # DuckDNS Auto-Updater using ddclient
+  services.ddclient = {
+    enable = true;
+    domains = [
+      "lovelain.duckdns.org"
+      "t0psh31f.duckdns.org"
+      "nixfp.duckdns.org"
+    ];
+    protocol = "duckdns";
+    passwordFile = config.sops.secrets."duckdns-token".path;
+  };
+
+  # Caddy Reverse Proxy for Headscale
+  services.caddy = {
+    enable = true;
+    globalConfig = ''
+      email admin@lovelain.duckdns.org
+    '';
+    virtualHosts."headscale.lovelain.duckdns.org" = {
+      useACMEHost = "lovelain.duckdns.org";
+      extraConfig = ''
+        encode zstd gzip
+        header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        reverse_proxy localhost:8086
+      '';
+    };
   };
 }

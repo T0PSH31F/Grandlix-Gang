@@ -173,7 +173,7 @@
         systems = [ "x86_64-linux" ];
 
         flake.homeConfigurations = {
-          "t0psh31f@vps" = inputs.home-manager.lib.homeManagerConfiguration {
+          "root@vps" = inputs.home-manager.lib.homeManagerConfiguration {
             pkgs = import inputs.nixpkgs {
               system = "x86_64-linux";
               config.allowUnfree = true;
@@ -185,10 +185,10 @@
             modules = [
               ./flake-parts/features/home/cli-tui.nix
               {
-                home.username = "t0psh31f";
-                home.homeDirectory = "/home/t0psh31f";
+                home.username = "root";
+                home.homeDirectory = "/root";
                 # Standard age key location for NFP users
-                sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+                sops.age.keyFile = "/root/.config/sops/age/keys.txt";
                 # Enable Yazelix on VPS
                 programs.cli-environment.headless = true;
                 programs.cli-environment.theming.theme = "Tokyo Night Moon";

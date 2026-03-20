@@ -18,10 +18,8 @@ in
       settings = {
         "$schema" = "https://starship.rs/config-schema.json";
         add_newline = true;
-        format = ''
-          [](color_red)$os[](bg:color_orange fg:color_red)$username[](bg:color_yellow fg:color_orange)$directory[](fg:color_yellow bg:color_green)$git_branch$git_status[](fg:color_green bg:color_aqua)$c$cpp$rust$golang$nodejs$python[](fg:color_aqua bg:color_bg3)$docker_context$fill[](color_purple)$memory[](fg:color_purple bg:color_aqua)$cmd_duration[](fg:color_aqua bg:color_bg1)$time[](fg:color_bg1)
-          $character '';
-
+        format = "[](fg:color_orange)$os$username[](bg:color_yellow fg:color_orange)$directory[](bg:color_green fg:color_yellow)$git_branch$git_status[](bg:color_aqua fg:color_green)$c$cpp$rust$golang$nodejs$python[](bg:color_purple fg:color_aqua)$docker_context[ ](fg:color_purple)$fill[](fg:color_aqua)$cmd_duration[](bg:color_aqua fg:color_purple)$memory_usage[](bg:color_purple fg:color_bg1)$time[](fg:color_bg1)\n$character";
+        ##                              
         palette = "matugen";
 
         palettes.matugen = lib.mkMerge [
@@ -38,26 +36,29 @@ in
             color_red = lib.mkDefault "#cc241d";
             color_yellow = lib.mkDefault "#d79921";
           }
-          (lib.mkIf cfg.headless (let
-            allThemes = import ../theming/themes.nix { inherit lib; };
-            selectedThemeName = cfg.theming.theme or "tokyo-night";
-            themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";
-          in {
-            color_fg0 = themeColors.onSurface;
-            color_bg1 = themeColors.terminal.black;
-            color_bg3 = themeColors.terminal.black; 
-            color_blue = themeColors.terminal.blue;
-            color_aqua = themeColors.terminal.cyan;
-            color_green = themeColors.terminal.green;
-            color_orange = themeColors.secondary;
-            color_purple = themeColors.terminal.magenta;
-            color_red = themeColors.error;
-            color_yellow = themeColors.terminal.yellow;
-          }))
+          (lib.mkIf cfg.headless (
+            let
+              allThemes = import ../theming/themes.nix { inherit lib; };
+              selectedThemeName = cfg.theming.theme or "tokyo-night";
+              themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";
+            in
+            {
+              color_fg0 = themeColors.onSurface;
+              color_bg1 = themeColors.terminal.black;
+              color_bg3 = themeColors.terminal.black;
+              color_blue = themeColors.terminal.blue;
+              color_aqua = themeColors.terminal.cyan;
+              color_green = themeColors.terminal.green;
+              color_orange = themeColors.secondary;
+              color_purple = themeColors.terminal.magenta;
+              color_red = themeColors.error;
+              color_yellow = themeColors.terminal.yellow;
+            }
+          ))
         ];
 
         fill = {
-          symbol = " ";
+          symbol = "·";
           disabled = false;
         };
 
@@ -69,10 +70,10 @@ in
 
         os = {
           disabled = false;
-          style = "bg:color_red fg:color_fg0";
+          style = "bg:color_orange fg:color_bg1";
           symbols = {
-            Ubuntu = "🐧󰕈";
-            NixOS = " ";
+            Ubuntu = "🐧";
+            NixOS = "[ ](bg:color_orange fg:cyan)";
             Windows = "󰍲";
             SUSE = "";
             Raspbian = "󰐿";
@@ -101,7 +102,7 @@ in
           show_always = true;
           style_user = "bg:color_orange fg:color_fg0";
           style_root = "bg:color_orange fg:color_fg0";
-          format = "[ $user ]($style)";
+          format = "[  $user]($style)";
         };
 
         directory = {
@@ -139,7 +140,7 @@ in
           USER = {
             format = "[   $env_value  ](bg:color_bg3 fg:color_fg0)";
             disabled = false;
-            ## other favs                              
+            ## other favs                               󰕈
           };
         };
 
@@ -151,15 +152,24 @@ in
 
         git_status = {
           style = "bg:color_green";
-          format = "[[($all_status$ahead_behind )](fg:color_fg0 bg:color_green)]($style)";
+          format = "[[($all_status$ahead_behind )](fg:color_bg1 bg:color_green)]($style)";
+          stashed = "💾";
+          ahead = "📥";
+          behind = "📤";
+          conflicted = "⁉️";
+          deleted = "🗑️";
+          renamed = "🎭";
+          modified = "🚧";
+          staged = "🏗️";
+          untracked = "❓";
         };
 
         memory_usage = {
           disabled = false;
           threshold = -1;
-          symbol = "🐏 ";
-          style = "bg:color_purple fg:color_fg0";
-          format = "[[ $symbol $ram ](fg:color_fg0 bg:color_purple)]($style)";
+          symbol = "🐏";
+          style = "bg:color_purple fg:color_bg1";
+          format = "[[ $symbol$ram ](fg:color_bg1 bg:color_purple)]($style)";
         };
 
         nodejs = {
@@ -206,8 +216,8 @@ in
 
         cmd_duration = {
           min_time = 500;
-          style = "bg:color_aqua fg:color_fg0";
-          format = "[⏳ $duration ]($style)";
+          style = "bg:color_aqua fg:color_bg1";
+          format = "[  🏁$duration ]($style)";
         };
 
         time = {
