@@ -80,6 +80,7 @@
     git
     vim
     wget
+    ghostty.terminfo
   ];
 
   programs.zsh.enable = true;

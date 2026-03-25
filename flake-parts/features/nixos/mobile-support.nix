@@ -24,10 +24,6 @@ in
     # ============================================================================
     (mkIf cfg.android.enable {
 
-      # Enable Waydroid container
-      # Note: Requires appropriate kernel modules (often compiled in Zen/CachyOS kernels)
-      virtualisation.waydroid.enable = true;
-
       # File Transfer & MTP
       # services.gvfs.enable = true; # Mount, Trash, and other functionalities
       environment.systemPackages = with pkgs; [
@@ -35,7 +31,16 @@ in
         jmtpfs # MTP Filesystem
         scrcpy # Screen mirroring
         heimdall-gui # GUI for Heimdall (provides CLI tools as well)
+        phonemizer
+        universal-android-debloater
+        valent # KDE Connect implementation for GTK
       ];
+
+      # Open ports for KDE Connect protocol (used by Valent)
+      networking.firewall = {
+        allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+        allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
+      };
 
       # User permissions
       # Ensure users are in 'adbusers' group in user config
@@ -62,8 +67,7 @@ in
     (mkIf (cfg.android.enable || cfg.ios.enable) {
       # KDE Connect / GSConnect
       # Allows wireless file transfer, clipboard sync, notifications
-      # programs.kdeconnect.enable = true; # Tag: mobile/laptop?
-      # services.gvfs.enable = true; # Moved to service-distribution.nix
+      programs.kdeconnect.enable = true;
     })
   ];
 }

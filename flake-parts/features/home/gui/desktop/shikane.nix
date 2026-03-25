@@ -17,27 +17,27 @@ in
       text = ''
         [[profile]]
         name = "triple"
-        # Triple monitor setup with eDP-1 in the middle, bottom-aligned
+        # Triple monitor setup with eDP-1 in the middle, top-aligned
         [[profile.output]]
-        search = "HDMI-A-1"
+        search = "DP-1"
         enable = true
-        mode = "3840x2160@30"
+        mode = "1920x1080@60"
         position = "0,0"
-        scale = 2.0
+        scale = 1.0
 
         [[profile.output]]
         search = "eDP-1"
         enable = true
         mode = "2560x1600@60"
-        position = "1920,80" # Bottom aligned (1080 - 1000)
+        position = "1920,0" # Top aligned
         scale = 1.6
 
         [[profile.output]]
-        search = "DP-1"
+        search = "HDMI-A-1"
         enable = true
-        mode = "1920x1080@60"
+        mode = "3840x2160@30"
         position = "3520,0"
-        scale = 1.0
+        scale = 2.0
 
         [[profile]]
         name = "big-screen"
@@ -53,7 +53,7 @@ in
         search = "eDP-1"
         enable = true
         mode = "2560x1600@60"
-        position = "1920,80" # Next to the 1080p screen, bottom-aligned
+        position = "1920,0" # Next to the 1080p screen, top-aligned
         scale = 1.6
 
         [[profile]]
@@ -86,7 +86,7 @@ in
     systemd.user.services.shikane = {
       Unit = {
         Description = "Dynamic output configuration for Wayland";
-        Documentation = "https://gitlab.com/w0rp/shikane";
+        Documentation = "https://gitlab.com/w0lff/shikane";
         PartOf = [ "graphical-session.target" ];
         After = [ "graphical-session.target" ];
       };

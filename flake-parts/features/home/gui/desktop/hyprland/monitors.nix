@@ -30,17 +30,11 @@ in
         "4, monitor:eDP-1, persistent:true"
         "5, monitor:eDP-1, persistent:true"
 
-        #  "5, monitor:DP-2, default:true, persistent:true"
         "6, monitor:DP-1, default:true, persistent:true"
-        #"6, monitor:DP-2, persistent:true"
         "7, monitor:DP-1, persistent:true"
-        #"7, monitor:DP-2, persistent:true"
         "8, monitor:DP-1, persistent:true"
-        #"8, monitor:DP-2, persistent:true"
         "9, monitor:DP-1, persistent:true"
-        #"9, monitor:DP-2, persistent:true"
         "10, monitor:HDMI-A-1, default:true, persistent:true"
-        #"10, monitor:DP-2, persistent:true"
 
         "special:scratchpad, on-created-empty:hx"
       ];

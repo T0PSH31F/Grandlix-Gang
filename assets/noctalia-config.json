@@ -10,7 +10,7 @@
     "capsuleOpacity": 1,
     "capsuleColorKey": "none",
     "widgetSpacing": 8,
-    "contentPadding": 5,
+    "contentPadding": 4,
     "fontScale": 1,
     "enableExclusionZoneInset": true,
     "backgroundOpacity": 0.89,
@@ -18,8 +18,8 @@
     "floating": false,
     "marginVertical": 4,
     "marginHorizontal": 4,
-    "frameThickness": 8,
-    "frameRadius": 12,
+    "frameThickness": 7,
+    "frameRadius": 16,
     "outerCorners": true,
     "hideOnOverview": false,
     "displayMode": "always_visible",
@@ -66,10 +66,11 @@
           "id": "plugin:assistant-panel"
         },
         {
-          "compactMode": true,
+          "compactMode": false,
           "diskPath": "/",
-          "iconColor": "secondary",
+          "iconColor": "primary",
           "id": "SystemMonitor",
+          "showCpuCores": true,
           "showCpuFreq": true,
           "showCpuTemp": true,
           "showCpuUsage": true,
@@ -77,14 +78,24 @@
           "showDiskUsage": true,
           "showDiskUsageAsPercent": true,
           "showGpuTemp": false,
-          "showLoadAverage": true,
+          "showLoadAverage": false,
           "showMemoryAsPercent": true,
           "showMemoryUsage": true,
-          "showNetworkStats": false,
+          "showNetworkStats": true,
           "showSwapUsage": true,
-          "textColor": "none",
+          "textColor": "tertiary",
           "useMonospaceFont": true,
           "usePadding": false
+        },
+        {
+          "defaultSettings": {
+            "errorIcon": "alert-circle",
+            "iconColor": "primary",
+            "loadingIcon": "loader",
+            "refreshInterval": 300,
+            "successIcon": "network"
+          },
+          "id": "plugin:ip-monitor"
         },
         {
           "defaultSettings": {
@@ -101,25 +112,6 @@
         }
       ],
       "center": [
-        {
-          "characterCount": 2,
-          "colorizeIcons": false,
-          "emptyColor": "secondary",
-          "enableScrollWheel": true,
-          "focusedColor": "primary",
-          "followFocusedScreen": false,
-          "groupedBorderOpacity": 1,
-          "hideUnoccupied": false,
-          "iconScale": 0.9,
-          "id": "Workspace",
-          "labelMode": "index",
-          "occupiedColor": "secondary",
-          "pillSize": 0.6,
-          "showApplications": false,
-          "showBadge": true,
-          "showLabelsOnlyWhenOccupied": false,
-          "unfocusedIconsOpacity": 1
-        },
         {
           "compactMode": false,
           "compactShowAlbumArt": true,
@@ -140,23 +132,49 @@
           "visualizerType": "wave"
         },
         {
-          "defaultSettings": {
-            "hideBackground": false,
-            "minimumThreshold": 10
-          },
-          "id": "plugin:catwalk"
+          "defaultSettings": {},
+          "id": "plugin:workspace-overview"
         }
       ],
       "right": [
         {
           "defaultSettings": {
-            "errorIcon": "alert-circle",
-            "iconColor": "primary",
-            "loadingIcon": "loader",
-            "refreshInterval": 300,
-            "successIcon": "network"
+            "colorHistory": [],
+            "installedLangs": [
+              "eng"
+            ],
+            "paletteColors": [],
+            "selectedOcrLang": "eng",
+            "transAvailable": false
           },
-          "id": "plugin:ip-monitor"
+          "id": "plugin:screen-toolkit"
+        },
+        {
+          "defaultSettings": {
+            "completedCount": 0,
+            "count": 0,
+            "current_page_id": 0,
+            "exportEmptySections": false,
+            "exportFormat": "markdown",
+            "exportPath": "~/Documents",
+            "isExpanded": false,
+            "pages": [
+              {
+                "id": 0,
+                "name": "General"
+              }
+            ],
+            "priorityColors": {
+              "high": "#f44336",
+              "low": "#9e9e9e",
+              "medium": "#2196f3"
+            },
+            "showBackground": true,
+            "showCompleted": true,
+            "todos": [],
+            "useCustomColors": false
+          },
+          "id": "plugin:todo"
         },
         {
           "defaultSettings": {
@@ -187,30 +205,9 @@
         },
         {
           "defaultSettings": {
-            "borderRadius": 1,
-            "expandDirection": "down",
-            "focusBorderColor": "primary",
-            "mainIcon": "layout-grid",
-            "primaryPillColor": "none",
-            "primaryShowPill": false,
-            "primarySize": 0.9,
-            "primarySymbolColor": "none",
-            "secondaryPillColor": "primary",
-            "secondaryShowPill": true,
-            "secondarySize": 0.9,
-            "secondarySymbolColor": "none",
-            "workspaces": [
-              {
-                "icon": "message",
-                "name": "communication"
-              }
-            ]
+            "mainDeviceId": ""
           },
-          "id": "plugin:special-workspaces"
-        },
-        {
-          "defaultSettings": {},
-          "id": "plugin:openhue"
+          "id": "plugin:valent-connect"
         },
         {
           "defaultSettings": {},
@@ -240,15 +237,6 @@
           "id": "Clock",
           "tooltipFormat": "HH:mm ddd, MMM dd",
           "useCustomFont": false
-        },
-        {
-          "blacklist": [],
-          "chevronColor": "none",
-          "colorizeIcons": false,
-          "drawerEnabled": true,
-          "hidePassive": false,
-          "id": "Tray",
-          "pinned": []
         },
         {
           "colorizeDistroLogo": false,
@@ -342,7 +330,7 @@
     "tooltipsEnabled": true,
     "scrollbarAlwaysVisible": true,
     "boxBorderEnabled": true,
-    "panelBackgroundOpacity": 0.93,
+    "panelBackgroundOpacity": 0.89,
     "translucentWidgets": false,
     "panelsAttachedToBar": true,
     "settingsPanelMode": "attached",
@@ -392,6 +380,11 @@
         "directory": "/home/t0psh31f/.background/4k Background",
         "name": "DP-1",
         "wallpaper": ""
+      },
+      {
+        "directory": "/home/t0psh31f/.background/4k Background",
+        "name": "HDMI-A-1",
+        "wallpaper": ""
       }
     ],
     "enableMultiMonitorDirectories": false,
@@ -399,21 +392,20 @@
     "viewMode": "recursive",
     "setWallpaperOnAllMonitors": true,
     "fillMode": "crop",
-    "fillColor": "#000000",
+    "fillColor": "#1d2026",
     "useSolidColor": false,
     "solidColor": "#1a1a2e",
     "automationEnabled": true,
     "wallpaperChangeMode": "random",
     "randomIntervalSec": 900,
-    "transitionDuration": 6900,
+    "transitionDuration": 10000,
     "transitionType": [
       "random",
-      "honeycomb",
-      "pixelate"
+      "honeycomb"
     ],
     "skipStartupTransition": false,
     "transitionEdgeSmoothness": 0.6900000000000001,
-    "panelPosition": "follow_bar",
+    "panelPosition": "top_center",
     "hideWallpaperFilenames": false,
     "overviewBlur": 0.4,
     "overviewTint": 0.6,
@@ -723,7 +715,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "tonal-spot",
+    "generationMethod": "content",
     "monitorForColors": ""
   },
   "templates": {

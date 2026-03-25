@@ -23,6 +23,16 @@ with lib;
               default = "";
               description = "Extra Caddy configuration";
             };
+            useACMEHost = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Use ACME certificate for this host";
+            };
+            serverAliases = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "Alternative names for this host";
+            };
           };
         }
       );
@@ -39,7 +49,11 @@ with lib;
         email ${config.services.caddy-server.email}
       '';
 
-      virtualHosts = config.services.caddy-server.virtualHosts;
+      virtualHosts = mapAttrs
+        (name: value: {
+          inherit (value) extraConfig useACMEHost serverAliases;
+        })
+        config.services.caddy-server.virtualHosts;
     };
 
     # Firewall

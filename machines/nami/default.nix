@@ -47,9 +47,12 @@
 
   # Themes - match z0r0 for consistency
   themes = {
-    sddm-sugar-dark = {
-      enable = true;
-      background = "${./../../assets/sddm_background/the-world-of-one-piece_800.gif}";
+    greeter = {
+      sddm = {
+        enable = true;
+        background = ../../assets/sddm_background/the-world-of-one-piece_800.gif;
+      };
+      greetd.enable = false;
     };
 
     grub-lain = {

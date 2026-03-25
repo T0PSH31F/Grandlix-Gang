@@ -15,12 +15,12 @@ in
       lutris
       prismlauncher
       umu-launcher
+      steam-run-free
+      nero-umu
 
       # Utility
-      mangohud
       protonplus
       protontricks
-      winetricks
       nexusmods-app
 
       # Nintendo Switch / Tools
@@ -32,8 +32,82 @@ in
       quark-goldleaf
     ];
 
-    # Note: Gamescope logic is best handled in NixOS module or specific gamescope session wrap,
-    # but if needed per-user for specific invocations:
-    # programs.gamescope... (if home-manager module exists, but usually users use system package + steam launch args)
+    programs.lutris = {
+      enable = true;
+      package = pkgs.lutris;
+      steamPackage = osConfig.programs.steam.package;
+      protonPackages = [ pkgs.proton-ge-bin ];
+      winePackages = [ pkgs.wineWow64Packages.full ];
+      extraPackages = with pkgs; [ mangohud winetricks gamescope gamemode umu-launcher steam-run ];
+      # runners = {
+      # };
+    };
+
+    programs.retroarch = {
+      enable = true;
+      package = pkgs.retroarch;
+      cores = {
+        snes9x = {
+          enable = true;
+          package = pkgs.libretro.snes9x2010;
+        };
+        dolphin = {
+          enable = true;
+          package = pkgs.libretro.dolphin;
+        };
+        desmume2015 = {
+          enable = true;
+          package = pkgs.libretro.desmume2015;
+        };
+        citra = {
+          enable = true;
+          package = pkgs.libretro.citra;
+        };
+        mupen64plus = {
+          enable = true;
+          package = pkgs.libretro.mupen64plus;
+        };
+        pcsx2 = {
+          enable = true;
+          package = pkgs.libretro.pcsx2;
+        };
+        swanstation = {
+          enable = true;
+          package = pkgs.libretro.swanstation;
+        };
+        gpsp = {
+          enable = true;
+          package = pkgs.libretro.gpsp;
+        };
+        ppsspp = {
+          enable = true;
+          package = pkgs.libretro.ppsspp;
+        };
+        genesis-plus-gx = {
+          enable = true;
+          package = pkgs.libretro.genesis-plus-gx;
+        };
+        flycast = {
+          enable = true;
+          package = pkgs.libretro.flycast;
+        };
+        mame = {
+          enable = true;
+          package = pkgs.libretro.mame;
+        };
+        mgba = {
+          enable = true;
+          package = pkgs.libretro.mgba;
+        };
+        scummvm = {
+          enable = true;
+          package = pkgs.libretro.scummvm;
+        };
+        atari800 = {
+          enable = true;
+          package = pkgs.libretro.atari800;
+        };
+      };
+    };
   };
 }

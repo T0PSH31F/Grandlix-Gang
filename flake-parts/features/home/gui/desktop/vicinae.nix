@@ -97,11 +97,11 @@ in
         # Theme configuration
         theme = {
           light = {
-            name = "noctalia-light";
+            name = "noctalia";
             icon_theme = "candy-icons";
           };
           dark = {
-            name = "noctalia-dark";
+            name = "noctalia";
             icon_theme = "beauty-line-icon-theme";
           };
         };
@@ -120,34 +120,34 @@ in
         brotab
         chromium-bookmarks
         dashboard-icons
-        exegol
+      #  exegol
         firefox
-        floww
+      #  floww
         fuzzy-files
         hypr-keybinds
         it-tools
         kde-system-settings
-        mise
-        niri
+      #  mise
+      #  niri
         nix
-        otp
-        pass
+      #  otp
+      #  pass
         player-pilot
         podman
         port-killer
-        power-profile
+      #  power-profile
         process-manager
         pulseaudio
         searxng
-        silverbullet
-        simple-bookmarks
-        skate
+      #  silverbullet
+      #  simple-bookmarks
+      #  skate
         # spongebob-text-transformer
         ssh
-        stocks
-        supergenpass
+      #  stocks
+      #  supergenpass
         vscode-recents
-        wifi-commander
+      #  wifi-commander
 
         # Utilities
         # clipboard # Clipboard history manager

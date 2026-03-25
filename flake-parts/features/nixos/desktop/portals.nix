@@ -37,7 +37,11 @@ in
         [
           xdg-desktop-portal-gtk
         ]
-        ++ cfg.extraPortals;
+        ++ cfg.extraPortals
+        ++ lib.optionals (
+          (config.programs.hyprland.enable or false || config.programs.niri.enable or false)
+          && config.programs.kdeconnect.enable or false
+        ) [ pkgs.kdePackages.xdg-desktop-portal-kde ];
 
       config = {
         common = {

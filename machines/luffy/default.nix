@@ -34,6 +34,9 @@
       sopsFile = lib.mkForce ../../treasure/secrets/duckdns.yaml;
       format = lib.mkForce "yaml";
     };
+    sops.templates."duckdns-env".content = ''
+      DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
+    '';
     sops.secrets."postgres-password" = {
       sopsFile = lib.mkForce ../../treasure/secrets/postgres.yaml;
       format = lib.mkForce "yaml";
@@ -83,7 +86,7 @@
           "chat.lovelain.duckdns.org"
         ];
         dnsProvider = "duckdns";
-        environmentFile = config.sops.secrets."duckdns-token".path;
+        environmentFile = config.sops.templates."duckdns-env".path;
       };
     };
 
@@ -154,7 +157,7 @@
         useACMEHost = "lovelain.duckdns.org";
         extraConfig = ''
           encode zstd gzip
-          header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+          header Strict-Transport-Security "max-age=31536000; includeSubDomains"
           reverse_proxy localhost:3000
         '';
       };
@@ -162,7 +165,7 @@
         useACMEHost = "lovelain.duckdns.org";
         extraConfig = ''
           encode zstd gzip
-          header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+          header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
           @ollama host ollama.lovelain.duckdns.org
           handle @ollama { reverse_proxy localhost:11434 }
@@ -240,6 +243,7 @@
     home-manager = {
       useGlobalPkgs = true;
       useUserPackages = true;
+      users.t0psh31f.imports = [ inputs.niri.homeModules.config ];
     };
   };
 }

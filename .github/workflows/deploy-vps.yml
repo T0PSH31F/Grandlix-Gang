@@ -37,4 +37,4 @@ jobs:
              git pull origin main
              
              # Apply Home Manager configuration
-             nix run home-manager -- switch --flake .#t0psh31f@vps --accept-flake-config
+             nix run home-manager -- switch --flake .#root@vps --accept-flake-config

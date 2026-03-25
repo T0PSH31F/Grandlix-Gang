@@ -5,5 +5,6 @@
     ./ai-services.nix
     ./llm-agents.nix
     ./sillytavern.nix
+    ./wyoming.nix
   ];
 }

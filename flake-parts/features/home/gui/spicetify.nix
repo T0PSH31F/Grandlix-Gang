@@ -20,7 +20,18 @@ in
 
       enabledExtensions = with spicePkgs.extensions; [
         adblock
+        beautifulLyrics
+        betterGenres
+        fullAlbumDate
+        fullAppDisplay
+        hidePodcasts
+        historyShortcut
+        popupLyrics
         shuffle
+        skipStats
+        songStats
+        volumePercentage
+        wikify
       ];
     };
   };

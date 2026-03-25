@@ -23,8 +23,6 @@
     ../../flake-parts/users/t0psh31f.nix
   ];
 
-  services-config.tailscale.enable = true;
-
   # ============================================================================
   # MACHINE METADATA
   # ============================================================================
@@ -46,10 +44,6 @@
   # FEATURE TOGGLES
   # ============================================================================
 
-  # System features
-  nix-tools.enable = true;
-  desktop-portals.enable = true;
-
   hardware-config = {
     automount.enable = true;
     openrgb.enable = true;
@@ -60,9 +54,15 @@
   themes = {
     grub-lain.enable = true;
     plymouth-hellonavi.enable = true;
-    sddm-sugar-dark = {
-      enable = true;
-      background = "${./../../assets/sddm_background/roronoa-zoro_800.gif}";
+    greeter = {
+      greetd = {
+        enable = true;
+        background = ../../assets/sddm_background/roronoa-zoro_800.gif;
+      };
+      sddm = {
+        enable = false;
+        background = ../../assets/sddm_background/roronoa-zoro_800.gif;
+      };
     };
   };
 
@@ -71,6 +71,10 @@
     android.enable = true;
     ios.enable = false;
   };
+
+  # System features
+  nix-tools.enable = true;
+  desktop-portals.enable = true;
 
   # Gaming & Virtualization
   gaming.enable = true;
@@ -91,10 +95,34 @@
     ssh-agent.enable = true;
     searxng.enable = true;
     pastebin.enable = false;
+    wyoming-services.enable = true;
+
+    # DuckDNS Auto-Updater using dd
+    ddclient = {
+      enable = true;
+      domains = [
+        "lovelain.duckdns.org"
+        "t0psh31f.duckdns.org"
+        "nixfp.duckdns.org"
+      ];
+      protocol = "duckdns";
+      passwordFile = config.sops.secrets."duckdns-token".path;
+    };
 
     # Home Automation & Infrastructure
     home-assistant-server.enable = true;
-    caddy-server.enable = true;
+    caddy-server = {
+      enable = true;
+      email = "admin@lovelain.duckdns.org";
+      virtualHosts."headscale.lovelain.duckdns.org" = {
+        useACMEHost = "lovelain.duckdns.org";
+        extraConfig = ''
+          encode zstd gzip
+          header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+          reverse_proxy localhost:8086
+        '';
+      };
+    };
     n8n-server.enable = false;
 
     # AI Services - Granular toggles
@@ -145,6 +173,7 @@
     monitoring.enable = true;
     homepage-dashboard.enable = true;
     homepage-dashboard.lovable.enable = true;
+    tailscale.enable = true;
   };
 
   programs.niri.enable = lib.mkForce false;
@@ -154,13 +183,17 @@
   # ============================================================================
   home-manager.users.t0psh31f = {
     desktop.noctalia.backend = "hyprland";
-    features.home.agent.opencode = {
-      enable = true;
-      desktop = true;
+    features.home.agent = {
+      opencode = {
+        enable = true;
+        desktop = true;
+      };
+      gemini-cli.enable = true;
+      asr-tts.enable = true;
+      antigravity.enable = true;
     };
-    features.home.agent.gemini-cli.enable = true;
+
     programs.cli-environment.pythonTools.enable = true;
-    home-config.antigravity.enable = true;
   };
 
   # ============================================================================
@@ -171,6 +204,9 @@
     sopsFile = lib.mkForce ../../treasure/secrets/duckdns.yaml;
     format = lib.mkForce "yaml";
   };
+  sops.templates."duckdns-env".content = ''
+    DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
+  '';
 
   # ============================================================================
   # SECURITY / ACME / DUCKDNS
@@ -186,35 +222,8 @@
         "nixfp.duckdns.org"
       ];
       dnsProvider = "duckdns";
-      environmentFile = config.sops.secrets."duckdns-token".path;
+      environmentFile = config.sops.templates."duckdns-env".path;
     };
   };
 
-  # DuckDNS Auto-Updater using ddclient
-  services.ddclient = {
-    enable = true;
-    domains = [
-      "lovelain.duckdns.org"
-      "t0psh31f.duckdns.org"
-      "nixfp.duckdns.org"
-    ];
-    protocol = "duckdns";
-    passwordFile = config.sops.secrets."duckdns-token".path;
-  };
-
-  # Caddy Reverse Proxy for Headscale
-  services.caddy = {
-    enable = true;
-    globalConfig = ''
-      email admin@lovelain.duckdns.org
-    '';
-    virtualHosts."headscale.lovelain.duckdns.org" = {
-      useACMEHost = "lovelain.duckdns.org";
-      extraConfig = ''
-        encode zstd gzip
-        header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        reverse_proxy localhost:8086
-      '';
-    };
-  };
 }

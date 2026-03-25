@@ -56,9 +56,12 @@
   # ============================================================================
   # THEMES
   # ============================================================================
-  themes.sddm-sugar-dark = {
-    enable = true;
-    background = "${./../../assets/sddm_background/the-world-of-one-piece_800.gif}";
+  themes.greeter = {
+    sddm = {
+      enable = true;
+      background = ../../assets/sddm_background/the-world-of-one-piece_800.gif;
+    };
+    greetd.enable = false;
   };
   themes.plymouth-hellonavi.enable = true;
 

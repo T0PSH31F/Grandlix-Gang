@@ -30,12 +30,12 @@
       "inode/directory" = "nemo.desktop";
     };
     associations.added = {
-      "video/mp4" = "vlc.desktop";
+      "video/mp4" = "mpv.desktop";
       "image/jpeg" = "feh.desktop";
       "text/html" = "librewolf.desktop";
       "inode/directory" = [
         ".desktop"
-        "dolphin.desktop"
+        "nemo.desktop"
       ];
     };
   };
@@ -51,9 +51,20 @@
       download = "${config.home.homeDirectory}/Downloads";
       music = "${config.home.homeDirectory}/Music";
       pictures = "${config.home.homeDirectory}/Pictures";
-      publicShare = "${config.home.homeDirectory}/Public";
-      templates = "${config.home.homeDirectory}/Templates";
+      publicShare = null; # "${config.home.homeDirectory}/Public";
+      templates = null; # "${config.home.homeDirectory}/Templates";
       videos = "${config.home.homeDirectory}/Videos";
+      extraConfig = {
+        PROJECTS = "${config.home.homeDirectory}/Projects";
+        GAMES = "${config.home.homeDirectory}/Games";
+        FLATPAKS = "${config.home.homeDirectory}/Flatpaks";
+        APPIMAGES = "${config.home.homeDirectory}/Appimages";
+        CLAN = "${config.home.homeDirectory}/Clan";
+        ICONS = "${config.home.homeDirectory}/.icons";
+        CURSORS = "${config.home.homeDirectory}/.cursors";
+        THEMES = "${config.home.homeDirectory}/.themes";
+        AGENTS = "${config.home.homeDirectory}/Agents";
+      };
     };
 
     # Ensure base directories are defined (usually defaults are fine, but explicitly setting ensures consistency)
@@ -63,14 +74,17 @@
     cacheHome = "${config.home.homeDirectory}/.cache";
   };
   # Custom user directories
-  home.file = {
-    "Appimages/.keep".text = "";
-    "Clan/.keep".text = "";
-    "Flatpaks/.keep".text = "";
-    "Games/.keep".text = "";
-    "Projects/.keep".text = "";
-    ".icons/.keep".text = "";
-    ".cursors/.keep".text = "";
-    ".themes/.keep".text = "";
+  home = {
+    preferXdgDirectories = true;
+    file = {
+      "Appimages/.keep".text = "";
+      "Clan/.keep".text = "";
+      "Flatpaks/.keep".text = "";
+      "Games/.keep".text = "";
+      "Projects/.keep".text = "";
+      ".icons/.keep".text = "";
+      ".cursors/.keep".text = "";
+      ".themes/.keep".text = "";
+    };
   };
 }

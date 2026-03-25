@@ -20,11 +20,12 @@
     obs-studio
     pavucontrol
     pgadmin4-desktopmode
+    newelle
     # podman-desktop
     qutebrowser
     nwg-displays
     tutanota-desktop
-    webtorrent_desktop
+    valent
     webull-desktop
     z-library-desktop
 

@@ -10,13 +10,13 @@ in
   config = lib.mkIf (cfg.enable && (cfg.backend == "niri" || cfg.backend == "both")) {
     # Niri native output config
     programs.niri.settings.outputs = {
-      "HDMI-A-1" = {
+      "DP-1" = {
         mode = {
-          width = 3840;
-          height = 2160;
-          refresh = 30.0;
+          width = 1920;
+          height = 1080;
+          refresh = 60.0;
         };
-        scale = 2.0;
+        scale = 1.0;
         position = {
           x = 0;
           y = 0;
@@ -31,16 +31,16 @@ in
         scale = 1.6;
         position = {
           x = 1920;
-          y = 80; # Bottom aligned (1080 - 1000)
+          y = 0; # top aligned
         };
       };
-      "DP-2" = {
+      "HDMI-A-1" = {
         mode = {
-          width = 1920;
-          height = 1080;
-          refresh = 60.0;
+          width = 3840;
+          height = 2160;
+          refresh = 30.0;
         };
-        scale = 1.0;
+        scale = 2.0;
         position = {
           x = 3520;
           y = 0;
