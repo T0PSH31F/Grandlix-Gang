@@ -12,7 +12,7 @@ in
   config = lib.mkIf (hasTag "dev") {
     environment.systemPackages = with pkgs; [
       # Compilers & build tools
-      antigravity-fhs
+      antigravity
       binutils
       cmake
       gcc

@@ -20,7 +20,6 @@
     obs-studio
     pavucontrol
     pgadmin4-desktopmode
-    newelle
     # podman-desktop
     qutebrowser
     nwg-displays

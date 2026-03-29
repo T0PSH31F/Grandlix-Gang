@@ -14,7 +14,7 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "MarianArlt";
       repo = "sddm-sugar-candy";
-      rev = "v1.6";
+      rev = "v1.5";
       sha256 = "sha256-m99it7SRAOpgvMctofvSsh99fF9m/y/idS+Fk5Jp6w8=";
     };
     installPhase = ''

@@ -12,7 +12,7 @@ stdenv.mkDerivation {
     owner = "justchokingaround";
     repo = "lobster";
     rev = "main";
-    sha256 = "sha256-/DPzE/TIASgq6IHgVBj737UZR/zg9uz37qNegtAKQQ4=";
+    sha256 = "sha256-EL2AXO/HhbaXPwc4MgsKIvut5CPW1TJYwn87E3OIIes=";
   };
 
   buildInputs = [ ];

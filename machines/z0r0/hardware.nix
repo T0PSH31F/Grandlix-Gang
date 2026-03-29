@@ -70,8 +70,9 @@
     }
   ];
 
-  # Keep this to prevent auto-detection of broken swap partitions
-  boot.kernelParams = [ "systemd.swap=0" ];
+  # Use systemd.gpt_auto=0 instead of systemd.swap=0 to prevent auto-detection
+  # of broken swap partitions without completely disabling fstab swap mounts.
+  boot.kernelParams = [ "systemd.gpt_auto=0" ];
 
   # Platform
   nixpkgs.hostPlatform = "x86_64-linux";

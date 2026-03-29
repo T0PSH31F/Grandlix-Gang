@@ -36,10 +36,6 @@ in
       };
     };
 
-    # Enable Docker/Podman
-    virtualisation.docker.enable = true;
-    virtualisation.oci-containers.backend = "docker";
-
     # Directory creation
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0755 root root -"

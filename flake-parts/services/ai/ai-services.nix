@@ -321,9 +321,7 @@ in
       ];
 
     # Enable docker/podman only for LocalAI (still needs container)
-    virtualisation.docker.enable = mkIf cfg.localai.enable true;
-
-    virtualisation.oci-containers.backend = mkIf cfg.localai.enable "docker";
+    virtualisation.podman.enable = mkIf cfg.localai.enable true;
 
     users.users.nextjs-ollama-llm-ui = {
       group = "nextjs-ollama-llm-ui";
@@ -410,21 +408,21 @@ in
 
       # Interfaces
       bluemail # Email client with AI integration
-      cherry-studio # Desktop LLM client
+      # cherry-studio # Desktop LLM client
       librechat # Open-source AI chat interface
       nextjs-ollama-llm-ui # Web UI for Ollama
       # sillytavern # Advanced LLM interface for roleplay
       # windsurf # Agentic IDE
 
       # CLI & TUI
-      #aider-chat-full # CLI for AI pair programming
+      # aider-chat-full # CLI for AI pair programming
       # crush (Provided by llm-agents.nix)
-      #krillinai # AI agent tool
+      # krillinai # AI agent tool
 
       # TTS & STT
       # moshi # Real-time conversational AI
       # piper-tts # Local neural text-to-speech engine
-      #whisper-ctranslate2 # High-performance speech-to-text
+      # whisper-ctranslate2 # High-performance speech-to-text
     ];
 
   };

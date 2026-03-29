@@ -8,7 +8,9 @@
     beeper
     beeper-bridge-manager
     signal-desktop
-    kotatogram-desktop # Telegram client
+    # kotatogram-desktop # Telegram client
+    ayugram-desktop # Telegram client (alternative)
+    tdl # Telegram downloader/tool
     element-desktop # Matrix client
     vesktop # Discord client (Vencord)
     equibop # Discord client (alternative)

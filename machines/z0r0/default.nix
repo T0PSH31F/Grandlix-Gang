@@ -78,7 +78,7 @@
 
   # Gaming & Virtualization
   gaming.enable = true;
-  virtualization.enable = false;
+  virtualization.enable = true;
 
   # Flatpak & AppImage
   flatpak.enable = true;
@@ -127,17 +127,17 @@
 
     # AI Services - Granular toggles
     llm-agents.enable = true;
-    sillytavern.enable = false;
+    sillytavern.enable = true;
     librechat.enable = false;
     ai-services = {
       enable = true;
-      open-webui.enable = true;
+      open-webui.enable = false;
       localai.enable = false;
-      chromadb.enable = false;
+      chromadb.enable = true;
       qdrant.enable = false;
-      lmstudio.enable = false;
+      lmstudio.enable = true;
       jan.enable = true;
-      cherry-studio.enable = true;
+      cherry-studio.enable = false;
       aider.enable = true;
     };
 

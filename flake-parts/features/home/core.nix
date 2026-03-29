@@ -40,11 +40,15 @@
     };
   };
 
+  # Silence warnings by explicitly setting legacy behavior
+  gtk.gtk4.theme = config.gtk.theme;
+
   xdg = {
     enable = true;
     configFile."mimeapps.list".force = true;
     userDirs = {
       enable = true;
+      setSessionVariables = true;
       createDirectories = true;
       desktop = "${config.home.homeDirectory}/Desktop";
       documents = "${config.home.homeDirectory}/Documents";

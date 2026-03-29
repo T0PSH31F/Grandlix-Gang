@@ -34,11 +34,7 @@ with lib;
           qemu = {
             package = pkgs.qemu_kvm;
             swtpm.enable = true; # Required for Windows 11 TPM emulation
-            runAsRoot = false;
-            ovmf = {
-              enable = true;
-              packages = [ pkgs.OVMFFull.fd ]; # UEFI support
-            };
+            runAsRoot = true; # Required for seamless USB passthrough
           };
         };
 
@@ -57,7 +53,7 @@ with lib;
           };
         };
 
-        oci-containers.backend = "podman";
+        oci-containers.backend = mkDefault "podman";
       };
 
       # The GUI to manage the VM

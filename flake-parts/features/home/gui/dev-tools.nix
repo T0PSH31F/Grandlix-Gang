@@ -19,6 +19,7 @@ in
       curlie
       jq
       yq
+      vhs
     ];
 
     # Note: programs.ssh creates a symlink with wrong permissions
