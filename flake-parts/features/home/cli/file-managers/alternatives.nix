@@ -13,8 +13,14 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       ranger
-      lf
       fff
     ];
+
+    programs.lf = {
+      enable = true;
+      settings = {
+        hidden = true;
+      };
+    };
   };
 }

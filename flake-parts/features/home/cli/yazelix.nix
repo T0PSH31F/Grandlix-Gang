@@ -129,7 +129,7 @@
       #   "yazelix" — Always use Yazelix-provided configs (default)
       #   "auto"    — Prefer user configs if present, otherwise Yazelix configs
       #   "user"    — Always use user configs (e.g., ~/.config/ghostty/config)
-      terminal_config_mode = "auto";
+      terminal_config_mode = "user";
 
       # Ghostty cursor color palette (also affects Kitty cursor-trail fallback)
       # Options: "blaze" | "snow" | "cosmic" | "ocean" | "forest" | "sunset"
@@ -235,9 +235,8 @@
       # [ascii] — Welcome screen ASCII art
       # ════════════════════════════════════════════════════════════════════════
 
-      # ASCII art display mode on welcome screen
-      # Options: "static" | "animated"
-      ascii_art_mode = "animated";
+      # NOTE: ascii_art_mode was removed from upstream yazelix module
+      # ascii_art_mode = "animated";
 
       # ════════════════════════════════════════════════════════════════════════
       # [packs] — Language & tool bundles
@@ -338,7 +337,7 @@
         ];
         # TypeScript/JavaScript
         ts = [
-          "nodePackages.typescript-language-server"
+          "typescript-language-server"
           "biome"
           "oxlint"
           "bun"

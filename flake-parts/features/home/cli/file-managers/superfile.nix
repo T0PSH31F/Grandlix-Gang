@@ -20,6 +20,9 @@ in
       settings = {
         # Use the custom aura-theme-dark theme defined below
         theme = "aura-theme-dark";
+        file_panel = {
+          show_hidden = true;
+        };
       };
 
       # Aura Theme Dark > Color scheme for superfile

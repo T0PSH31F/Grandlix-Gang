@@ -90,11 +90,18 @@ in
 
       historySubstringSearch = {
         enable = true;
-        searchUpKey = "^[[A";   # Up Arrow
+        searchUpKey = "^[[A"; # Up Arrow
         searchDownKey = "^[[B"; # Down Arrow
+      };
+      shellAliases = {
+        zls = "zellij list-sessions";
+        zd = "zellij delete-session";
+        zk = "zellij kill-session";
       };
 
       initContent = ''
+        any-nix-shell zsh --info-right | source /dev/stdin
+
         # Keybindings
         bindkey -v
         export KEYTIMEOUT=1
@@ -103,12 +110,8 @@ in
 
         # Display MOTD
         if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-          if [[ "$HOST" == "nami" ]] && [[ -f "${motdPkg}/nami.txt" ]]; then
-            cat "${motdPkg}/nami.txt"
-          elif [[ "$HOST" == "z0r0" ]] && [[ -f "${motdPkg}/z0r0.txt" ]]; then
-            cat "${motdPkg}/z0r0.txt"
-          # elif [[ "$HOST" == "luffy" ]] && [[ -f "${motdPkg}/luffy.txt" ]]; then
-          #   cat "${motdPkg}/luffy.txt"
+          if command -v fastfetch >/dev/null 2>&1; then
+            fastfetch
           fi
         fi
 
@@ -122,15 +125,14 @@ in
           eval "$(starship init zsh)"
         fi
 
-        # Auto-attach to Zellij
+        # Auto-attach to Zellij automatically using the host name
         ${lib.optionalString (!cfg.headless) ''
-          if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ -z "$SSH_CONNECTION" ]]; then
+          if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "Waveterm" ]] && [[ -z "$SSH_CONNECTION" ]]; then
               if command -v zellij >/dev/null 2>&1; then
-                  zellij attach -c
+                  zellij attach -c "$HOST"
               fi
           fi
         ''}
-
       '';
 
       antidote = {
@@ -146,5 +148,17 @@ in
         ];
       };
     };
+    home.packages = [
+      pkgs.revolver
+      pkgs.zsh-command-time
+      pkgs.zsh-completions
+      pkgs.zsh-clipboard
+      pkgs.zsh-f-sy-h
+      pkgs.zsh-fzf-tab
+      pkgs.zsh-you-should-use
+      pkgs.zsh-nix-shell
+      pkgs.nix-zsh-completions
+      pkgs.any-nix-shell
+    ];
   };
 }

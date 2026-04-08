@@ -153,7 +153,6 @@ with lib;
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
       script = ''
-        export PATH=${pkgs.btrfs-progs}/bin:$PATH
         mkdir -p /mnt
         mount -t btrfs -o subvol=/ ${config.fileSystems."/".device} /mnt
 

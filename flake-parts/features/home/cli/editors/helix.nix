@@ -201,7 +201,7 @@ in
               "wakatime"
             ];
             formatter = {
-              command = lib.getExe pkgs.nodePackages.prettier;
+              command = lib.getExe pkgs.prettier;
               args = [
                 "--stdin-filepath"
                 "file.md"
@@ -216,7 +216,7 @@ in
               "typos"
               "wakatime"
             ];
-            formatter.command = lib.getExe pkgs.pkgs.nixfmt;
+            formatter.command = lib.getExe pkgs.nixfmt;
             auto-format = true;
           }
           {
@@ -301,7 +301,7 @@ in
           ruff.command = lib.getExe pkgs.ruff;
           ty.command = lib.getExe pkgs.ty;
           bash-language-server = {
-            command = "${pkgs.nodePackages.bash-language-server}/bin/bash-language-server";
+            command = lib.getExe pkgs.bash-language-server;
             args = [ "start" ];
           };
           jdtls = {
@@ -369,7 +369,7 @@ in
             command = lib.getExe pkgs.tinymist;
             config.exportPdf = "onType";
           };
-          typescript-language-server.command = lib.getExe pkgs.nodePackages_latest.typescript-language-server;
+          typescript-language-server.command = lib.getExe pkgs.typescript-language-server;
           typos = {
             command = lib.getExe pkgs.typos-lsp;
             config.config = pkgs.writeText "typos.toml" ''

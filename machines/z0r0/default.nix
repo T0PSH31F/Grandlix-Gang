@@ -48,6 +48,7 @@
     automount.enable = true;
     openrgb.enable = true;
     bluetooth.enable = true;
+    corsair.enable = true;
   };
 
   # Themes

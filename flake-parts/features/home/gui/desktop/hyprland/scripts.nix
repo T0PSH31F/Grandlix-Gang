@@ -104,13 +104,13 @@ let
         disown
         ;;
       *)
-        # Static/animated image via swww
-        if ! pgrep -x swww-daemon >/dev/null; then
-          ${pkgs.swww}/bin/swww-daemon &
+        # Static/animated image via awww
+        if ! pgrep -x awww-daemon >/dev/null; then
+          ${pkgs.awww}/bin/awww-daemon &
           disown
           sleep 1
         fi
-        ${pkgs.swww}/bin/swww img "$WALLPAPER" \
+        ${pkgs.awww}/bin/awww img "$WALLPAPER" \
           --transition-type grow \
           --transition-pos 0.5,0.9 \
           --transition-duration 2 \

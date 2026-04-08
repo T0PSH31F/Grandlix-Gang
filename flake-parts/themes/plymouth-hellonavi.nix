@@ -71,13 +71,8 @@ in
     # Enable systemd initrd for proper Plymouth support
     boot.initrd.systemd.enable = lib.mkDefault true;
 
-    # Ensure GPU driver is loaded early for Plymouth framebuffer
-    # This is CRITICAL for Plymouth to work on boot (not just shutdown)
-    boot.initrd.availableKernelModules = lib.mkAfter [
-      "i915" # Intel GPU
-      "amdgpu" # AMD GPU
-      "nouveau" # NVIDIA open-source
-    ];
+    # Ensure your specific machine's hardware.nix specifies its own boot.initrd.kernelModules
+    # for early KMS, otherwise Plymouth will not show until late boot.
 
     # Install the theme package to system
     environment.systemPackages = [ hellonavi-theme ];

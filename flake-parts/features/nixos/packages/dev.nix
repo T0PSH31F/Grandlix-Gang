@@ -29,8 +29,7 @@ in
       direnv
 
       # Languages
-      nodePackages.npm
-      nodePackages.yarn
+      yarn
       nodejs
       poetry
       typescript

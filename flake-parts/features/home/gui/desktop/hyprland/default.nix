@@ -68,7 +68,7 @@ in
       swayimg
       swaynotificationcenter
       swappy
-      swww
+      awww
       udiskie
       warp-terminal
       wev

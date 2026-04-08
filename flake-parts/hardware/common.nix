@@ -49,6 +49,11 @@ with lib;
     bluetooth = {
       enable = mkEnableOption "Bluetooth support";
     };
+
+    # Corsair hardware support
+    corsair = {
+      enable = mkEnableOption "Corsair hardware support (ckb-next)";
+    };
   };
 
   config = {
@@ -89,6 +94,9 @@ with lib;
     hardware.i2c.enable = mkIf (
       config.hardware-config.openrgb.enable && config.hardware-config.openrgb.enableI2C
     ) true;
+
+    # Enable Corsair RGB hardware support
+    hardware.ckb-next.enable = mkIf config.hardware-config.corsair.enable true;
 
     # Add hardware packages
     environment.systemPackages =

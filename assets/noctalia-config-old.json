@@ -1,24 +1,25 @@
 {
   "settingsVersion": 53,
   "bar": {
-    "barType": "simple",
+    "barType": "framed",
     "position": "top",
     "monitors": [],
-    "density": "default",
+    "density": "comfortable",
     "showOutline": true,
     "showCapsule": true,
     "capsuleOpacity": 1,
     "capsuleColorKey": "none",
     "widgetSpacing": 8,
-    "contentPadding": 5,
+    "contentPadding": 4,
     "fontScale": 1,
+    "enableExclusionZoneInset": true,
     "backgroundOpacity": 0.89,
     "useSeparateOpacity": true,
     "floating": false,
     "marginVertical": 4,
     "marginHorizontal": 4,
-    "frameThickness": 8,
-    "frameRadius": 12,
+    "frameThickness": 7,
+    "frameRadius": 16,
     "outerCorners": true,
     "hideOnOverview": false,
     "displayMode": "always_visible",
@@ -65,10 +66,11 @@
           "id": "plugin:assistant-panel"
         },
         {
-          "compactMode": true,
+          "compactMode": false,
           "diskPath": "/",
-          "iconColor": "secondary",
+          "iconColor": "primary",
           "id": "SystemMonitor",
+          "showCpuCores": true,
           "showCpuFreq": true,
           "showCpuTemp": true,
           "showCpuUsage": true,
@@ -76,14 +78,24 @@
           "showDiskUsage": true,
           "showDiskUsageAsPercent": true,
           "showGpuTemp": false,
-          "showLoadAverage": true,
+          "showLoadAverage": false,
           "showMemoryAsPercent": true,
           "showMemoryUsage": true,
-          "showNetworkStats": false,
+          "showNetworkStats": true,
           "showSwapUsage": true,
-          "textColor": "none",
+          "textColor": "tertiary",
           "useMonospaceFont": true,
           "usePadding": false
+        },
+        {
+          "defaultSettings": {
+            "errorIcon": "alert-circle",
+            "iconColor": "primary",
+            "loadingIcon": "loader",
+            "refreshInterval": 300,
+            "successIcon": "network"
+          },
+          "id": "plugin:ip-monitor"
         },
         {
           "defaultSettings": {
@@ -101,32 +113,13 @@
       ],
       "center": [
         {
-          "characterCount": 2,
-          "colorizeIcons": false,
-          "emptyColor": "secondary",
-          "enableScrollWheel": true,
-          "focusedColor": "primary",
-          "followFocusedScreen": false,
-          "groupedBorderOpacity": 1,
-          "hideUnoccupied": false,
-          "iconScale": 0.9,
-          "id": "Workspace",
-          "labelMode": "index",
-          "occupiedColor": "secondary",
-          "pillSize": 0.6,
-          "showApplications": false,
-          "showBadge": true,
-          "showLabelsOnlyWhenOccupied": false,
-          "unfocusedIconsOpacity": 1
-        },
-        {
           "compactMode": false,
           "compactShowAlbumArt": true,
           "compactShowVisualizer": false,
           "hideMode": "transparent",
-          "hideWhenIdle": false,
+          "hideWhenIdle": true,
           "id": "MediaMini",
-          "maxWidth": 145,
+          "maxWidth": 500,
           "panelShowAlbumArt": true,
           "panelShowVisualizer": true,
           "scrollingMode": "always",
@@ -137,22 +130,88 @@
           "textColor": "secondary",
           "useFixedWidth": false,
           "visualizerType": "wave"
+        },
+        {
+          "defaultSettings": {},
+          "id": "plugin:workspace-overview"
         }
       ],
       "right": [
         {
-          "defaultSettings": {},
-          "id": "plugin:openhue"
+          "defaultSettings": {
+            "colorHistory": [],
+            "installedLangs": [
+              "eng"
+            ],
+            "paletteColors": [],
+            "selectedOcrLang": "eng",
+            "transAvailable": false
+          },
+          "id": "plugin:screen-toolkit"
+        },
+        {
+          "defaultSettings": {
+            "completedCount": 0,
+            "count": 0,
+            "current_page_id": 0,
+            "exportEmptySections": false,
+            "exportFormat": "markdown",
+            "exportPath": "~/Documents",
+            "isExpanded": false,
+            "pages": [
+              {
+                "id": 0,
+                "name": "General"
+              }
+            ],
+            "priorityColors": {
+              "high": "#f44336",
+              "low": "#9e9e9e",
+              "medium": "#2196f3"
+            },
+            "showBackground": true,
+            "showCompleted": true,
+            "todos": [],
+            "useCustomColors": false
+          },
+          "id": "plugin:todo"
+        },
+        {
+          "defaultSettings": {
+            "barCycleIntervalSec": 5,
+            "barDisplayMode": "active",
+            "barMetric": "prompts",
+            "providers": {
+              "claude": {
+                "credentialsPath": "~/.claude/.credentials.json",
+                "enabled": false,
+                "statsPath": "~/.claude/stats-cache.json"
+              },
+              "codex": {
+                "enabled": false
+              },
+              "openrouter": {
+                "apiKey": "",
+                "enabled": false
+              },
+              "zen": {
+                "apiKey": "",
+                "enabled": false
+              }
+            },
+            "refreshIntervalSec": 30
+          },
+          "id": "plugin:model-usage"
+        },
+        {
+          "defaultSettings": {
+            "mainDeviceId": ""
+          },
+          "id": "plugin:valent-connect"
         },
         {
           "defaultSettings": {},
           "id": "plugin:kde-connect"
-        },
-        {
-          "defaultSettings": {
-            "refreshInterval": 5000
-          },
-          "id": "plugin:mini-docker"
         },
         {
           "deviceNativePath": "__default__",
@@ -180,15 +239,6 @@
           "useCustomFont": false
         },
         {
-          "blacklist": [],
-          "chevronColor": "none",
-          "colorizeIcons": false,
-          "drawerEnabled": true,
-          "hidePassive": false,
-          "id": "Tray",
-          "pinned": []
-        },
-        {
           "colorizeDistroLogo": false,
           "colorizeSystemIcon": "secondary",
           "customIconPath": "",
@@ -199,10 +249,19 @@
         }
       ]
     },
+    "mouseWheelAction": "workspace",
+    "reverseScroll": false,
+    "mouseWheelWrap": true,
+    "middleClickAction": "settings",
+    "middleClickFollowMouse": false,
+    "middleClickCommand": "",
+    "rightClickAction": "controlCenter",
+    "rightClickFollowMouse": true,
+    "rightClickCommand": "",
     "screenOverrides": []
   },
   "general": {
-    "avatarImage": "/home/t0psh31f/.face",
+    "avatarImage": "/home/t0psh31f/Pictures/png_ico/spike2.jpg",
     "dimmerOpacity": 0.35000000000000003,
     "showScreenCorners": false,
     "forceBlackScreenCorners": false,
@@ -220,6 +279,7 @@
     "showHibernateOnLockScreen": false,
     "enableLockScreenMediaControls": false,
     "enableShadows": true,
+    "enableBlurBehind": true,
     "shadowDirection": "bottom_right",
     "shadowOffsetX": 2,
     "shadowOffsetY": 3,
@@ -263,13 +323,15 @@
     "reverseScroll": false
   },
   "ui": {
-    "fontDefault": "Inter",
-    "fontFixed": "monospace",
+    "fontDefault": "JetBrainsMono NF Medium",
+    "fontFixed": "JetBrainsMono NF Medium",
     "fontDefaultScale": 1,
     "fontFixedScale": 1,
     "tooltipsEnabled": true,
+    "scrollbarAlwaysVisible": true,
     "boxBorderEnabled": true,
-    "panelBackgroundOpacity": 0.93,
+    "panelBackgroundOpacity": 0.89,
+    "translucentWidgets": false,
     "panelsAttachedToBar": true,
     "settingsPanelMode": "attached",
     "settingsPanelSideBarCardStyle": false
@@ -308,28 +370,47 @@
     "enabled": true,
     "overviewEnabled": false,
     "directory": "/home/t0psh31f/.background/4k Background",
-    "monitorDirectories": [],
+    "monitorDirectories": [
+      {
+        "directory": "/home/t0psh31f/.background/4k Background",
+        "name": "eDP-1",
+        "wallpaper": ""
+      },
+      {
+        "directory": "/home/t0psh31f/.background/4k Background",
+        "name": "DP-1",
+        "wallpaper": ""
+      },
+      {
+        "directory": "/home/t0psh31f/.background/4k Background",
+        "name": "HDMI-A-1",
+        "wallpaper": ""
+      }
+    ],
     "enableMultiMonitorDirectories": false,
     "showHiddenFiles": true,
     "viewMode": "recursive",
     "setWallpaperOnAllMonitors": true,
     "fillMode": "crop",
-    "fillColor": "#000000",
+    "fillColor": "#1d2026",
     "useSolidColor": false,
     "solidColor": "#1a1a2e",
     "automationEnabled": true,
     "wallpaperChangeMode": "random",
     "randomIntervalSec": 900,
-    "transitionDuration": 6900,
-    "transitionType": "random",
+    "transitionDuration": 10000,
+    "transitionType": [
+      "random",
+      "honeycomb"
+    ],
     "skipStartupTransition": false,
     "transitionEdgeSmoothness": 0.6900000000000001,
-    "panelPosition": "follow_bar",
+    "panelPosition": "top_center",
     "hideWallpaperFilenames": false,
     "overviewBlur": 0.4,
     "overviewTint": 0.6,
-    "useWallhaven": false,
-    "wallhavenQuery": "",
+    "useWallhaven": true,
+    "wallhavenQuery": "Neon Anime 8k",
     "wallhavenSorting": "relevance",
     "wallhavenOrder": "desc",
     "wallhavenCategories": "111",
@@ -347,11 +428,12 @@
     "autoPasteClipboard": false,
     "enableClipPreview": true,
     "clipboardWrapText": true,
+    "enableClipboardSmartIcons": true,
+    "enableClipboardChips": true,
     "clipboardWatchTextCommand": "wl-paste --type text --watch cliphist store",
     "clipboardWatchImageCommand": "wl-paste --type image --watch cliphist store",
     "position": "top_center",
     "pinnedApps": [],
-    "useApp2Unit": false,
     "sortByMostUsed": true,
     "terminalCommand": "ghostty -e",
     "customLaunchPrefixEnabled": false,
@@ -359,7 +441,7 @@
     "viewMode": "grid",
     "showCategories": true,
     "iconMode": "native",
-    "showIconBackground": false,
+    "showIconBackground": true,
     "enableSettingsSearch": true,
     "enableWindowsSearch": true,
     "enableSessionSearch": true,
@@ -451,10 +533,14 @@
     "criticalColor": "",
     "externalMonitor": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
   },
+  "noctaliaPerformance": {
+    "disableWallpaper": true,
+    "disableDesktopWidgets": true
+  },
   "dock": {
     "enabled": true,
     "position": "bottom",
-    "displayMode": "always_visible",
+    "displayMode": "auto_hide",
     "dockType": "floating",
     "backgroundOpacity": 1,
     "floatingRatio": 1,
@@ -463,19 +549,24 @@
     "monitors": [],
     "pinnedApps": [],
     "colorizeIcons": false,
-    "showLauncherIcon": false,
+    "showLauncherIcon": true,
     "launcherPosition": "end",
+    "launcherUseDistroLogo": false,
+    "launcherIcon": "",
     "launcherIconColor": "none",
     "pinnedStatic": false,
     "inactiveIndicators": false,
-    "groupApps": false,
+    "groupApps": true,
     "groupContextMenuMode": "extended",
     "groupClickAction": "cycle",
-    "groupIndicatorStyle": "dots",
+    "groupIndicatorStyle": "number",
     "deadOpacity": 0.6,
-    "animationSpeed": 1,
+    "animationSpeed": 1.52,
     "sitOnFrame": false,
-    "showFrameIndicator": true
+    "showDockIndicator": true,
+    "indicatorThickness": 6,
+    "indicatorColor": "primary",
+    "indicatorOpacity": 0.92
   },
   "network": {
     "wifiEnabled": true,
@@ -486,7 +577,8 @@
     "wifiDetailsViewMode": "grid",
     "bluetoothDetailsViewMode": "grid",
     "bluetoothHideUnnamedDevices": false,
-    "disableDiscoverability": false
+    "disableDiscoverability": false,
+    "bluetoothAutoConnect": true
   },
   "sessionMenu": {
     "enableCountdown": true,
@@ -545,6 +637,13 @@
         "countdownEnabled": true,
         "enabled": true,
         "keybind": "7"
+      },
+      {
+        "action": "userspaceReboot",
+        "command": "",
+        "countdownEnabled": true,
+        "enabled": false,
+        "keybind": ""
       }
     ]
   },
@@ -570,9 +669,9 @@
       "enabled": true,
       "volume": 0.75,
       "separateSounds": true,
-      "criticalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifycrit.wav",
+      "criticalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
       "normalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
-      "lowSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifylow.wav",
+      "lowSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
       "excludedApps": "discord"
     },
     "enableMediaToast": false,
@@ -596,7 +695,7 @@
   "audio": {
     "volumeStep": 5,
     "volumeOverdrive": false,
-    "cavaFrameRate": 60,
+    "spectrumFrameRate": 60,
     "visualizerType": "wave",
     "mprisBlacklist": [],
     "preferredPlayer": "Spotify",
@@ -616,7 +715,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "tonal-spot",
+    "generationMethod": "content",
     "monitorForColors": ""
   },
   "templates": {
@@ -708,9 +807,17 @@
       {
         "enabled": true,
         "id": "telegram"
+      },
+      {
+        "enabled": true,
+        "id": "fuzzel"
+      },
+      {
+        "enabled": true,
+        "id": "wezterm"
       }
     ],
-    "enableUserTheming": true,
+   "enableUserTheming": true,
     "userTemplates": [
       {
         "id": "hyprland-shader",
@@ -780,7 +887,7 @@
     ]
   },
   "nightLight": {
-    "enabled": false,
+    "enabled": true,
     "forced": false,
     "autoSchedule": true,
     "nightTemp": "4000",
@@ -797,10 +904,12 @@
     "performanceModeEnabled": "",
     "performanceModeDisabled": "",
     "startup": "",
-    "session": ""
+    "session": "",
+    "colorGeneration": ""
   },
   "plugins": {
-    "autoUpdate": true
+    "autoUpdate": true,
+    "notifyUpdates": true
   },
   "idle": {
     "enabled": false,
@@ -808,12 +917,19 @@
     "lockTimeout": 660,
     "suspendTimeout": 1800,
     "fadeDuration": 5,
+    "screenOffCommand": "",
+    "lockCommand": "",
+    "suspendCommand": "",
+    "resumeScreenOffCommand": "",
+    "resumeLockCommand": "",
+    "resumeSuspendCommand": "",
     "customCommands": "[]"
   },
   "desktopWidgets": {
     "enabled": false,
     "overviewEnabled": true,
     "gridSnap": false,
+    "gridSnapScale": false,
     "monitorWidgets": []
   }
 }

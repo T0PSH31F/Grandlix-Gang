@@ -32,7 +32,7 @@ in
       commands = ./opencode/commands;
       rules = ./opencode/rules.md;
 
-      settings = {
+      tui = {
         theme = "noctalia";
       };
     };

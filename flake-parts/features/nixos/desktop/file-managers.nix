@@ -15,12 +15,15 @@
   # Services needed for file managers
   services.gvfs.enable = true;
   services.tumbler.enable = true;
+  services.gnome.gnome-online-accounts.enable = true;
 
   environment.systemPackages = with pkgs; [
     # Nemo File Manager (Cinnamon)
     nemo-with-extensions
     nemo-fileroller
     folder-color-switcher
+    gnome-control-center
+    rclone
     # calibre
     cosmic-files
     koreader
