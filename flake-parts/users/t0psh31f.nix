@@ -2,16 +2,23 @@
 {
   pkgs,
   lib,
+  config,
   inputs,
   ...
 }:
 {
+  sops.secrets."user-password-t0psh31f" = {
+    sopsFile = ../../vars/shared/user-password-t0psh31f/user-password-hash/secret;
+    format = "json";
+    key = "data";
+  };
+
   # System-level user settings not managed by Clan
   users.users.t0psh31f = {
     isNormalUser = true;
     description = "t0psh31f";
     shell = pkgs.zsh;
-    hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
+    hashedPasswordFile = config.sops.secrets."user-password-t0psh31f".path;
     extraGroups = [
       "wheel"
       "networkmanager"
@@ -30,8 +37,6 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
     ];
   };
-
-  users.users.t0psh31f.hashedPasswordFile = lib.mkForce null;
 
   # Home Manager configuration for t0psh31f
   # Permanent fix for backup collisions: Automatically remove old backups before activation

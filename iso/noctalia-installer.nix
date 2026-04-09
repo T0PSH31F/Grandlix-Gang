@@ -1,6 +1,8 @@
 {
   pkgs,
   lib,
+  config,
+  inputs,
   modulesPath,
   ...
 }:
@@ -8,10 +10,17 @@
 {
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
+    inputs.sops-nix.nixosModules.sops
     # Import theme modules to allow consistent styling
     ../flake-parts/themes
     ../flake-parts/system/fonts.nix
   ];
+
+  sops.secrets."user-password-t0psh31f" = {
+    sopsFile = ../vars/shared/user-password-t0psh31f/user-password-hash/secret;
+    format = "json";
+    key = "data";
+  };
 
   # ISO metadata
   isoImage = {
@@ -126,7 +135,7 @@
       "wheel"
       "networkmanager"
     ];
-    hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
+    hashedPasswordFile = config.sops.secrets."user-password-t0psh31f".path;
   };
 
   # Allow unfree packages (for some pentest tools)
