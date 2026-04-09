@@ -61,20 +61,7 @@ in
       };
 
       openwakeword.enable = cfg.openwakeword.enable;
-      # satellite = mkIf cfg.openwakeword.enable {
-      #   enable = true;
-      #   user = "wyoming-satellite";
-      #   group = "wyoming-satellite";
-      #   microphone.autoGain = 10;
-      # };
     };
-
-    users.users.wyoming-satellite = {
-      isSystemUser = true;
-      group = "wyoming-satellite";
-      description = "Wyoming Satellite Service User";
-    };
-    users.groups.wyoming-satellite = { };
 
     networking.firewall = {
       allowedTCPPorts = [
