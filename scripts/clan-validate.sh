@@ -32,13 +32,13 @@ print_status() {
 # Function to run command with status
 run_check() {
     local description=$1
-    local command=$2
+    shift
     
     echo ""
     print_status "info" "Running: $description"
     echo "─────────────────────────────────────────────────────────────────"
     
-    if eval "$command"; then
+    if "$@"; then
         print_status "success" "$description completed successfully"
         return 0
     else
@@ -54,23 +54,23 @@ print_status "info" "Working directory: $(pwd)"
 echo ""
 
 # 1. Nix Flake Check
-run_check "Nix flake check" "nix flake check --show-trace" || {
+run_check "Nix flake check" nix flake check --show-trace || {
     print_status "error" "Flake check failed. Fix errors before proceeding."
     exit 1
 }
 
 # 2. Nix Format Check
-run_check "Nix format check" "nix fmt" || {
+run_check "Nix format check" nix fmt || {
     print_status "warning" "Some files were reformatted. Review changes."
 }
 
 # 3. Clan Machines Status
-run_check "Clan machines status (z0r0)" "clan machines status z0r0" || {
+run_check "Clan machines status (z0r0)" clan machines status z0r0 || {
     print_status "warning" "Could not get machine status. Clan may not be fully configured."
 }
 
 # 4. Clan Build Test
-run_check "Clan build test (z0r0)" "clan machines build z0r0 --show-trace" || {
+run_check "Clan build test (z0r0)" clan machines build z0r0 --show-trace || {
     print_status "error" "Machine build failed. Check configuration."
     exit 1
 }
