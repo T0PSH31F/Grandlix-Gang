@@ -104,13 +104,6 @@
       sops.secrets.jules_api_key_ll = { sopsFile = ../../treasure/secrets/external_services.yaml; };
       sops.secrets.v0_api_key_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
       sops.secrets.github_models_api = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.phantom_pass = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.phantom_jKx_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.phantom_private_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.backpack_pass = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.backpack_address = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.backpack_private_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.backpack_recovery = { sopsFile = ../../treasure/secrets/external_services.yaml; };
       sops.secrets.helius_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
       sops.secrets.helius_rpc_url = { sopsFile = ../../treasure/secrets/external_services.yaml; };
       sops.secrets.solsniper_x_api_consumer_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
@@ -181,11 +174,6 @@
           JULES_API_KEY_LL=${config.sops.placeholder.jules_api_key_ll}
           V0_API_KEY_WE=${config.sops.placeholder.v0_api_key_we77}
           GITHUB_MODELS_API=${config.sops.placeholder.github_models_api}
-          
-          # Crypto
-          PHANTOM_PRIVATE_KEY=${config.sops.placeholder.phantom_private_key}
-          BACKPACK_PRIVATE_KEY=${config.sops.placeholder.backpack_private_key}
-          BACKPACK_RECOVERY="${config.sops.placeholder.backpack_recovery}"
           
           # Infrastructure & Cloud
           HELIUS_API_KEY=${config.sops.placeholder.helius_api_key}
