@@ -18,5 +18,6 @@
     ./ssh-agent.nix
     ./tailscale.nix
     ./databases.nix
+    ./vaultwarden.nix
   ];
 }

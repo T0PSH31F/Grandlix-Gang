@@ -49,6 +49,7 @@ in
 
     home.packages = with pkgs; [
       github-mcp-server
+      git-credential-manager
       git-big-picture
       github-to-sops
       github-desktop

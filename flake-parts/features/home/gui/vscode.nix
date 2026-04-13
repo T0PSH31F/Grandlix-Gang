@@ -9,11 +9,19 @@ let
 in
 {
   config = lib.mkIf (builtins.elem "dev" clanTags) {
+    home.packages = with pkgs; [
+      bun
+      nodejs
+      yarn
+    ];
+
     # VS Code with FHS compatibility
     programs.vscode = {
       enable = true;
       package = pkgs.vscode-fhs;
     };
-    programs.npm.enable = true;
+
+    programs.go.enable = true;
+
   };
 }

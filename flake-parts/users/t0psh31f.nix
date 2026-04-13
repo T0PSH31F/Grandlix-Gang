@@ -86,11 +86,124 @@
         format = "yaml";
       };
 
+      # External Services Secrets
+      sops.secrets.server_root_password = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.spacedrive_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.openclaw_gateway_token = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.gemini_api_key_lovelain = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.gemini_api_key_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.openrouter_api_key_1 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.openrouter_api_key_2 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.openrouter_api_key_3 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.groq_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.reka_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.cerebras_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.ai21_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.cohere_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.hf_token = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.jules_api_key_ll = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.v0_api_key_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.github_models_api = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.phantom_pass = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.phantom_jKx_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.phantom_private_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.backpack_pass = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.backpack_address = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.backpack_private_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.backpack_recovery = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.helius_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.helius_rpc_url = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.solsniper_x_api_consumer_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.solsniper_x_api_secret_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.solsniper_x_api_bearer_token = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.solsniper_x_api_client_id = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.solsniper_x_api_client_secret = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.supabase_password = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.supabase_api_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.lovelain_api_key_ext = { sopsFile = ../../treasure/secrets/external_services.yaml; key = "lovelain_api_key"; };
+      sops.secrets.neon_postgres_api = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.cloudflare_workers_api_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.cloudflare_workers_api_lovelain = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.cloudflare_workers_api_lovelain_full = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.cloudflare_access_id = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.scaleway_gh_access_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.scaleway_gh_secret_key = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.scaleway_gh_org_id = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.scaleway_gh_project_id = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.render_api_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.apify_api_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.google_stitch_api_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.tinybird_api_gh = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.tinybird_mcp_gh = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.nexsos_api = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.hostinger_api_token_ext = { sopsFile = ../../treasure/secrets/external_services.yaml; key = "hostinger_api_token"; };
+      sops.secrets.qdrant_api = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.google_oauth_lovelain_client_id = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.google_oauth_lovelain_client_secret = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.opencode_token = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.grafana_pass = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.beszel_lovelain_pass = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.maxkb_pass = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.browser_use_api = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.context7_api_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.tg_botfather_http = { sopsFile = ../../treasure/secrets/external_services.yaml; };
+      sops.secrets.rclone_config = {
+        sopsFile = ../../treasure/secrets/external_services.yaml;
+        path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
+      };
+
       sops.templates."git-config".content = ''
         [user]
           name = ${config.sops.secrets.git_name.path}
           email = ${config.sops.secrets.git_email.path}
       '';
+
+      # Global .env file on Desktop for projects
+      sops.templates."desktop-env" = {
+        path = "${config.home.homeDirectory}/Desktop/.env";
+        content = ''
+          SERVER_ROOT_PASSWORD=${config.sops.placeholder.server_root_password}
+          SPACEDRIVE_KEY=${config.sops.placeholder.spacedrive_key}
+          OPENCLAW_GATEWAY_TOKEN=${config.sops.placeholder.openclaw_gateway_token}
+          
+          # AI Services
+          GEMINI_API_KEY_LOVELAIN=${config.sops.placeholder.gemini_api_key_lovelain}
+          GEMINI_API_KEY_WE77=${config.sops.placeholder.gemini_api_key_we77}
+          OPENROUTER_API_KEY_1=${config.sops.placeholder.openrouter_api_key_1}
+          OPENROUTER_API_KEY_2=${config.sops.placeholder.openrouter_api_key_2}
+          OPENROUTER_API_KEY_3=${config.sops.placeholder.openrouter_api_key_3}
+          GROQ_API_KEY=${config.sops.placeholder.groq_api_key}
+          REKA_API_KEY=${config.sops.placeholder.reka_api_key}
+          CEREBRAS_API_KEY=${config.sops.placeholder.cerebras_api_key}
+          AI21_API_KEY=${config.sops.placeholder.ai21_api_key}
+          COHERE_API_KEY=${config.sops.placeholder.cohere_api_key}
+          HF_TOKEN=${config.sops.placeholder.hf_token}
+          JULES_API_KEY_LL=${config.sops.placeholder.jules_api_key_ll}
+          V0_API_KEY_WE=${config.sops.placeholder.v0_api_key_we77}
+          GITHUB_MODELS_API=${config.sops.placeholder.github_models_api}
+          
+          # Crypto
+          PHANTOM_PRIVATE_KEY=${config.sops.placeholder.phantom_private_key}
+          BACKPACK_PRIVATE_KEY=${config.sops.placeholder.backpack_private_key}
+          BACKPACK_RECOVERY="${config.sops.placeholder.backpack_recovery}"
+          
+          # Infrastructure & Cloud
+          HELIUS_API_KEY=${config.sops.placeholder.helius_api_key}
+          SUPABASE_API_KEY=${config.sops.placeholder.supabase_api_key}
+          CLOUDFLARE_ACCESS_ID=${config.sops.placeholder.cloudflare_access_id}
+          CLOUDFLARE_LOVELAIN_WORKERS=${config.sops.placeholder.cloudflare_workers_api_lovelain}
+          CLOUDFLARE_WE77_WORKERS=${config.sops.placeholder.cloudflare_workers_api_we77}
+          SCW_GH_ACCESS_KEY=${config.sops.placeholder.scaleway_gh_access_key}
+          SCW_GH_SECRET_KEY=${config.sops.placeholder.scaleway_gh_secret_key}
+          RENDER_API_WE=${config.sops.placeholder.render_api_we77}
+          APIFY_API_WE77=${config.sops.placeholder.apify_api_we77}
+          TINYBIRD_API_GH=${config.sops.placeholder.tinybird_api_gh}
+          STITCH_API_WE77=${config.sops.placeholder.google_stitch_api_we77}
+          CONTEXT7_API_WE=${config.sops.placeholder.context7_api_we77}
+          HOSTINGER_API_TOKEN=${config.sops.placeholder.hostinger_api_token_ext}
+          QDRANT_API=${config.sops.placeholder.qdrant_api}
+        '';
+      };
 
       # Export API keys as environment variables
       home.sessionVariables = {
@@ -116,6 +229,58 @@
 
       # Enable Yazelix inside Home Manager scope
       features.home.cli.yazelix.enable = true;
+      features.home.cli.services.rclone.enable = true;
+
+      # Envoluntary configuration
+      home.file.".config/envoluntary/config.toml".text = ''
+        [[entries]]
+        pattern = ".*/Clan/NFP(/.*)?"
+        flake_reference = "path:${config.home.homeDirectory}/Clan/NFP"
+
+        [[entries]]
+        pattern = ".*/Projects/n8n-sorting-nix(/.*)?"
+        flake_reference = "path:${config.home.homeDirectory}/Projects/n8n-sorting-nix"
+
+        [[entries]]
+        pattern = ".*/Projects/python(/.*)?"
+        flake_reference = "nixpkgs#python313"
+
+        [[entries]]
+        pattern = ".*/Projects/typescript(/.*)?|.*/Projects/node(/.*)?"
+        flake_reference = "nixpkgs#nodejs_22"
+
+        [[entries]]
+        pattern = ".*/Projects/rust(/.*)?"
+        flake_reference = "nixpkgs#rustc"
+
+        [[entries]]
+        pattern = ".*/Projects/go(/.*)?"
+        flake_reference = "nixpkgs#go"
+
+        [[entries]]
+        pattern = ".*/Projects/php(/.*)?"
+        flake_reference = "nixpkgs#php"
+
+        [[entries]]
+        pattern = ".*/Projects/ruby(/.*)?"
+        flake_reference = "nixpkgs#ruby"
+
+        [[entries]]
+        pattern = ".*/Projects/ocaml(/.*)?"
+        flake_reference = "nixpkgs#ocaml"
+
+        [[entries]]
+        pattern = ".*/Projects/latex(/.*)?"
+        flake_reference = "nixpkgs#texlive.combined.scheme-full"
+
+        [[entries]]
+        pattern = ".*/Projects/markdown(/.*)?|.*/Projects/docs(/.*)?"
+        flake_reference = "nixpkgs#nix-shell"
+
+        [[entries]]
+        pattern = ".*/Projects(/.*)?"
+        flake_reference = "nixpkgs#nix-shell"
+      '';
     };
 
 }

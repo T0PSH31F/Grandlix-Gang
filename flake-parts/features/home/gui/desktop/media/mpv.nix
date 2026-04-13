@@ -68,6 +68,7 @@ in
     mpv-handler
     ff2mpv
     anime4k # Shaders
+    sickgear
 
     # Scripts/Tools usually needed
     socat

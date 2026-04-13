@@ -29,7 +29,9 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
+      #inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
       adw-gtk3
+      awww
       cliphist
       gedit
       ghostty
@@ -37,38 +39,43 @@ in
       grim
       hue-plus
       hueadm
-      hyprpolkitagent
-      hyprland-qt-support
-      hyprland-autoname-workspaces
+      hyprcursor
+      hyprfreeze
       hyprkeys
-      hyprmon
+      hyprland-autoname-workspaces
+      hyprland-qt-support
       hyprlax
+      hyprlang
+      hyprls
+      hyprmon
+      hyprpolkitagent
+      hyprpwcenter
       hyprsysteminfo
-      #inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
+      hyprviz
+      hyprwhspr-rs
       jq
       kitty
       libnotify
       matugen
       nemo-with-extensions
       nwg-look
-      openrgb-with-all-plugins
       openhue-cli
+      openrgb-with-all-plugins
       playerctl
       pyprland
       pywalfox-native
-      qt6Packages.qt6ct
-      qt6Packages.qt5compat
       qt5.qtwayland
       qt6.qtwayland
+      qt6Packages.qt5compat
+      qt6Packages.qt6ct
       rofi
       rose-pine-hyprcursor
       slurp
       socat
       steam-rom-manager
+      swappy
       swayimg
       swaynotificationcenter
-      swappy
-      awww
       udiskie
       warp-terminal
       wev
@@ -76,6 +83,19 @@ in
       xdg-user-dirs
       xdg-utils
     ];
+
+    home.pointerCursor = {
+      package = pkgs.rose-pine-cursor;
+      name = "rose-pine";
+      size = 32;
+      gtk.enable = true;
+      x11.enable = true;
+      hyprcursor = {
+        enable = true;
+        size = 32;
+      };
+    };
+
 
     wayland.windowManager.hyprland = {
       enable = true;

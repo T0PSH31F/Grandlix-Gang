@@ -8,6 +8,7 @@
     beeper
     beeper-bridge-manager
     signal-desktop
+    signal-cli
     # kotatogram-desktop # Telegram client
     ayugram-desktop # Telegram client (alternative)
     tdl # Telegram downloader/tool

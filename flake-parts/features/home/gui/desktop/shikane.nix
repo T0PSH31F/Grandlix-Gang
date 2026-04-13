@@ -17,66 +17,66 @@ in
       text = ''
         [[profile]]
         name = "triple"
-        # Triple monitor setup with eDP-1 in the middle, top-aligned
+        # Acer (Left), Laptop (Middle), HKC Curved (Right)
         [[profile.output]]
-        search = "DP-1"
+        search = "XB271HK"
         enable = true
-        mode = "1920x1080@60"
+        mode = "3840x2160@30"
         position = "0,0"
-        scale = 1.0
+        scale = 2.0
 
         [[profile.output]]
-        search = "eDP-1"
+        search = "0x06EA"
         enable = true
         mode = "2560x1600@60"
-        position = "1920,0" # Top aligned
+        position = "1920,0"
         scale = 1.6
 
         [[profile.output]]
-        search = "HDMI-A-1"
+        search = "27N5C"
+        enable = true
+        mode = "1920x1080@60"
+        position = "3520,0"
+        scale = 1.0
+
+        [[profile]]
+        name = "docked"
+        # Acer (Left) and Laptop (Right)
+        [[profile.output]]
+        search = "XB271HK"
         enable = true
         mode = "3840x2160@30"
-        position = "3520,0"
+        position = "0,0"
         scale = 2.0
+
+        [[profile.output]]
+        search = "0x06EA"
+        enable = true
+        mode = "2560x1600@60"
+        position = "1920,0"
+        scale = 1.6
 
         [[profile]]
         name = "big-screen"
-        # Match a single large external monitor (60" TV - 1080p)
+        # Laptop (Left) and Samsung TV (Right)
         [[profile.output]]
-        search = "HDMI-A-1"
-        enable = true
-        mode = "1920x1080@60"
-        position = "0,0"
-        scale = 1.0
-
-        [[profile.output]]
-        search = "eDP-1"
+        search = "0x06EA"
         enable = true
         mode = "2560x1600@60"
-        position = "1920,0" # Next to the 1080p screen, top-aligned
+        position = "0,0"
         scale = 1.6
 
-        [[profile]]
-        name = "clamshell"
-        # For general dual-monitor clamshell
         [[profile.output]]
-        search = "HDMI-A-1"
-        enable = true
-        mode = "3840x2160@30"
-        position = "0,0"
-        scale = 2.0
-
-        [[profile.output]]
-        search = "DP-1"
+        search = "SAMSUNG"
         enable = true
         mode = "1920x1080@60"
-        position = "1920,0"
+        position = "1600,0"
         scale = 1.0
 
         [[profile]]
         name = "laptop"
         [[profile.output]]
-        search = "eDP-1"
+        search = "0x06EA"
         enable = true
         mode = "2560x1600@60"
         position = "0,0"

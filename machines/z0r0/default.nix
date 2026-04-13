@@ -158,6 +158,7 @@
     deluge-server.enable = false; # Moved to Nami
     transmission-server.enable = false;
     headscale-server.enable = true;
+    vaultwarden-server.enable = true;
     harmonia.cache.enable = true;
   };
 

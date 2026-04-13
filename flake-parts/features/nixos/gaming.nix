@@ -28,18 +28,35 @@ with lib;
     };
   };
 
+  options.programs.lutris = {
+    enable = mkEnableOption "Lutris game manager";
+    extraPackages = mkOption {
+      type = types.listOf types.package;
+      default = [ ];
+      description = "Additional packages for Lutris environments";
+    };
+  };
+
   config = mkIf config.gaming.enable {
     # Steam with Proton
     programs.steam = mkIf config.gaming.enableSteam {
       enable = true;
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
-
       gamescopeSession.enable = true;
+      extraCompatPackages = with pkgs; [ proton-ge-bin ];
+    };
 
-      # Proton support
-      extraCompatPackages = with pkgs; [
-        proton-ge-bin
+    # Lutris Configuration (Custom Module)
+    programs.lutris = {
+      enable = lib.mkDefault true;
+      extraPackages = with pkgs; [
+        mangohud
+        winetricks
+        gamescope
+        gamemode
+        umu-launcher
+        steam-run
       ];
     };
 
@@ -48,9 +65,7 @@ with lib;
       enable = true;
       enableRenice = true;
       settings = {
-        general = {
-          renice = 10;
-        };
+        general.renice = 10;
         custom = {
           start = "${pkgs.libnotify}/bin/notify-send 'GameMode started'";
           end = "${pkgs.libnotify}/bin/notify-send 'GameMode ended'";
@@ -58,104 +73,94 @@ with lib;
       };
     };
 
+    # Enable FUSE for AppImages/Lutris/Mounts
+    programs.fuse.enable = true;
+
     # Gaming packages
     environment.systemPackages =
       with pkgs;
       [
-        # Wine and Proton alternatives
-        lutris
+        antimicrox
         bottles
-
-        # Performance overlays and tools
-        mangohud
-        goverlay
         gamemode
         gamescope
-
-        # Controller support
-        antimicrox
-
-        # Emulators (consolidated from home-manager)
+        goverlay
+        mangohud
         vintagestory
       ]
-      ++ optionals config.gaming.enableEmulators [
+      ++ (lib.optionals config.programs.lutris.enable (
+        [ pkgs.lutris ] ++ config.programs.lutris.extraPackages
+      ))
+      ++ (lib.optionals config.gaming.enableEmulators [
         (retroarch.withCores (
           cores: with cores; [
-            beetle-psx-hw # PS1
-            snes9x # SNES
-            genesis-plus-gx # Genesis
-            mupen64plus # N64
-            dolphin # GameCube
-            flycast # Dreamcast
-            ppsspp # PSP
-            desmume # DS
-            mgba # GBA
+            beetle-psx-hw
+            desmume
+            dolphin
+            flycast
+            genesis-plus-gx
+            higan
+            mgba
+            mupen64plus
+            ppsspp
+            snes9x
           ]
         ))
+        bign-handheld-thumbnailer
+        cemu
+        dolphin-emu
+        eden
+        fusee-interfacee-tk
+        hactool
+        joycond
+        melonds
+        ns-usbloader
+        nstool
+        nsz
+        nx2elf
+        pcsx2
+        ppsspp
+        quark-goldleaf
+        rpcs3
+        ryubing
+        sixpair
+        usb-modeswitch
+        usb-modeswitch-data
+      ]);
 
-        # Standalone emulators
-        bign-handheld-thumbnailer # Thumbnail generator for emulators
-        cemu # Wii U
-        dolphin-emu # GameCube
-        ppsspp # PSP
-        rpcs3 # PS3
-        pcsx2 # PS2
-        melonds # DS
-        sixpair # Pair with SIXAXIS controllers over USB
-
-        # Nintendo Switch
-        nx2elf # Convert Nintendo Switch executable files to ELFs
-        ns-usbloader # All-in-one tool for managing Nintendo Switch homebrew
-
-        hactool # Tool to manipulate common file formats for the Nintendo Switch
-        fusee-interfacee-tk # Tool to send .bin files to a Nintendo Switch in RCM mode
-        nstool # General purpose reading/extraction tool for Nintendo Switch file formats
-        quark-goldleaf # GUI tool for transfering files between a computer and a Nintendo Switch running Goldleaf
-        ryubing # Experimental Nintendo Switch Emulator written in C# (community fork of Ryujinx)
-        joycond # Userspace daemon to combine joy-cons from the hid-nintendo kernel driver
-        nsz # Homebrew compatible NSP/XCI compressor/decompressor
-        usb-modeswitch # Mode switching tool for controlling 'multi-mode' USB devices
-        usb-modeswitch-data # Device database and the rules file for 'multi-mode' USB devices
-      ];
-
-    # Enable 32-bit support for games
     hardware.graphics = {
       enable = true;
       enable32Bit = true;
     };
 
-    # Kernel parameters for gaming
     boot.kernelModules = [ "ntsync" ];
     boot.kernel.sysctl = {
-      "vm.max_map_count" = 2147483642; # For some games and programs
+      "vm.max_map_count" = 2147483642;
     };
 
-    # Enable controller support
-    hardware.xone.enable = mkDefault true; # Xbox One controller
-    hardware.xpadneo.enable = mkDefault true; # Xbox controller Bluetooth
+    hardware.xone.enable = mkDefault true;
+    hardware.xpadneo.enable = mkDefault true;
 
     services = {
       input-remapper.enable = true;
       system76-scheduler.enable = true;
+      udev.packages = with pkgs; [
+        ns-usbloader
+        quark-goldleaf
+      ];
     };
 
-    # Firewall rules for gaming
     networking.firewall = {
       allowedTCPPorts = [
-        # Steam Remote Play
         27036
         27037
       ];
       allowedUDPPorts = [
-        # Steam Remote Play
         27031
         27036
       ];
     };
 
-    # Performance tuning
-    boot.kernelParams = [
-      "split_lock_detect=off" # Some games have issues with this
-    ];
+    boot.kernelParams = [ "split_lock_detect=off" ];
   };
 }

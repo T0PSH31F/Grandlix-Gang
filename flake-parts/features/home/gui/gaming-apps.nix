@@ -17,6 +17,7 @@ in
       umu-launcher
       steam-run-free
       nero-umu
+      eden # switch1 emulator
 
       # Utility
       protonplus
@@ -31,17 +32,6 @@ in
       ns-tool
       quark-goldleaf
     ];
-
-    programs.lutris = {
-      enable = true;
-      package = pkgs.lutris;
-      steamPackage = osConfig.programs.steam.package;
-      protonPackages = [ pkgs.proton-ge-bin ];
-      winePackages = [ pkgs.wineWow64Packages.full ];
-      extraPackages = with pkgs; [ mangohud winetricks gamescope gamemode umu-launcher steam-run ];
-      # runners = {
-      # };
-    };
 
     programs.retroarch = {
       enable = true;

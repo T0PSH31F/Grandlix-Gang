@@ -23,48 +23,58 @@ with lib;
     # Install nom (Nix Output Monitor)
     # Usage: nom build, nom shell, etc. - prettier build output
     environment.systemPackages = with pkgs; [
-      nix-output-monitor # nom command
-      nix-top
-      nvd # Nix/NixOS package version diff tool
-      nix-tree # Interactive nix dependency tree viewer
-      nix-index # Locate packages providing a file
-      nix-ld
-      nixfmt-tree
+      #nil
       arion
-      nix-top
-      nix-tree
+      comma
+      compose2nix
+      deadnix
+      dix
+      envoluntary
+      manix
+      mcp-nixos
+      nix-diff
+      nix-serve-ng
+      nix-sweep
+      nix-unit 
+      nix-btm
+      nix-olde
+      nix-health
+      nix-fast-build
       nix-init
       nix-inspect
-      nixos-option
+      nix-output-monitor # nom command
       nix-search-tv
-      nix-your-shell
-      nix-fast-build
+      nix-top
+      nix-tree # Interactive nix dependency tree viewer
       nix-zsh-completions
-      optinix
-      statix
-      deadnix
-      omnix
-      manix
-      optnix
-      zsh-nix-shell
-      mcp-nixos
-      #nil
+      nixel
       nixd
-      dix
-      compose2nix
-      comma
-
+      nixfmt-tree
+      nixos-option
+      nvd # Nix/NixOS package version diff tool
+      omnix
+      optinix
+      optnix
+      statix
+      vulnix
     ];
     # Enable nix-index database generation
-    programs.command-not-found.enable = false;
-    programs.nix-index = {
-      enable = true;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
+    programs = {
+      command-not-found.enable = false;
+      nix-index = {
+        enable = true;
+        enableBashIntegration = true;
+        enableZshIntegration = true;
+      };
     };
 
     # Helpful shell aliases for home-manager users
     home-manager.users.t0psh31f = {
+      programs.nix-your-shell = {
+        enable = true;
+        enableZshIntegration = true;
+        nix-output-monitor.enable = true;
+      };
       home.shellAliases = {
         cunt = "clan machines update nami";
         cumz = "clan machines update z0r0";

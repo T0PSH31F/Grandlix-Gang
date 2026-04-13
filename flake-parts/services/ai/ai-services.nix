@@ -408,7 +408,7 @@ in
 
       # Interfaces
       bluemail # Email client with AI integration
-      # cherry-studio # Desktop LLM client
+      cherry-studio # Desktop LLM client
       librechat # Open-source AI chat interface
       nextjs-ollama-llm-ui # Web UI for Ollama
       # sillytavern # Advanced LLM interface for roleplay
@@ -418,6 +418,10 @@ in
       # aider-chat-full # CLI for AI pair programming
       # crush (Provided by llm-agents.nix)
       # krillinai # AI agent tool
+      skills
+      beads
+      gemini-cli
+      python314Packages.pydantic-graph
 
       # TTS & STT
       # moshi # Real-time conversational AI
