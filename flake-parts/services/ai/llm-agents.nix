@@ -76,7 +76,7 @@ in
       # Utilities
       # agent-browser # - Headless browser automation CLI for AI agents
       # ck # - Local first semantic and hybrid BM25 grep / search tool for use by AI and humans!
-      clawdbot # - Personal AI assistant with WhatsApp, Telegram, Discord integration
+      # clawdbot # - Personal AI assistant with WhatsApp, Telegram, Discord integration
       # coding-agent-search # - Unified, high-performance TUI to index and search your local coding agent history
       # copilot-language-server # - GitHub Copilot Language Server - AI pair programmer LSP
       # handy # - Fast and accurate local transcription app using AI models

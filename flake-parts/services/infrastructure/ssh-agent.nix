@@ -20,7 +20,7 @@ in
       # Don't use the built-in startAgent to avoid conflicts
       # We define our own systemd service below for better control
       startAgent = false;
-      agentTimeout = "1h";
+      agentTimeout = null;
       extraConfig = ''
         AddKeysToAgent yes
       '';

@@ -31,6 +31,13 @@ in
             if [ ! -f $HOME/.ssh/config ] || [ -L $HOME/.ssh/config ]; then
               rm -f $HOME/.ssh/config
               cat > $HOME/.ssh/config << 'EOF'
+      AddKeysToAgent yes
+
+      Host z0r0.local
+          StrictHostKeyChecking no
+          UserKnownHostsFile /dev/null
+          LogLevel ERROR
+
       Host github.com
           HostName github.com
           User git

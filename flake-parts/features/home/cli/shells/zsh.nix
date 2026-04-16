@@ -159,6 +159,7 @@ in
       pkgs.zsh-nix-shell
       pkgs.nix-zsh-completions
       pkgs.any-nix-shell
+      pkgs.z-lua
     ];
   };
 }

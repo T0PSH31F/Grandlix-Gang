@@ -140,10 +140,11 @@
       sops.secrets.browser_use_api = { sopsFile = ../../treasure/secrets/external_services.yaml; };
       sops.secrets.context7_api_we77 = { sopsFile = ../../treasure/secrets/external_services.yaml; };
       sops.secrets.tg_botfather_http = { sopsFile = ../../treasure/secrets/external_services.yaml; };
-      sops.secrets.rclone_config = {
-        sopsFile = ../../treasure/secrets/external_services.yaml;
-        path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
-      };
+      # TODO: Add rclone_config key to external_services.yaml before enabling
+      # sops.secrets.rclone_config = {
+      #   sopsFile = ../../treasure/secrets/external_services.yaml;
+      #   path = "${config.home.homeDirectory}/.config/rclone/rclone.conf";
+      # };
 
       sops.templates."git-config".content = ''
         [user]

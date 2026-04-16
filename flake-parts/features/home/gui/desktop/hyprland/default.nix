@@ -52,7 +52,6 @@ in
       hyprpwcenter
       hyprsysteminfo
       hyprviz
-      hyprwhspr-rs
       jq
       kitty
       libnotify
@@ -96,7 +95,6 @@ in
       };
     };
 
-
     wayland.windowManager.hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -104,7 +102,7 @@ in
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       systemd.enable = false;
       plugins = [
-        #inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
+        inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
         # inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprexpo
         # inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.Hyprspace
       ];
@@ -118,29 +116,25 @@ in
         "$secondary" = "0xff575268";
         "$surfaceContainer" = "1f202e";
 
-        #  plugin = {
-        #    "dynamic-cursors" = {
-        #      enabled = true;
-        #      mode = "rotate";
-        #      threshold = 2;
-        #      # rotate = {
-        #      #   length = "$cursorSize";
-        #      # };
-        #      tilt = {
-        #        limit = 3000;
-        #      };
-        #      stretch = {
-        #        limit = 3000;
-        #        function = "quadratic";
-        #      };
-        #      shake = {
-        #        enabled = false;
-        #        effects = false;
-        #        ipc = true;
-        #      };
-        #     # shaperule = "default, rotate, rotate:offset: $cursorRot";
-        #    };
-        #  };
+        plugin = {
+          "dynamic-cursors" = {
+            enabled = true;
+            mode = "rotate";
+            threshold = 2;
+            tilt = {
+              limit = 3000;
+            };
+            stretch = {
+              limit = 3000;
+              function = "quadratic";
+            };
+            shake = {
+              enabled = false;
+              effects = false;
+              ipc = true;
+            };
+          };
+        };
 
         decoration = {
           screen_shader = "${config.home.homeDirectory}/.config/hypr/vibrancy.frag";

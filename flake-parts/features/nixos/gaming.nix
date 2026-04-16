@@ -99,7 +99,6 @@ with lib;
             dolphin
             flycast
             genesis-plus-gx
-            higan
             mgba
             mupen64plus
             ppsspp
@@ -112,6 +111,7 @@ with lib;
         eden
         fusee-interfacee-tk
         hactool
+        higan
         joycond
         melonds
         ns-usbloader
