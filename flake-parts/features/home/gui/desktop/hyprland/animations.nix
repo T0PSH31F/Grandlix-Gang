@@ -37,7 +37,6 @@ in
         # ── Lightsaber Aura Shadow ──
         shadow = {
           enabled = true;
-          ignore_window = true;
           range = 50;
           offset = "0 4";
           render_power = 10;
@@ -110,7 +109,6 @@ in
         swallow_regex = "^(mpv|foot|kitty|wezterm|alacritty|Alacritty|ghostty|warp-terminal)$";
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
-        vfr = true; # Variable frame rate for battery saving
         vrr = 1; # Variable refresh rate
         focus_on_activate = true;
         mouse_move_enables_dpms = true;
