@@ -10,18 +10,21 @@
     # Hardware configuration (filesystems, kernel modules)
     ./hardware.nix
 
-    # Core system modules from flake-parts
-    ../../flake-parts/system
-    ../../flake-parts/hardware
-    ../../flake-parts/themes
-    ../../flake-parts/features/nixos
-    ../../flake-parts/services/media
-    ../../flake-parts/services/infrastructure
-    ../../flake-parts/services/communication
-    ../../flake-parts/services/ai
+    # Core system modules from modules/
+    ../../layers/10-system
+    ../../layers/10-system/11-foundation
+    ../../layers/10-system/12-hardware
+    ../../layers/10-system/13-packages
+
+    ../../layers/30-identity/32-themes
+
+    ../../layers/20-services/23-media
+    ../../layers/20-services
+    ../../layers/20-services/24-communication
+    ../../layers/20-services/22-ai
 
     # User configuration (HM + user-specific system settings)
-    ../../flake-parts/users/t0psh31f.nix
+    ../../layers/30-identity/31-users/t0psh31f.nix
   ];
 
   services-config.tailscale.enable = true;
@@ -50,7 +53,7 @@
     greeter = {
       sddm = {
         enable = true;
-        background = ../../assets/sddm_background/the-world-of-one-piece_800.gif;
+        background = ../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif;
       };
       greetd.enable = false;
     };

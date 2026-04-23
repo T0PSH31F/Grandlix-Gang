@@ -9,10 +9,10 @@
   imports = [
     ./hardware.nix
     ./containers.nix
-    ../../flake-parts/services/ai/ai-services.nix
-    ../../flake-parts/services/infrastructure
-    ../../flake-parts/services/media
-    ../../flake-parts/users/t0psh31f.nix
+    ../../layers/20-services/22-ai/ai-services.nix
+    ../../layers/20-services
+    ../../layers/20-services/23-media
+    ../../layers/30-identity/31-users/t0psh31f.nix
     inputs.impermanence.nixosModules.impermanence
     inputs.home-manager.nixosModules.home-manager
   ];
@@ -31,14 +31,14 @@
     # SOPS Secrets definition
     sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
     sops.secrets."duckdns-token" = {
-      sopsFile = lib.mkForce ../../treasure/secrets/duckdns.yaml;
+      sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/duckdns.yaml;
       format = lib.mkForce "yaml";
     };
     sops.templates."duckdns-env".content = ''
       DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
     '';
     sops.secrets."postgres-password" = {
-      sopsFile = lib.mkForce ../../treasure/secrets/postgres.yaml;
+      sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/postgres.yaml;
       format = lib.mkForce "yaml";
     };
 

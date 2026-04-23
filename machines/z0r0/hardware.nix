@@ -5,8 +5,8 @@
 # - Swap configuration
 {
   imports = [
-    ../../flake-parts/hardware
-    ../../flake-parts/hardware/laptop.nix
+    ../../layers/10-system/12-hardware/default.nix
+    ../../layers/10-system/12-hardware/12.4-platform/laptop.nix
   ];
 
   # Boot configuration - LUKS encryption

@@ -9,18 +9,20 @@
     ./hardware.nix
 
     # Core system modules from flake-parts (includes base, nix-settings, networking, nix-tools, clan-lib, fonts, overlays)
-    ../../flake-parts/system
-    ../../flake-parts/hardware
-    ../../flake-parts/themes
-    ../../flake-parts/features/nixos
+    ../../layers/10-system
+    ../../layers/10-system/11-foundation
+    ../../layers/10-system/12-hardware
+    ../../layers/10-system/13-packages
+    
+    ../../layers/30-identity/32-themes
 
-    ../../flake-parts/services/ai
-    ../../flake-parts/services/media
-    ../../flake-parts/services/infrastructure
-    ../../flake-parts/services/communication
+    ../../layers/20-services/22-ai
+    ../../layers/20-services/23-media
+    ../../layers/20-services
+    ../../layers/20-services/24-communication
 
     # User configuration (HM + user-specific system settings)
-    ../../flake-parts/users/t0psh31f.nix
+    ../../layers/30-identity/31-users/t0psh31f.nix
   ];
 
   # ============================================================================
@@ -58,11 +60,11 @@
     greeter = {
       greetd = {
         enable = true;
-        background = ../../assets/sddm_background/roronoa-zoro_800.gif;
+        background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
       };
       sddm = {
         enable = false;
-        background = ../../assets/sddm_background/roronoa-zoro_800.gif;
+        background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
       };
     };
   };
@@ -204,7 +206,7 @@
   # ============================================================================
   sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
   sops.secrets."duckdns-token" = {
-    sopsFile = lib.mkForce ../../treasure/secrets/duckdns.yaml;
+    sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/duckdns.yaml;
     format = lib.mkForce "yaml";
   };
   sops.templates."duckdns-env".content = ''

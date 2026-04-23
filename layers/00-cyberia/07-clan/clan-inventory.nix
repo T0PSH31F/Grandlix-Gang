@@ -1,0 +1,166 @@
+{ ... }:
+{
+  # Clan Inventory - Service Instance Definitions
+  # Using official clan-core modules for standardized deployment
+
+  clan.inventory = {
+    # ==========================================================================
+    # ADMIN & SSH ACCESS
+    # ==========================================================================
+
+    instances.sshd-cluster = {
+      module = {
+        name = "sshd";
+        input = "clan-core";
+      };
+      roles.server = {
+        tags.all = { }; # All machines are SSH servers
+        settings = {
+          authorizedKeys = {
+            "mykey" =
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFDNnynMbFWatSFdANzbJ8iiEKL7+9ZpDaMLrWRQjyH user@host";
+          };
+          certificate.searchDomains = [ "grandlix.local" ];
+        };
+      };
+      roles.client = {
+        tags.all = { }; # All machines are SSH clients
+      };
+    };
+
+    instances.root-user = {
+      module = {
+        name = "users";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags.all = { };
+        settings = {
+          user = "root";
+          prompt = true; # Prompt for root password during 'clan vars generate'
+        };
+      };
+    };
+
+    # ==========================================================================
+    # USER MANAGEMENT
+    # ==========================================================================
+
+    instances.user-t0psh31f = {
+      module = {
+        name = "users";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags.all = { }; # User on all machines
+        settings = {
+          user = "t0psh31f";
+          prompt = true; # Prompt for password during 'clan vars generate'
+          share = true; # Share same password across machines
+          groups = [
+            "wheel"
+            "networkmanager"
+            "video"
+            "audio"
+            "input"
+            "podman"
+            "libvirtd"
+            "media"
+            "podman"
+            "i2c"
+          ];
+        };
+      };
+    };
+
+    # ==========================================================================
+    # PACKAGE MANAGEMENT (Dendritic Pattern with Importer)
+    # ==========================================================================
+
+    instances.base-packages = {
+      module = {
+        name = "importer";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags.all = { }; # Base packages on all machines
+        extraModules = [ ../../10-system/13-packages/base.nix ];
+      };
+    };
+
+    instances.desktop-packages = {
+      module = {
+        name = "importer";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags = [
+          "desktop"
+          "laptop"
+        ]; # Only desktop machines
+        extraModules = [ ../../10-system/13-packages/desktop.nix ];
+      };
+    };
+
+    instances.ai-packages = {
+      module = {
+        name = "importer";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags = [ "ai-server" ]; # Only AI server machines
+        extraModules = [ ../../10-system/13-packages/ai.nix ];
+      };
+    };
+
+    instances.dev-packages = {
+      module = {
+        name = "importer";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags = [ "dev" ]; # Development machines
+        extraModules = [ ../../10-system/13-packages/dev.nix ];
+      };
+    };
+
+    instances.media-packages = {
+      module = {
+        name = "importer";
+        input = "clan-core";
+      };
+      roles.default = {
+        tags = [ "media-server" ]; # Media server machines
+        extraModules = [ ../../10-system/13-packages/media.nix ];
+      };
+    };
+
+    # ==========================================================================
+    # MATRIX SYNAPSE HOMESERVER
+    # ==========================================================================
+
+    instances.matrix-homeserver = {
+      module = {
+        name = "matrix-synapse";
+        input = "clan-core";
+      };
+      roles.default = {
+        # Commented out to fix infinite recursion until clan-core fixes it
+        # machines.z0r0 = {
+        #   # Only on z0r0
+        #   settings = {
+        #     acmeEmail = "admin@grandlix.com";
+        #     server_tld = "grandlix.local";
+        #     app_domain = "matrix.grandlix.local";
+        #     users = {
+        #       t0psh31f = {
+        #         admin = true;
+        #       };
+        #     };
+        #   };
+        # };
+      };
+    };
+
+  };
+}

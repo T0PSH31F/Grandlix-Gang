@@ -10,8 +10,8 @@
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    ../../flake-parts/hardware
-    ../../flake-parts/hardware/intel-7th-gen.nix
+    ../../layers/10-system/12-hardware/default.nix
+    ../../layers/10-system/12-hardware/12.1-cpu/intel-7th-gen.nix
     ./disko.nix
   ];
 
