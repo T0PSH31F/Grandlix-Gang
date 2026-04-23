@@ -9,29 +9,27 @@
     machines = {
       z0r0 = {
         tags = [
+          "workstation"
           "desktop"
-          "laptop"
-          "ai-server"
-          "build-server"
-          "binary-cache"
-          "database"
-          "dev"
-          "media-server"
+          "development"
+          "gaming"
         ];
         deploy.targetHost = "root@z0r0.local";
       };
       nami = {
         tags = [
+          "workstation"
+          "laptop"
           "desktop"
+          "media"
         ];
         deploy.targetHost = "root@nami.local";
       };
       luffy = {
         tags = [
-          "desktop"
-          "gaming"
-          "ai-heavy"
-          "nvidia"
+          "server"
+          "gpu-compute"
+          "ai"
         ];
         # deploy.targetHost = "root@luffy.local";
       };

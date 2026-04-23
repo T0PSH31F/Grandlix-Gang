@@ -9,20 +9,20 @@
     ./hardware.nix
 
     # Core system modules from flake-parts (includes base, nix-settings, networking, nix-tools, clan-lib, fonts, overlays)
-    ../../layers/10-system
-    ../../layers/10-system/11-foundation
-    ../../layers/10-system/12-hardware
-    ../../layers/10-system/13-packages
+    ../../modules/10-system
+    ../../modules/10-system/11-foundation
+    ../../modules/10-system/12-hardware
+    ../../modules/10-system/13-packages
     
-    ../../layers/30-identity/32-themes
+    ../../modules/30-identity/32-themes
 
-    ../../layers/20-services/22-ai
-    ../../layers/20-services/23-media
-    ../../layers/20-services
-    ../../layers/20-services/24-communication
+    ../../modules/20-services/22-ai
+    ../../modules/20-services/23-media
+    ../../modules/20-services
+    ../../modules/20-services/24-communication
 
     # User configuration (HM + user-specific system settings)
-    ../../layers/30-identity/31-users/t0psh31f.nix
+    ../../modules/30-identity/31-users/t0psh31f.nix
   ];
 
   # ============================================================================
@@ -60,11 +60,11 @@
     greeter = {
       greetd = {
         enable = true;
-        background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
+        background = ../../modules/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
       };
       sddm = {
         enable = false;
-        background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
+        background = ../../modules/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
       };
     };
   };
@@ -206,7 +206,7 @@
   # ============================================================================
   sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
   sops.secrets."duckdns-token" = {
-    sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/duckdns.yaml;
+    sopsFile = lib.mkForce ../../modules/00-cyberia/03-treasure/secrets/duckdns.yaml;
     format = lib.mkForce "yaml";
   };
   sops.templates."duckdns-env".content = ''

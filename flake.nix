@@ -136,7 +136,7 @@
         imports = [
           clan-core.flakeModules.default
           home-manager.flakeModules.home-manager
-          ./layers/00-cyberia/07-clan/clan-inventory.nix
+          ./modules/00-cyberia/07-clan/clan-inventory.nix
         ];
 
         clan = {
@@ -151,7 +151,7 @@
               localSystem = system;
               config.allowUnfree = true;
               overlays = [
-                (import ./layers/80-lib/82-overlays/custom-packages.nix)
+                (import ./modules/80-lib/82-overlays/custom-packages.nix)
               ];
             };
         };
@@ -159,16 +159,16 @@
         # Register clan services from new structure
         flake.clan.modules = {
           # AI services
-          ai = ./layers/20-services/28-clan-services/sillytavern/module.nix;
+          ai = ./modules/20-services/28-clan-services/sillytavern/module.nix;
 
           # Desktop/Infrastructure services bundle
-          desktop = ./layers/20-services/28-clan-services/homepage-dashboard/module.nix;
+          desktop = ./modules/20-services/28-clan-services/homepage-dashboard/module.nix;
 
           # Media services
-          media = ./layers/20-services/28-clan-services/aria2/module.nix;
+          media = ./modules/20-services/28-clan-services/aria2/module.nix;
 
           # Binary cache
-          # nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
+          # nix-cache = ./modules/20-services/28-clan-services/nix-cache/default.nix;
         };
 
         systems = [ "x86_64-linux" ];
@@ -179,12 +179,12 @@
               system = "x86_64-linux";
               config.allowUnfree = true;
               overlays = [
-                (import ./layers/80-lib/82-overlays/custom-packages.nix)
+                (import ./modules/80-lib/82-overlays/custom-packages.nix)
               ];
             };
             extraSpecialArgs = { inherit inputs; };
             modules = [
-              ./layers/50-cli-tui-programs/50-entry/cli-tui.nix
+              ./modules/50-cli-tui-programs/50-entry/cli-tui.nix
               {
                 home.username = "root";
                 home.homeDirectory = "/root";
@@ -217,7 +217,7 @@
                 inherit system;
                 specialArgs = { inherit inputs; };
                 modules = [
-                  ./layers/80-lib/84-templates/iso/default.nix
+                  ./modules/80-lib/84-templates/iso/default.nix
                 ];
               }).config.system.build.isoImage;
 
@@ -290,7 +290,7 @@
             # Image generation outputs using nixos-generators removed
             checks =
               let
-                theme-tests = import ./layers/80-lib/85-tests/themes.nix {
+                theme-tests = import ./modules/80-lib/85-tests/themes.nix {
                   inherit pkgs;
                   lib = pkgs.lib;
                 };
@@ -298,8 +298,8 @@
               {
                 inherit (theme-tests) plymouth-theme-builds sddm-theme-builds all-themes;
 
-                services-test = pkgs.testers.nixosTest (import ./layers/80-lib/85-tests/services.nix);
-                n8n-test = pkgs.testers.nixosTest (import ./layers/80-lib/85-tests/n8n.nix);
+                services-test = pkgs.testers.nixosTest (import ./modules/80-lib/85-tests/services.nix);
+                n8n-test = pkgs.testers.nixosTest (import ./modules/80-lib/85-tests/n8n.nix);
               };
           };
       }
