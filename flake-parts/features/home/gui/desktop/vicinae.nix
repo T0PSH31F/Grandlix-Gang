@@ -95,6 +95,7 @@ in
         };
 
         # Theme configuration
+        # Note: The "noctalia" theme dynamically handles both light and dark modes.
         theme = {
           light = {
             name = "noctalia";
@@ -102,7 +103,7 @@ in
           };
           dark = {
             name = "noctalia";
-            icon_theme = "beauty-line-icon-theme";
+            icon_theme = "candy-icons";
           };
         };
 
@@ -120,34 +121,34 @@ in
         brotab
         chromium-bookmarks
         dashboard-icons
-      #  exegol
+        # exegol
         firefox
-      #  floww
+        # floww
         fuzzy-files
         hypr-keybinds
         it-tools
         kde-system-settings
-      #  mise
-      #  niri
+        # mise
+        # niri
         nix
-      #  otp
-      #  pass
+        # otp
+        # pass
         player-pilot
         podman
         port-killer
-      #  power-profile
+        # power-profile
         process-manager
         pulseaudio
         searxng
-      #  silverbullet
-      #  simple-bookmarks
-      #  skate
+        # silverbullet
+        # simple-bookmarks
+        # skate
         # spongebob-text-transformer
         ssh
-      #  stocks
-      #  supergenpass
+        # stocks
+        # supergenpass
         vscode-recents
-      #  wifi-commander
+        # wifi-commander
 
         # Utilities
         # clipboard # Clipboard history manager

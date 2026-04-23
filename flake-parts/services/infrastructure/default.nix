@@ -10,6 +10,7 @@
     ./headscale.nix
     ./home-assistant.nix
     ./homepage-dashboard.nix
+    ./langfuse.nix
     ./monitoring.nix
     ./n8n.nix
     ./nextcloud.nix

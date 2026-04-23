@@ -21,6 +21,11 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
+      kilocode-cli
+      openclaw
+      picoclaw
+      zeroclaw
+      crush
       mcp-nixos
       ha-mcp
       github-mcp-server

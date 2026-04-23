@@ -16,6 +16,7 @@ in
       imagemagick
       obs-studio
       transmission_4
+      pirate-get 
       yt-dlp
     ];
   };

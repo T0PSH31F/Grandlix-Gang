@@ -19,10 +19,18 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/bin
-    if [ -f lobster ]; then
-      cp lobster $out/bin/
+    if [ -f ./lobster ]; then
+      cp ./lobster $out/bin/lobster
     else
-      find . -maxdepth 1 -type f -executable -exec cp {} $out/bin/lobster \;
+      count=$(find . -maxdepth 1 -type f -executable | wc -l)
+      if [ "$count" -eq 1 ]; then
+        exec_file=$(find . -maxdepth 1 -type f -executable)
+        cp "$exec_file" $out/bin/lobster
+      else
+        echo "Error: Expected exactly 1 executable for $out/bin/lobster via find-based scan, but found $count."
+        echo "Maintainers must fix the source layout or specify the exact binary name."
+        exit 1
+      fi
     fi
     chmod +x $out/bin/lobster
   '';

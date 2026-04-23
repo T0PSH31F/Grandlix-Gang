@@ -82,6 +82,7 @@ in
     };
     home.packages = with pkgs; [
       bar
+      cloudflare-cli
       cpx
       detox
       procs
@@ -93,10 +94,13 @@ in
       trash-cli
       trippy
       rsyncy
+      stripe-cli
+      supabase-cli
       pv
       pq-cli
       progress
       xxh
+      wrangler
     ];
   };
 }

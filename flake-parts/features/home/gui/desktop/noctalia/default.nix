@@ -50,7 +50,12 @@ in
     programs.noctalia-shell = {
       enable = true;
       package = cfg.package;
-      settings = ../../../../../../assets/noctalia-config.json;
+      settings = builtins.fromJSON (
+        builtins.replaceStrings 
+          [ "$HOME" ] 
+          [ config.home.homeDirectory ] 
+          (builtins.readFile ../../../../../../assets/noctalia-config.json)
+      );
     };
 
     systemd.user.services.noctalia-shell = {

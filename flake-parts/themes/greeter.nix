@@ -69,6 +69,15 @@ in
   };
 
   config = mkMerge [
+    {
+      assertions = [
+        {
+          assertion = !(cfg.sddm.enable && cfg.greetd.enable);
+          message = "SDDM and Greetd cannot be enabled at the same time in the greeter configuration.";
+        }
+      ];
+    }
+
     # SDDM Implementation
     (mkIf cfg.sddm.enable {
       services.displayManager.sddm = {
@@ -101,7 +110,7 @@ in
             path = builtins.toString cfg.greetd.greetd-background;
             fit = "Cover";
           };
-          GTK = lib.mkForce {
+          GTK = lib.mkDefault {
             icon_theme_name = "candy-icons";
             theme_name = "adw-gtk3-dark";
           };

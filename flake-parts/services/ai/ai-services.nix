@@ -195,6 +195,7 @@ in
 
       extensions = with pkgs.postgresql_16.pkgs; [
         pgvector
+        lantern
       ];
 
       settings = {
@@ -220,6 +221,28 @@ in
           ensureDBOwnership = true;
         }
       ];
+    };
+
+    systemd.services.postgresql-extensions = mkIf config.services.ai-services.postgresql.enable {
+      description = "Ensure Postgres extensions for vectordb";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "postgresql.service" ];
+      requires = [ "postgresql.service" ];
+      serviceConfig = {
+        User = "postgres";
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "setup-pg-extensions" ''
+          # Wait for PostgreSQL to be ready
+          until ${pkgs.postgresql_16}/bin/pg_isready -q; do
+            sleep 1
+          done
+          
+          echo "Creating extensions in vectordb..."
+          ${pkgs.postgresql_16}/bin/psql -d vectordb -c "CREATE EXTENSION IF NOT EXISTS vector;"
+          ${pkgs.postgresql_16}/bin/psql -d vectordb -c "CREATE EXTENSION IF NOT EXISTS lantern;"
+        '';
+      };
     };
 
     # Open WebUI - native NixOS service
@@ -322,6 +345,7 @@ in
 
     # Enable docker/podman only for LocalAI (still needs container)
     virtualisation.podman.enable = mkIf cfg.localai.enable true;
+    virtualisation.oci-containers.backend = mkIf cfg.localai.enable "podman";
 
     users.users.nextjs-ollama-llm-ui = {
       group = "nextjs-ollama-llm-ui";
@@ -424,7 +448,7 @@ in
       python314Packages.pydantic-graph
 
       # TTS & STT
-      # moshi # Real-time conversational AI
+      # -  # Real-time conversational AI
       # piper-tts # Local neural text-to-speech engine
       # whisper-ctranslate2 # High-performance speech-to-text
     ];

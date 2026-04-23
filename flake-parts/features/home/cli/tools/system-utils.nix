@@ -51,5 +51,9 @@ in
       terminal-parrot
       toilet
     ];
+    programs.rbw.enable = true;
+    programs.aria2.enable = true;
+    programs.aria2p.enable = true;
+    programs.pistol.enable = true;
   };
 }

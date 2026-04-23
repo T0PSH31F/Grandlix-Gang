@@ -260,7 +260,7 @@
     "screenOverrides": []
   },
   "general": {
-    "avatarImage": "/home/t0psh31f/Pictures/png_ico/spike2.jpg",
+    "avatarImage": "$HOME/Pictures/png_ico/spike2.jpg",
     "dimmerOpacity": 0.35000000000000003,
     "showScreenCorners": false,
     "forceBlackScreenCorners": false,
@@ -368,20 +368,20 @@
   "wallpaper": {
     "enabled": true,
     "overviewEnabled": false,
-    "directory": "/home/t0psh31f/.background/4k Background",
+    "directory": "$HOME/.background/4k Background",
     "monitorDirectories": [
       {
-        "directory": "/home/t0psh31f/.background/4k Background",
+        "directory": "$HOME/.background/4k Background",
         "name": "eDP-1",
         "wallpaper": ""
       },
       {
-        "directory": "/home/t0psh31f/.background/4k Background",
+        "directory": "$HOME/.background/4k Background",
         "name": "DP-1",
         "wallpaper": ""
       },
       {
-        "directory": "/home/t0psh31f/.background/4k Background",
+        "directory": "$HOME/.background/4k Background",
         "name": "HDMI-A-1",
         "wallpaper": ""
       }
@@ -668,9 +668,9 @@
       "enabled": true,
       "volume": 0.75,
       "separateSounds": true,
-      "criticalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
-      "normalSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
-      "lowSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/notifynorm.wav",
+      "criticalSoundFile": "$HOME/Clan/NFP/assets/SFX/notifynorm.wav",
+      "normalSoundFile": "$HOME/Clan/NFP/assets/SFX/notifynorm.wav",
+      "lowSoundFile": "$HOME/Clan/NFP/assets/SFX/notifynorm.wav",
       "excludedApps": "discord"
     },
     "enableMediaToast": false,
@@ -700,7 +700,7 @@
     "mprisBlacklist": [],
     "preferredPlayer": "Spotify",
     "volumeFeedback": true,
-    "volumeFeedbackSoundFile": "/home/t0psh31f/Clan/NFP/assets/SFX/volume-feedback.wav"
+    "volumeFeedbackSoundFile": "$HOME/Clan/NFP/assets/SFX/volume-feedback.wav"
   },
   "brightness": {
     "brightnessStep": 5,
@@ -902,7 +902,7 @@
           {
             "defaultSettings": {},
             "id": "plugin:custom-sticker",
-            "image": "/home/t0psh31f/Pictures/Giffees/cthru-nika-sungod.gif",
+            "image": "$HOME/Pictures/Giffees/cthru-nika-sungod.gif",
             "mirror": true,
             "opacity": 1,
             "roundedCorners": true,
@@ -915,7 +915,7 @@
           {
             "defaultSettings": {},
             "id": "plugin:custom-sticker",
-            "image": "/home/t0psh31f/Pictures/Giffees/cthru-8bit-tanjirou-demon-slayer.gif",
+            "image": "$HOME/Pictures/Giffees/cthru-8bit-tanjirou-demon-slayer.gif",
             "mirror": false,
             "opacity": 1,
             "roundedCorners": true,
@@ -928,7 +928,7 @@
           {
             "defaultSettings": {},
             "id": "plugin:custom-sticker",
-            "image": "/home/t0psh31f/Pictures/Giffees/cthru-nezuko-running.gif",
+            "image": "$HOME/Pictures/Giffees/cthru-nezuko-running.gif",
             "mirror": true,
             "opacity": 1,
             "roundedCorners": true,
@@ -941,7 +941,7 @@
           {
             "defaultSettings": {},
             "id": "plugin:custom-sticker",
-            "image": "/home/t0psh31f/Pictures/Giffees/cthru-attack-on.gif",
+            "image": "$HOME/Pictures/Giffees/cthru-attack-on.gif",
             "mirror": false,
             "opacity": 1,
             "roundedCorners": true,

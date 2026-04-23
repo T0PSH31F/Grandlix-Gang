@@ -1,7 +1,6 @@
 import os
 import wave
 import pyaudio
-import requests
 import subprocess
 from openai import OpenAI
 
@@ -9,7 +8,6 @@ from openai import OpenAI
 OLLAMA_MODEL = "hermes3:8b"
 WHISPER_MODEL_PATH = "./models/ggml-base.en.bin"
 PIPER_VOICE_PATH = "./models/en_US-lessac-medium.onnx"
-WAKE_WORD = "hey hermes"
 
 # Initialize local OpenAI-compatible client routing to Ollama
 client = OpenAI(base_url="http://localhost:11434/v1", api_key="sk-local")
@@ -17,12 +15,12 @@ client = OpenAI(base_url="http://localhost:11434/v1", api_key="sk-local")
 def record_audio(filename="input.wav", record_seconds=5):
     """Records audio from the microphone."""
     chunk = 1024
-    format = pyaudio.paInt16
+    audio_format = pyaudio.paInt16
     channels = 1
     rate = 16000
     
     p = pyaudio.PyAudio()
-    stream = p.open(format=format, channels=channels, rate=rate, input=True, frames_per_buffer=chunk)
+    stream = p.open(format=audio_format, channels=channels, rate=rate, input=True, frames_per_buffer=chunk)
     
     print("🎙️ Listening...")
     frames = []
@@ -36,7 +34,7 @@ def record_audio(filename="input.wav", record_seconds=5):
     
     with wave.open(filename, 'wb') as wf:
         wf.setnchannels(channels)
-        wf.setsampwidth(p.get_sample_size(format))
+        wf.setsampwidth(p.get_sample_size(audio_format))
         wf.setframerate(rate)
         wf.writeframes(b''.join(frames))
 

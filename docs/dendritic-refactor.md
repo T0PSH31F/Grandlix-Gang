@@ -37,7 +37,9 @@ To avoid the "System vs. HM" split, write your modules like this. This ensures t
   hardware.xone.enable = true; # Xbox Controller support
 
   # --- Home Manager Level (Integrated) ---
-  home-manager.users.${config.user.name} = {
+  # Note: Replace "t0psh31f" with your explicit username, or define a custom 
+  # config.user.name option to make this dynamic across different users.
+  home-manager.users.t0psh31f = {
     home.packages = [ pkgs.mangohud pkgs.lutris ];
     xdg.configFile."mangohud/mangohud.conf".text = "fps_limit=144";
   };

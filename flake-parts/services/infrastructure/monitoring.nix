@@ -176,78 +176,9 @@ with lib;
       };
     };
 
-    # Promtail - Ship systemd logs to Loki
-    services.promtail = {
-      enable = true;
 
-      configuration = {
-        server = {
-          http_listen_port = 9080;
-          grpc_listen_port = 0;
-        };
 
-        positions.filename = "/var/lib/promtail/positions.yaml";
 
-        clients = [
-          {
-            url = "http://localhost:${toString config.services-config.monitoring.loki.port}/loki/api/v1/push";
-          }
-        ];
-
-        scrape_configs = [
-          # Systemd journal
-          {
-            job_name = "journal";
-            journal = {
-              max_age = "12h";
-              labels = {
-                job = "systemd-journal";
-                host = config.networking.hostName;
-              };
-            };
-            relabel_configs = [
-              {
-                source_labels = [ "__journal__systemd_unit" ];
-                target_label = "unit";
-              }
-              {
-                source_labels = [ "__journal_priority_keyword" ];
-                target_label = "level";
-              }
-            ];
-          }
-
-          # System logs
-          {
-            job_name = "syslog";
-            static_configs = [
-              {
-                targets = [ "localhost" ];
-                labels = {
-                  job = "syslog";
-                  host = config.networking.hostName;
-                  __path__ = "/var/log/messages";
-                };
-              }
-            ];
-          }
-        ];
-      };
-    };
-
-    # Fix promtail namespace error (conflicts with impermanence bind mounts)
-    systemd.services.promtail = {
-      serviceConfig = {
-        PrivateTmp = lib.mkForce false;
-        ProtectSystem = lib.mkForce false;
-        ProtectHome = lib.mkForce false;
-        ReadWritePaths = [ "/var/lib/promtail" ];
-        # Additional fixes for namespace issues
-        TemporaryFileSystem = lib.mkForce "";
-        BindReadOnlyPaths = lib.mkForce "";
-        BindPaths = lib.mkForce "";
-      };
-    };
 
     # Ensure data is persisted
 
@@ -260,8 +191,6 @@ with lib;
         "/var/lib/loki"
 
         "/var/lib/grafana"
-
-        "/var/lib/promtail"
 
       ];
 

@@ -74,6 +74,7 @@
   };
 
   # System features
+  features.system.ai-agent-stack.enable = true;
   nix-tools.enable = true;
   desktop-portals.enable = true;
 

@@ -69,12 +69,6 @@ in
       # };
     };
 
-    users.users.wyoming-satellite = {
-      isSystemUser = true;
-      group = "wyoming-satellite";
-      description = "Wyoming Satellite Service User";
-    };
-    users.groups.wyoming-satellite = { };
 
     networking.firewall = {
       allowedTCPPorts = [

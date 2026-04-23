@@ -9,6 +9,11 @@ with lib;
   options.virtualization = {
     enable = mkEnableOption "Virtualization support (QEMU/KVM, Docker, Podman)";
     waydroid.enable = mkEnableOption "Waydroid container support";
+    user = mkOption {
+      type = types.str;
+      default = "t0psh31f";
+      description = "Primary user to add to virtualization groups.";
+    };
   };
 
   config = mkMerge [
@@ -21,7 +26,7 @@ with lib;
       programs.dconf.enable = true;
 
       # Add your user to the virtualization group
-      users.users.t0psh31f.extraGroups = [
+      users.users."${config.virtualization.user}".extraGroups = [
         "libvirtd"
         "kvm"
       ];

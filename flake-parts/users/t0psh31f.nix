@@ -6,6 +6,10 @@
   ...
 }:
 {
+  programs = {
+    zsh.enable = true;
+  };
+
   # System-level user settings not managed by Clan
   users.users.t0psh31f = {
     isNormalUser = true;
@@ -32,7 +36,6 @@
   };
 
   users.users.t0psh31f.hashedPasswordFile = lib.mkForce null;
-  programs.zsh.enable = true;
 
   # Home Manager configuration for t0psh31f
   # Permanent fix for backup collisions: Automatically remove old backups before activation

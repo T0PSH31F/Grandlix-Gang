@@ -13,7 +13,7 @@ in
       # Editor tooling
       neovim
       # vscode is configured in vscode.nix with vscode-fhs
-
+      haxor-news
       # CLIs
       httpie
       curlie

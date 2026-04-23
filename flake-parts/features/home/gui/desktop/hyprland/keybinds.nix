@@ -72,6 +72,7 @@ in
         "$mod SHIFT, L, exec, $ipc lockScreen lock"
         "CTRL ALT, Delete, exec, $ipc sessionMenu toggle"
         "$mod SHIFT, N, exec, $ipc notifications toggleHistory"
+        "$mod CTRL SHIFT, M, exec, hypr-sfx-toggle"
         "$mod, F, fullscreen, 1"
         "$mod ALT, F, fullscreen, 1"
 

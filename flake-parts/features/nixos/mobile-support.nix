@@ -31,7 +31,11 @@ in
         jmtpfs # MTP Filesystem
         scrcpy # Screen mirroring
         heimdall-gui # GUI for Heimdall (provides CLI tools as well)
+        mtkclient
+        mobile-broadband-provider-info
+        qmk-udev-rules
         phonemizer
+        pixelflasher
         universal-android-debloater
         valent # KDE Connect implementation for GTK
       ];
@@ -53,8 +57,12 @@ in
       # Enable usbmuxd for USB multiplexing (required for iOS)
       services.usbmuxd.enable = true;
 
+      programs.idescriptor.enable = true;
+
       environment.systemPackages = with pkgs; [
         libimobiledevice # Communicate with iOS devices
+        libirecovery
+        ipad_charge
         ifuse # Mount iOS filesystems
         ideviceinstaller # Manage apps
         ios-webkit-debug-proxy # Debug WebKit on iOS

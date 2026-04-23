@@ -5,45 +5,45 @@ final: prev: {
   # Yazelix Zellij Orchestrator
   yazelix-orchestrator = final.stdenv.mkDerivation {
     pname = "yazelix-orchestrator";
-    version = "latest";
+    version = "v14";
     src = final.fetchurl {
-      url = "https://raw.githubusercontent.com/luccahuguet/yazelix/main/configs/zellij/plugins/yazelix_pane_orchestrator.wasm";
-      sha256 = "sha256-cOkn2Dqm2zHFM3B0sqHHRTpTL/MQmtBbTNoMzIh+xcQ=";
+      url = "https://raw.githubusercontent.com/luccahuguet/yazelix/v14/configs/zellij/plugins/yazelix_pane_orchestrator.wasm";
+      sha256 = "sha256-H4uAqyJbx7HHy0vRXZOqDeG1UkkTmfwqZ4qCuAOviOc=";
     };
     phases = [ "installPhase" ];
     installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/yazelix_pane_orchestrator.wasm
+      mkdir -p $out/lib
+      cp $src $out/lib/yazelix_pane_orchestrator.wasm
     '';
   };
 
   # Yazelix Zellij Popup Runner
   yazelix-popup-runner = final.stdenv.mkDerivation {
     pname = "yazelix-popup-runner";
-    version = "latest";
+    version = "v14";
     src = final.fetchurl {
-      url = "https://raw.githubusercontent.com/luccahuguet/yazelix/main/configs/zellij/plugins/yazelix_popup_runner.wasm";
-      sha256 = "sha256-jNKKmboyApT00cpvjEc+FGuJ98eAHKseModR8rGEX1M=";
+      url = "https://raw.githubusercontent.com/luccahuguet/yazelix/v14/configs/zellij/plugins/yazelix_popup_runner.wasm";
+      sha256 = "sha256-7m8EXc8DHDZEtcT1PYvulHYIeDB8laprpqCSY7oJl4Y=";
     };
     phases = [ "installPhase" ];
     installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/yazelix_popup_runner.wasm
+      mkdir -p $out/lib
+      cp $src $out/lib/yazelix_popup_runner.wasm
     '';
   };
 
   # Zellij status bar plugin
   zjstatus = final.stdenv.mkDerivation {
     pname = "zjstatus";
-    version = "latest";
+    version = "0.20.2";
     src = final.fetchurl {
-      url = "https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm";
-      sha256 = "sha256-TeQm0gscv4YScuknrutbSdksF/Diu50XP4W/fwFU3VM=";
+      url = "https://github.com/dj95/zjstatus/releases/download/v0.20.2/zjstatus.wasm";
+      sha256 = "sha256-OSg7Q1AWKW32Y9sHWJbWOXWF1YI5mt0N4Vsa2fcvuNg=";
     };
     phases = [ "installPhase" ];
     installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/zjstatus.wasm
+      mkdir -p $out/lib
+      cp $src $out/lib/zjstatus.wasm
     '';
   };
 

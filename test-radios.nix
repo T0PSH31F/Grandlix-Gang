@@ -1,8 +1,5 @@
 let
   flake = builtins.getFlake (toString ./.);
-  pkgs = flake.inputs.nixpkgs.legacyPackages.x86_64-linux;
+  pkgs = flake.inputs.nixpkgs.legacyPackages.${builtins.currentSystem}.extend (import ./overlays/custom-packages.nix);
 in
-  pkgs.python3Packages.radios.overridePythonAttrs (old: {
-    pythonRelaxDeps = [ "pycountry" ];
-    nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.python3Packages.pythonRelaxDepsHook ];
-  })
+  pkgs.python3Packages.radios

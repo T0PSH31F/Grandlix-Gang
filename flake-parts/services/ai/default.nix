@@ -3,8 +3,10 @@
 {
   imports = [
     ./ai-services.nix
+    ./brain-service.nix
     ./llm-agents.nix
     ./sillytavern.nix
+    ./voice.nix
     ./wyoming.nix
   ];
 }

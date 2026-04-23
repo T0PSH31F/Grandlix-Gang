@@ -89,8 +89,9 @@
       url = "github:vicinaehq/extensions";
       inputs.vicinae.follows = "vicinae";
     };
-    yazelix = {
-      url = "github:luccahuguet/yazelix?dir=home_manager";
+    yazelix-hm = {
+      url = "github:luccahuguet/yazelix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
       url = "github:nix-community/disko";
@@ -119,7 +120,7 @@
       vicinae,
       vicinae-extensions,
       nixai,
-      yazelix,
+      yazelix-hm,
       disko,
       wakatime-lsp,
       antigravity,

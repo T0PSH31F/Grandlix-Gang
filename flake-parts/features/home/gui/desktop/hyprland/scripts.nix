@@ -34,20 +34,22 @@ let
     fi
 
     LAST_MOVE=0
+    MUTE_FILE="/tmp/hypr-sfx.muted"
+
     play_sound() {
+      if [ -f "$MUTE_FILE" ]; then
+        return
+      fi
       local file="$SOUND_DIR/$1"
       if [ -f "$file" ]; then
         # Rate-limit movewindow sounds to 5 per second
-        if [[ "$1" == "move-window.wav" ]]; then
+        if [[ "$1" == "${cfg.sfx.sounds.moveWindow}" ]]; then
            local now=$(date +%s%3N)
            if (( now - LAST_MOVE < 200 )); then
               return
            fi
            LAST_MOVE=$now
         fi
-        # Kill any hanging pw-play processes if they take too long (avoiding build-up)
-        # timeout 5s ${pkgs.pipewire}/bin/pw-play "$file" &
-        # Or better: just play and disown, but the flock/single-instance check above already prevents script-level duplicates
         ${pkgs.pipewire}/bin/pw-play "$file" &
       fi
     }
@@ -56,12 +58,27 @@ let
 
     ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:"$SOCKET" | while IFS= read -r line; do
       case "$line" in
-        activewindow\>\>*)  play_sound "switch-focus.wav"  ;;
-        movewindow\>\>*)    play_sound "move-window.wav"   ;;
-        openwindow\>\>*)    play_sound "open-window.wav"   ;;
-        closewindow\>\>*)   play_sound "close-window.wav"  ;;
+        activewindow\>\>*)  play_sound "${cfg.sfx.sounds.switchFocus}"  ;;
+        movewindow\>\>*)    play_sound "${cfg.sfx.sounds.moveWindow}"   ;;
+        openwindow\>\>*)    play_sound "${cfg.sfx.sounds.openWindow}"   ;;
+        closewindow\>\>*)   play_sound "${cfg.sfx.sounds.closeWindow}"  ;;
       esac
     done
+  '';
+
+  # ── SFX Mute Toggle Script ─────────────────────────────────────
+  hypr-sfx-toggle = pkgs.writeShellScriptBin "hypr-sfx-toggle" ''
+    #!/usr/bin/env bash
+    MUTE_FILE="/tmp/hypr-sfx.muted"
+    if [ -f "$MUTE_FILE" ]; then
+      rm -f "$MUTE_FILE"
+      ${pkgs.libnotify}/bin/notify-send -t 2000 -i audio-volume-high "UI Sounds" "Unmuted"
+      ${pkgs.pipewire}/bin/pw-play "$HOME/Clan/NFP/assets/SFX/${cfg.sfx.sounds.openWindow}" &
+    else
+      touch "$MUTE_FILE"
+      ${pkgs.pipewire}/bin/pw-play "$HOME/Clan/NFP/assets/SFX/${cfg.sfx.sounds.closeWindow}"
+      ${pkgs.libnotify}/bin/notify-send -t 2000 -i audio-volume-muted "UI Sounds" "Muted"
+    fi
   '';
 
   # ── Theme Switch Master Trigger ──────────────────────────────────
@@ -335,6 +352,7 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       hypr-sfx
+      hypr-sfx-toggle
       theme-switch
       hypr-keybind-cheatsheet
    #  hypr-scrolling-resize

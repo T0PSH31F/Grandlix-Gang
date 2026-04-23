@@ -19,13 +19,13 @@ in
       whisper-cpp
       wyoming-openwakeword
       espeak-ng
-      
+      python3Packages.kokoro
       # Audio backend support
       portaudio
       alsa-lib
 
       # Python environment for custom scripts
-      (lib.hiPrio (python3.withPackages (
+      (python3.withPackages (
         ps: with ps; [
           pyaudio
           sounddevice
@@ -34,7 +34,7 @@ in
           openai # For LiteLLM/Ollama compatible API calls
           wyoming # Wyoming protocol support
         ]
-      )))
+      ))
     ];
   };
 }

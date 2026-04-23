@@ -2,6 +2,7 @@
 # Core system modules - foundational configuration for all machines
 {
   imports = [
+    ./ai-agent-stack.nix
     ./base.nix
     ./caches.nix
     ./clan-lib.nix
