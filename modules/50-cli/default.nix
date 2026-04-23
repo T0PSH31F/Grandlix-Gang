@@ -1,0 +1,131 @@
+# flake-parts/features/home/cli/default.nix
+{ config, lib, ... }:
+
+let
+  cfg = config.programs.cli-environment;
+in
+{
+  imports = [
+    ./editors/fallbacks.nix
+    ./editors/helix.nix
+    ./file-managers/alternatives.nix
+    ./file-managers/superfile.nix
+    ./file-managers/yazi.nix
+    ./integrations/keybindings.nix
+    ./integrations/yazelix-style.nix
+    # ./multiplexers/tmux.nix
+    ./multiplexers/zellij.nix
+    ./prompt/starship.nix
+    ./services
+    ./shells/bash.nix
+    ./shells/common.nix
+    ./shells/zsh.nix
+    ./theming/matugen.nix
+    ./tools/fzf.nix
+    ./tools/git.nix
+    ./tools/gpg.nix
+    ./tools/modern-utils.nix
+    ./tools/nix-tools.nix
+    ./tools/python.nix
+    ./tools/system-utils.nix
+    ./yazelix.nix
+    ./vivid.nix
+  ];
+
+  options.programs.cli-environment = {
+    enable = lib.mkEnableOption "Complete CLI/TUI environment";
+
+    theming = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable dynamic theming for CLI tools";
+      };
+      theme = lib.mkOption {
+        type = lib.types.enum [
+          "Catppuccin Lavender"
+          "Cherry Blossom"
+          "Cyberpunk"
+          "Everdeer"
+          "Everforest"
+          "GitHub Dark"
+          "Gruber Darker"
+          "GruvboxAlt"
+          "Hexa34C"
+          "Lilac AMOLED"
+          "Miasma"
+          "Monochrome"
+          "NaySayer"
+          "Noctalia legacy"
+          "Oasis Abyss"
+          "Occult Umbral"
+          "One"
+          "Osaka jade"
+          "Oxide"
+          "Oxocarbon"
+          "Peche"
+          "Rose Pine Moon"
+          "Rosey AMOLED"
+          "Solarized"
+          "Tokyo Night Moon"
+          "Vesper"
+          "tokyo-night"
+        ];
+        default = "tokyo-night";
+        description = "Static theme to use in headless mode";
+      };
+    };
+
+    shells = {
+      zsh.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Zsh with full Powerlevel10k configuration";
+      };
+      bash.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable Bash configuration";
+      };
+    };
+
+    yazelixIntegration.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable Helix + Yazi + Zellij integration";
+    };
+
+    modernTools.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable modern CLI tool replacements (bat, eza, ripgrep, etc.)";
+    };
+
+    nixTools.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable Nix-specific CLI tools";
+    };
+
+    pythonTools.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable Python and related tools (uv, etc.)";
+    };
+
+    headless = lib.mkEnableOption "Headless/VPS environment optimizations";
+  };
+
+  config = lib.mkIf cfg.enable {
+    programs.cli-environment.theming.matugen.enable = cfg.theming.enable;
+    
+    # Simple direct toggle for headless color sourcing
+    programs.cli-environment.theming.matugen.source = lib.mkIf cfg.headless (lib.mkForce "tokyo-night");
+
+    programs.vivid.matugen = {
+      enable = true;
+      outputColorMode = "24-bit";
+      # matugenIntegration is implied by enabling this module
+    };
+  };
+}

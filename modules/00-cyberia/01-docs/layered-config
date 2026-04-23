@@ -1,0 +1,576 @@
+# Layered Feature Architecture + Clan-Core Integration
+
+## How Clan-Core Tags Work with Layers
+
+Clan-core uses an **inventory system** where machines can have **tags**, and service roles can target those tags. This maps beautifully to layered architecture.
+
+**Key clan-core concepts** :
+- **Machines**: Individual hosts in your fleet
+- **Tags**: Labels applied to machines (e.g., `["server", "backup", "monitoring"]`)
+- **Instances**: Service definitions with roles
+- **Roles**: Parts of a service (client/server) that target machines or tags
+
+---
+
+## Layered + Clan Structure
+
+my-nix-config/
+├── flake.nix # Clan inventory defined here
+│
+├── layers/ # Feature layers (as before)
+│ ├── 00-foundation/
+│ │ ├── default.nix
+│ │ ├── nix-config.nix
+│ │ ├── boot.nix
+│ │ ├── locale.nix
+│ │ └── networking.nix
+│ │
+│ ├── 10-system/
+│ │ ├── containers/
+│ │ │ ├── docker.nix
+│ │ │ └── podman.nix
+│ │ ├── virtualization/
+│ │ │ ├── qemu.nix
+│ │ │ └── libvirt.nix
+│ │ └── filesystems/
+│ │ ├── zfs.nix
+│ │ └── btrfs.nix
+│ │
+│ ├── 20-services/
+│ │ ├── web/
+│ │ │ ├── nginx.nix
+│ │ │ └── caddy.nix
+│ │ ├── databases/
+│ │ │ ├── postgres.nix
+│ │ │ └── redis.nix
+│ │ ├── monitoring/
+│ │ │ ├── prometheus.nix
+│ │ │ ├── grafana.nix
+│ │ │ └── loki.nix
+│ │ └── ai/
+│ │ ├── ollama.nix
+│ │ └── n8n.nix
+│ │
+│ ├── 30-desktop/
+│ │ ├── wayland/
+│ │ │ └── hyprland.nix
+│ │ └── components/
+│ │ ├── waybar.nix
+│ │ └── kitty.nix
+│ │
+│ ├── 40-applications/
+│ │ ├── editors/
+│ │ │ └── neovim/
+│ │ └── browsers/
+│ │ └── firefox.nix
+│ │
+│ └── 50-development/
+│ ├── languages/
+│ │ ├── nix.nix
+│ │ ├── rust.nix
+│ │ └── python.nix
+│ └── tools/
+│ ├── git.nix
+│ └── direnv.nix
+│
+├── profiles/ # Layer compositions (tag-aware)
+│ ├── tags/ # Tag-based profiles
+│ │ ├── server.nix # For machines tagged "server"
+│ │ ├── workstation.nix # For machines tagged "workstation"
+│ │ ├── laptop.nix # For machines tagged "laptop"
+│ │ ├── backup-client.nix # For machines tagged "backup"
+│ │ ├── monitoring-target.nix # For machines tagged "monitoring"
+│ │ └── ai-worker.nix # For machines tagged "ai"
+│ │
+│ └── roles/ # Service-specific roles
+│ ├── backup-server.nix
+│ ├── monitoring-server.nix
+│ └── database-server.nix
+│
+├── machines/ # Machine definitions
+│ ├── framework-laptop/
+│ │ ├── default.nix
+│ │ └── hardware.nix
+│ ├── homelab-server/
+│ │ ├── default.nix
+│ │ └── hardware.nix
+│ └── nas/
+│ ├── default.nix
+│ └── hardware.nix
+│
+└── clan/ # Clan-specific config
+├── inventory.nix # Central inventory definition
+├── services/ # Clan service instances
+│ ├── borgbackup.nix
+│ ├── zerotier.nix
+│ └── monitoring.nix
+└── secrets/ # Clan secrets (sops-nix)
+└── secrets.yaml
+
+---
+
+## Implementation: Inventory with Tags
+
+**flake.nix** :
+```nix
+{
+  description = "Erik's NixOS Fleet with Clan-Core";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core";
+    home-manager.url = "github:nix-community/home-manager";
+  };
+
+  outputs = { self, nixpkgs, clan-core, home-manager, ... }:
+  let
+    # Define clan with inventory
+    clan = clan-core.lib.buildClan {
+      # Machine inventory with tags
+      inventory = {
+        # Define all machines with their tags
+        machines = {
+          "framework-laptop" = {
+            tags = [ "workstation" "laptop" "backup" "ai" ];
+            deploy.targetHost = "framework.tail-net.ts.net";
+          };
+          
+          "homelab-server" = {
+            tags = [ "server" "backup-server" "monitoring-server" "ai" ];
+            deploy.targetHost = "homelab.tail-net.ts.net";
+          };
+          
+          "nas" = {
+            tags = [ "server" "backup-server" "storage" ];
+            deploy.targetHost = "nas.tail-net.ts.net";
+          };
+          
+          "workstation" = {
+            tags = [ "workstation" "development" "ai" ];
+            deploy.targetHost = "workstation.tail-net.ts.net";
+          };
+        };
+
+        # Service instances targeting tags
+        instances = {
+          # Backup service: all tagged "backup" are clients
+          borgbackup = {
+            module = {
+              name = "borgbackup";
+              input = "clan-core";
+            };
+            roles = {
+              client.tags = [ "backup" ];              # All machines with "backup" tag
+              server.machines."homelab-server" = {};   # Specific machine as server
+            };
+          };
+
+          # Monitoring: all servers report metrics
+          prometheus = {
+            module = {
+              name = "prometheus";
+              input = "clan-core";
+            };
+            roles = {
+              server.machines."homelab-server" = {};
+              target.tags = [ "server" "workstation" ]; # Monitor these tags
+            };
+          };
+
+          # ZeroTier VPN mesh
+          zerotier = {
+            module = {
+              name = "zerotier-controller";
+              input = "clan-core";
+            };
+            roles = {
+              controller.machines."homelab-server" = {};
+              peer.tags = [ "server" "workstation" "laptop" ]; # All join VPN
+            };
+          };
+        };
+      };
+
+      # Directory containing machine configs
+      directory = self;
+      
+      # Path to machine-specific configs
+      machines = ./machines;
+      
+      # Special arguments passed to modules
+      specialArgs = { inherit home-manager; };
+    };
+  in {
+    # Expose clan outputs
+    inherit (clan) nixosConfigurations clanInternals;
+    
+    # Make inventory accessible
+    inventory = clan.clanInternals.inventory;
+  };
+}
+Tag-Based Profile System
+profiles/tags/server.nix (Applied to machines with "server" tag):
+
+text
+{ config, lib, pkgs, ... }: {
+  # Server machines get layers 00, 10, 20
+  imports = [
+    ../../layers/00-foundation
+    ../../layers/10-system/containers/docker.nix
+    ../../layers/10-system/filesystems/zfs.nix
+    ../../layers/20-services/web/nginx.nix
+  ];
+
+  # Server-specific config
+  config = {
+    # Headless server
+    boot.kernelParams = [ "quiet" ];
+    
+    # Server optimizations
+    powerManagement.cpuFreqGovernor = "powersave";
+    
+    # Enable monitoring by default
+    services.prometheus.exporters.node.enable = true;
+    
+    # Automatic updates
+    system.autoUpgrade = {
+      enable = true;
+      allowReboot = false;
+    };
+  };
+}
+profiles/tags/workstation.nix (Applied to machines with "workstation" tag):
+
+text
+{ config, lib, pkgs, ... }: {
+  # Workstation gets foundation + system + desktop + dev
+  imports = [
+    ../../layers/00-foundation
+    ../../layers/10-system/containers/docker.nix
+    ../../layers/30-desktop/wayland/hyprland.nix
+    ../../layers/40-applications/editors/neovim
+    ../../layers/50-development/languages/nix.nix
+    ../../layers/50-development/languages/rust.nix
+    ../../layers/50-development/tools/git.nix
+  ];
+
+  config = {
+    # Desktop environment
+    services.xserver.enable = true;
+    services.pipewire.enable = true;
+    
+    # Performance mode
+    powerManagement.cpuFreqGovernor = "performance";
+    
+    # Development tools
+    programs.direnv.enable = true;
+  };
+}
+profiles/tags/ai-worker.nix (Applied to machines with "ai" tag):
+
+text
+{ config, lib, pkgs, ... }: {
+  # AI machines get AI services layer
+  imports = [
+    ../../layers/20-services/ai/ollama.nix
+    ../../layers/20-services/ai/n8n.nix
+  ];
+
+  config = {
+    # GPU support for AI
+    hardware.opengl.enable = true;
+    services.ollama.acceleration = "cuda";
+    
+    # Ensure adequate resources
+    systemd.services.ollama.serviceConfig = {
+      MemoryMax = "16G";
+      CPUQuota = "400%";
+    };
+  };
+}
+Machine Definitions (Tag Application)
+machines/framework-laptop/default.nix:
+
+text
+{ config, lib, pkgs, clan-core, ... }: {
+  # Import tag-based profiles
+  imports = [
+    ./hardware.nix
+    ../../profiles/tags/workstation.nix
+    ../../profiles/tags/laptop.nix
+    ../../profiles/tags/ai-worker.nix
+    # Backup client role applied automatically via clan inventory
+  ];
+
+  # Machine-specific overrides
+  networking.hostName = "framework";
+  
+  # Laptop-specific: power management
+  services.tlp.enable = true;
+  services.auto-cpufreq.enable = true;
+  
+  # Override workstation default for laptop
+  powerManagement.cpuFreqGovernor = lib.mkForce "powersave";
+  
+  # HiDPI display
+  services.xserver.dpi = 144;
+  
+  # User config
+  users.users.erik = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "docker" "networkmanager" ];
+  };
+}
+machines/homelab-server/default.nix:
+
+text
+{ config, lib, pkgs, ... }: {
+  imports = [
+    ./hardware.nix
+    ../../profiles/tags/server.nix
+    ../../profiles/tags/ai-worker.nix
+    ../../profiles/roles/backup-server.nix
+    ../../profiles/roles/monitoring-server.nix
+  ];
+
+  networking.hostName = "homelab";
+  
+  # Enable all AI services
+  services.ollama.enable = true;
+  services.n8n.enable = true;
+  
+  # Storage for backups
+  fileSystems."/backup" = {
+    device = "/dev/disk/by-label/backup";
+    fsType = "zfs";
+  };
+  
+  # Monitoring server
+  services.prometheus = {
+    enable = true;
+    port = 9090;
+  };
+  
+  services.grafana = {
+    enable = true;
+    settings.server.http_port = 3000;
+  };
+}
+Automatic Tag-Based Configuration
+Create a helper that automatically imports profiles based on machine tags:
+
+lib/mkMachineFromTags.nix:
+
+text
+{ lib, clan-core, ... }:
+
+{ machineName, inventory }:
+let
+  machineConfig = inventory.machines.${machineName};
+  tags = machineConfig.tags or [];
+  
+  # Map tags to profile paths
+  tagToProfile = tag: 
+    if builtins.pathExists ../profiles/tags/${tag}.nix
+    then [ ../profiles/tags/${tag}.nix ]
+    else [];
+  
+  # Collect all profiles from tags
+  profileImports = lib.flatten (map tagToProfile tags);
+  
+in {
+  imports = profileImports ++ [
+    ./machines/${machineName}
+  ];
+  
+  # Make tags accessible in config
+  _module.args.machineTags = tags;
+}
+Usage in flake.nix:
+
+text
+let
+  mkMachine = machineName: lib.nixosSystem {
+    system = "x86_64-linux";
+    specialArgs = { inherit clan-core inventory; };
+    modules = [
+      (import ./lib/mkMachineFromTags.nix {
+        inherit lib clan-core;
+      } { inherit machineName inventory; })
+    ];
+  };
+in {
+  nixosConfigurations = {
+    framework-laptop = mkMachine "framework-laptop";
+    homelab-server = mkMachine "homelab-server";
+    nas = mkMachine "nas";
+    workstation = mkMachine "workstation";
+  };
+}
+Layered Services with Clan Roles
+clan/services/borgbackup.nix:
+
+text
+{ config, lib, pkgs, ... }: {
+  # This gets automatically applied to machines based on inventory roles
+  
+  # Client role (applied to machines with "backup" tag)
+  clan.core.services.borgbackup.client = {
+    enable = true;
+    # Include specific layers in backup
+    paths = [
+      "/home"
+      "/etc/nixos"
+      "/var/lib/docker"
+    ];
+    exclude = [
+      "*.cache"
+      "*/node_modules"
+    ];
+  };
+  
+  # Server role (applied to backup-server machines)
+  clan.core.services.borgbackup.server = {
+    enable = true;
+    storage = "/backup/borg";
+  };
+}
+Layer-Aware Clan Service
+layers/20-services/monitoring/prometheus.nix:
+
+text
+{ config, lib, pkgs, machineTags ? [], ... }: {
+  # Service layer that's clan-aware
+  
+  options.layers.monitoring = {
+    enable = lib.mkEnableOption "monitoring layer";
+    exporters = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "Which prometheus exporters to enable";
+    };
+  };
+
+  config = lib.mkIf config.layers.monitoring.enable {
+    # Always enable node exporter
+    services.prometheus.exporters.node = {
+      enable = true;
+      enabledCollectors = [ "systemd" ];
+    };
+    
+    # Enable docker exporter if docker is in a layer
+    services.prometheus.exporters.docker = lib.mkIf config.virtualisation.docker.enable {
+      enable = true;
+    };
+    
+    # Enable postgres exporter if postgres is in a layer
+    services.prometheus.exporters.postgres = lib.mkIf config.services.postgresql.enable {
+      enable = true;
+    };
+    
+    # Tag-specific exporters
+    services.prometheus.exporters.nginx = lib.mkIf (builtins.elem "server" machineTags) {
+      enable = config.services.nginx.enable;
+    };
+  };
+}
+Benefits of Layered + Clan Integration
+1. Tag-Based Layer Activation [web:66]:
+
+text
+# Tags automatically determine which layers are imported
+tags = [ "server" "ai" ]  
+→ Imports server.nix + ai-worker.nix 
+→ Gets layers: foundation + system + services/ai
+2. Fleet-Wide Service Deployment [web:68]:
+
+text
+# Deploy monitoring to all servers with one inventory change
+roles.target.tags = [ "server" ];
+# All machines tagged "server" get monitoring client
+3. Consistent Layer Application:
+
+text
+# All "workstation" tagged machines get same layer stack
+# Overrides happen at machine level, not profile level
+4. DRY Service Configuration [web:65]:
+
+text
+# Define borgbackup once in clan/services/
+# Applied to all machines with "backup" tag
+# No per-machine duplication
+5. Mesh Networking Built-In [web:67][web:69]:
+
+text
+# Clan handles VPN mesh (ZeroTier/Tailscale)
+# Layers just reference service names
+# No manual IP management
+Complete Example: Adding New Machine
+Step 1: Define in inventory:
+
+text
+inventory.machines."new-worker" = {
+  tags = [ "server" "ai" "backup" ];
+  deploy.targetHost = "new-worker.tail-net.ts.net";
+};
+Step 2: Create machine config:
+
+text
+# machines/new-worker/default.nix
+{ ... }: {
+  imports = [ ./hardware.nix ];
+  
+  networking.hostName = "new-worker";
+  
+  # Tags automatically import:
+  # - profiles/tags/server.nix
+  # - profiles/tags/ai-worker.nix
+  # Which bring in appropriate layers
+  
+  # Machine-specific overrides only
+  services.ollama.models = [ "llama3" "codellama" ];
+}
+Step 3: Deploy:
+
+bash
+clan machines update new-worker
+Done! Machine gets:
+
+Foundation layer (from server tag)
+
+System layer with Docker (from server tag)
+
+Services layer with AI (from ai tag)
+
+Backup client role (from backup tag)
+
+Monitoring exporters (from server tag)
+
+VPN mesh connection (automatic via clan)
+
+Summary
+YES, layered architecture works perfectly with clan-core!
+
+Layers define feature sets (00-foundation, 10-system, etc.)
+
+Tags determine which layers a machine gets [web:66]
+
+Profiles map tags to layer imports
+
+Clan inventory orchestrates service deployment across tagged machines [web:68]
+
+Roles (client/server) target tags for distributed services
+
+This gives you:
+
+Clean layer separation
+
+Fleet-wide consistency via tags
+
+Service orchestration via clan
+
+Machine-specific overrides when needed
+
+No duplication across machines
+
+It's the best of both worlds: structured layers + powerful fleet management [web:65][web:67].
