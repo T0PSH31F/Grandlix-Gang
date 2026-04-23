@@ -71,7 +71,7 @@ with lib;
         enableBashIntegration = true;
         enableZshIntegration = true;
       };
-      programs.nix-ld = {
+      nix-ld = {
         enable = true;
         libraries = with pkgs; [
           SDL
@@ -151,7 +151,6 @@ with lib;
           pipewire
           pixman
           speex
-          steam-fhsenv-without-steam
           systemd
           tbb
           vulkan-loader
