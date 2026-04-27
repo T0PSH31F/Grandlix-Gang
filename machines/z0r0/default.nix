@@ -2,35 +2,44 @@
   config,
   lib,
   ...
-}:
-{
+}: {
+  # ============================================================================
+  # 00 - CORE IMPORTS
+  # ============================================================================
   imports = [
-    # Hardware configuration (LUKS, filesystems, swap)
     ./hardware.nix
 
-    # Core system modules from flake-parts (includes base, nix-settings, networking, nix-tools, clan-lib, fonts, overlays)
-    ../../modules/10-system
-    ../../modules/10-system/11-foundation
-    ../../modules/10-system/12-hardware
-    ../../modules/10-system/13-packages
-    
-    ../../modules/30-identity/32-themes
-
-    ../../modules/20-services/22-ai
-    ../../modules/20-services/23-media
-    ../../modules/20-services
-    ../../modules/20-services/24-communication
-
-    # User configuration (HM + user-specific system settings)
-    ../../modules/30-identity/31-users/t0psh31f.nix
+    ../../layers/10-system
+    ../../layers/30-identity/32-themes
+    ../../layers/20-services
+    ../../layers/30-identity/31-users/t0psh31f.nix
   ];
 
   # ============================================================================
-  # MACHINE METADATA
+  # 01 - MACHINE IDENTITY
   # ============================================================================
   networking.hostName = "z0r0";
   system.stateVersion = "25.05";
 
+  # ----------------------------------------------------------------------------
+  # AVAILABLE PROFILES / TAGS
+  # ----------------------------------------------------------------------------
+  # Tags define the machine's role and automatically enable corresponding features.
+  # See `layers/90-profiles/tags/` for explicit definitions.
+  #
+  # Hardware/Form Factor:
+  #   "workstation" : Enables base limits, themes, and network tools (avahi, tailscale, ssh).
+  #   "desktop"     : Enables graphical hardware features (bluetooth), automount, portals, flatpak.
+  #   "laptop"      : Enables battery optimizations and wireless tools.
+  #
+  # Roles:
+  #   "development" : Enables coding tools, Python, VSCode, and dev agents (Opencode, Antigravity).
+  #   "gaming"      : Enables Steam, GameMode, Lutris, emulators, etc.
+  #   "ai-server"   : Enables local AI backend (llms, sillytavern, wyoming, ai-services, dashboard).
+  #   "homelab"     : Enables home infra (home-assistant, searxng, headscale, vaultwarden, etc).
+  #   "cache-server": Enables Harmonia Nix binary cache.
+  #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
+  # ----------------------------------------------------------------------------
   machine.tags = [
     "desktop"
     "laptop"
@@ -43,78 +52,47 @@
   ];
 
   # ============================================================================
-  # FEATURE TOGGLES
+  # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
+  # Note: Most features are automatically enabled via machine.tags -> 90-profiles
+  features = {
+    system = {
+      hardware.corsair.enable = true;
+      hardware.openrgb.enable = true;
+      mobile.android.enable = true;
+      config.impermanence.enable = true;
+      virtualization.enable = true;
+    };
 
-  hardware-config = {
-    automount.enable = true;
-    openrgb.enable = true;
-    bluetooth.enable = true;
-    corsair.enable = true;
-  };
+    services.config = {
+      adguard.enable = true;
+    };
 
-  # Themes
-  themes = {
-    grub-lain.enable = true;
-    plymouth-hellonavi.enable = true;
-    greeter = {
-      greetd = {
+    identity.themes = {
+      greeter.greetd = {
         enable = true;
-        background = ../../modules/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
+        background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
       };
-      sddm = {
-        enable = false;
-        background = ../../modules/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
-      };
+    };
+
+    desktop = {
+      noctalia.backend = "hyprland";
     };
   };
 
-  # Mobile device support
-  mobile = {
-    android.enable = true;
-    ios.enable = false;
-  };
-
-  # System features
-  features.system.ai-agent-stack.enable = true;
-  nix-tools.enable = true;
-  desktop-portals.enable = true;
-
-  # Gaming & Virtualization
-  gaming.enable = true;
-  virtualization.enable = true;
-
-  # Flatpak & AppImage
-  flatpak.enable = true;
-
-  # Impermanence
-  system-config.impermanence.enable = true;
-
   # ============================================================================
-  # SERVICES
+  # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
   # ============================================================================
-
+  # Note: Most raw services are automatically enabled via machine.tags
   services = {
-    # Desktop Services
-    ssh-agent.enable = true;
-    searxng.enable = true;
-    pastebin.enable = false;
-    wyoming-services.enable = true;
-
-    # DuckDNS Auto-Updater using dd
+    # Advanced Service Configuration
     ddclient = {
       enable = true;
-      domains = [
-        "lovelain.duckdns.org"
-        "t0psh31f.duckdns.org"
-        "nixfp.duckdns.org"
-      ];
+      domains = [ "lovelain.duckdns.org" "t0psh31f.duckdns.org" "nixfp.duckdns.org" ];
       protocol = "duckdns";
       passwordFile = config.sops.secrets."duckdns-token".path;
     };
 
-    # Home Automation & Infrastructure
-    home-assistant-server.enable = true;
     caddy-server = {
       enable = true;
       email = "admin@lovelain.duckdns.org";
@@ -127,108 +105,35 @@
         '';
       };
     };
-    n8n-server.enable = false;
-
-    # AI Services - Granular toggles
-    llm-agents.enable = true;
-    sillytavern.enable = true;
-    librechat.enable = false;
-    ai-services = {
-      enable = true;
-      open-webui.enable = false;
-      localai.enable = false;
-      chromadb.enable = true;
-      qdrant.enable = false;
-      lmstudio.enable = true;
-      jan.enable = true;
-      cherry-studio.enable = false;
-      aider.enable = true;
-    };
-
-    # Media & Cloud
-    immich-server.enable = false; # Moved to Nami
-    calibre-web-app.enable = false; # Moved to Nami
-    nextcloud-server.enable = false; # Moved to Nami
-    komga.enable = false;
-
-    # Communication
-    matrix-server.enable = false;
-    mautrix-bridges.enable = false; # Moved to Nami
-
-    # Extra Services
-    glances-server.enable = true;
-    filebrowser-app.enable = true;
-    deluge-server.enable = false; # Moved to Nami
-    transmission-server.enable = false;
-    headscale-server.enable = true;
-    vaultwarden-server.enable = true;
-    harmonia.cache.enable = true;
   };
 
-  # Resource limits enabled for stabilization
-  system-config.resource-limits.enable = true;
-
-  # Services config (separate namespace for config-only services)
-  services-config = {
-    adguard.enable = true; # Added explicit toggle
-    media-stack.enable = false; # Toggle for *arr suite
-    karakeep.enable = false;
-    your-spotify.enable = false;
-    avahi.enable = true; # mDNS
-    monitoring.enable = true;
-    homepage-dashboard.enable = true;
-    homepage-dashboard.lovable.enable = true;
-    tailscale.enable = true;
-  };
-
+  # ============================================================================
+  # 04 - SYSTEM & PROGRAM OVERRIDES
+  # ============================================================================
   programs.niri.enable = lib.mkForce false;
 
   # ============================================================================
-  # HOME MANAGER OVERRIDES
+  # 05 - SECURITY & SECRETS (SOPS/ACME)
   # ============================================================================
-  home-manager.users.t0psh31f = {
-    desktop.noctalia.backend = "hyprland";
-    features.home.agent = {
-      opencode = {
-        enable = true;
-        desktop = true;
-      };
-      gemini-cli.enable = true;
-      asr-tts.enable = true;
-      antigravity.enable = true;
+  sops = {
+    age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+    secrets."duckdns-token" = {
+      sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/duckdns.yaml;
+      format = lib.mkForce "yaml";
     };
-
-    programs.cli-environment.pythonTools.enable = true;
+    templates."duckdns-env".content = ''
+      DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
+    '';
   };
 
-  # ============================================================================
-  # SOPS SECRETS
-  # ============================================================================
-  sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
-  sops.secrets."duckdns-token" = {
-    sopsFile = lib.mkForce ../../modules/00-cyberia/03-treasure/secrets/duckdns.yaml;
-    format = lib.mkForce "yaml";
-  };
-  sops.templates."duckdns-env".content = ''
-    DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
-  '';
-
-  # ============================================================================
-  # SECURITY / ACME / DUCKDNS
-  # ============================================================================
   security.acme = {
     acceptTerms = true;
     defaults.email = "admin@lovelain.duckdns.org";
     certs."lovelain.duckdns.org" = {
       domain = "*.lovelain.duckdns.org";
-      extraDomainNames = [
-        "lovelain.duckdns.org"
-        "t0psh31f.duckdns.org"
-        "nixfp.duckdns.org"
-      ];
+      extraDomainNames = [ "lovelain.duckdns.org" "t0psh31f.duckdns.org" "nixfp.duckdns.org" ];
       dnsProvider = "duckdns";
       environmentFile = config.sops.templates."duckdns-env".path;
     };
   };
-
 }

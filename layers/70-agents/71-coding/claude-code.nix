@@ -1,0 +1,23 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  options.features.agent.claude-code = {
+    enable = lib.mkEnableOption "Anthropic Claude Code agentic coding tool";
+  };
+
+  home = lib.mkIf config.features.agent.claude-code.enable {
+    programs.claude-code = {
+      enable = true;
+      enableMcpIntegration = true;
+      settings = {
+        # Default settings can be placed here
+      };
+    };
+
+    home.packages = lib.optional (pkgs ? vscode-extension-anthropic-claude-code) pkgs.vscode-extension-anthropic-claude-code;
+  };
+}

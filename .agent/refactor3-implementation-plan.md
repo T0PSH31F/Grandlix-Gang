@@ -27,11 +27,11 @@ Root files: 14 (target: ≤9)
 ```
 
 Current structure:
-- `modules/nixos/` - 18 NixOS modules
-- `modules/home/` - 12 Home Manager modules
-- `modules/clan/` - 5 clan-specific modules
+- `layers/nixos/` - 18 NixOS modules
+- `layers/home/` - 12 Home Manager modules
+- `layers/clan/` - 5 clan-specific modules
 - `machines/` - 3 machine configs (z0r0, luffy, nami)
-- `clan-service-modules/` - 3 clan services (ai, desktop, media)
+- `clan-service-layers/` - 3 clan services (ai, desktop, media)
 
 ## Target Structure
 
@@ -190,9 +190,9 @@ Grandlix-Gang/
 **Goal**: Move foundational system modules to flake-parts/system/
 
 **Files to migrate**:
-- `modules/nixos/system/base.nix` → `flake-parts/system/base.nix`
-- `modules/nixos/nix-settings.nix` → `flake-parts/system/nix-settings.nix`
-- `modules/nixos/networking.nix` → `flake-parts/system/networking.nix`
+- `layers/nixos/system/base.nix` → `flake-parts/system/base.nix`
+- `layers/nixos/nix-settings.nix` → `flake-parts/system/nix-settings.nix`
+- `layers/nixos/networking.nix` → `flake-parts/system/networking.nix`
 
 **Process**:
 ```nix
@@ -217,8 +217,8 @@ clan machines build z0r0
 **Goal**: Consolidate hardware configs
 
 **Files to migrate**:
-- `modules/nixos/hardware/intel-12th-gen.nix` → `flake-parts/hardware/intel-12th-gen.nix`
-- `modules/nixos/system/laptop.nix` → `flake-parts/hardware/laptop.nix`
+- `layers/nixos/hardware/intel-12th-gen.nix` → `flake-parts/hardware/intel-12th-gen.nix`
+- `layers/nixos/system/laptop.nix` → `flake-parts/hardware/laptop.nix`
 - Extract hardware-specific from each machine config
 
 **Process**:
@@ -250,7 +250,7 @@ clan machines build z0r0
 **Goal**: Move all theme modules to flake-parts/themes/
 
 **Files to migrate**:
-- All `modules/nixos/themes/*.nix` → `flake-parts/themes/*.nix`
+- All `layers/nixos/themes/*.nix` → `flake-parts/themes/*.nix`
 
 **Process**:
 ```nix
@@ -275,10 +275,10 @@ clan machines build z0r0
 **Goal**: Consolidate desktop environment
 
 **Files to migrate**:
-- `modules/home/hyprland.nix` → `flake-parts/desktop/hyprland.nix`
-- `modules/home/ghostty.nix` → `flake-parts/desktop/ghostty.nix`
-- `modules/home/shikane.nix` → `flake-parts/desktop/shikane.nix`
-- `modules/nixos/system/desktop-portals.nix` → `flake-parts/desktop/portals.nix`
+- `layers/home/hyprland.nix` → `flake-parts/desktop/hyprland.nix`
+- `layers/home/ghostty.nix` → `flake-parts/desktop/ghostty.nix`
+- `layers/home/shikane.nix` → `flake-parts/desktop/shikane.nix`
+- `layers/nixos/system/desktop-portals.nix` → `flake-parts/desktop/portals.nix`
 
 **Process**:
 ```nix
@@ -305,7 +305,7 @@ clan machines build z0r0
 **Goal**: Individual service modules in flake-parts/services/
 
 **Files to migrate**:
-- Extract each service from `modules/nixos/services/*.nix`
+- Extract each service from `layers/nixos/services/*.nix`
 - Create individual service files
 
 **Process**:
@@ -341,12 +341,12 @@ services.ollama.enable = lib.mkDefault (builtins.elem "ai-server" config.clan.ta
 **Goal**: Move feature toggles to flake-parts/features/
 
 **Files to migrate**:
-- `modules/nixos/gaming.nix` → `flake-parts/features/nixos/gaming.nix`
-- `modules/nixos/virtualization.nix` → `flake-parts/features/nixos/virtualization.nix`
-- `modules/nixos/impermanence.nix` → `flake-parts/features/nixos/impermanence.nix`
-- `modules/nixos/mobile.nix` → `flake-parts/features/nixos/mobile-support.nix`
-- `modules/home/dev.nix` → `flake-parts/features/home/dev-tools.nix`
-- `modules/home/pentest.nix` → `flake-parts/features/home/pentest-tools.nix`
+- `layers/nixos/gaming.nix` → `flake-parts/features/nixos/gaming.nix`
+- `layers/nixos/virtualization.nix` → `flake-parts/features/nixos/virtualization.nix`
+- `layers/nixos/impermanence.nix` → `flake-parts/features/nixos/impermanence.nix`
+- `layers/nixos/mobile.nix` → `flake-parts/features/nixos/mobile-support.nix`
+- `layers/home/dev.nix` → `flake-parts/features/home/dev-tools.nix`
+- `layers/home/pentest.nix` → `flake-parts/features/home/pentest-tools.nix`
 
 **Validation**: Feature toggles work as expected
 
@@ -483,7 +483,7 @@ services.ollama.enable = lib.mkDefault (builtins.elem "ai-server" config.clan.ta
 **Validation**: Full flake check
 
 ### Phase 11: Clean Up Old Structure (Risk: Low)
-**Goal**: Remove deprecated modules/
+**Goal**: Remove deprecated layers/
 
 **Process**:
 ```bash

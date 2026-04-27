@@ -4,57 +4,81 @@
   inputs,
   ...
 }:
-
 {
+  # ============================================================================
+  # 00 - CORE IMPORTS
+  # ============================================================================
   imports = [
     ./hardware.nix
     ./containers.nix
-    ../../modules/20-services/22-ai/ai-services.nix
-    ../../modules/20-services
-    ../../modules/20-services/23-media
-    ../../modules/30-identity/31-users/t0psh31f.nix
-    inputs.impermanence.nixosModules.impermanence
-    inputs.home-manager.nixosModules.home-manager
+
+    ../../layers/10-system
+    ../../layers/20-services/22-ai/ai-services.nix
+    ../../layers/20-services
+    ../../layers/20-services/23-media
+    ../../layers/30-identity/31-users/t0psh31f.nix
   ];
 
-  # Stub missing option for flake-parts modules
-  options.system-config.impermanence.enable = lib.mkEnableOption "Impermanence";
+  # ============================================================================
+  # 01 - MACHINE IDENTITY
+  # ============================================================================
+  networking.hostName = "luffy";
+  system.stateVersion = "25.05";
 
-  config = {
-    services-config.tailscale.enable = true;
+  # ----------------------------------------------------------------------------
+  # AVAILABLE PROFILES / TAGS
+  # ----------------------------------------------------------------------------
+  # Tags define the machine's role and automatically enable corresponding features.
+  # See `layers/90-profiles/tags/` for explicit definitions.
+  #
+  # Hardware/Form Factor:
+  #   "workstation" : Enables base limits, themes, and network tools (avahi, tailscale, ssh).
+  #   "desktop"     : Enables graphical hardware features (bluetooth), automount, portals, flatpak.
+  #   "laptop"      : Enables battery optimizations and wireless tools.
+  #
+  # Roles:
+  #   "server"      : Enables server base infra (monitoring, tailscale, adguard).
+  #   "development" : Enables coding tools, Python, VSCode, and dev agents (Opencode, Antigravity).
+  #   "gaming"      : Enables Steam, GameMode, Lutris, emulators, etc.
+  #   "ai-server"   : Enables local AI backend (llms, sillytavern, wyoming, ai-services, dashboard).
+  #   "homelab"     : Enables home infra (home-assistant, searxng, headscale, vaultwarden, etc).
+  #   "cache-server": Enables Harmonia Nix binary cache.
+  #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
+  # ----------------------------------------------------------------------------
+  machine.tags = [
+    "server"
+    "gpu-compute"
+    "ai"
+  ];
+  nixpkgs.config.allowUnfree = true;
 
-    networking.hostName = "luffy";
-    system.stateVersion = "25.05"; # Match your flake version
-
-    nixpkgs.config.allowUnfree = true;
-
-    # SOPS Secrets definition
-    sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
-    sops.secrets."duckdns-token" = {
-      sopsFile = lib.mkForce ../../modules/00-cyberia/03-treasure/secrets/duckdns.yaml;
-      format = lib.mkForce "yaml";
+  # ============================================================================
+  # 02 - LAYERED FEATURE FLAGS (Overrides)
+  # ============================================================================
+  features = {
+    services.config = {
+      monitoring = {
+        enable = false;
+        domain = "grafana.lovelain.duckdns.org";
+        grafana.port = 3001; # avoids homepage on 3000
+        prometheus.port = 9090;
+      };
+      adguard = {
+        enable = true;
+        port = 3002; # avoids homepage and grafana
+      };
     };
-    sops.templates."duckdns-env".content = ''
-      DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
-    '';
-    sops.secrets."postgres-password" = {
-      sopsFile = lib.mkForce ../../modules/00-cyberia/03-treasure/secrets/postgres.yaml;
-      format = lib.mkForce "yaml";
-    };
+  };
 
-    # Podman Rootless Virtualization
-    virtualisation.oci-containers.backend = "podman";
-    virtualisation.podman = {
-      enable = true;
-      autoPrune.enable = true;
-      dockerCompat = true;
-    };
-
+  # ============================================================================
+  # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
+  # ============================================================================
+  services = {
     # Headscale Server
-    services.headscale-server.enable = true;
+    headscale-server.enable = true;
 
     # Native Postgres (Shared for Nextcloud, Immich, MaxKB etc.)
-    services.postgresql = {
+    postgresql = {
       enable = true;
       enableTCPIP = true;
       ensureUsers = [
@@ -73,25 +97,8 @@
       ];
     };
 
-    # ACME Let's Encrypt Wildcard via DuckDNS
-    security.acme = {
-      acceptTerms = true;
-      defaults.email = "admin@lovelain.duckdns.org";
-      certs."lovelain.duckdns.org" = {
-        domain = "*.lovelain.duckdns.org";
-        extraDomainNames = [
-          "lovelain.duckdns.org"
-          "t0psh31f.duckdns.org"
-          "nixfp.duckdns.org"
-          "chat.lovelain.duckdns.org"
-        ];
-        dnsProvider = "duckdns";
-        environmentFile = config.sops.templates."duckdns-env".path;
-      };
-    };
-
     # DuckDNS Auto-Updater using ddclient
-    services.ddclient = {
+    ddclient = {
       enable = true;
       domains = [
         "lovelain.duckdns.org"
@@ -104,24 +111,25 @@
     };
 
     # Enable Native Services from flake-parts
-    services.nextcloud-server = {
+    nextcloud-server = {
       enable = true;
       hostName = "nextcloud.lovelain.duckdns.org";
     };
+
     # Prevent Nginx from conflicting with Caddy's 80/443 binding
-    services.nginx.virtualHosts."nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
+    nginx.virtualHosts."nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
       {
         addr = "127.0.0.1";
         port = 8080;
       }
     ];
 
-    services.immich-server = {
+    immich-server = {
       enable = true;
       port = 2283;
     };
 
-    services.vaultwarden = {
+    vaultwarden = {
       enable = true;
       config = {
         ROCKET_PORT = 8222;
@@ -129,26 +137,14 @@
       };
     };
 
-    services-config.monitoring = {
-      enable = false;
-      domain = "grafana.lovelain.duckdns.org";
-      grafana.port = 3001; # avoids homepage on 3000
-      prometheus.port = 9090;
-    };
-
-    services-config.adguard = {
-      enable = true;
-      port = 3002; # avoids homepage and grafana
-    };
-
-    services.ai-services = {
+    ai-services = {
       enable = true;
       qdrant.enable = true;
       ollama.enable = true;
     };
 
     # Caddy Reverse Proxy
-    services.caddy = {
+    caddy = {
       enable = true;
       globalConfig = ''
         email admin@lovelain.duckdns.org
@@ -229,21 +225,64 @@
         '';
       };
     };
+  };
 
-    # Firewall rules
-    networking.firewall = {
-      enable = true;
-      allowedTCPPorts = [
-        80
-        443
-        22
+  # ============================================================================
+  # 04 - SYSTEM & PROGRAM OVERRIDES
+  # ============================================================================
+  # Podman Rootless Virtualization
+  virtualisation.oci-containers.backend = "podman";
+  virtualisation.podman = {
+    enable = true;
+    autoPrune.enable = true;
+    dockerCompat = true;
+  };
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [
+      80
+      443
+      22
+    ];
+  };
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.t0psh31f.imports = [ inputs.niri.homeModules.config ];
+  };
+
+  # ============================================================================
+  # 05 - SECURITY & SECRETS (SOPS/ACME)
+  # ============================================================================
+  sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+  sops.secrets."duckdns-token" = {
+    sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/duckdns.yaml;
+    format = lib.mkForce "yaml";
+  };
+  sops.templates."duckdns-env".content = ''
+    DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
+  '';
+  sops.secrets."postgres-password" = {
+    sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/postgres.yaml;
+    format = lib.mkForce "yaml";
+  };
+
+  # ACME Let's Encrypt Wildcard via DuckDNS
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "admin@lovelain.duckdns.org";
+    certs."lovelain.duckdns.org" = {
+      domain = "*.lovelain.duckdns.org";
+      extraDomainNames = [
+        "lovelain.duckdns.org"
+        "t0psh31f.duckdns.org"
+        "nixfp.duckdns.org"
+        "chat.lovelain.duckdns.org"
       ];
-    };
-
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
-      users.t0psh31f.imports = [ inputs.niri.homeModules.config ];
+      dnsProvider = "duckdns";
+      environmentFile = config.sops.templates."duckdns-env".path;
     };
   };
 }

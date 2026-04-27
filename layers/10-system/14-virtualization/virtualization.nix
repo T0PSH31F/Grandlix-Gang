@@ -1,0 +1,122 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib;
+{
+  options.features.system.virtualization = {
+    enable = mkEnableOption "Virtualization support (QEMU/KVM, Docker, Podman)";
+    waydroid.enable = mkEnableOption "Waydroid container support";
+    user = mkOption {
+      type = types.str;
+      default = "t0psh31f";
+      description = "Primary user to add to virtualization groups.";
+    };
+  };
+
+  config = mkMerge [
+    (mkIf config.features.system.virtualization.enable {
+      programs.extra-container = {
+        enable = true;
+      };
+
+      # Ensure dconf is enabled for virt-manager to save settings
+      programs.dconf.enable = true;
+
+      # Add your user to the virtualization group
+      users.users."${config.features.system.virtualization.user}".extraGroups = [
+        "libvirtd"
+        "kvm"
+      ];
+
+      # Enable virtualization
+      virtualisation = {
+        # Enable libvirtd for QEMU/KVM
+        libvirtd = {
+          enable = true;
+          qemu = {
+            package = pkgs.qemu_kvm;
+            swtpm.enable = true; # Required for Windows 11 TPM emulation
+            runAsRoot = true; # Required for seamless USB passthrough
+          };
+        };
+
+        # This enables the SPICE USB redirector daemon
+        spiceUSBRedirection.enable = true;
+
+        # Podman configuration (Docker replacement)
+        podman = {
+          enable = true;
+          dockerCompat = true;
+          dockerSocket.enable = true;
+          defaultNetwork.settings.dns_enabled = true;
+          autoPrune = {
+            enable = true;
+            dates = "weekly";
+          };
+        };
+
+        oci-containers.backend = mkDefault "podman";
+      };
+
+      # The GUI to manage the VM
+      programs.virt-manager.enable = true;
+
+      # Install virtualization tools
+      environment.systemPackages = with pkgs; [
+        # Running android apps natively
+        android-translation-layer
+        # QEMU and related tools
+        qemu
+        quickemu
+        quickgui
+
+        # VM management
+        virt-viewer
+        spice
+        spice-gtk
+        spice-protocol
+        virtio-win
+        win-spice
+
+        # Container tools
+        #podman-compose
+        distrobox
+        compose2nix
+
+        # Bridge utilities
+        bridge-utils
+
+        # OCI tools
+        buildah
+        skopeo
+        nixos-shell
+      ];
+
+      # Persistence for virtualization data
+      environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+        directories = [
+          "/var/lib/containers"
+          "/var/lib/podman"
+          "/var/lib/libvirt"
+          "/etc/libvirt"
+          "/var/lib/mongodb-container"
+        ];
+      };
+    })
+
+    (mkIf config.features.system.virtualization.waydroid.enable {
+      virtualisation.waydroid.enable = true;
+
+      # Note: Requires appropriate kernel modules (often compiled in Zen/CachyOS kernels)
+      # Persistence for waydroid data
+      environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+        directories = [
+          "/var/lib/waydroid"
+        ];
+      };
+    })
+  ];
+}

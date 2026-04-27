@@ -1,49 +1,48 @@
+let
+  machinesInventory = {
+    z0r0 = {
+      tags = [
+        "workstation"
+        "desktop"
+        "development"
+        "gaming"
+        "ai-server"
+        "homelab"
+        "cache-server"
+      ];
+      deploy.targetHost = "root@z0r0.local";
+    };
+    nami = {
+      tags = [
+        "workstation"
+        "laptop"
+        "desktop"
+        "media"
+        "media-server"
+        "homelab"
+      ];
+      deploy.targetHost = "root@nami.local";
+    };
+    luffy = {
+      tags = [
+        "server"
+        "gpu-compute"
+        "ai"
+      ];
+      # deploy.targetHost = "root@luffy.local";
+    };
+  };
+  mkMachineFromTags = tags: map (tag: ./layers/90-profiles/tags/${tag}.nix) tags;
+in
 {
   imports = [
-    # ./clan-service-modules/default.nix # Removed due to class mismatch (clan.service vs clan)
+    # ./clan-service-layers/default.nix # Removed due to class mismatch (clan.service vs clan)
   ];
 
   meta.name = "NFP";
 
   inventory = {
-    machines = {
-      z0r0 = {
-        tags = [
-          "workstation"
-          "desktop"
-          "development"
-          "gaming"
-        ];
-        deploy.targetHost = "root@z0r0.local";
-      };
-      nami = {
-        tags = [
-          "workstation"
-          "laptop"
-          "desktop"
-          "media"
-        ];
-        deploy.targetHost = "root@nami.local";
-      };
-      luffy = {
-        tags = [
-          "server"
-          "gpu-compute"
-          "ai"
-        ];
-        # deploy.targetHost = "root@luffy.local";
-      };
-      # nami = {
-      #   tags = [
-      #     "server"
-      #     "media-server"
-      #     "download-server"
-      #   ];
-      #   deploy.targetHost = "root@nami.local";
-      # };
-
-    };
-
+    machines = machinesInventory;
     instances = {
       /*
         zerotier = {
@@ -94,19 +93,18 @@
     z0r0 = {
       imports = [
         ./machines/z0r0/default.nix
-      ];
+      ] ++ mkMachineFromTags machinesInventory.z0r0.tags;
       clan.services.ai.sillytavern.enable = true;
     };
     nami = {
       imports = [
         ./machines/nami/default.nix
-      ];
+      ] ++ mkMachineFromTags machinesInventory.nami.tags;
     };
     luffy = {
       imports = [
         ./machines/luffy/default.nix
-      ];
+      ] ++ mkMachineFromTags machinesInventory.luffy.tags;
     };
-
   };
 }

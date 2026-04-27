@@ -21,8 +21,8 @@
   boot.kernelModules = [ ];
 
   # Disable systemd-boot completely
-  boot.loader.systemd-boot.enable = false;
-  boot.loader.efi.canTouchEfiVariables = false;
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
 
   # Enable GRUB for Legacy BIOS booting on a GPT disk
   boot.loader.grub.enable = true;

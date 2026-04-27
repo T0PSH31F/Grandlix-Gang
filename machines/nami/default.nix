@@ -1,152 +1,97 @@
-# machines/nami/default.nix
-# Main configuration for Nami
-# Intel i7-7560U laptop, secondary machine
 { ... }:
 {
   # ============================================================================
-  # IMPORTS
+  # 00 - CORE IMPORTS
   # ============================================================================
   imports = [
-    # Hardware configuration (filesystems, kernel modules)
     ./hardware.nix
 
-    # Core system modules from modules/
-    ../../modules/10-system
-    ../../modules/10-system/11-foundation
-    ../../modules/10-system/12-hardware
-    ../../modules/10-system/13-packages
-
-    ../../modules/30-identity/32-themes
-
-    ../../modules/20-services/23-media
-    ../../modules/20-services
-    ../../modules/20-services/24-communication
-    ../../modules/20-services/22-ai
-
-    # User configuration (HM + user-specific system settings)
-    ../../modules/30-identity/31-users/t0psh31f.nix
+    ../../layers/10-system
+    ../../layers/30-identity/32-themes
+    ../../layers/20-services
+    ../../layers/30-identity/31-users/t0psh31f.nix
   ];
 
-  services-config.tailscale.enable = true;
-
   # ============================================================================
-  # MACHINE METADATA
+  # 01 - MACHINE IDENTITY
   # ============================================================================
   networking.hostName = "nami";
   system.stateVersion = "25.05";
+
+  # ----------------------------------------------------------------------------
+  # AVAILABLE PROFILES / TAGS
+  # ----------------------------------------------------------------------------
+  # Tags define the machine's role and automatically enable corresponding features.
+  # See `layers/90-profiles/tags/` for explicit definitions.
+  #
+  # Hardware/Form Factor:
+  #   "workstation" : Enables base limits, themes, and network tools (avahi, tailscale, ssh).
+  #   "desktop"     : Enables graphical hardware features (bluetooth), automount, portals, flatpak.
+  #   "laptop"      : Enables battery optimizations and wireless tools.
+  #
+  # Roles:
+  #   "development" : Enables coding tools, Python, VSCode, and dev agents (Opencode, Antigravity).
+  #   "gaming"      : Enables Steam, GameMode, Lutris, emulators, etc.
+  #   "ai-server"   : Enables local AI backend (llms, sillytavern, wyoming, ai-services, dashboard).
+  #   "homelab"     : Enables home infra (home-assistant, searxng, headscale, vaultwarden, etc).
+  #   "cache-server": Enables Harmonia Nix binary cache.
+  #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
+  # ----------------------------------------------------------------------------
   machine.tags = [
     "desktop"
     "laptop"
     "media-server"
+    "workstation"
+    "media"
+    "homelab"
   ];
 
   # ============================================================================
-  # FEATURE TOGGLES
+  # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
-
-  # System features
-  nix-tools.enable = true;
-  desktop-portals.enable = true;
-
-  # Themes - match z0r0 for consistency
-  themes = {
-    greeter = {
-      sddm = {
-        enable = true;
-        background = ../../modules/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif;
+  # Note: Most features are automatically enabled via machine.tags -> 90-profiles
+  features = {
+    system = {
+      mobile = {
+        android.enable = true;
       };
-      greetd.enable = false;
+      config.impermanence.enable = true;
+      virtualization.enable = true;
     };
 
-    grub-lain = {
-      enable = true;
-      efiInstallAsRemovable = true; # Fix for Dell XPS 13 boot registration
+    services.config = {
+      your-spotify.enable = true;
     };
-    plymouth-hellonavi.enable = true;
+
+    identity.themes = {
+      greeter.sddm = {
+        enable = true;
+        background = ../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif;
+      };
+      grub-lain.efiInstallAsRemovable = true; # Fix for Dell XPS 13 boot registration
+    };
+
+    gui.gaming.enable = false; # Explicitly disabled despite potential tag inheritance
   };
 
-  # Mobile device support
-  mobile = {
-    android.enable = true;
-    ios.enable = false;
-  };
-
-  # Gaming & Virtualization
-  gaming.enable = false;
-  virtualization.enable = true;
-
-  # Flatpak & AppImage
-  flatpak.enable = true;
-
-  # Impermanence - disabled for initial install, enable later once stable
-  system-config.impermanence.enable = true;
-
-  # Resource limits enabled for stabilization
-  system-config.resource-limits.enable = true;
-
   # ============================================================================
-  # SERVICES
+  # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
   # ============================================================================
+  # Note: Most raw services are automatically enabled via machine.tags
   services = {
-    # Desktop Services
-    ssh-agent.enable = true;
+    # Disabled Services (Overrides from homelab tag)
     searxng.enable = false;
-    pastebin.enable = false;
-
-    # Home Automation & Infrastructure
-    home-assistant-server.enable = true;
-    caddy-server.enable = false;
-    n8n-server.enable = true;
-
-    # AI Services - Granular toggles (Keeping these on z0r0 usually)
-    llm-agents.enable = false;
-    sillytavern.enable = false;
-    ai-services = {
-      enable = false;
-      open-webui.enable = false;
-      localai.enable = false;
-      chromadb.enable = false;
-      qdrant.enable = false;
-      lmstudio.enable = false;
-      jan.enable = false;
-      cherry-studio.enable = false;
-      aider.enable = false;
-    };
-
-    # Media & Cloud - Offloaded from z0r0
-    immich-server.enable = false;
-    calibre-web-app.enable = false; # TODO: re-enable when calibre build is fixed in nixpkgs (qmake missing)
-    nextcloud-server.enable = false;
-    komga-server.enable = true;
-
-    # Communication - Offloaded from z0r0
-    matrix-server.enable = false;
-    mautrix-bridges.enable = true;
-
-    # Extra Services
-    glances-server.enable = true;
-    filebrowser-app.enable = true;
-    deluge-server.enable = false;
-    transmission-server.enable = false;
     headscale-server.enable = false;
+    vaultwarden-server.enable = false;
+
+    # Explicitly Enabled Specific Services
+    n8n-server.enable = true;
+    komga-server.enable = true;
+    mautrix-bridges.enable = true;
   };
 
   # ============================================================================
-  # SERVICES-CONFIG
-  # ============================================================================
-  services-config = {
-    adguard.enable = false; # Added explicit toggle
-    media-stack.enable = true; # Toggle for *arr suite
-    karakeep.enable = false;
-    your-spotify.enable = true;
-    avahi.enable = true; # mDNS
-    monitoring.enable = true;
-    homepage-dashboard.enable = false;
-    homepage-dashboard.lovable.enable = false;
-  };
-
-  # ============================================================================
-  # SOPS SECRETS
+  # 05 - SECURITY & SECRETS (SOPS)
   # ============================================================================
   sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
 }

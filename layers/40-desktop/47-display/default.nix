@@ -1,0 +1,7 @@
+{ ... }: {
+  home = {
+    imports = [
+      ./shikane.nix
+    ];
+  };
+}

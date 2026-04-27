@@ -1,0 +1,3 @@
+{ ... }: {
+  # Profile for gpu-compute
+}
