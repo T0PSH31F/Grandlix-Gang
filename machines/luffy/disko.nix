@@ -19,43 +19,57 @@
             };
           };
           swap = {
-            size = "32G";
+            size = "24G"; # Match RAM for hibernate support
             content = {
-              type = "swap";
-              discardPolicy = "both";
-              resumeDevice = true;
+              type = "luks";
+              name = "swap_crypted";
+              passwordFile = "/tmp/secret.key";
+              content = {
+                type = "swap";
+                discardPolicy = "both";
+                resumeDevice = true;
+              };
             };
           };
-          root = {
+          luks = {
             size = "100%";
             content = {
-              type = "btrfs";
-              extraArgs = [ "-f" ];
+              type = "luks";
+              name = "crypted";
+              passwordFile = "/tmp/secret.key";
+              settings = {
+                allowDiscards = true;
+                bypassWorkqueues = true;
+              };
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-f" ];
 
-              subvolumes = {
-                "@root" = {
-                  mountpoint = "/";
-                  mountOptions = [ "compress=zstd" "noatime" ];
-                };
-                "@nix" = {
-                  mountpoint = "/nix";
-                  mountOptions = [ "compress=zstd" "noatime" ];
-                };
-                "@persist" = {
-                  mountpoint = "/persist";
-                  mountOptions = [ "compress=zstd" "noatime" ];
-                };
-                "@home" = {
-                  mountpoint = "/home";
-                  mountOptions = [ "compress=zstd" "noatime" ];
-                };
-                "@backup" = {
-                  mountpoint = "/backup";
-                  mountOptions = [ "compress=zstd" "noatime" ];
-                };
-                "@log" = {
-                  mountpoint = "/var/log";
-                  mountOptions = [ "compress=zstd" "noatime" ];
+                subvolumes = {
+                  "@root" = {
+                    mountpoint = "/";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@home" = {
+                    mountpoint = "/home";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@backup" = {
+                    mountpoint = "/backup";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "@log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
                 };
               };
             };
