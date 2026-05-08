@@ -46,17 +46,19 @@
   #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
   # ----------------------------------------------------------------------------
   machine.tags = [
-    "server"
-    "gpu-compute"
-    "ai"
+    "workstation"
+    "desktop"
+    "gaming"
   ];
   nixpkgs.config.allowUnfree = true;
 
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
-  features = {
-    services.config = {
+  layers = {
+    layer-10.system.config.impermanence.enable = true;
+    
+    layer-20.services.config = {
       monitoring = {
         enable = false;
         domain = "grafana.lovelain.duckdns.org";
@@ -69,6 +71,8 @@
       };
     };
   };
+
+  hardware.nvidia.enable = true;
 
   # ============================================================================
   # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)

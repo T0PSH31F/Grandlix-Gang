@@ -9,6 +9,9 @@ let
         "ai-server"
         "homelab"
         "cache-server"
+        "media-server"
+        "laptop"
+        "dev"
       ];
       deploy.targetHost = "root@z0r0.local";
     };
@@ -25,11 +28,18 @@ let
     };
     luffy = {
       tags = [
-        "server"
-        "gpu-compute"
-        "ai"
+        "workstation"
+        "desktop"
+        "gaming"
       ];
       # deploy.targetHost = "root@luffy.local";
+    };
+    gaming-desktop = {
+      tags = [
+        "desktop"
+        "gaming"
+      ];
+      deploy.targetHost = "root@gaming-desktop.local";
     };
   };
   mkMachineFromTags = tags: map (tag: ./layers/90-profiles/tags/${tag}.nix) tags;
@@ -105,6 +115,11 @@ in
       imports = [
         ./machines/luffy/default.nix
       ] ++ mkMachineFromTags machinesInventory.luffy.tags;
+    };
+    gaming-desktop = {
+      imports = [
+        ./machines/gaming-desktop/default.nix
+      ] ++ mkMachineFromTags machinesInventory.gaming-desktop.tags;
     };
   };
 }

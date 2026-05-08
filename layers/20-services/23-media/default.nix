@@ -1,12 +1,12 @@
 { ... }:
 {
   imports = [
-    ./aria2.nix
     ./calibre-web.nix
-    ./deluge.nix
+    ./download-clients.nix
     ./immich.nix
     ./komga.nix
     ./media-stack.nix
-    ./transmission.nix
+    ./recyclarr.nix
+    ./usenet.nix
   ];
 }

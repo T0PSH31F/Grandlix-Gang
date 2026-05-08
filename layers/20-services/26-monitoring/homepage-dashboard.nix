@@ -11,12 +11,14 @@
 
 with lib;
 let
-  cfg = config.features.services.config.homepage-dashboard;
+  cfg = config.layers.layer-20.services.config.homepage-dashboard;
 
   # Safe port getter with fallback
   getServicePort =
     service: default:
-    if hasAttr service config.services && hasAttr "port" config.services.${service} then
+    if service == "grafana" then
+      toString config.layers.layer-20.services.config.monitoring.grafana.port
+    else if hasAttr service config.services && hasAttr "port" config.services.${service} then
       toString config.services.${service}.port
     else
       toString default;
@@ -32,7 +34,7 @@ let
   safePathExists = path: builtins.pathExists path || false;
 in
 {
-  options.features.services.config.homepage-dashboard = {
+  options.layers.layer-20.services.config.homepage-dashboard = {
     enable = mkEnableOption "Homepage Dashboard";
 
     port = mkOption {
@@ -123,10 +125,8 @@ in
           # customCss = builtins.readFile cfg.noctalia.templatePath;
         })
 
-        # Lovable theme override
+        # Lovable theme override background
         (mkIf cfg.lovable.enable {
-          customCss = builtins.readFile cfg.lovable.cssPath;
-          customJS = builtins.readFile cfg.lovable.jsPath;
           background = {
             image = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2672&auto=format&fit=crop"; # Deep space fallback
             opacity = 0.2;
@@ -233,29 +233,72 @@ in
                 };
               };
             })
-            (optional (isServiceEnabled "deluge-server") {
+            (optional (isServiceEnabled "deluge") {
               "Deluge" = {
                 icon = "deluge.png";
-                href = "http://localhost:${getServicePort "deluge-server" 8113}";
+                href = "http://localhost:${getServicePort "deluge" 8112}";
                 description = "Torrent Client";
                 widget = {
                   type = "deluge";
-                  url = "http://localhost:${getServicePort "deluge-server" 8113}";
+                  url = "http://localhost:${getServicePort "deluge" 8112}";
                   password = "{{HOMEPAGE_VAR_DELUGE_PASSWORD}}";
                 };
               };
             })
-            (optional (isServiceEnabled "transmission-server") {
+            (optional (isServiceEnabled "transmission") {
               "Transmission" = {
                 icon = "transmission.png";
-                href = "http://localhost:${getServicePort "transmission-server" 9091}";
+                href = "http://localhost:${getServicePort "transmission" 9091}";
                 description = "Torrent Client";
                 widget = {
                   type = "transmission";
-                  url = "http://localhost:${getServicePort "transmission-server" 9091}";
+                  url = "http://localhost:${getServicePort "transmission" 9091}";
                   username = "{{HOMEPAGE_VAR_TRANSMISSION_USERNAME}}";
                   password = "{{HOMEPAGE_VAR_TRANSMISSION_PASSWORD}}";
                 };
+              };
+            })
+            (optional (isServiceEnabled "aria2") {
+              "Aria2 (AriaNg)" = {
+                icon = "ariang.png";
+                href = "http://localhost:6801";
+                description = "Download Manager UI";
+                widget = {
+                  type = "ariang";
+                  url = "http://localhost:6800";
+                };
+              };
+            })
+            (optional (isServiceEnabled "sabnzbd") {
+              "SABnzbd" = {
+                icon = "sabnzbd.png";
+                href = "http://localhost:${getServicePort "sabnzbd" 8081}";
+                description = "Usenet Client";
+                widget = {
+                  type = "sabnzbd";
+                  url = "http://localhost:${getServicePort "sabnzbd" 8081}";
+                  key = "{{HOMEPAGE_VAR_SABNZBD_KEY}}";
+                };
+              };
+            })
+            (optional (isServiceEnabled "nzbget") {
+              "NZBGet" = {
+                icon = "nzbget.png";
+                href = "http://localhost:${getServicePort "nzbget" 6789}";
+                description = "Usenet Client";
+                widget = {
+                  type = "nzbget";
+                  url = "http://localhost:${getServicePort "nzbget" 6789}";
+                  username = "{{HOMEPAGE_VAR_NZBGET_USERNAME}}";
+                  password = "{{HOMEPAGE_VAR_NZBGET_PASSWORD}}";
+                };
+              };
+            })
+            (optional (isServiceEnabled "nzbhydra2" || true) {
+              "NZBHydra2" = {
+                icon = "nzbhydra.png";
+                href = "http://localhost:5076";
+                description = "Usenet Meta-Search";
               };
             })
             (optional (isServiceEnabled "komga") {
@@ -278,6 +321,30 @@ in
                 description = "Spotify Analytics";
               };
             })
+            (optional (isServiceEnabled "readarr") {
+              "Readarr" = {
+                icon = "readarr.png";
+                href = "http://localhost:${getServicePort "readarr" 8787}";
+                description = "Book Management";
+                widget = {
+                  type = "readarr";
+                  url = "http://localhost:${getServicePort "readarr" 8787}";
+                  key = "{{HOMEPAGE_VAR_READARR_KEY}}";
+                };
+              };
+            })
+            (optional (isServiceEnabled "lidarr") {
+              "Lidarr" = {
+                icon = "lidarr.png";
+                href = "http://localhost:${getServicePort "lidarr" 8686}";
+                description = "Music Management";
+                widget = {
+                  type = "lidarr";
+                  url = "http://localhost:${getServicePort "lidarr" 8686}";
+                  key = "{{HOMEPAGE_VAR_LIDARR_KEY}}";
+                };
+              };
+            })
           ];
         }
         {
@@ -290,7 +357,6 @@ in
                 widget = {
                   type = "glances";
                   url = "http://127.0.0.1:${getServicePort "glances-server" 61208}";
-                  version = 4;
                 };
               };
             })
@@ -318,11 +384,11 @@ in
             (optional (isServiceEnabled "adguardhome") {
               "AdGuard Home" = {
                 icon = "adguard-home.png";
-                href = "http://localhost:3000";
+                href = "http://localhost:3001";
                 description = "DNS Filtering";
                 widget = {
                   type = "adguard";
-                  url = "http://localhost:3000";
+                  url = "http://localhost:3001";
                   username = "{{HOMEPAGE_VAR_ADGUARD_USERNAME}}";
                   password = "{{HOMEPAGE_VAR_ADGUARD_PASSWORD}}";
                 };
@@ -375,9 +441,29 @@ in
                 icon = "mdi-bookmark-multiple";
                 href = "http://localhost:3000";
                 description = "Bookmark Manager";
-                # Native NixOS service - no container reference
               };
             }
+            (optional (isServiceEnabled "langfuse") {
+              "Langfuse" = {
+                icon = "mdi-brain";
+                href = "http://localhost:${getServicePort "langfuse" 3005}";
+                description = "LLM Engineering Platform";
+              };
+            })
+            (optional (isServiceEnabled "chromadb") {
+              "ChromaDB" = {
+                icon = "mdi-database";
+                href = "http://localhost:8000";
+                description = "Vector Database";
+              };
+            })
+            (optional (isServiceEnabled "brain-service") {
+              "Brain Service" = {
+                icon = "mdi-robot-outline";
+                href = "http://localhost:${getServicePort "brain-service" 8010}";
+                description = "AI Brain Layer";
+              };
+            })
           ];
         }
         {
@@ -469,6 +555,13 @@ in
                 description = "Web Server";
               };
             }
+            (optional (isServiceEnabled "vaultwarden") {
+              "Vaultwarden" = {
+                icon = "vaultwarden.png";
+                href = "http://localhost:${getServicePort "vaultwarden" 8222}";
+                description = "Password Manager";
+              };
+            })
           ];
         }
       ];
@@ -476,6 +569,12 @@ in
 
     # Firewall configuration
     networking.firewall.allowedTCPPorts = [ cfg.port ];
+
+    # Inject custom CSS/JS into the config directory for Lovable theme
+    environment.etc = mkIf cfg.lovable.enable {
+      "homepage-dashboard/custom.css".source = cfg.lovable.cssPath;
+      "homepage-dashboard/custom.js".source = cfg.lovable.jsPath;
+    };
 
     # User/Group with proper permissions
     users.users.homepage-dashboard = {
@@ -486,7 +585,7 @@ in
     users.groups.homepage-dashboard = { };
 
     # Impermanence support
-    environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [
         {
           directory = "/var/lib/homepage-dashboard";
@@ -519,6 +618,6 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -"
     ]
-    ++ optional config.features.system.config.impermanence.enable "d /persist/var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -";
+    ++ optional config.layers.layer-10.system.config.impermanence.enable "d /persist/var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -";
   };
 }

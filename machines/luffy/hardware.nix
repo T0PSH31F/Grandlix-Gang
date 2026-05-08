@@ -1,34 +1,15 @@
-{
-  lib,
-  modulesPath,
-  ...
-}:
+{ config, lib, pkgs, modulesPath, ... }:
 
 {
   imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
+    (modulesPath + "/installer/scan/not-detected.nix")
     ./disko.nix
   ];
 
-  boot.initrd.availableKernelModules = [
-    "ata_piix"
-    "uhci_hcd"
-    "virtio_pci"
-    "virtio_scsi"
-    "sd_mod"
-    "sr_mod"
-  ];
-  boot.kernelModules = [ ];
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  # Disable systemd-boot completely
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
-
-  # Enable GRUB for Legacy BIOS booting on a GPT disk
-  boot.loader.grub.enable = true;
-
-  swapDevices = [ ];
-
-  networking.useDHCP = lib.mkDefault true;
+  # networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

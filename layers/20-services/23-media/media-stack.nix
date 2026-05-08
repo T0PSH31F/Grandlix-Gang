@@ -1,12 +1,11 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
 {
-  options.features.services.config.media-stack = {
+  options.layers.layer-20.services.config.media-stack = {
     enable = mkEnableOption "Complete media management stack (Homarr, Deluge, aria2, *arr suite)";
 
     dataDir = mkOption {
@@ -23,7 +22,7 @@ with lib;
 
     downloadsDir = mkOption {
       type = types.str;
-      default = "/var/lib/media/downloads";
+      default = "/home/t0psh31f/media/downloads";
       description = "Downloads directory";
     };
 
@@ -40,14 +39,30 @@ with lib;
     };
   };
 
-  config = mkIf config.features.services.config.media-stack.enable {
+  config = mkIf config.layers.layer-20.services.config.media-stack.enable {
+    # Enable download clients subsystem and default to aria2
+    layers.layer-20.services.config.download-clients = {
+      enable = mkDefault true;
+      aria2.enable = mkDefault true;
+    };
+
+    # Enable Usenet & Recyclarr by default with media-stack
+    layers.layer-20.services.config.usenet = {
+      enable = mkDefault true;
+      sabnzbd.enable = mkDefault true;
+      nzbget.enable = mkDefault true;
+      nzbhydra2.enable = mkDefault true;
+    };
+
+    layers.layer-20.services.config.recyclarr.enable = mkDefault true;
+
     # ============================================================================
     # USER & GROUP
     # ============================================================================
-    users.users.${config.features.services.config.media-stack.user} = {
+    users.users.${config.layers.layer-20.services.config.media-stack.user} = {
       isSystemUser = true;
-      group = config.features.services.config.media-stack.group;
-      home = config.features.services.config.media-stack.dataDir;
+      group = config.layers.layer-20.services.config.media-stack.group;
+      home = config.layers.layer-20.services.config.media-stack.dataDir;
 
       createHome = true;
       extraGroups = [
@@ -56,73 +71,42 @@ with lib;
       ]; # For hardware transcoding
     };
 
-    users.groups.${config.features.services.config.media-stack.group} = { };
+    users.groups.${config.layers.layer-20.services.config.media-stack.group} = { };
 
     # ============================================================================
     # DIRECTORY STRUCTURE
     # ============================================================================
     systemd.tmpfiles.rules = [
-      "d ${config.features.services.config.media-stack.dataDir} 0755 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d ${config.features.services.config.media-stack.downloadsDir} 0755 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d ${config.features.services.config.media-stack.dataDir}/tv 0755 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d ${config.features.services.config.media-stack.dataDir}/movies 0755 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d ${config.features.services.config.media-stack.dataDir}/music 0755 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d ${config.features.services.config.media-stack.dataDir}/books 0755 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d ${config.features.services.config.media-stack.dataDir}/torrents 0755 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
+      "d ${config.layers.layer-20.services.config.media-stack.dataDir} 0755 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d ${config.layers.layer-20.services.config.media-stack.downloadsDir} 0755 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d /var/lib/jellyfin 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d /var/lib/jellyfin/log 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d ${config.layers.layer-20.services.config.media-stack.dataDir}/tv 0755 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d ${config.layers.layer-20.services.config.media-stack.dataDir}/movies 0755 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d ${config.layers.layer-20.services.config.media-stack.dataDir}/music 0755 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d ${config.layers.layer-20.services.config.media-stack.dataDir}/books 0755 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d ${config.layers.layer-20.services.config.media-stack.dataDir}/torrents 0755 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
       # Fix Prowlarr state directory ownership
-      "d /var/lib/prowlarr 0750 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d /var/lib/sonarr 0750 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d /var/lib/radarr 0750 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d /var/lib/lidarr 0750 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d /var/lib/readarr 0750 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d /var/lib/bazarr 0750 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
-      "d /var/lib/deluge 0750 ${config.features.services.config.media-stack.user} ${config.features.services.config.media-stack.group} -"
+      "d /var/lib/prowlarr 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d /var/lib/sonarr 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d /var/lib/radarr 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d /var/lib/lidarr 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d /var/lib/readarr 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
+      "d /var/lib/bazarr 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
     ];
 
-    # ============================================================================
-    # DELUGE - Torrent Client
-    # ============================================================================
-    services.deluge = {
-      enable = true;
-      web.enable = true;
-      web.port = 8112;
 
-      # Deluge daemon settings
-      declarative = true;
-      authFile = pkgs.writeText "deluge-auth" "localclient:a7b8c9d0e1f2:10";
-      config = {
-        download_location = "${config.features.services.config.media-stack.downloadsDir}/torrents";
-        max_active_downloading = 5;
-        max_active_seeding = 10;
-        max_active_limit = 15;
-
-        # Network settings
-        random_port = false;
-        listen_ports = [
-          6881
-          6889
-        ];
-
-        # Encryption
-        enc_prefer_rc4 = true;
-        enc_level = 1; # Prefer encryption
-      };
-
-      # Override user/group
-      user = config.features.services.config.media-stack.user;
-      group = config.features.services.config.media-stack.group;
-    };
 
     # ============================================================================
     # JELLYFIN - Media Server
     # ============================================================================
     services.jellyfin =
       mkIf
-        (config.features.services.config.media-stack.enable && config.features.services.config.media-stack.enableJellyfin)
+        (config.layers.layer-20.services.config.media-stack.enable && config.layers.layer-20.services.config.media-stack.enableJellyfin)
         {
           enable = true;
-          user = config.features.services.config.media-stack.user;
-          group = config.features.services.config.media-stack.group;
+          user = config.layers.layer-20.services.config.media-stack.user;
+          group = config.layers.layer-20.services.config.media-stack.group;
           openFirewall = true;
         };
 
@@ -131,8 +115,8 @@ with lib;
     # ============================================================================
     services.sonarr = {
       enable = true;
-      user = config.features.services.config.media-stack.user;
-      group = config.features.services.config.media-stack.group;
+      user = config.layers.layer-20.services.config.media-stack.user;
+      group = config.layers.layer-20.services.config.media-stack.group;
     };
 
     # ============================================================================
@@ -140,8 +124,8 @@ with lib;
     # ============================================================================
     services.radarr = {
       enable = true;
-      user = config.features.services.config.media-stack.user;
-      group = config.features.services.config.media-stack.group;
+      user = config.layers.layer-20.services.config.media-stack.user;
+      group = config.layers.layer-20.services.config.media-stack.group;
     };
 
     # ============================================================================
@@ -154,8 +138,9 @@ with lib;
     # Fix Prowlarr state directory ownership and permissions
     systemd.services.prowlarr = {
       serviceConfig = {
-        User = lib.mkForce config.features.services.config.media-stack.user;
-        Group = lib.mkForce config.features.services.config.media-stack.group;
+        DynamicUser = lib.mkForce false;
+        User = lib.mkForce config.layers.layer-20.services.config.media-stack.user;
+        Group = lib.mkForce config.layers.layer-20.services.config.media-stack.group;
         StateDirectory = lib.mkForce "prowlarr";
         StateDirectoryMode = lib.mkForce "0750";
         # Fix NAMESPACE issue with impermanence
@@ -168,15 +153,20 @@ with lib;
 
     # Ensure data is persisted
 
-    environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
 
       directories = [
 
-        config.features.services.config.media-stack.dataDir
+        config.layers.layer-20.services.config.media-stack.dataDir
 
-        config.features.services.config.media-stack.downloadsDir
+        config.layers.layer-20.services.config.media-stack.downloadsDir
 
-        "/var/lib/jellyfin"
+        {
+          directory = "/var/lib/jellyfin";
+          user = config.layers.layer-20.services.config.media-stack.user;
+          group = config.layers.layer-20.services.config.media-stack.group;
+          mode = "0750";
+        }
 
         "/var/lib/sonarr"
 
@@ -189,7 +179,6 @@ with lib;
         "/var/lib/readarr"
 
         "/var/lib/bazarr"
-
       ];
 
     };
