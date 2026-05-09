@@ -55,15 +55,15 @@
   # ============================================================================
   # THEMES
   # ============================================================================
-  features.identity.themes.greeter = {
+  layers.layer-30.identity.themes.greeter = {
     sddm = {
       enable = true;
       background = ../../../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif;
     };
     greetd.enable = false;
   };
-  features.identity.themes.plymouth-hellonavi.enable = true;
-  features.desktop.hyprland.enable = true;
+  layers.layer-30.identity.themes.plymouth-hellonavi.enable = true;
+  layers.layer-40.desktop.hyprland.enable = true;
 
   # THEMES
   # ESSENTIAL INSTALLATION TOOLS

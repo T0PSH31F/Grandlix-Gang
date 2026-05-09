@@ -39,7 +39,7 @@ in
     };
 
     # Impermanence support
-    environment.persistence."/persist" = mkIf (config.features.system.config.impermanence.enable or false) {
+    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
       directories = [
         {
           directory = "/var/lib/komga";

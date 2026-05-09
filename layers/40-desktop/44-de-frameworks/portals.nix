@@ -6,7 +6,7 @@
 }:
 with lib;
 let
-  cfg = config.features.desktop.frameworks.portals;
+  cfg = config.layers.layer-40.desktop.frameworks.portals;
 in
 {
   config = mkIf cfg.enable {

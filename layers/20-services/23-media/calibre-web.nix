@@ -52,7 +52,7 @@ with lib;
     networking.firewall.allowedTCPPorts = [ config.services.calibre-web-app.port ];
 
     # Ensure data is persisted
-    environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [
         {
           directory = config.services.calibre-web-app.dataDir;

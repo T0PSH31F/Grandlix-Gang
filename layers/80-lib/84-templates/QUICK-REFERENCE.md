@@ -238,7 +238,7 @@ All services and features can be enabled/disabled:
 **System**:
 - `programs.appimage-support.enable`
 - `services.flatpak-support.enable`
-- `features.system.config.impermanence.enable` - Enable ephemeral root
+- `layers.layer-10.system.config.impermanence.enable` - Enable ephemeral root
 
 ### Mobile Devices
 - `mobile.android.enable` - Enable Android support (ADB, Waydroid)

@@ -82,7 +82,7 @@ with lib;
     ];
 
     # Ensure Nextcloud and DB are persisted
-    environment.persistence."/persist" = mkIf (config.features.system.config.impermanence.enable or false) {
+    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
       directories = [
         config.services.nextcloud-server.dataDir
       ];

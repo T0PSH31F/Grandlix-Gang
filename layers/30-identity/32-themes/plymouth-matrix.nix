@@ -5,11 +5,11 @@
   ...
 }:
 with lib; {
-  options.features.identity.themes.plymouth-matrix = {
+  options.layers.layer-30.identity.themes.plymouth-matrix = {
     enable = mkEnableOption "Plymouth Matrix theme";
   };
 
-  config = mkIf config.features.identity.themes.plymouth-matrix.enable {
+  config = mkIf config.layers.layer-30.identity.themes.plymouth-matrix.enable {
     # Enable Plymouth
     boot.plymouth = {
       enable = true;

@@ -11,10 +11,10 @@
 }:
 
 let
-  cfg = config.features.system.config.resource-limits;
+  cfg = config.layers.layer-10.system.config.resource-limits;
 in
 {
-  options.features.system.config.resource-limits = {
+  options.layers.layer-10.system.config.resource-limits = {
     enable = lib.mkEnableOption "System-wide resource limits for background services";
   };
 

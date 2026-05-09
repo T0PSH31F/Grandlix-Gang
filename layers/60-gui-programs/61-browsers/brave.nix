@@ -5,11 +5,11 @@
   ...
 }:
 {
-  options.features.gui.brave = {
+  options.layers.layer-60.gui.brave = {
     enable = lib.mkEnableOption "Brave Browser";
   };
 
-  home = lib.mkIf config.features.gui.brave.enable {
+  home = lib.mkIf config.layers.layer-60.gui.brave.enable {
     programs.chromium = {
       enable = true;
       package = pkgs.brave;

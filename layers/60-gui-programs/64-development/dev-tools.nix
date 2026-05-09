@@ -9,13 +9,13 @@ let
   clanTags = osConfig.machine.tags or [ ];
 in
 {
-  options.features.gui.dev-tools = {
+  options.layers.layer-60.gui.dev-tools = {
     enable = lib.mkEnableOption "GUI development tools" // {
       default = builtins.elem "dev" clanTags;
     };
   };
 
-  home = { config, lib, osConfig, ... }: lib.mkIf osConfig.features.gui.dev-tools.enable {
+  home = { config, lib, osConfig, ... }: lib.mkIf osConfig.layers.layer-60.gui.dev-tools.enable {
     home.packages = with pkgs; [
       # Editor tooling
       neovim

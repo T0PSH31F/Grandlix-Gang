@@ -11,7 +11,7 @@ let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
-  options.features.gui.spicetify = {
+  options.layers.layer-60.gui.spicetify = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = builtins.elem "desktop" clanTags;
@@ -20,11 +20,11 @@ in
   };
 
   home = { config, osConfig, ... }: {
-    imports = lib.optionals osConfig.features.gui.spicetify.enable [
+    imports = lib.optionals osConfig.layers.layer-60.gui.spicetify.enable [
       inputs.spicetify-nix.homeManagerModules.default
     ];
 
-    config = lib.mkIf osConfig.features.gui.spicetify.enable {
+    config = lib.mkIf osConfig.layers.layer-60.gui.spicetify.enable {
       programs.spicetify = {
         enable = true;
         theme = spicePkgs.themes.comfy;

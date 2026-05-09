@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = osConfig.features.desktop.hyprland;
+  cfg = osConfig.layers.layer-40.desktop.hyprland;
 
   # ── IPC Audio Feedback Daemon ────────────────────────────────────
   hypr-sfx = pkgs.writeShellScriptBin "hypr-sfx" ''

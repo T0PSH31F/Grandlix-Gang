@@ -6,7 +6,7 @@
 }:
 with lib;
 {
-  options.features.system.virtualization = {
+  options.layers.layer-10.system.virtualization = {
     enable = mkEnableOption "Virtualization support (QEMU/KVM, Docker, Podman)";
     waydroid.enable = mkEnableOption "Waydroid container support";
     user = mkOption {
@@ -17,7 +17,7 @@ with lib;
   };
 
   config = mkMerge [
-    (mkIf config.features.system.virtualization.enable {
+    (mkIf config.layers.layer-10.system.virtualization.enable {
       programs.extra-container = {
         enable = true;
       };
@@ -26,7 +26,7 @@ with lib;
       programs.dconf.enable = true;
 
       # Add your user to the virtualization group
-      users.users."${config.features.system.virtualization.user}".extraGroups = [
+      users.users."${config.layers.layer-10.system.virtualization.user}".extraGroups = [
         "libvirtd"
         "kvm"
       ];
@@ -96,7 +96,7 @@ with lib;
       ];
 
       # Persistence for virtualization data
-      environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+      environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
         directories = [
           "/var/lib/containers"
           "/var/lib/podman"
@@ -107,12 +107,12 @@ with lib;
       };
     })
 
-    (mkIf config.features.system.virtualization.waydroid.enable {
+    (mkIf config.layers.layer-10.system.virtualization.waydroid.enable {
       virtualisation.waydroid.enable = true;
 
       # Note: Requires appropriate kernel modules (often compiled in Zen/CachyOS kernels)
       # Persistence for waydroid data
-      environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+      environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
         directories = [
           "/var/lib/waydroid"
         ];

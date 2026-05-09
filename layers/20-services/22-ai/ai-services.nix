@@ -385,7 +385,7 @@ in
     );
 
     # Ensure data is persisted
-    environment.persistence."/persist" = mkIf (config.features.system.config.impermanence.enable or false) {
+    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
       directories = [
         # "/var/lib/docker" # Persist all docker volumes
         "/var/lib/ollama"
@@ -405,7 +405,7 @@ in
 
     # Direct bind mount for ChromaDB to satisfy systemd's StateDirectory requirements
     fileSystems."/var/lib/chromadb" =
-      mkIf ((config.features.system.config.impermanence.enable or false) && cfg.chromadb.enable)
+      mkIf ((config.layers.layer-10.system.config.impermanence.enable or false) && cfg.chromadb.enable)
         {
           device = "/persist/var/lib/chromadb";
           fsType = "none";

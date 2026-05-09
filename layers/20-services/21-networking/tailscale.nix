@@ -5,9 +5,9 @@
 }:
 
 {
-  options.features.services.config.tailscale.enable = lib.mkEnableOption "Tailscale client";
+  options.layers.layer-20.services.config.tailscale.enable = lib.mkEnableOption "Tailscale client";
 
-  config = lib.mkIf config.features.services.config.tailscale.enable {
+  config = lib.mkIf config.layers.layer-20.services.config.tailscale.enable {
     # Shared Tailscale client configuration for the fleet connecting to Luffy's Headscale
     services.tailscale = {
       enable = true;

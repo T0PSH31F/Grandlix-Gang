@@ -1,7 +1,7 @@
 { config, lib, ... }:
 let
   inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; }) mkDendriticModule;
-  cfg = config.features.cli;
+  cfg = config.layers.layer-50.cli;
 in
 {
   imports = [
@@ -33,7 +33,7 @@ in
     ./57-services
   ];
 
-  options.features.cli = {
+  options.layers.layer-50.cli = {
     enable = lib.mkEnableOption "Complete CLI/TUI environment" // {
       default = true;
     };
@@ -109,6 +109,6 @@ in
       };
     };
 
-    features.cli.theming.matugen.enable = lib.mkDefault cfg.theming.enable;
+    layers.layer-50.cli.theming.matugen.enable = lib.mkDefault cfg.theming.enable;
   };
 }

@@ -12,7 +12,7 @@ in
     (mkDendriticModule "zathura" ./zathura.nix)
   ];
 
-  options.features.gui.documents = {
+  options.layers.layer-60.gui.documents = {
     enable = lib.mkEnableOption "Documents & Publishing tools";
 
     office = {
@@ -40,16 +40,16 @@ in
     };
   };
 
-  home = lib.mkIf config.features.gui.documents.enable {
+  home = lib.mkIf config.layers.layer-60.gui.documents.enable {
     home.packages = lib.flatten [
-      (lib.optional config.features.gui.documents.office.enable pkgs.libreoffice-fresh)
-      (lib.optionals config.features.gui.documents.publishing.enable [
+      (lib.optional config.layers.layer-60.gui.documents.office.enable pkgs.libreoffice-fresh)
+      (lib.optionals config.layers.layer-60.gui.documents.publishing.enable [
         pkgs.pandoc
         pkgs.texliveFull
         pkgs.scribus
         pkgs.sigil
       ])
-      (lib.optional config.features.gui.documents.notes.enable pkgs.obsidian)
+      (lib.optional config.layers.layer-60.gui.documents.notes.enable pkgs.obsidian)
       pkgs.hicolor-icon-theme
     ];
   };

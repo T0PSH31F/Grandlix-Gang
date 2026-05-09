@@ -8,10 +8,10 @@
 
 with lib;
 let
-  cfg = config.features.services.config.karakeep;
+  cfg = config.layers.layer-20.services.config.karakeep;
 in
 {
-  options.features.services.config.karakeep = {
+  options.layers.layer-20.services.config.karakeep = {
     enable = mkEnableOption "Karakeep bookmark manager";
 
     port = mkOption {
@@ -59,7 +59,7 @@ in
     networking.firewall.allowedTCPPorts = [ cfg.port ];
 
     # Impermanence support
-    environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [
         {
           directory = "/var/lib/karakeep";

@@ -5,7 +5,7 @@
 }:
 with lib;
 {
-  options.features.services.config.monitoring = {
+  options.layers.layer-20.services.config.monitoring = {
     enable = mkEnableOption "Comprehensive monitoring stack with Prometheus, Loki, and Grafana";
 
     domain = mkOption {
@@ -33,7 +33,7 @@ with lib;
     };
   };
 
-  config = mkIf config.features.services.config.monitoring.enable {
+  config = mkIf config.layers.layer-20.services.config.monitoring.enable {
     sops.secrets.grafana_pass = {
       sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
     };
@@ -43,7 +43,7 @@ with lib;
     # ============================================================================
     services.prometheus = {
       enable = true;
-      port = config.features.services.config.monitoring.prometheus.port;
+      port = config.layers.layer-20.services.config.monitoring.prometheus.port;
 
       # Retention (default 15 days)
       retentionTime = "30d";
@@ -73,7 +73,7 @@ with lib;
           job_name = "prometheus";
           static_configs = [
             {
-              targets = [ "localhost:${toString config.features.services.config.monitoring.prometheus.port}" ];
+              targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.prometheus.port}" ];
             }
           ];
         }
@@ -93,7 +93,7 @@ with lib;
           job_name = "loki";
           static_configs = [
             {
-              targets = [ "localhost:${toString config.features.services.config.monitoring.loki.port}" ];
+              targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.loki.port}" ];
             }
           ];
         }
@@ -103,7 +103,7 @@ with lib;
           job_name = "grafana";
           static_configs = [
             {
-              targets = [ "localhost:${toString config.features.services.config.monitoring.grafana.port}" ];
+              targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.grafana.port}" ];
             }
           ];
         }
@@ -117,7 +117,7 @@ with lib;
       enable = true;
 
       configuration = {
-        server.http_listen_port = config.features.services.config.monitoring.loki.port;
+        server.http_listen_port = config.layers.layer-20.services.config.monitoring.loki.port;
 
         auth_enabled = false;
 
@@ -187,8 +187,8 @@ with lib;
       enable = true;
       settings = {
         server = {
-          http_port = config.features.services.config.monitoring.grafana.port;
-          domain = config.features.services.config.monitoring.domain;
+          http_port = config.layers.layer-20.services.config.monitoring.grafana.port;
+          domain = config.layers.layer-20.services.config.monitoring.domain;
           root_url = "http://%(domain)s:%(http_port)s/";
         };
         security = {
@@ -201,7 +201,7 @@ with lib;
     };
 
     # Ensure data is persisted
-    environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [
         "/var/lib/prometheus"
         "/var/lib/loki"

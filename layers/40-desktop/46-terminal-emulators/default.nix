@@ -1,5 +1,5 @@
 { lib, config, ... }: {
-  options.features.desktop.terminals = {
+  options.layers.layer-40.desktop.terminals = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -8,7 +8,7 @@
   };
 
   home = {
-    imports = lib.optionals config.features.desktop.terminals.enable [
+    imports = lib.optionals config.layers.layer-40.desktop.terminals.enable [
       ./ghostty.nix
       ./waveterm.nix
     ];

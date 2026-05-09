@@ -8,10 +8,10 @@
 
 with lib;
 let
-  cfg = config.features.services.config.adguard;
+  cfg = config.layers.layer-20.services.config.adguard;
 in
 {
-  options.features.services.config.adguard = {
+  options.layers.layer-20.services.config.adguard = {
     enable = mkEnableOption "AdGuard Home DNS filtering";
 
     port = mkOption {
@@ -55,7 +55,7 @@ in
     };
 
     # Impermanence support
-    environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [
         {
           directory = "/var/lib/AdGuardHome";

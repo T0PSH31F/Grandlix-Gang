@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.features.cli;
+  cfg = config.layers.layer-50.cli;
   motdPkg =
     pkgs.runCommand "nixos-motds"
       { buildInputs = [ pkgs.chafa pkgs.figlet pkgs.lolcat pkgs.coreutils ]; }

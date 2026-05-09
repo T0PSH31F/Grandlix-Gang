@@ -3,7 +3,7 @@
     ./ai.nix
   ];
 
-  features.services.config = {
+  layers.layer-20.services.config = {
     homepage-dashboard.enable = lib.mkDefault true;
     homepage-dashboard.lovable.enable = lib.mkDefault true;
   };

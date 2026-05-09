@@ -8,10 +8,10 @@
 
 with lib;
 let
-  cfg = config.features.services.config.your-spotify;
+  cfg = config.layers.layer-20.services.config.your-spotify;
 in
 {
-  options.features.services.config.your-spotify = {
+  options.layers.layer-20.services.config.your-spotify = {
     enable = mkEnableOption "Your Spotify analytics service";
 
     port = mkOption {

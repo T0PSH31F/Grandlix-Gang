@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.features.identity.themes.grub-lain = {
+  options.layers.layer-30.identity.themes.grub-lain = {
     enable = lib.mkEnableOption "Lain GRUB theme";
     efiInstallAsRemovable = lib.mkOption {
       type = lib.types.bool;
@@ -14,14 +14,14 @@
     };
   };
 
-  config = lib.mkIf config.features.identity.themes.grub-lain.enable {
+  config = lib.mkIf config.layers.layer-30.identity.themes.grub-lain.enable {
     # Use the GRUB 2 boot loader with Lain theme
     boot.loader.grub = {
       enable = true;
       configurationLimit = 10;
       device = "nodev"; # EFI systems use nodev
       efiSupport = true;
-      efiInstallAsRemovable = config.features.identity.themes.grub-lain.efiInstallAsRemovable;
+      efiInstallAsRemovable = config.layers.layer-30.identity.themes.grub-lain.efiInstallAsRemovable;
       useOSProber = true;
 
       # Lain theme configuration
@@ -46,6 +46,6 @@
 
     # Disable systemd-boot when using GRUB theme (use mkForce to override base.nix)
     boot.loader.systemd-boot.enable = lib.mkForce false;
-    boot.loader.efi.canTouchEfiVariables = lib.mkForce (!config.features.identity.themes.grub-lain.efiInstallAsRemovable);
+    boot.loader.efi.canTouchEfiVariables = lib.mkForce (!config.layers.layer-30.identity.themes.grub-lain.efiInstallAsRemovable);
   };
 }

@@ -64,8 +64,8 @@ clan machines update MY_MACHINE_NAME
 
 ### The Dendritic Pattern
 We use a nested attribute set pattern for toggling features.
-*   `features.system.config.*` - High-level system behavior (like Impermanence).
-*   `features.services.config.*` - Infrastructure bundles.
+*   `layers.layer-10.system.config.*` - High-level system behavior (like Impermanence).
+*   `layers.layer-20.services.config.*` - Infrastructure bundles.
 *   `services.ai-services.*` - Granular AI tool toggles.
 *   `home-manager.users.t0psh31f.desktop.*` - User-space GUI toggles.
 

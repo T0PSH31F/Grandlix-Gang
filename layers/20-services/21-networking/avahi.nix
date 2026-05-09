@@ -5,11 +5,11 @@
   ...
 }:
 with lib; {
-  options.features.services.config.avahi = {
+  options.layers.layer-20.services.config.avahi = {
     enable = mkEnableOption "Avahi mDNS/DNS-SD daemon for local hostname resolution";
   };
 
-  config = mkIf config.features.services.config.avahi.enable {
+  config = mkIf config.layers.layer-20.services.config.avahi.enable {
     # Enable Avahi daemon for mDNS (Zeroconf)
     services.avahi = {
       enable = true;

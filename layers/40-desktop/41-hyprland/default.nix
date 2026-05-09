@@ -7,10 +7,10 @@
   ...
 }:
 let
-  cfg = osConfig.features.desktop.hyprland;
+  cfg = osConfig.layers.layer-40.desktop.hyprland;
 in
 {
-  options.features.desktop.hyprland = {
+  options.layers.layer-40.desktop.hyprland = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = builtins.elem "desktop" (osConfig.machine.tags or [ ]);

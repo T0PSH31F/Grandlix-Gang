@@ -75,7 +75,7 @@ in
     };
 
     # Ensure data is persisted
-    environment.persistence."/persist" = mkIf config.features.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [
         cfg.dataDir
       ];

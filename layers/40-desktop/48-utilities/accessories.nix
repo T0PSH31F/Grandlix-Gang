@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.features.desktop.accessories = {
+  options.layers.layer-40.desktop.accessories = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true; # Default to true for desktop machines if tier is imported
@@ -13,7 +13,7 @@
     };
   };
 
-  home = lib.mkIf config.features.desktop.accessories.enable {
+  home = lib.mkIf config.layers.layer-40.desktop.accessories.enable {
     home.packages = with pkgs; [
       # Icons
       candy-icons

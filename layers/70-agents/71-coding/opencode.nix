@@ -4,7 +4,7 @@
   ...
 }:
 {
-  options.features.agent.opencode = {
+  options.layers.layer-70.agent.opencode = {
     enable = lib.mkEnableOption "OpenCode AI coding agent";
     desktop = lib.mkEnableOption "OpenCode desktop application";
 
@@ -15,7 +15,7 @@
     };
   };
 
-  home = { config, osConfig, ... }: lib.mkIf osConfig.features.agent.opencode.enable {
+  home = { config, osConfig, ... }: lib.mkIf osConfig.layers.layer-70.agent.opencode.enable {
     programs.opencode = {
       enable = true;
       enableMcpIntegration = true;
@@ -33,6 +33,6 @@
     xdg.configFile."opencode/themes/noctalia.json".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
 
-    home.packages = lib.optional osConfig.features.agent.opencode.desktop pkgs.opencode-desktop;
+    home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop;
   };
 }

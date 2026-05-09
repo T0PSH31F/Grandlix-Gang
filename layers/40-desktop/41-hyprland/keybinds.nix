@@ -4,7 +4,7 @@
   ...
 }:
 let
-  cfg = osConfig.features.desktop.hyprland;
+  cfg = osConfig.layers.layer-40.desktop.hyprland;
 in
 {
   config = lib.mkIf cfg.enable {

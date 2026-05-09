@@ -13,7 +13,7 @@
   ...
 }:
 let
-  cfg = osConfig.features.desktop.noctalia;
+  cfg = osConfig.layers.layer-40.desktop.noctalia;
 in
 {
   config = lib.mkIf cfg.enable {

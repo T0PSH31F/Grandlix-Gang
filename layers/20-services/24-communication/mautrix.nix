@@ -384,7 +384,7 @@ with lib;
 
     # Ensure Matrix bridges data is persisted
     environment.persistence."/persist" =
-      mkIf (config.services.mautrix-bridges.enable && (config.features.system.config.impermanence.enable or false))
+      mkIf (config.services.mautrix-bridges.enable && (config.layers.layer-10.system.config.impermanence.enable or false))
         {
           directories = [
             "/var/lib/mautrix-telegram"

@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.features.cli;
+  cfg = config.layers.layer-50.cli;
 in
 {
   home = lib.mkIf (cfg.enable && cfg.shells.bash.enable) {

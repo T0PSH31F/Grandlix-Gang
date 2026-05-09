@@ -4,7 +4,7 @@
     ../../20-services/21-networking
   ];
 
-  features.services.config = {
+  layers.layer-20.services.config = {
     adguard.enable = lib.mkDefault true;
     monitoring.enable = lib.mkDefault true;
     tailscale.enable = lib.mkDefault true;

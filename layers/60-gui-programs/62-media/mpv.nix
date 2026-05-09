@@ -10,13 +10,13 @@ let
   '';
 in
 {
-  options.features.gui.mpv = {
+  options.layers.layer-60.gui.mpv = {
     enable = lib.mkEnableOption "MPV Media Player" // {
       default = true;
     };
   };
 
-  home = { config, osConfig, ... }: lib.mkIf osConfig.features.gui.mpv.enable {
+  home = { config, osConfig, ... }: lib.mkIf osConfig.layers.layer-60.gui.mpv.enable {
     xdg.desktopEntries.mvi = {
       name = "MVI";
       genericName = "Image Viewer";

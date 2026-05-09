@@ -6,10 +6,10 @@
 }:
 with lib;
 let
-  cfg = config.features.system.flatpak;
+  cfg = config.layers.layer-10.system.flatpak;
 in
 {
-  options.features.system.flatpak = {
+  options.layers.layer-10.system.flatpak = {
     enable = mkEnableOption "Flatpak package manager";
 
     remotes = mkOption {

@@ -1,5 +1,5 @@
 { lib, config, ... }: {
-  options.features.desktop.frameworks = {
+  options.layers.layer-40.desktop.frameworks = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;

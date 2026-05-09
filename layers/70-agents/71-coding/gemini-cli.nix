@@ -4,11 +4,11 @@
   ...
 }:
 {
-  options.features.agent.gemini-cli = {
+  options.layers.layer-70.agent.gemini-cli = {
     enable = lib.mkEnableOption "Gemini CLI agent";
   };
 
-  home = lib.mkIf config.features.agent.gemini-cli.enable {
+  home = lib.mkIf config.layers.layer-70.agent.gemini-cli.enable {
     programs.gemini-cli = {
       enable = true;
       settings = {

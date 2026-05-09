@@ -9,14 +9,14 @@
     ../../70-agents
   ];
 
-  features = {
-    system.config.resource-limits.enable = lib.mkDefault true;
-    cli.nixTools.enable = lib.mkDefault true;
-    identity.themes = {
+  layers = {
+    layer-10.system.config.resource-limits.enable = lib.mkDefault true;
+    layer-50.cli.nixTools.enable = lib.mkDefault true;
+    layer-30.identity.themes = {
       grub-lain.enable = lib.mkDefault true;
       plymouth-hellonavi.enable = lib.mkDefault true;
     };
-    services.config = {
+    layer-20.services.config = {
       avahi.enable = lib.mkDefault true;
       tailscale.enable = lib.mkDefault true;
       monitoring.enable = lib.mkDefault true;

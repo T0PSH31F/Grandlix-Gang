@@ -6,10 +6,10 @@
 }:
 with lib;
 let
-  cfg = config.features.system.mobile;
+  cfg = config.layers.layer-10.system.mobile;
 in
 {
-  options.features.system.mobile = {
+  options.layers.layer-10.system.mobile = {
     android = {
       enable = mkEnableOption "Android device support (ADB, Waydroid)";
     };

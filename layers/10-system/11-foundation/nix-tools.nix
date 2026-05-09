@@ -6,11 +6,11 @@
 }:
 with lib;
 {
-  options.features.cli.nixTools = {
+  options.layers.layer-50.cli.nixTools = {
     enable = mkEnableOption "Nix development and helper tools";
   };
 
-  config = mkIf config.features.cli.nixTools.enable {
+  config = mkIf config.layers.layer-50.cli.nixTools.enable {
     # NH - NixOS Helper
     # Provides cleaner commands: nh os switch, nh os boot, nh os test, etc.
     programs.nh = {

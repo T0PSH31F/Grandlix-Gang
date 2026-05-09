@@ -60,7 +60,7 @@
   # Only explicitly define features here if:
   # 1. It is highly specific to this exact machine (e.g. Corsair hardware)
   # 2. You need to disable a feature that is normally enabled by a tag (e.g. gui.gaming.enable = false)
-  features = {
+  layers = {
     # Example: Override a tag default
     # gui.gaming.enable = false; 
     
@@ -72,7 +72,7 @@
   # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
   # ============================================================================
   # Note: Most raw services are automatically enabled via machine.tags
-  services = {
+  layer-20.services = {
     # Define custom Caddy routing, DDNS domains, or explicit service toggles here.
   };
 

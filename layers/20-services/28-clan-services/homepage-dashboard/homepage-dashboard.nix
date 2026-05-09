@@ -18,7 +18,7 @@
 
     public.port = {
       name = "homepage-port";
-      value = toString config.features.services.config.homepage-dashboard.port;
+      value = toString config.layers.layer-20.services.config.homepage-dashboard.port;
     };
   };
 

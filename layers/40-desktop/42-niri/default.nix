@@ -1,5 +1,5 @@
 { osConfig ? config,  pkgs, lib, config, ... }: {
-  options.features.desktop.niri = {
+  options.layers.layer-40.desktop.niri = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -7,7 +7,7 @@
     };
   };
 
-  home = lib.mkIf osConfig.features.desktop.niri.enable {
+  home = lib.mkIf osConfig.layers.layer-40.desktop.niri.enable {
     imports = [
       ./settings.nix
       ./keybinds.nix

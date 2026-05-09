@@ -1,5 +1,5 @@
 { pkgs, lib, config, ... }: {
-  options.features.desktop.nemo = {
+  options.layers.layer-40.desktop.nemo = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -7,7 +7,7 @@
     };
   };
 
-  home = lib.mkIf config.features.desktop.nemo.enable {
+  home = lib.mkIf config.layers.layer-40.desktop.nemo.enable {
     home.packages = with pkgs; [
       nemo-with-extensions
       nemo-fileroller

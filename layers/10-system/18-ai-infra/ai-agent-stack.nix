@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.features.system.ai-agent-stack;
+  cfg = config.layers.layer-10.system.ai-agent-stack;
 
   # Python agent dependencies wrapper:
   agentDeps = pkgs.python3.withPackages (ps: with ps; [
@@ -26,7 +26,7 @@ let
       agentDeps
       pkgs.pipx
       # OpenCode and Beads are in nixpkgs/overlays
-      # pkgs.opencode (handled via config.features.home.agent.opencode)
+      # pkgs.opencode (handled via config.layers.layer-70.home.agent.opencode)
       pkgs.beads
     ];
   };
@@ -38,7 +38,7 @@ in
     ../../20-services/25-data/langfuse.nix
   ];
 
-  options.features.system.ai-agent-stack = {
+  options.layers.layer-10.system.ai-agent-stack = {
     enable = lib.mkEnableOption "Turn-key Universal PKB and Agent Stack";
   };
 

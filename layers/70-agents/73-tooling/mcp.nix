@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.features.agent.mcp = {
+  options.layers.layer-70.agent.mcp = {
     enable = lib.mkEnableOption "Model Context Protocol (MCP) servers";
 
     servers = lib.mkOption {
@@ -15,7 +15,7 @@
     };
   };
 
-  home = lib.mkIf config.features.agent.mcp.enable {
+  home = lib.mkIf config.layers.layer-70.agent.mcp.enable {
     home.packages = with pkgs; [
       kilocode-cli
       picoclaw
@@ -58,7 +58,7 @@
           command = lib.getExe pkgs.ha-mcp;
           args = [ ];
         };
-      } config.features.agent.mcp.servers;
+      } config.layers.layer-70.agent.mcp.servers;
     };
   };
 }

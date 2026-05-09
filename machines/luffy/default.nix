@@ -61,19 +61,19 @@
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
-  features.system.config.impermanence.enable = true;
+  layers.layer-10.system.config.impermanence.enable = true;
 
-  features.identity.themes.greeter.sddm = {
+  layers.layer-30.identity.themes.greeter.sddm = {
     enable = true;
     # Using standard fallback if needed or specific gif
   };
 
-  features.desktop = {
+  layers.layer-40.desktop = {
     hyprland.enable = true;
     noctalia.backend = "hyprland";
   };
 
-  features.services.config = {
+  layers.layer-20.services.config = {
     monitoring = {
       enable = false;
       domain = "grafana.lovelain.duckdns.org";

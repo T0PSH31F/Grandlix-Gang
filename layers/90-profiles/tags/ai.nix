@@ -4,7 +4,7 @@
     ../../70-agents
   ];
 
-  features.agent = {
+  layers.layer-70.agent = {
     opencode.enable = lib.mkDefault true;
     mcp.enable = lib.mkDefault true;
     claude-code.enable = lib.mkDefault true;
@@ -12,5 +12,5 @@
     asr-tts.enable = lib.mkDefault true;
   };
 
-  features.system.ai-agent-stack.enable = lib.mkDefault true;
+  layers.layer-10.system.ai-agent-stack.enable = lib.mkDefault true;
 }

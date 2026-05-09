@@ -6,10 +6,10 @@
 }:
 with lib;
 let
-  cfg = config.features.services.communication.signal-cli-daemon;
+  cfg = config.layers.layer-20.services.communication.signal-cli-daemon;
 in
 {
-  options.features.services.communication.signal-cli-daemon = {
+  options.layers.layer-20.services.communication.signal-cli-daemon = {
     enable = mkEnableOption "Signal-CLI REST API Daemon";
     port = mkOption {
       type = types.port;
@@ -36,7 +36,7 @@ in
     ];
 
     # Persistence
-    environment.persistence."/persist" = mkIf (config.features.system.config.impermanence.enable or false) {
+    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
       directories = [
         "/var/lib/signal-cli-daemon"
       ];

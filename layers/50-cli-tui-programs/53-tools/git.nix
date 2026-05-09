@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.features.cli;
+  cfg = config.layers.layer-50.cli;
 in
 {
   home = { config, ... }: lib.mkIf cfg.enable {

@@ -3,7 +3,7 @@
     ../../20-services
     ../../60-gui-programs
   ];
-  features.gui = {
+  layers.layer-60.gui = {
     media-packages.enable = lib.mkDefault true;
     audio.enable = lib.mkDefault true;
     mpv.enable = lib.mkDefault true;

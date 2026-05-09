@@ -9,13 +9,13 @@ let
   clanTags = osConfig.machine.tags or [ ];
 in
 {
-  options.features.gui.vscode = {
+  options.layers.layer-60.gui.vscode = {
     enable = lib.mkEnableOption "VS Code" // {
       default = builtins.elem "dev" clanTags;
     };
   };
 
-  home = lib.mkIf config.features.gui.vscode.enable {
+  home = lib.mkIf config.layers.layer-60.gui.vscode.enable {
     home.packages = with pkgs; [
       bun
       nodejs

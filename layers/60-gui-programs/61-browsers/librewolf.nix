@@ -5,11 +5,11 @@
   ...
 }:
 {
-  options.features.gui.librewolf = {
+  options.layers.layer-60.gui.librewolf = {
     enable = lib.mkEnableOption "LibreWolf Browser";
   };
 
-  home = lib.mkIf config.features.gui.librewolf.enable {
+  home = lib.mkIf config.layers.layer-60.gui.librewolf.enable {
     programs.librewolf = {
       enable = true;
       settings = {

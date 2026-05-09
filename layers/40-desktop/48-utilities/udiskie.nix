@@ -1,5 +1,5 @@
 { lib, config, ... }: {
-  options.features.desktop.udiskie = {
+  options.layers.layer-40.desktop.udiskie = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = config.hardware-config.automount.enable or false;
@@ -7,7 +7,7 @@
     };
   };
 
-  home = lib.mkIf config.features.desktop.udiskie.enable {
+  home = lib.mkIf config.layers.layer-40.desktop.udiskie.enable {
     services.udiskie = {
       enable = true;
       tray = "auto";

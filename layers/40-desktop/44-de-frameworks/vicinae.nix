@@ -37,7 +37,7 @@
 }:
 with lib;
 let
-  cfg = osConfig.features.desktop.frameworks.vicinae;
+  cfg = osConfig.layers.layer-40.desktop.frameworks.vicinae;
 in
 {
   config = mkIf cfg.enable {

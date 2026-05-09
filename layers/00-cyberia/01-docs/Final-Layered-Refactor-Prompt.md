@@ -47,17 +47,17 @@ that can configure NixOS, Home-Manager, and Darwin from a single file:
 { config, lib, pkgs, ... }: {
   # During phases 1-10, keep existing option names (e.g., config.desktop.hyprland.enable)
   # Only in Phase 11 will we migrate to this new `features.` schema.
-  options.features.desktop.hyprland.enable =
+  options.layers.layer-40.desktop.hyprland.enable =
     lib.mkEnableOption "Hyprland compositor";
 
   # NixOS-level configuration
-  nixos = lib.mkIf config.features.desktop.hyprland.enable {
+  nixos = lib.mkIf config.layers.layer-40.desktop.hyprland.enable {
     programs.hyprland.enable = true;
     xdg.portal.wlr.enable = true;
   };
 
   # Home-Manager configuration (merged into user's HM)
-  home = lib.mkIf config.features.desktop.hyprland.enable {
+  home = lib.mkIf config.layers.layer-40.desktop.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
       settings = { /* ... */ };
@@ -597,7 +597,7 @@ Created fresh. Tags compose modules from tiers 10–70.
 > [!WARNING]
 > **Luffy has a minimal import footprint.**
 > Luffy's `default.nix` does NOT import the full foundation/hardware/desktop stack.
-> It cherry-picks specific service directories and uses a stub `options.features.system.config.impermanence.enable`.
+> It cherry-picks specific service directories and uses a stub `options.layers.layer-10.system.config.impermanence.enable`.
 > **DO NOT** expand its imports when creating the target profiles. It must remain minimal.
 
 ---

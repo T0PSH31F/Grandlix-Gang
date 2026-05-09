@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.features.system.hardware.bluetooth;
+  cfg = config.layers.layer-10.system.hardware.bluetooth;
 in
 {
   config = lib.mkIf cfg.enable {

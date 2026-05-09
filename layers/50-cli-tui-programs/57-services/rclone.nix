@@ -6,10 +6,10 @@
 }:
 with lib;
 let
-  cfg = config.features.home.cli.services.rclone;
+  cfg = config.layers.layer-50.home.cli.services.rclone;
 in
 {
-  options.features.home.cli.services.rclone = {
+  options.layers.layer-50.home.cli.services.rclone = {
     enable = mkEnableOption "Rclone Google Drive mount service";
   };
 

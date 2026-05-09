@@ -5,13 +5,13 @@
   ...
 }:
 {
-  options.features.gui.audio = {
+  options.layers.layer-60.gui.audio = {
     enable = lib.mkEnableOption "Audio visualization and management (cava, cavalier, mpd)" // {
       default = true;
     };
   };
 
-  home = { config, osConfig, ... }: lib.mkIf osConfig.features.gui.audio.enable {
+  home = { config, osConfig, ... }: lib.mkIf osConfig.layers.layer-60.gui.audio.enable {
     # MPD Service and Client
     services.mpd = {
       enable = true;

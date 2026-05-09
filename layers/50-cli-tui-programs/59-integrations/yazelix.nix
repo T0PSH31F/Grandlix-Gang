@@ -6,7 +6,7 @@
   ...
 }:
 let
-  cfg = config.features.cli.yazelixIntegration;
+  cfg = config.layers.layer-50.cli.yazelixIntegration;
 in
 {
   # Option is defined in layers/50-cli-tui-programs/default.nix as yazelixIntegration

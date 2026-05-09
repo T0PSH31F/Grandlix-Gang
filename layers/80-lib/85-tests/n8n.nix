@@ -14,7 +14,7 @@
 
       # Mock requirements for n8n.nix to work in isolation
       options = {
-        features.system.config.impermanence.enable = lib.mkEnableOption "impermanence";
+        layers.layer-10.system.config.impermanence.enable = lib.mkEnableOption "impermanence";
         environment.persistence = lib.mkOption {
           type = lib.types.attrs;
           default = { };
@@ -22,7 +22,7 @@
       };
 
       config = {
-        features.system.config.impermanence.enable = false;
+        layers.layer-10.system.config.impermanence.enable = false;
 
         # Enable n8n
         services.n8n-server = {

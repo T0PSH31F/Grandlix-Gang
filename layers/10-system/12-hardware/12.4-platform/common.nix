@@ -6,7 +6,7 @@
 }:
 with lib;
 {
-  options.features.system.hardware = {
+  options.layers.layer-10.system.hardware = {
     # Kernel selection
     kernel = mkOption {
       type = types.enum [
@@ -63,13 +63,13 @@ with lib;
 
     boot.kernelPackages = mkMerge [
       # Latest stable kernel (default)
-      (mkIf (config.features.system.hardware.kernel == "latest") pkgs.linuxPackages_latest)
+      (mkIf (config.layers.layer-10.system.hardware.kernel == "latest") pkgs.linuxPackages_latest)
 
       # CachyOS kernel - optimized for performance
-      (mkIf (config.features.system.hardware.kernel == "cachyos") pkgs.linuxPackages_cachyos)
+      (mkIf (config.layers.layer-10.system.hardware.kernel == "cachyos") pkgs.linuxPackages_cachyos)
 
       # Zen kernel - optimized for desktop/responsiveness
-      (mkIf (config.features.system.hardware.kernel == "zen") pkgs.linuxPackages_zen)
+      (mkIf (config.layers.layer-10.system.hardware.kernel == "zen") pkgs.linuxPackages_zen)
     ];
 
     # ============================================================================
@@ -77,7 +77,7 @@ with lib;
     # ============================================================================
 
     # Enable udisks2 service
-    services.udisks2.enable = mkIf config.features.system.hardware.automount.enable true;
+    services.udisks2.enable = mkIf config.layers.layer-10.system.hardware.automount.enable true;
 
     # Add udiskie and udisks to system packages
 
@@ -85,28 +85,28 @@ with lib;
     # RGB LIGHTING (OpenRGB)
     # ============================================================================
 
-    services.hardware.openrgb = mkIf config.features.system.hardware.openrgb.enable {
+    services.hardware.openrgb = mkIf config.layers.layer-10.system.hardware.openrgb.enable {
       enable = true;
       #  motherboard = "amd"; # or "intel" - auto-detected in most cases
     };
 
     # Enable I2C for RGB RAM and motherboard control
     hardware.i2c.enable = mkIf (
-      config.features.system.hardware.openrgb.enable && config.features.system.hardware.openrgb.enableI2C
+      config.layers.layer-10.system.hardware.openrgb.enable && config.layers.layer-10.system.hardware.openrgb.enableI2C
     ) true;
 
     # Enable Corsair RGB hardware support
-    hardware.ckb-next.enable = mkIf config.features.system.hardware.corsair.enable true;
+    hardware.ckb-next.enable = mkIf config.layers.layer-10.system.hardware.corsair.enable true;
 
     # Add hardware packages
     environment.systemPackages =
-      (lib.optionals config.features.system.hardware.automount.enable (
+      (lib.optionals config.layers.layer-10.system.hardware.automount.enable (
         with pkgs;
         [
           udisks
         ]
       ))
-      ++ (lib.optionals config.features.system.hardware.openrgb.enable [ pkgs.openrgb ])
+      ++ (lib.optionals config.layers.layer-10.system.hardware.openrgb.enable [ pkgs.openrgb ])
       ++ (with pkgs; [
         logitech-udev-rules
         solaar
@@ -137,8 +137,8 @@ with lib;
     };
 
     # USB automounting
-    services.devmon.enable = mkIf config.features.system.hardware.automount.enable true;
-    services.gvfs.enable = mkIf config.features.system.hardware.automount.enable true;
+    services.devmon.enable = mkIf config.layers.layer-10.system.hardware.automount.enable true;
+    services.gvfs.enable = mkIf config.layers.layer-10.system.hardware.automount.enable true;
 
     # Storage optimization
     services.fstrim.enable = true; # SSD TRIM support

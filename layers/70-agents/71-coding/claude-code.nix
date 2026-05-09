@@ -5,11 +5,11 @@
   ...
 }:
 {
-  options.features.agent.claude-code = {
+  options.layers.layer-70.agent.claude-code = {
     enable = lib.mkEnableOption "Anthropic Claude Code agentic coding tool";
   };
 
-  home = lib.mkIf config.features.agent.claude-code.enable {
+  home = lib.mkIf config.layers.layer-70.agent.claude-code.enable {
     programs.claude-code = {
       enable = true;
       enableMcpIntegration = true;

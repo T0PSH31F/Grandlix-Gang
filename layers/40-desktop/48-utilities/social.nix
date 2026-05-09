@@ -1,5 +1,5 @@
 { pkgs, lib, config, ... }: {
-  options.features.desktop.social = {
+  options.layers.layer-40.desktop.social = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -7,7 +7,7 @@
     };
   };
 
-  home = lib.mkIf config.features.desktop.social.enable {
+  home = lib.mkIf config.layers.layer-40.desktop.social.enable {
     home.packages = with pkgs; [
       beeper
       beeper-bridge-manager

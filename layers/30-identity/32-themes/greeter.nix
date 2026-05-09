@@ -6,7 +6,7 @@
 }:
 with lib;
 let
-  cfg = config.features.identity.themes.greeter;
+  cfg = config.layers.layer-30.identity.themes.greeter;
 
   # SDDM Sugar Candy Custom with video background
   sddm-theme-sugar-candy = pkgs.stdenv.mkDerivation {
@@ -18,13 +18,13 @@ let
       sha256 = "sha256-m99it7SRAOpgvMctofvSsh99fF9m/y/idS+Fk5Jp6w8=";
     };
     installPhase = ''
-      mkdir -p $out/share/sddm/features.identity.themes/sugar-candy
-      cp -R . $out/share/sddm/features.identity.themes/sugar-candy
+      mkdir -p $out/share/sddm/layers.layer-30.identity.themes/sugar-candy
+      cp -R . $out/share/sddm/layers.layer-30.identity.themes/sugar-candy
       # Overwrite the background with your mp4/gif
-      cp "${cfg.sddm.background}" $out/share/sddm/features.identity.themes/sugar-candy/Background.mp4
+      cp "${cfg.sddm.background}" $out/share/sddm/layers.layer-30.identity.themes/sugar-candy/Background.mp4
 
       # Patch theme.conf to use Background.mp4
-      sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/features.identity.themes/sugar-candy/theme.conf
+      sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/layers.layer-30.identity.themes/sugar-candy/theme.conf
     '';
   };
 
@@ -44,7 +44,7 @@ let
   '';
 in
 {
-  options.features.identity.themes.greeter = {
+  options.layers.layer-30.identity.themes.greeter = {
     sddm = {
       enable = mkEnableOption "SDDM with Sugar Candy theme";
       background = mkOption {

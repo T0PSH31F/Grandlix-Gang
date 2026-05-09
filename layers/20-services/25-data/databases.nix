@@ -6,7 +6,7 @@
 { config, lib, ... }:
 with lib;
 {
-  config = mkIf config.features.system.config.impermanence.enable {
+  config = mkIf config.layers.layer-10.system.config.impermanence.enable {
     environment.persistence."/persist" = {
       directories =
         (optional (config.services.postgresql.enable or false) "/var/lib/postgresql")

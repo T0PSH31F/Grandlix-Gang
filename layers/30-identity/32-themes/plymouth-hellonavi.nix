@@ -7,7 +7,7 @@
 with lib;
 let
   # Option for color variant
-  colorVariant = config.features.identity.themes.plymouth-hellonavi.color or "blue";
+  colorVariant = config.layers.layer-30.identity.themes.plymouth-hellonavi.color or "blue";
 
   # Base hellonavi theme from GitHub
   hellonavi-base = pkgs.fetchFromGitHub {
@@ -55,7 +55,7 @@ let
   };
 in
 {
-  options.features.identity.themes.plymouth-hellonavi = {
+  options.layers.layer-30.identity.themes.plymouth-hellonavi = {
     enable = mkEnableOption "Plymouth HelloNavi theme";
     color = mkOption {
       type = types.enum [
@@ -67,7 +67,7 @@ in
     };
   };
 
-  config = mkIf config.features.identity.themes.plymouth-hellonavi.enable {
+  config = mkIf config.layers.layer-30.identity.themes.plymouth-hellonavi.enable {
     # Enable systemd initrd for proper Plymouth support
     boot.initrd.systemd.enable = lib.mkDefault true;
 

@@ -10,7 +10,7 @@ let
   clanTags = osConfig.machine.tags or [ ];
 in
 {
-  options.features.gui.gaming = {
+  options.layers.layer-60.gui.gaming = {
     enable = mkEnableOption "Gaming support with Proton, Lutris, and emulators" // {
       default = builtins.elem "gaming" clanTags;
     };
@@ -19,8 +19,8 @@ in
     enableEmulators = mkOption { type = types.bool; default = true; description = "Enable gaming emulators"; };
   };
 
-  nixos = mkIf config.features.gui.gaming.enable {
-    programs.steam = mkIf config.features.gui.gaming.enableSteam {
+  nixos = mkIf config.layers.layer-60.gui.gaming.enable {
+    programs.steam = mkIf config.layers.layer-60.gui.gaming.enableSteam {
       enable = true;
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
@@ -28,7 +28,7 @@ in
       extraCompatPackages = with pkgs; [ proton-ge-bin ];
     };
 
-    programs.gamemode = mkIf config.features.gui.gaming.enableGamemode {
+    programs.gamemode = mkIf config.layers.layer-60.gui.gaming.enableGamemode {
       enable = true;
       enableRenice = true;
       settings = {
@@ -42,7 +42,7 @@ in
 
     programs.fuse.enable = true;
     environment.systemPackages = with pkgs; [ antimicrox bottles gamemode gamescope goverlay mangohud vintagestory ]
-      ++ (lib.optionals config.features.gui.gaming.enableEmulators [
+      ++ (lib.optionals config.layers.layer-60.gui.gaming.enableEmulators [
         (retroarch.withCores (cores: with cores; [ beetle-psx-hw desmume dolphin flycast genesis-plus-gx mgba mupen64plus ppsspp snes9x ]))
         cemu dolphin-emu hactool joycond melonds ns-usbloader nstool nsz nx2elf pcsx2 rpcs3 ryubing sixpair usb-modeswitch usb-modeswitch-data
       ]);
@@ -57,7 +57,7 @@ in
     # boot.kernelParams = [ "split_lock_detect=off" ];
   };
 
-  home = { config, osConfig, ... }: mkIf osConfig.features.gui.gaming.enable {
+  home = { config, osConfig, ... }: mkIf osConfig.layers.layer-60.gui.gaming.enable {
     home.packages = with pkgs; [ cartridges prismlauncher umu-launcher steam-run-free nero-umu protonplus protontricks ];
     programs.lutris = {
       enable = mkDefault true;

@@ -7,11 +7,11 @@
   ...
 }:
 let
-  cfg = osConfig.features.desktop.noctalia;
+  cfg = osConfig.layers.layer-40.desktop.noctalia;
   hasDesktopTag = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
 in
 {
-  options.features.desktop.noctalia = {
+  options.layers.layer-40.desktop.noctalia = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = hasDesktopTag;

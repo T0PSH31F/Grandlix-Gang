@@ -38,8 +38,8 @@
     settings.PermitRootLogin = "yes";
   };
 
-  # Use features.system.config to toggle standard features if desired
-  # features.system.config.impermanence.enable = false;
+  # Use layers.layer-10.system.config to toggle standard features if desired
+  # layers.layer-10.system.config.impermanence.enable = false;
 
   # Clean up and minimal config
   documentation.man.enable = false;
