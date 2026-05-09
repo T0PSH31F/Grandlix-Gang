@@ -49,7 +49,7 @@ in
       enable = mkEnableOption "SDDM with Sugar Candy theme";
       background = mkOption {
         type = types.path;
-        default = ../../../../layers/00-cyberia/02-assets/sddm_background/one-piece-skull.1920x1080.mp4;
+        default = ../../00-cyberia/02-assets/sddm_background/one-piece-skull.1920x1080.mp4;
         description = "Path to the background video/image for SDDM";
       };
     };
@@ -57,12 +57,12 @@ in
       enable = mkEnableOption "Greetd with ReGreet and Hyprland";
       background = mkOption {
         type = types.path;
-        default = ../../../../layers/00-cyberia/02-assets/sddm_background/one-piece-skull.1920x1080.mp4;
+        default = ../../00-cyberia/02-assets/sddm_background/one-piece-skull.1920x1080.mp4;
         description = "Path to the background video for Greetd/Hyprland";
       };
       greetd-background = mkOption {
         type = types.path;
-        default = ../../../../layers/00-cyberia/02-assets/sddm_background/fallback1.jpg;
+        default = ../../00-cyberia/02-assets/sddm_background/fallback1.jpg;
         description = "Path to the background image for ReGreet";
       };
     };
