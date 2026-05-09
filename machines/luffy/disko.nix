@@ -4,7 +4,7 @@
   disko.devices = {
     disk.main = {
       type = "disk";
-      device = "/dev/nvme0n1"; # UPDATE THIS TO MATCH YOUR DISK (e.g. /dev/sda, /dev/nvme0n1)
+      device = "/dev/sda"; # UPDATE THIS TO MATCH YOUR DISK (e.g. /dev/sda, /dev/nvme0n1)
       content = {
         type = "gpt";
         partitions = {
@@ -19,7 +19,7 @@
             };
           };
           swap = {
-            size = "24G"; # Match RAM for hibernate support
+            size = "32G"; # Match RAM for hibernate support
             content = {
               type = "luks";
               name = "swap_crypted";
