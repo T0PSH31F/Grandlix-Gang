@@ -18,13 +18,13 @@ let
       sha256 = "sha256-m99it7SRAOpgvMctofvSsh99fF9m/y/idS+Fk5Jp6w8=";
     };
     installPhase = ''
-      mkdir -p $out/share/sddm/layers.layer-30.identity.themes/sugar-candy
-      cp -R . $out/share/sddm/layers.layer-30.identity.themes/sugar-candy
+      mkdir -p $out/share/sddm/themes/sugar-candy
+      cp -R . $out/share/sddm/themes/sugar-candy
       # Overwrite the background with your mp4/gif
-      cp "${cfg.sddm.background}" $out/share/sddm/layers.layer-30.identity.themes/sugar-candy/Background.mp4
+      cp "${cfg.sddm.background}" $out/share/sddm/themes/sugar-candy/Background.mp4
 
       # Patch theme.conf to use Background.mp4
-      sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/layers.layer-30.identity.themes/sugar-candy/theme.conf
+      sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/themes/sugar-candy/theme.conf
     '';
   };
 
