@@ -50,8 +50,8 @@
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
   # Note: Most features are automatically enabled via machine.tags -> 90-profiles
-  features = {
-    system = {
+  layers = {
+    layer-10.system = {
       mobile = {
         android.enable = true;
       };
@@ -59,11 +59,11 @@
       virtualization.enable = true;
     };
 
-    services.config = {
+    layer-20.services.config = {
       your-spotify.enable = true;
     };
 
-    identity.themes = {
+    layer-30.identity.themes = {
       greeter.sddm = {
         enable = true;
         background = ../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif;
@@ -71,7 +71,11 @@
       grub-lain.efiInstallAsRemovable = true; # Fix for Dell XPS 13 boot registration
     };
 
-    gui.gaming.enable = false; # Explicitly disabled despite potential tag inheritance
+    layer-40.desktop = {
+      noctalia.backend = "niri";
+    };
+
+    layer-60.gui.gaming.enable = false; # Explicitly disabled despite potential tag inheritance
   };
 
   # ============================================================================

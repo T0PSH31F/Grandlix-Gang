@@ -55,8 +55,8 @@
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
   # Note: Most features are automatically enabled via machine.tags -> 90-profiles
-  features = {
-    system = {
+  layers = {
+    layer-10.system = {
       hardware.corsair.enable = true;
       hardware.openrgb.enable = true;
       mobile.android.enable = true;
@@ -64,18 +64,18 @@
       virtualization.enable = true;
     };
 
-    services.config = {
+    layer-20.services.config = {
       adguard.enable = true;
     };
 
-    identity.themes = {
+    layer-30.identity.themes = {
       greeter.greetd = {
         enable = true;
         background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
       };
     };
 
-    desktop = {
+    layer-40.desktop = {
       noctalia.backend = "hyprland";
     };
   };
