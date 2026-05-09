@@ -10,6 +10,7 @@
   # ============================================================================
   imports = [
     ./hardware.nix
+    ./disko.nix
     ./containers.nix
 
     ../../layers/10-system
@@ -60,30 +61,28 @@
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
-  layers = {
-    layer-10.system.config.impermanence.enable = true;
+  features.system.config.impermanence.enable = true;
 
-    layer-30.identity.themes.greeter.sddm = {
+  features.identity.themes.greeter.sddm = {
+    enable = true;
+    # Using standard fallback if needed or specific gif
+  };
+
+  features.desktop = {
+    hyprland.enable = true;
+    noctalia.backend = "hyprland";
+  };
+
+  features.services.config = {
+    monitoring = {
+      enable = false;
+      domain = "grafana.lovelain.duckdns.org";
+      grafana.port = 3001; # avoids homepage on 3000
+      prometheus.port = 9090;
+    };
+    adguard = {
       enable = true;
-      # Using standard fallback if needed or specific gif
-    };
-
-    layer-40.desktop = {
-      hyprland.enable = true;
-      noctalia.backend = "hyprland";
-    };
-
-    layer-20.services.config = {
-      monitoring = {
-        enable = false;
-        domain = "grafana.lovelain.duckdns.org";
-        grafana.port = 3001; # avoids homepage on 3000
-        prometheus.port = 9090;
-      };
-      adguard = {
-        enable = true;
-        port = 3002; # avoids homepage and grafana
-      };
+      port = 3002; # avoids homepage and grafana
     };
   };
 
