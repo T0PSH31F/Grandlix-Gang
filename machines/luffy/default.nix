@@ -49,6 +49,11 @@
     "workstation"
     "desktop"
     "gaming"
+    "server"
+    "homelab"
+    "cache-server"
+    "ai-server"
+    "development"
   ];
   nixpkgs.config.allowUnfree = true;
 
@@ -57,7 +62,17 @@
   # ============================================================================
   layers = {
     layer-10.system.config.impermanence.enable = true;
-    
+
+    layer-30.identity.themes.greeter.sddm = {
+      enable = true;
+      # Using standard fallback if needed or specific gif
+    };
+
+    layer-40.desktop = {
+      hyprland.enable = true;
+      noctalia.backend = "hyprland";
+    };
+
     layer-20.services.config = {
       monitoring = {
         enable = false;
@@ -254,7 +269,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.t0psh31f.imports = [ inputs.niri.homeModules.config ];
+    # users.t0psh31f.imports = [ inputs.niri.homeModules.config ];
   };
 
   # ============================================================================

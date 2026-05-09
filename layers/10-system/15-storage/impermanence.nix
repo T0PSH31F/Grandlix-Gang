@@ -10,7 +10,7 @@ with lib;
     inputs.impermanence.nixosModules.impermanence
   ];
 
-  options.features.system.config.impermanence = {
+  options.layers.layer-10.system.config.impermanence = {
     enable = mkEnableOption "NixOS impermanence (ephemeral root)";
 
     persistPath = mkOption {
@@ -20,11 +20,11 @@ with lib;
     };
   };
 
-  config = mkIf config.features.system.config.impermanence.enable {
+  config = mkIf config.layers.layer-10.system.config.impermanence.enable {
     # ============================================================================
     # ENVIRONMENT PERSISTENCE
     # ============================================================================
-    environment.persistence.${config.features.system.config.impermanence.persistPath} = {
+    environment.persistence.${config.layers.layer-10.system.config.impermanence.persistPath} = {
       hideMounts = true;
 
       directories = [
@@ -80,6 +80,7 @@ with lib;
           # Browser profiles (if needed)
           ".mozilla"
           ".config/chromium"
+          ".config/BraveSoftware"
 
           # VS Code / editors
           ".vscode"
@@ -106,6 +107,7 @@ with lib;
           ".background"
           ".antigravity"
           ".gemini"
+          ".hermes"
           ".kodi"
           ".var/app"
         ];
@@ -125,9 +127,9 @@ with lib;
     # Only create directories for services that are actually enabled on this machine
     systemd.tmpfiles.rules = [
       # Core persistence directory
-      "d ${config.features.system.config.impermanence.persistPath} 0755 root root -"
-      "d ${config.features.system.config.impermanence.persistPath}/etc 0755 root root -"
-      "d ${config.features.system.config.impermanence.persistPath}/etc/ssh 0755 root root -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath} 0755 root root -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/etc 0755 root root -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/etc/ssh 0755 root root -"
 
       # User home persistence
       "d /persist/home/t0psh31f 0700 t0psh31f users"
@@ -179,6 +181,7 @@ with lib;
     # Mark persistent storage as needed for boot
     fileSystems."/persist".neededForBoot = true;
     fileSystems."/var/log".neededForBoot = true;
+    fileSystems."/home".neededForBoot = true;
 
     # Activation script to ensure persistence dirs exist with correct permissions
     system.activationScripts.ensurePersistenceDirs = {
