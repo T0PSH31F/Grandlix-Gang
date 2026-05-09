@@ -17,7 +17,7 @@ in
       extraPackages = with pkgs; [
         intel-media-driver
         vaapiIntel # i965 driver for older gen
-        vaapiVdpau
+        libva-vdpau-driver
         libvdpau-va-gl
       ];
     };

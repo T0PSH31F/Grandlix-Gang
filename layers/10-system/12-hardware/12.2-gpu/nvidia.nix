@@ -28,7 +28,7 @@ with lib;
     # Graphics packages for NVIDIA
     hardware.graphics.extraPackages = with pkgs; [
       nvidia-vaapi-driver
-      vaapiVdpau
+      libva-vdpau-driver
       libvdpau-va-gl
     ];
   };
