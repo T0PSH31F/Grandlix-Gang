@@ -8,23 +8,20 @@ with lib;
 let
   cfg = config.layers.layer-30.identity.themes.greeter;
 
-  # SDDM Sugar Candy Custom with video background
-  sddm-theme-sugar-candy = pkgs.stdenv.mkDerivation {
-    name = "sddm-theme-sugar-candy";
-    src = pkgs.fetchFromGitHub {
-      owner = "MarianArlt";
-      repo = "sddm-sugar-candy";
-      rev = "v1.5";
-      sha256 = "sha256-m99it7SRAOpgvMctofvSsh99fF9m/y/idS+Fk5Jp6w8=";
-    };
+  # SDDM Sugar Dark with custom video background
+  sddm-theme-custom = pkgs.stdenv.mkDerivation {
+    name = "sddm-theme-sugar-dark-custom";
+    src = pkgs.sddm-sugar-dark;
+    dontUnpack = true;
     installPhase = ''
-      mkdir -p $out/share/sddm/themes/sugar-candy
-      cp -R . $out/share/sddm/themes/sugar-candy
+      mkdir -p $out/share/sddm/themes/sugar-dark
+      cp -R $src/share/sddm/themes/sugar-dark/. $out/share/sddm/themes/sugar-dark/
+      chmod -R u+w $out/share/sddm/themes/sugar-dark/
       # Overwrite the background with your mp4/gif
-      cp "${cfg.sddm.background}" $out/share/sddm/themes/sugar-candy/Background.mp4
+      cp "${cfg.sddm.background}" $out/share/sddm/themes/sugar-dark/Background.mp4
 
       # Patch theme.conf to use Background.mp4
-      sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/themes/sugar-candy/theme.conf
+      sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/themes/sugar-dark/theme.conf
     '';
   };
 
@@ -83,11 +80,11 @@ in
       services.displayManager.sddm = {
         enable = true;
         wayland.enable = true;
-        theme = "sugar-candy";
+        theme = "sugar-dark";
       };
 
       environment.systemPackages = [
-        sddm-theme-sugar-candy
+        sddm-theme-custom
       ];
     })
 
