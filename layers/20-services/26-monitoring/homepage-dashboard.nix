@@ -572,8 +572,8 @@ in
 
     # Inject custom CSS/JS into the config directory for Lovable theme
     environment.etc = mkIf cfg.lovable.enable {
-      "homepage-dashboard/custom.css".source = cfg.lovable.cssPath;
-      "homepage-dashboard/custom.js".source = cfg.lovable.jsPath;
+      "homepage-dashboard/custom.css".source = mkForce cfg.lovable.cssPath;
+      "homepage-dashboard/custom.js".source = mkForce cfg.lovable.jsPath;
     };
 
     # User/Group with proper permissions
