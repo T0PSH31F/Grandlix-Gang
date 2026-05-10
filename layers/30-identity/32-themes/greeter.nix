@@ -82,7 +82,9 @@ in
         enable = true;
         wayland.enable = false;
         theme = "sugar-dark";
+        settings.Wayland.SessionDir = lib.mkForce "";
       };
+      services.displayManager.defaultSession = "hyprland";
 
       environment.systemPackages = [
         sddm-theme-custom
