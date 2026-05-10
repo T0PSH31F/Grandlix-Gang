@@ -63,9 +63,8 @@
   # ============================================================================
   layers.layer-10.system.config.impermanence.enable = true;
 
-  layers.layer-30.identity.themes.greeter.sddm = {
+  layers.layer-30.identity.themes.greeter.greetd = {
     enable = true;
-    # Using standard fallback if needed or specific gif
   };
 
   layers.layer-40.desktop = {
