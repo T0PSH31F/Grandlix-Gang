@@ -31,6 +31,11 @@ let
         "workstation"
         "desktop"
         "gaming"
+        "server"
+        "homelab"
+        "cache-server"
+        "ai-server"
+        "development"
       ];
       deploy.targetHost = "root@100.80.146.120";
     };
