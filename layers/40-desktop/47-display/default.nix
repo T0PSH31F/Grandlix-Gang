@@ -1,7 +1,7 @@
 { ... }: {
   home = {
     imports = [
-      ./shikane.nix
+      ./nwg-displays.nix
     ];
   };
 }

@@ -86,7 +86,10 @@
     };
   };
 
-  hardware.nvidia.enable = true;
+  hardware.nvidia = {
+    enable = true;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+  };
 
   # ============================================================================
   # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
@@ -158,7 +161,17 @@
     ai-services = {
       enable = true;
       qdrant.enable = true;
-      ollama.enable = true;
+      ollama = {
+        enable = true;
+        acceleration = "cuda";
+      };
+      chromadb.enable = true;
+      open-webui.enable = true;
+      sillytavern.enable = true;
+      jan.enable = true;
+      aider.enable = true;
+      cherry-studio.enable = true;
+      postgresql.enable = true;
     };
 
     # Caddy Reverse Proxy

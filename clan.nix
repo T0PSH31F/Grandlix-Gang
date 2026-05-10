@@ -13,7 +13,7 @@ let
         "laptop"
         "dev"
       ];
-      deploy.targetHost = "root@z0r0.local";
+      deploy.targetHost = "root@100.95.168.90";
     };
     nami = {
       tags = [
@@ -32,15 +32,9 @@ let
         "desktop"
         "gaming"
       ];
-      # deploy.targetHost = "root@luffy.local";
+      deploy.targetHost = "root@100.80.146.120";
     };
-    gaming-desktop = {
-      tags = [
-        "desktop"
-        "gaming"
-      ];
-      deploy.targetHost = "root@gaming-desktop.local";
-    };
+
   };
   mkMachineFromTags = tags: map (tag: ./layers/90-profiles/tags/${tag}.nix) tags;
 in
@@ -116,10 +110,6 @@ in
         ./machines/luffy/default.nix
       ] ++ mkMachineFromTags machinesInventory.luffy.tags;
     };
-    gaming-desktop = {
-      imports = [
-        ./machines/gaming-desktop/default.nix
-      ] ++ mkMachineFromTags machinesInventory.gaming-desktop.tags;
-    };
+
   };
 }

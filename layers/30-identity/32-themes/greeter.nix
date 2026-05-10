@@ -77,9 +77,10 @@ in
 
     # SDDM Implementation
     (mkIf cfg.sddm.enable {
+      services.xserver.enable = true;
       services.displayManager.sddm = {
         enable = true;
-        wayland.enable = true;
+        wayland.enable = false;
         theme = "sugar-dark";
       };
 

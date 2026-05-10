@@ -100,18 +100,5 @@
       PasswordAuthentication = lib.mkDefault true; # Enabled for recovery - disable after setup
       PermitRootLogin = "yes";
     };
-    # Explicitly define host keys to ensure they're generated in a persistent location
-    # These paths are also persisted by impermanence module at /etc/ssh
-    hostKeys = [
-      {
-        path = "/persist/etc/ssh/ssh_host_ed25519_key";
-        type = "ed25519";
-      }
-      {
-        path = "/persist/etc/ssh/ssh_host_rsa_key";
-        type = "rsa";
-        bits = 4096;
-      }
-    ];
   };
 }

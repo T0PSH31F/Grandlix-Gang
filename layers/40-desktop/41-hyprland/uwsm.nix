@@ -25,6 +25,12 @@ in
       export MOZ_ENABLE_WAYLAND=1
       export WAYLAND_DISPLAY=wayland-1   
       export NIXOS_OZONE_WL=1
+
+      # NVIDIA Specific
+      export LIBVA_DRIVER_NAME=nvidia
+      export GBM_BACKEND=nvidia-drm
+      export __GLX_VENDOR_LIBRARY_NAME=nvidia
+      export WLR_NO_HARDWARE_CURSORS=1
     '';
 
     xdg.configFile."uwsm/env-hyprland".text = ''
