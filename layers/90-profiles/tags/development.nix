@@ -17,6 +17,7 @@
     layer-60.gui = {
       vscode.enable = lib.mkDefault true;
       dev-tools.enable = lib.mkDefault true;
+      brave.enable = lib.mkDefault true;
     };
   };
 }

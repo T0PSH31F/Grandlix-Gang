@@ -29,9 +29,6 @@ let
     (hasAttr service config.services)
     && (hasAttr "enable" config.services.${service})
     && (config.services.${service}.enable == true);
-
-  # Safe pathExists wrapper to prevent evaluation errors
-  safePathExists = path: builtins.pathExists path || false;
 in
 {
   options.layers.layer-20.services.config.homepage-dashboard = {
