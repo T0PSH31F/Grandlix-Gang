@@ -67,6 +67,9 @@
     enable = true;
   };
 
+  # Pure Wayland — no X server needed with greetd/ReGreet
+  services.xserver.enable = lib.mkForce false;
+
   layers.layer-40.desktop = {
     hyprland.enable = true;
     noctalia.backend = "hyprland";
