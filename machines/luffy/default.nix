@@ -63,10 +63,12 @@
   # ============================================================================
   layers.layer-10.system.config.impermanence.enable = true;
 
-  layers.layer-30.identity.themes.greeter.sddm = {
+  layers.layer-30.identity.themes.greeter.greetd = {
     enable = true;
-    # Using standard fallback if needed or specific gif
   };
+
+  # Pure Wayland — no X server needed with greetd/ReGreet
+  services.xserver.enable = lib.mkForce false;
 
   layers.layer-40.desktop = {
     hyprland.enable = true;
@@ -154,7 +156,7 @@
       enable = true;
       config = {
         ROCKET_PORT = 8222;
-        ROCKET_ADDRESS = "127.0.0.1";
+        ROCKET_ADDRESS = lib.mkForce "127.0.0.1";
       };
     };
 

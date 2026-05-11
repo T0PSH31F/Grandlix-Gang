@@ -31,7 +31,7 @@ with lib;
   config = mkIf config.services.nextcloud-server.enable {
     services.nextcloud = {
       enable = true;
-      package = pkgs.nextcloud32;
+      package = pkgs.nextcloud33;
       hostName = config.services.nextcloud-server.hostName;
 
       config = {
@@ -82,10 +82,12 @@ with lib;
     ];
 
     # Ensure Nextcloud and DB are persisted
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
-        config.services.nextcloud-server.dataDir
-      ];
-    };
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            config.services.nextcloud-server.dataDir
+          ];
+        };
   };
 }

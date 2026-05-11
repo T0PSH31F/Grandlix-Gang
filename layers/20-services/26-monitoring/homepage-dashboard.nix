@@ -29,9 +29,6 @@ let
     (hasAttr service config.services)
     && (hasAttr "enable" config.services.${service})
     && (config.services.${service}.enable == true);
-
-  # Safe pathExists wrapper to prevent evaluation errors
-  safePathExists = path: builtins.pathExists path || false;
 in
 {
   options.layers.layer-20.services.config.homepage-dashboard = {
@@ -572,8 +569,8 @@ in
 
     # Inject custom CSS/JS into the config directory for Lovable theme
     environment.etc = mkIf cfg.lovable.enable {
-      "homepage-dashboard/custom.css".source = cfg.lovable.cssPath;
-      "homepage-dashboard/custom.js".source = cfg.lovable.jsPath;
+      "homepage-dashboard/custom.css".source = mkForce cfg.lovable.cssPath;
+      "homepage-dashboard/custom.js".source = mkForce cfg.lovable.jsPath;
     };
 
     # User/Group with proper permissions

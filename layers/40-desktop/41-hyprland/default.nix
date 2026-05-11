@@ -51,6 +51,17 @@ in
 
   nixos = lib.mkIf cfg.enable {
     programs.hyprland.enable = true;
+
+    programs.uwsm = {
+      enable = true;
+      waylandCompositors = {
+        hyprland = {
+          prettyName = "Hyprland";
+          comment = "Hyprland compositor managed by UWSM";
+          binPath = "/run/current-system/sw/bin/Hyprland";
+        };
+      };
+    };
   };
 
   # Home Manager level config
@@ -136,7 +147,7 @@ in
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
       portalPackage =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-      systemd.enable = false;
+      systemd.enable = true;
       plugins = [
         inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
       ];
