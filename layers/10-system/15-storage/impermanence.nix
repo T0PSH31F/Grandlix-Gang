@@ -36,13 +36,18 @@ with lib;
         # Network configuration
         "/etc/NetworkManager/system-connections"
 
-        # SSH daemon
-        "/etc/ssh"
+
       ];
 
       files = [
         # Machine identity
         "/etc/machine-id"
+
+        # SSH Host Keys
+        "/etc/ssh/ssh_host_ed25519_key"
+        "/etc/ssh/ssh_host_ed25519_key.pub"
+        "/etc/ssh/ssh_host_rsa_key"
+        "/etc/ssh/ssh_host_rsa_key.pub"
 
         # SOPS age key
         "/var/lib/sops-nix/key.txt"

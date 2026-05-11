@@ -144,6 +144,7 @@ in
       settings = {
         source = [
           "~/.config/hypr/noctalia/noctalia-colors.conf"
+          "~/.config/hypr/monitors.conf"
         ];
 
         "$primary" = "0xfff28fad";
@@ -185,6 +186,9 @@ in
         };
 
         input = { kb_options = "caps:escape"; };
+        cursor = {
+          no_hardware_cursors = true;
+        };
       };
     };
 

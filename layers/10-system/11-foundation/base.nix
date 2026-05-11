@@ -97,4 +97,7 @@
   # Fallback root password - change immediately after first login with `passwd`
   users.users.root.hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
   users.users.root.hashedPasswordFile = lib.mkForce null;
+  users.users.root.openssh.authorizedKeys.keys = [
+    "ssh-ed25519AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
+  ];
 }
