@@ -169,7 +169,7 @@
           media = ./layers/20-services/28-clan-services/aria2/module.nix;
 
           # Binary cache
-          # nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
+          nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
         };
 
         systems = [ "x86_64-linux" ];

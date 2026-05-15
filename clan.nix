@@ -45,36 +45,36 @@ in
   inventory = {
     machines = machinesInventory;
     instances = {
-      /*
-        zerotier = {
-          module = {
-            name = "zerotier";
-            input = "clan-core";
-          };
-          # roles.controller.machines.luffy = { };
-          # roles.moon.machines."luffy".settings.stableEndpoints = [
-          #   "93.188.162.110"
-          #   "93.188.162.110/9993"
-          # ];
-          roles.peer.machines = {
-            z0r0 = { };
-
-          };
+      zerotier = {
+        module = {
+          name = "zerotier";
+          input = "clan-core";
         };
-      */
+        roles.peer.machines = {
+          luffy = { };
+          z0r0 = { };
+        };
+      };
 
-      # nix-cache = {
-      #   module = {
-      #     name = "nix-cache";
-      #     input = "self";
-      #   };
+      wireguard = {
+        module = {
+          name = "wireguard";
+          input = "clan-core";
+        };
+        roles.peer.machines = {
+          luffy = { };
+          z0r0 = { };
+        };
+      };
 
-      #   roles.client.machines = {
-      #     z0r0 = { };
-      #     nami = { };
-
-      #   };
-      # };
+      nix-cache = {
+        module = {
+          name = "nix-cache";
+          input = "self";
+        };
+        roles.server.machines.luffy = { };
+        roles.client.machines.z0r0 = { };
+      };
 
       sillytavern = {
         module = {
@@ -83,7 +83,6 @@ in
         };
         roles.sillytavern.machines = {
           z0r0 = { };
-
         };
       };
     };
