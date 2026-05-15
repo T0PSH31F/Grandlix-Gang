@@ -62,6 +62,7 @@
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
   layers.layer-10.system.config.impermanence.enable = true;
+  layers.layer-20.services.config.your-spotify.enable = true;
 
   layers.layer-30.identity.themes.greeter.greetd = {
     enable = true;
@@ -180,7 +181,6 @@
     n8n-server.enable = true;
     komga-server.enable = true;
     mautrix-bridges.enable = true;
-    your-spotify.enable = true;
 
     # Caddy Reverse Proxy
     caddy = {
