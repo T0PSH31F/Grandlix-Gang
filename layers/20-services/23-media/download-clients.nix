@@ -88,7 +88,7 @@ in
     # ============================================================================
     environment.systemPackages = mkIf cfg.aria2.enable [ 
       pkgs.aria2 
-      pkgs.aria2p 
+      pkgs.python3Packages.aria2p 
     ];
     
     # Simple static web UI for Aria2
@@ -103,9 +103,30 @@ in
       };
     };
 
+    clan.core.vars.generators.aria2 = {
+      files."rpc_secret" = {
+        secret = true;
+        owner = mediaCfg.user;
+        group = mediaCfg.group;
+      };
+      prompts."rpc_secret" = {
+        type = "hidden";
+        description = "Aria2 RPC Secret Token";
+      };
+      script = ''
+        if [ -f "$prompts/rpc_secret" ]; then
+          cat "$prompts/rpc_secret" > "$out/rpc_secret"
+        else
+          echo "Error: Prompt rpc_secret not found" >&2
+          exit 1
+        fi
+      '';
+    };
+
     services.aria2 = mkIf cfg.aria2.enable {
       enable = true;
       openPorts = true;
+      rpcSecretFile = config.clan.core.vars.generators.aria2.files."rpc_secret".path;
       settings = {
         dir = "${mediaCfg.downloadsDir}/aria2";
         enable-rpc = true;

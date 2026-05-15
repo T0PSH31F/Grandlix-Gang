@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  inputs,
   ...
 }:
 {
@@ -55,6 +54,7 @@
     "cache-server"
     "ai-server"
     "development"
+    "media"
   ];
   nixpkgs.config.allowUnfree = true;
 
@@ -90,7 +90,7 @@
 
   hardware.nvidia = {
     enable = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
   # ============================================================================
@@ -176,6 +176,12 @@
       postgresql.enable = true;
     };
 
+    # Moved from Nami
+    n8n-server.enable = true;
+    komga-server.enable = true;
+    mautrix-bridges.enable = true;
+    your-spotify.enable = true;
+
     # Caddy Reverse Proxy
     caddy = {
       enable = true;
@@ -255,6 +261,15 @@
 
           @openclaw host openclaw.lovelain.duckdns.org
           handle @openclaw { reverse_proxy localhost:59879 }
+
+          @n8n host n8n.lovelain.duckdns.org
+          handle @n8n { reverse_proxy localhost:5678 }
+
+          @komga host komga.lovelain.duckdns.org
+          handle @komga { reverse_proxy localhost:25600 }
+
+          @spotify host spotify.lovelain.duckdns.org
+          handle @spotify { reverse_proxy localhost:3457 }
         '';
       };
     };
@@ -313,6 +328,9 @@
         "t0psh31f.duckdns.org"
         "nixfp.duckdns.org"
         "chat.lovelain.duckdns.org"
+        "n8n.lovelain.duckdns.org"
+        "komga.lovelain.duckdns.org"
+        "spotify.lovelain.duckdns.org"
       ];
       dnsProvider = "duckdns";
       environmentFile = config.sops.templates."duckdns-env".path;

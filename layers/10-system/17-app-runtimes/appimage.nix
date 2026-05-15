@@ -5,11 +5,11 @@
   ...
 }:
 with lib; {
-  options.programs.appimage-support = {
+  options.layers.layer-10.system.appimage = {
     enable = mkEnableOption "AppImage support";
   };
 
-  config = mkIf config.programs.appimage-support.enable {
+  config = mkIf config.layers.layer-10.system.appimage.enable {
     # AppImage support via appimage-run
     environment.systemPackages = with pkgs; [
       appimage-run

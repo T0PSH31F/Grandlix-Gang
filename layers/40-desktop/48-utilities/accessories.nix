@@ -62,6 +62,7 @@
 
     # Programs
     programs.firefox.enable = true;
+    programs.firefox.configPath = ".mozilla/firefox";
 
     programs.kitty = {
       enable = true;
@@ -81,6 +82,7 @@
         name = "candy-icons";
         package = pkgs.candy-icons;
       };
+      gtk4.theme = lib.mkForce null;
     };
   };
 }

@@ -30,10 +30,30 @@ Welcome to the **Nix Flake Pirates (NFP)** NixOS configuration repository. This 
 ## 🏴‍☠️ The Grand Line Fleet
 
 | Character | Machine | Role | Specs & Tags | State |
-|:---:|:---:|:---:|:---:|:---:|
-| <img src="assets/machines/zoro.png" width="100"> | **Z0r0** | Workstation & AI Server | **CPU**: Ryzen 9<br>**RAM**: 64GB<br>**Tags**: Desktop, AI-Server, Build-Server, Media | 🟢 Active |
-| <img src="assets/machines/nami.png" width="100"> | **Nami** | Dev Server & Navigation | **CPU**: Intel i7<br>**RAM**: 32GB<br>**Tags**: Server, Dev, Media | 🟢 Active |
-| <img src="assets/machines/luffy.png" width="100"> | **Luffy** | Captain's Laptop | **CPU**: Framework 13<br>**RAM**: 32GB<br>**Tags**: Desktop, Laptop, Portable | 🟡 Planned |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="assets/machines/zoro.png" width="100"> | **Z0r0** | Media & Build Server | **CPU**: Ryzen 9<br>**RAM**: 64GB<br>**Tags**: Media-Server, AI-Server, Build-Server | 🟢 Active |
+| <img src="assets/machines/luffy.png" width="100"> | **Luffy** | Primary Workstation & AI | **CPU**: Intel i7-9700F<br>**RAM**: 24GB<br>**Tags**: Workstation, Desktop, AI-Server, Homelab | 🟢 Active |
+
+---
+
+## 🗺️ Fleet Services & Navigation
+
+| Service | Machine | Port | Public URL | Role |
+| :--- | :--- | :--- | :--- | :--- |
+| **n8n** | Luffy | 5678 | `n8n.lovelain.duckdns.org` | Workflow Automation |
+| **Open WebUI** | Luffy | 3004 | `chat.lovelain.duckdns.org` | AI Chat Interface |
+| **Ollama** | Luffy | 11434 | `ollama.lovelain.duckdns.org` | AI Model Backend |
+| **Nextcloud** | Luffy | 8080 | `nextcloud.lovelain.duckdns.org` | Cloud Storage & Files |
+| **Immich** | Luffy | 2283 | `immich.lovelain.duckdns.org` | Photo Management |
+| **Vaultwarden** | Luffy | 8222 | `vault.lovelain.duckdns.org` | Password Manager |
+| **Komga** | Luffy | 25600 | `komga.lovelain.duckdns.org` | Comics/Manga Library |
+| **Your Spotify** | Luffy | 3457 | `spotify.lovelain.duckdns.org` | Listening Analytics |
+| **AdGuard Home** | Luffy | 3002 | `adguard.lovelain.duckdns.org` | DNS & Ad-Blocking |
+| **Jellyfin** | Z0r0 | 8096 | `jellyfin.lovelain.duckdns.org` | Media Streaming |
+| **Sonarr** | Z0r0 | 8989 | `sonarr.lovelain.duckdns.org` | TV Show Management |
+| **Radarr** | Z0r0 | 7878 | `radarr.lovelain.duckdns.org` | Movie Management |
+| **Prowlarr** | Z0r0 | 9696 | `prowlarr.lovelain.duckdns.org` | Indexer Manager |
+| **SillyTavern** | Luffy | 8000 | `silly.lovelain.duckdns.org` | AI Roleplay Interface |
 
 ---
 
@@ -92,9 +112,8 @@ graph TD
     Flake -- Imports --> Clan[Clan Inventory]
     
     subgraph Hosts
-        Luffy[Luffy (Laptop)]
-        Z0r0[Z0r0 (Workstation)]
-        Nami[Nami (Dev Server)]
+        Luffy[Luffy (Workstation)]
+        Z0r0[Z0r0 (Media Server)]
     end
     
     subgraph Modules
@@ -105,11 +124,9 @@ graph TD
     
     Clan --> Luffy
     Clan --> Z0r0
-    Clan --> Nami
     
-    Luffy --> Core & Desktop
-    Z0r0 --> Core & Desktop & Services
-    Nami --> Core & Services
+    Luffy --> Core & Desktop & Services
+    Z0r0 --> Core & Services
 ```
 
 ---

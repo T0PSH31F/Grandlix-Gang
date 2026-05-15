@@ -49,7 +49,7 @@ in
       # skills-installer # - Install agent skills across multiple AI coding clients
 
       # ACP Ecosystem
-      claude-code-acp # - An ACP-compatible coding agent powered by the Claude Code SDK (TypeScript)
+      # claude-code-acp # - An ACP-compatible coding agent powered by the Claude Code SDK (TypeScript)
       # codex-acp # - An ACP-compatible coding agent powered by Codex
 
       # Usage Analytics

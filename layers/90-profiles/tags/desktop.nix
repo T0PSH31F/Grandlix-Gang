@@ -8,6 +8,7 @@
       hardware.automount.enable = lib.mkDefault true;
       hardware.bluetooth.enable = lib.mkDefault true;
       flatpak.enable = lib.mkDefault true;
+      appimage.enable = lib.mkDefault true;
     };
     layer-40.desktop.frameworks.portals.enable = lib.mkDefault true;
   };

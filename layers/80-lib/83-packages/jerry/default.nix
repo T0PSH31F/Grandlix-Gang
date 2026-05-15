@@ -4,7 +4,7 @@
   fetchFromGitHub,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "jerry";
   version = "0.1.0";
 
@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
     owner = "justchokingaround";
     repo = "jerry";
     rev = "main";
-    sha256 = "sha256-TRk8RT8Bu6V54HzZbuNrPJcT38nQUTFKfgEV+js+pgI=";
+    sha256 = "sha256-R7yNvYk2af4dVYn32qXaAb5RGzxNQ+H/+cqEP6Q3TPQ=";
   };
 
   # Adjust buildInputs and installPhase to whatever jerry actually needs

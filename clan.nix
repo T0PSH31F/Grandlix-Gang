@@ -12,20 +12,11 @@ let
         "media-server"
         "laptop"
         "dev"
+        "media"
       ];
       deploy.targetHost = "root@100.95.168.90";
     };
-    nami = {
-      tags = [
-        "workstation"
-        "laptop"
-        "desktop"
-        "media"
-        "media-server"
-        "homelab"
-      ];
-      deploy.targetHost = "root@nami.local";
-    };
+
     luffy = {
       tags = [
         "workstation"
@@ -36,6 +27,7 @@ let
         "cache-server"
         "ai-server"
         "development"
+        "media"
       ];
       deploy.targetHost = "root@100.80.146.120";
     };
@@ -103,17 +95,13 @@ in
       imports = [
         ./machines/z0r0/default.nix
       ] ++ mkMachineFromTags machinesInventory.z0r0.tags;
-      clan.services.ai.sillytavern.enable = true;
     };
-    nami = {
-      imports = [
-        ./machines/nami/default.nix
-      ] ++ mkMachineFromTags machinesInventory.nami.tags;
-    };
+
     luffy = {
       imports = [
         ./machines/luffy/default.nix
       ] ++ mkMachineFromTags machinesInventory.luffy.tags;
+      clan.services.ai.sillytavern.enable = true;
     };
 
   };

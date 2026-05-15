@@ -29,6 +29,7 @@
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
       inputs.flake-parts.follows = "flake-parts";
+      inputs.sops-nix.follows = "sops-nix";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
     home-manager = {

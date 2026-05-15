@@ -5,7 +5,7 @@
 
   roles = {
     aria2 = {
-      perInstance.nixosModule = ../../23-media/aria2.nix;
+      perInstance.nixosModule = ../../23-media/download-clients.nix;
       description = "Aria2: High-speed download manager with RPC support";
     };
   };
