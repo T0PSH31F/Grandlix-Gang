@@ -77,7 +77,12 @@ in
     # Ensure data is persisted
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [
-        cfg.dataDir
+        {
+          directory = cfg.dataDir;
+          user = "n8n";
+          group = "n8n";
+          mode = "0700";
+        }
       ];
     };
 

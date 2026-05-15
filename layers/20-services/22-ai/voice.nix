@@ -25,7 +25,7 @@ in
 
     useXTTSv2 = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = "Deploy XTTSv2-UI via OCI containers alongside Piper";
     };
   };

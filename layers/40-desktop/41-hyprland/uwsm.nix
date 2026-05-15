@@ -25,11 +25,16 @@ in
       export MOZ_ENABLE_WAYLAND=1
       export WAYLAND_DISPLAY=wayland-1   
       export NIXOS_OZONE_WL=1
+      export QT_MEDIA_BACKEND=gstreamer
+    '' + lib.optionalString cfg.isNvidia ''
 
       # NVIDIA Specific
       export LIBVA_DRIVER_NAME=nvidia
       export GBM_BACKEND=nvidia-drm
       export __GLX_VENDOR_LIBRARY_NAME=nvidia
+      export NVD_BACKEND=direct
+      export AQ_NO_MODIFIERS=1
+      export WLR_DRM_NO_ATOMIC=1
       export WLR_NO_HARDWARE_CURSORS=1
     '';
 

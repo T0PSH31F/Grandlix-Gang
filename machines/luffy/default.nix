@@ -13,9 +13,7 @@
     ./containers.nix
 
     ../../layers/10-system
-    ../../layers/20-services/22-ai/ai-services.nix
     ../../layers/20-services
-    ../../layers/20-services/23-media
     ../../layers/30-identity/31-users/t0psh31f.nix
   ];
 
@@ -61,7 +59,10 @@
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
-  layers.layer-10.system.config.impermanence.enable = true;
+    layers.layer-10.system = {
+      config.impermanence.enable = true;
+      ai-agent-stack.enable = true;
+    };
   layers.layer-20.services.config.your-spotify.enable = true;
 
   layers.layer-30.identity.themes.greeter.greetd = {
@@ -141,12 +142,15 @@
     };
 
     # Prevent Nginx from conflicting with Caddy's 80/443 binding
-    nginx.virtualHosts."nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
-      {
-        addr = "127.0.0.1";
-        port = 8080;
-      }
-    ];
+    nginx = {
+      defaultHTTPListenPort = 8080;
+      virtualHosts."nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
+        {
+          addr = "127.0.0.1";
+          port = 8080;
+        }
+      ];
+    };
 
     immich-server = {
       enable = true;

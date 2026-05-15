@@ -32,7 +32,7 @@ let
       # Predicate for non-empty config (handles functions too)
       hasHomeConfig = safeHomeConf != { } && safeHomeConf != null;
 
-    in builtins.trace "mkDendriticModule [${name}]: isMultiClass=${if isMultiClass then "true" else "false"} keys=${builtins.concatStringsSep "," (builtins.attrNames evaluated)}" {
+    in {
       imports = imports
         ++ lib.optional isNixOS safeNixosConf
         ++ lib.optional isHomeManager safeHomeConf

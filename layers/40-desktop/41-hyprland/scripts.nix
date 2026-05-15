@@ -112,28 +112,17 @@ let
     COMPOSITOR="''${XDG_CURRENT_DESKTOP:-unknown}"
 
     # ── Step 1: Apply wallpaper ──
-    EXTENSION="''${WALLPAPER##*.}"
-    case "$EXTENSION" in
-      mp4|webm|mkv)
-        # Video wallpaper via mpvpaper (kill existing first)
-        pkill mpvpaper 2>/dev/null || true
-        mpvpaper -o "no-audio loop" "*" "$WALLPAPER" &
-        disown
-        ;;
-      *)
-        # Static/animated image via awww
-        if ! pgrep -x awww-daemon >/dev/null; then
-          ${pkgs.awww}/bin/awww-daemon &
-          disown
-          sleep 1
-        fi
-        ${pkgs.awww}/bin/awww img "$WALLPAPER" \
-          --transition-type grow \
-          --transition-pos 0.5,0.9 \
-          --transition-duration 2 \
-          --transition-fps 60
-        ;;
-    esac
+    # Static/animated image via awww
+    if ! pgrep -x awww-daemon >/dev/null; then
+      ${pkgs.awww}/bin/awww-daemon &
+      disown
+      sleep 1
+    fi
+    ${pkgs.awww}/bin/awww img "$WALLPAPER" \
+      --transition-type grow \
+      --transition-pos 0.5,0.9 \
+      --transition-duration 2 \
+      --transition-fps 60
 
     # ── Step 2: Command Noctalia to regenerate templates ──
     noctalia-shell ipc wallpaper setFromPath "$WALLPAPER" 2>/dev/null || true

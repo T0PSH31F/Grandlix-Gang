@@ -82,7 +82,6 @@
         name = "candy-icons";
         package = pkgs.candy-icons;
       };
-      gtk4.theme = lib.mkForce null;
     };
   };
 }

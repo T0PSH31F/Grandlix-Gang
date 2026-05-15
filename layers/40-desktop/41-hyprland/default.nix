@@ -17,13 +17,25 @@ in
       description = "Enable Hyprland Desktop Environment";
     };
 
+    isNvidia = lib.mkOption {
+      type = lib.types.bool;
+      default = osConfig.hardware.nvidia.enable or false;
+      description = "Internal: True if the machine has NVIDIA hardware enabled";
+    };
+
+    isLaptop = lib.mkOption {
+      type = lib.types.bool;
+      default = builtins.elem "laptop" (osConfig.machine.tags or [ ]);
+      description = "Internal: True if the machine is a laptop";
+    };
+
     sfx = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
         description = "Enable UI sound effects daemon";
       };
-      
+
       sounds = {
         switchFocus = lib.mkOption {
           type = lib.types.str;
@@ -87,7 +99,7 @@ in
       hue-plus
       hueadm
       hyprcursor
-      hyprfreeze
+      wl-freeze
       hyprkeys
       hyprland-autoname-workspaces
       hyprland-qt-support
@@ -198,7 +210,14 @@ in
 
         input = { kb_options = "caps:escape"; };
         cursor = {
-          no_hardware_cursors = true;
+          no_hardware_cursors = cfg.isNvidia;  # Only disable for NVIDIA
+        };
+
+        # NVIDIA stability fixes (no-op on Intel/AMD)
+        render = lib.mkIf cfg.isNvidia {
+          direct_scanout = false;   # Prevent buffer format mismatches on NVIDIA multi-monitor
+          explicit_sync = false;     # Prevents glitching on some NVIDIA driver versions
+          explicit_sync_kms = false;
         };
       };
     };

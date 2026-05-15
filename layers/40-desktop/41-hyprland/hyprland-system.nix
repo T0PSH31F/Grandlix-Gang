@@ -36,8 +36,8 @@ in
     # Re-enable portal configuration from portals.nix
     xdg.portal = {
       enable = true;
-      extraPortals = [ ];
-      # config.common.default = "*";
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      config.common.default = "*";
     };
   };
 }

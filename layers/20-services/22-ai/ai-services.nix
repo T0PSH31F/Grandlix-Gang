@@ -270,6 +270,9 @@ in
       };
     };
 
+    # Fix StateDirectory conflict with impermanence
+    systemd.services.qdrant.serviceConfig.StateDirectory = lib.mkForce [ ];
+
     # ChromaDB vector database - native NixOS service
     services.chromadb = mkIf config.services.ai-services.chromadb.enable {
       enable = true;

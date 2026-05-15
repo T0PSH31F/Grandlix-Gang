@@ -2,10 +2,12 @@
 # Custom packages you might want available on all systems.
 
 final: prev: {
-  # Disable tests for openldap as they are failing on some systems and blocking deployment
+  # Targeted test disabling for openldap due to flakiness on aarch64.
+  # Blanket disabling is replaced by targeted platform-specific exclusion.
+  # test017-syncreplication-refresh is known to be flaky on aarch64 and can block deployments.
   openldap = prev.openldap.overrideAttrs (old: {
-    doCheck = false;
-    doInstallCheck = false;
+    doCheck = !final.stdenv.hostPlatform.isAarch64;
+    doInstallCheck = !final.stdenv.hostPlatform.isAarch64;
   });
 
   # Yazelix Zellij Orchestrator

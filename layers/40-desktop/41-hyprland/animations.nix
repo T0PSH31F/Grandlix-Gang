@@ -96,7 +96,7 @@ in
         follow_mouse = 1;
         off_window_axis_events = 2;
 
-        touchpad = {
+        touchpad = lib.mkIf cfg.isLaptop {
           natural_scroll = true;
           disable_while_typing = true;
           clickfinger_behavior = true;
@@ -109,7 +109,7 @@ in
         swallow_regex = "^(mpv|foot|kitty|wezterm|alacritty|Alacritty|ghostty|warp-terminal)$";
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
-        vrr = 1; # Variable refresh rate
+        vrr = if cfg.isNvidia then 0 else 1; # NVIDIA legacy drivers lack adaptive sync
         focus_on_activate = true;
         mouse_move_enables_dpms = true;
         key_press_enables_dpms = true;

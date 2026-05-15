@@ -16,7 +16,7 @@ in
 
     port = mkOption {
       type = types.port;
-      default = 3000;
+      default = 3001;
       description = "Web interface port";
     };
 
@@ -53,6 +53,9 @@ in
         };
       };
     };
+
+    # Fix StateDirectory conflict with impermanence
+    systemd.services.adguardhome.serviceConfig.StateDirectory = lib.mkForce [ ];
 
     # Impermanence support
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {

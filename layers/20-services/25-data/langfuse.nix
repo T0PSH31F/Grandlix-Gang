@@ -18,7 +18,7 @@ in
 
     databaseUrl = lib.mkOption {
       type = lib.types.str;
-      default = "postgresql://postgres@127.0.0.1:5432/langfuse";
+      default = "postgresql:///langfuse?host=/run/postgresql";
       description = "PostgreSQL DB connection string for Langfuse runtime";
     };
 

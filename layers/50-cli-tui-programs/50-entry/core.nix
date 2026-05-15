@@ -40,8 +40,8 @@
     };
   };
 
-  # Silence warnings by explicitly setting legacy behavior
-  gtk.gtk4.theme = config.gtk.theme;
+  # Silence warnings by adopting new default behavior
+  gtk.gtk4.theme = null;
 
   xdg = {
     enable = true;

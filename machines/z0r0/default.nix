@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   ...
 }: {
   # ============================================================================
@@ -43,13 +41,8 @@
   machine.tags = [
     "desktop"
     "laptop"
-    "ai-server"
-    "build-server"
-    "binary-cache"
-    "database"
     "dev"
-    "media-server"
-    "homelab"
+    "ai"
     "media"
   ];
 
@@ -86,56 +79,16 @@
   # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
   # ============================================================================
   # Note: Most raw services are automatically enabled via machine.tags
-  services = {
-    # Advanced Service Configuration
-    ddclient = {
-      enable = true;
-      domains = [ "lovelain.duckdns.org" "t0psh31f.duckdns.org" "nixfp.duckdns.org" ];
-      protocol = "duckdns";
-      passwordFile = config.sops.secrets."duckdns-token".path;
-    };
-
-    caddy-server = {
-      enable = true;
-      email = "admin@lovelain.duckdns.org";
-      virtualHosts."headscale.lovelain.duckdns.org" = {
-        useACMEHost = "lovelain.duckdns.org";
-        extraConfig = ''
-          encode zstd gzip
-          header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-          reverse_proxy localhost:8086
-        '';
-      };
-    };
-  };
-
+  
   # ============================================================================
   # 04 - SYSTEM & PROGRAM OVERRIDES
   # ============================================================================
-  programs.niri.enable = lib.mkForce false;
+
 
   # ============================================================================
   # 05 - SECURITY & SECRETS (SOPS/ACME)
   # ============================================================================
   sops = {
     age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
-    secrets."duckdns-token" = {
-      sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/duckdns.yaml;
-      format = lib.mkForce "yaml";
-    };
-    templates."duckdns-env".content = ''
-      DUCKDNS_TOKEN=${config.sops.placeholder."duckdns-token"}
-    '';
-  };
-
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "admin@lovelain.duckdns.org";
-    certs."lovelain.duckdns.org" = {
-      domain = "*.lovelain.duckdns.org";
-      extraDomainNames = [ "lovelain.duckdns.org" "t0psh31f.duckdns.org" "nixfp.duckdns.org" ];
-      dnsProvider = "duckdns";
-      environmentFile = config.sops.templates."duckdns-env".path;
-    };
   };
 }

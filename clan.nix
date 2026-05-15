@@ -58,7 +58,6 @@ in
           # ];
           roles.peer.machines = {
             z0r0 = { };
-            nami = { };
 
           };
         };
@@ -94,13 +93,15 @@ in
     z0r0 = {
       imports = [
         ./machines/z0r0/default.nix
-      ] ++ mkMachineFromTags machinesInventory.z0r0.tags;
+      ]
+      ++ mkMachineFromTags machinesInventory.z0r0.tags;
     };
 
     luffy = {
       imports = [
         ./machines/luffy/default.nix
-      ] ++ mkMachineFromTags machinesInventory.luffy.tags;
+      ]
+      ++ mkMachineFromTags machinesInventory.luffy.tags;
       clan.services.ai.sillytavern.enable = true;
     };
 

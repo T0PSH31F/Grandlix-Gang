@@ -7,16 +7,12 @@
 {
   config,
   lib,
-  pkgs,
-  inputs,
   ...
 }:
 
 let
   hasTag = tag: builtins.elem tag (config.machine.tags or [ ]);
 
-  # Theme overlays adapter
-  themeOverlays = import ../../80-lib/82-overlays/default.nix { inherit inputs; };
   themeOverlay = final: prev: { };
 
   # Load overlays from the modular structure
