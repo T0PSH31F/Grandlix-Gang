@@ -74,15 +74,15 @@ in
       # tuicr # - Review AI-generated diffs like a GitHub pull request, right from your terminal
 
       # Utilities
-      agent-browser # - Headless browser automation CLI for AI agents
-      ck # - Local first semantic and hybrid BM25 grep / search tool for use by AI and humans!
+      # agent-browser # - Headless browser automation CLI for AI agents
+      # ck # - Local first semantic and hybrid BM25 grep / search tool for use by AI and humans!
       # clawdbot # - Personal AI assistant with WhatsApp, Telegram, Discord integration
-      coding-agent-search # - Unified, high-performance TUI to index and search your local coding agent history
+      # coding-agent-search # - Unified, high-performance TUI to index and search your local coding agent history
       # copilot-language-server # - GitHub Copilot Language Server - AI pair programmer LSP
       # handy # - Fast and accurate local transcription app using AI models
       # happy-coder # - Happy Coder CLI to connect your local Claude Code to mobile device
-      openskills # - Universal skills loader for AI coding agents - install and load Anthropic SKILL.md format skills in any agent
-      qmd # - mini cli search engine for your docs, knowledge bases, meeting notes, whatever. Tracking current sota approaches while being all local
+      # openskills # - Universal skills loader for AI coding agents - install and load Anthropic SKILL.md format skills in any agent
+      # qmd # - mini cli search engine for your docs, knowledge bases, meeting notes, whatever. Tracking current sota approaches while being all local
 
     ];
 
