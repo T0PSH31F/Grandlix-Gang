@@ -14,7 +14,7 @@
 
     ../../layers/10-system
     ../../layers/20-services
-    ../../layers/30-identity/31-users/t0psh31f.nix
+    ../../layers/10-system/13-users/t0psh31f.nix
   ];
 
   # ============================================================================
@@ -55,7 +55,7 @@
     };
   layers.layer-20.services.config.your-spotify.enable = true;
 
-  layers.layer-30.identity.themes.greeter.greetd = {
+  layers.layer-30.theming.themes.greeter.greetd = {
     enable = true;
   };
 

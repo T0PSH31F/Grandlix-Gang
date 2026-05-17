@@ -75,67 +75,6 @@
       };
     };
 
-    # ==========================================================================
-    # PACKAGE MANAGEMENT (Dendritic Pattern with Importer)
-    # ==========================================================================
-
-    instances.base-packages = {
-      module = {
-        name = "importer";
-        input = "clan-core";
-      };
-      roles.default = {
-        tags.all = { }; # Base packages on all machines
-        extraModules = [ ../../10-system/13-packages/base.nix ];
-      };
-    };
-
-    instances.desktop-packages = {
-      module = {
-        name = "importer";
-        input = "clan-core";
-      };
-      roles.default = {
-        tags = [
-          "desktop"
-          "laptop"
-        ]; # Only desktop machines
-        extraModules = [ ../../10-system/13-packages/desktop.nix ];
-      };
-    };
-
-    instances.ai-packages = {
-      module = {
-        name = "importer";
-        input = "clan-core";
-      };
-      roles.default = {
-        tags = [ "ai-server" ]; # Only AI server machines
-        extraModules = [ ../../10-system/13-packages/ai.nix ];
-      };
-    };
-
-    instances.dev-packages = {
-      module = {
-        name = "importer";
-        input = "clan-core";
-      };
-      roles.default = {
-        tags = [ "development" ]; # Development machines
-        extraModules = [ ../../10-system/13-packages/dev.nix ];
-      };
-    };
-
-    instances.media-packages = {
-      module = {
-        name = "importer";
-        input = "clan-core";
-      };
-      roles.default = {
-        tags = [ "media-server" ]; # Media server machines
-        extraModules = [ ../../10-system/13-packages/media.nix ];
-      };
-    };
 
     # ==========================================================================
     # MATRIX SYNAPSE HOMESERVER

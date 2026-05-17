@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   inputs,
   ...
 }:
@@ -21,6 +22,8 @@
     inputs.sops-nix.nixosModules.sops
   ];
 
+  _module.args.osConfig = config;
+
   _module.args.lib = lib.extend (final: prev: {
     hm = inputs.home-manager.lib.hm;
   });
@@ -39,6 +42,7 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
     "beekeeper-studio-5.5.7"
+    "olm-3.2.16"
   ];
 
   # Bootloader

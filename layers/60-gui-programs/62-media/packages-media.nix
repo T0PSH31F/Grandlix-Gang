@@ -15,7 +15,7 @@ in
     };
   };
 
-  nixos = lib.mkIf config.layers.layer-60.gui.media-packages.enable {
+  config = lib.mkIf config.layers.layer-60.gui.media-packages.enable {
     environment.systemPackages = with pkgs; [
       deluge
       ffmpeg-full

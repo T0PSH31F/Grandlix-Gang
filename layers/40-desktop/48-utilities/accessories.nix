@@ -74,7 +74,7 @@
 
     gtk = {
       enable = true;
-      theme = {
+      theme = lib.mkIf (!(config.stylix.enable or false)) {
         name = "adw-gtk3-dark";
         package = pkgs.adw-gtk3;
       };

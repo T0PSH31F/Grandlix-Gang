@@ -220,8 +220,8 @@ in
 
         general = {
           border_size = 4;
-          "col.active_border" = "$primary";
-          "col.inactive_border" = "0xff$surfaceContainer";
+          "col.active_border" = lib.mkForce "$primary";
+          "col.inactive_border" = lib.mkForce "0xff$surfaceContainer";
           resize_on_border = true;
           layout = "dwindle";
         };

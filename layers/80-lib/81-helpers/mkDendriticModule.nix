@@ -21,28 +21,33 @@ let
       imports = evaluated.imports or [ ];
       
       # Detection logic for NixOS vs Home Manager
-      # Use builtins to avoid forcing evaluation of lazy attributes like 'options'
       isNixOS = builtins.hasAttr "modulesPath" args;
-      isHomeManager = !isNixOS;
 
-      # Ensure config blocks are not null
-      safeNixosConf = if nixosConf == null then { } else nixosConf;
-      safeHomeConf = if homeConf == null then { } else homeConf;
+      # Safely evaluate functions only when the context matches
+      wrappedNixosConf =
+        if isNixOS && builtins.isFunction nixosConf then nixosConf (args // { osConfig = config; })
+        else nixosConf;
 
-      # Predicate for non-empty config (handles functions too)
-      hasHomeConfig = safeHomeConf != { } && safeHomeConf != null;
+      wrappedHomeConf =
+        if (!isNixOS) && builtins.isFunction homeConf then homeConf (args // { osConfig = config; })
+        else homeConf;
+
+      # Predicate for non-empty config (purely structural, never forces content evaluation)
+      hasHomeConfig = builtins.hasAttr "home" evaluated;
 
     in {
-      imports = imports
-        ++ lib.optional isNixOS safeNixosConf
-        ++ lib.optional isHomeManager safeHomeConf
-        ++ lib.optional (isNixOS && hasHomeConfig) {
-          home-manager.users.t0psh31f = safeHomeConf;
-        };
+      imports = imports;
       options = opts;
-      config = {
-        _module.args.osConfig = lib.mkDefault config;
-      };
+      config =
+        if isNixOS then
+          lib.mkMerge [
+            wrappedNixosConf
+            (lib.mkIf hasHomeConfig {
+              home-manager.users.t0psh31f = wrappedHomeConf;
+            })
+          ]
+        else
+          wrappedHomeConf;
     };
 in
 {

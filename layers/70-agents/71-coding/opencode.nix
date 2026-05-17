@@ -27,7 +27,7 @@
       commands = ./opencode/commands;
       context = ./opencode/rules.md;
 
-      tui.theme = "noctalia";
+      tui.theme = lib.mkForce "noctalia";
     };
 
     xdg.configFile."opencode/themes/noctalia.json".source =

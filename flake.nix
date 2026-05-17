@@ -85,6 +85,10 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     vicinae = {
       url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -121,6 +125,7 @@
       niri,
       noctalia,
       spicetify-nix,
+      stylix,
       vicinae,
       vicinae-extensions,
       nixai,
@@ -223,7 +228,7 @@
                 inherit system;
                 specialArgs = { inherit inputs; };
                 modules = [
-                  ./layers/80-lib/84-templates/iso/default.nix
+                  ./layers/00-cyberia/04-templates/iso/default.nix
                 ];
               }).config.system.build.isoImage;
 
@@ -296,7 +301,7 @@
             # Image generation outputs using nixos-generators removed
             checks =
               let
-                theme-tests = import ./layers/80-lib/85-tests/themes.nix {
+                theme-tests = import ./layers/00-cyberia/05-tests/themes.nix {
                   inherit pkgs;
                   lib = pkgs.lib;
                 };
@@ -304,8 +309,8 @@
               {
                 inherit (theme-tests) plymouth-theme-builds sddm-theme-builds all-themes;
 
-                services-test = pkgs.testers.nixosTest (import ./layers/80-lib/85-tests/services.nix);
-                n8n-test = pkgs.testers.nixosTest (import ./layers/80-lib/85-tests/n8n.nix);
+                services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);
+                n8n-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/n8n.nix);
               };
           };
       }

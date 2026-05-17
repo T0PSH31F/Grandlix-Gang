@@ -14,7 +14,7 @@ in
       enable = true;
       defaultEditor = true;
       settings = {
-        theme = lib.mkIf cfg.theming.enable "matugen";
+        theme = lib.mkIf (cfg.theming.enable && !(config.stylix.enable or false)) "matugen";
         editor = {
           completion-trigger-len = 1;
           true-color = true;

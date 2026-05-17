@@ -5,8 +5,8 @@
 # - Swap configuration
 {
   imports = [
-    ../../layers/10-system/12-hardware/default.nix
-    ../../layers/10-system/12-hardware/12.4-platform/laptop.nix
+    ../../layers/10-system/12-processor/default.nix
+    ../../layers/10-system/12-processor/12.4-platform/laptop.nix
   ];
 
   # Boot configuration - LUKS encryption

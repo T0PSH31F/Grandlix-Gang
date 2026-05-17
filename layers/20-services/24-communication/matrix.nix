@@ -52,7 +52,7 @@ with lib;
     # an infinite recursion with the updated nixpkgs nginx module (which does
     # `mkIf (cfg.sslDhparam == true)` causing evaluation before merge).
     # We break the cycle by force-setting sslDhparam and disabling dhparams.
-    services.nginx.sslDhparam = lib.mkForce null;
+    services.nginx.sslDhparam = lib.mkForce false;
     security.dhparams.enable = lib.mkForce false;
 
     services.matrix-synapse = {

@@ -1,5 +1,4 @@
-# flake-parts/system/default.nix
-# Core system modules - foundational configuration for all machines
+# Foundation Tier Entry Point — core system modules for all machines
 {
   imports = [
     ./base.nix
@@ -9,8 +8,8 @@
     ./networking.nix
     ./nix-settings.nix
     ./nix-tools.nix
-    ./optimization.nix
     ./overlays.nix
+    ./packages.nix
     ./resource-limits.nix
   ];
 }

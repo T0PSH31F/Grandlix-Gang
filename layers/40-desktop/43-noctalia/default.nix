@@ -46,12 +46,12 @@ in
       programs.noctalia-shell = {
       enable = true;
       package = cfg.package;
-      settings = builtins.fromJSON (
+      settings = lib.mkForce (builtins.fromJSON (
         builtins.replaceStrings 
           [ "$HOME" ] 
           [ config.home.homeDirectory ] 
           (builtins.readFile ../../../layers/00-cyberia/02-assets/noctalia-config.json)
-      );
+      ));
     };
 
     systemd.user.services.noctalia-shell = {

@@ -2,7 +2,7 @@
   imports = [
     ../../10-system
     ../../20-services
-    ../../30-identity
+    ../../30-theming
     ../../40-desktop
     ../../50-cli-tui-programs
     ../../60-gui-programs
@@ -12,7 +12,7 @@
   layers = {
     layer-10.system.config.resource-limits.enable = lib.mkDefault true;
     layer-50.cli.nixTools.enable = lib.mkDefault true;
-    layer-30.identity.themes = {
+    layer-30.theming.themes = {
       grub-lain.enable = lib.mkDefault true;
       plymouth-hellonavi.enable = lib.mkDefault true;
     };

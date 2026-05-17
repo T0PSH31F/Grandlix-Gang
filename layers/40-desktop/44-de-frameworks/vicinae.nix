@@ -90,18 +90,18 @@ in
         # Note: The "noctalia" theme dynamically handles both light and dark modes.
         theme = {
           light = {
-            name = "noctalia";
+            name = lib.mkForce "noctalia";
             icon_theme = "candy-icons";
           };
           dark = {
-            name = "noctalia";
+            name = lib.mkForce "noctalia";
             icon_theme = "candy-icons";
           };
         };
 
         # Launcher window settings
         launcher_window = {
-          opacity = 0.95;
+          opacity = lib.mkForce 0.95;
         };
       };
 

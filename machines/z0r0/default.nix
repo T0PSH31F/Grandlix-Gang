@@ -8,9 +8,9 @@
     ./hardware.nix
 
     ../../layers/10-system
-    ../../layers/30-identity/32-themes
+    ../../layers/30-theming/32-themes
     ../../layers/20-services
-    ../../layers/30-identity/31-users/t0psh31f.nix
+    ../../layers/10-system/13-users/t0psh31f.nix
   ];
 
   # ============================================================================
@@ -57,7 +57,7 @@
       adguard.enable = true;
     };
 
-    layer-30.identity.themes = {
+    layer-30.theming.themes = {
       greeter.greetd = {
         enable = true;
         background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;

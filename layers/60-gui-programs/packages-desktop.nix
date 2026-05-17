@@ -15,7 +15,7 @@ in
     };
   };
 
-  nixos = lib.mkIf config.layers.layer-60.gui.desktop-packages.enable {
+  config = lib.mkIf config.layers.layer-60.gui.desktop-packages.enable {
     environment.systemPackages = with pkgs; [
       logitech-udev-rules
       solaar

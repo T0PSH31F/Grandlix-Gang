@@ -41,7 +41,7 @@ in
           offset = "0 4";
           render_power = 10;
           # color = "$shadow_color";
-          color = "$primary";
+          color = lib.mkForce "$primary";
           color_inactive = "0x00000000";
         };
 

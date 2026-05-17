@@ -9,5 +9,6 @@ in
     (mkDendriticModule "packages-media" ./packages-media.nix)
     (mkDendriticModule "spicetify" ./spicetify.nix)
     (mkDendriticModule "vlc" ./vlc.nix)
+    (mkDendriticModule "feh" ./feh.nix)
   ];
 }

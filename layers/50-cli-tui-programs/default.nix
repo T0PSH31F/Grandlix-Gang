@@ -28,6 +28,7 @@ in
     (mkDendriticModule "system-utils" ./53-tools/system-utils.nix)
     (mkDendriticModule "yazelix" ./59-integrations/yazelix.nix)
     (mkDendriticModule "vivid" ./58-theming/vivid.nix)
+    ./packages-dev.nix
     
     # Tiered sub-entry points
     ./57-services

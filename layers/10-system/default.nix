@@ -1,14 +1,16 @@
+# System Tier Entry Point
 { ... }: {
   imports = [
     ./11-foundation
-    ./12-hardware
-    ./13-packages
+    ./12-processor
+    ./13-users
     ./14-virtualization/virtualization.nix
-    ./15-storage/impermanence.nix
-    ./16-mobile/mobile-support.nix
+    ./15-filesystem/impermanence.nix
+    ./15-filesystem/google-drive.nix
+    ./16-mobile
     ./17-app-runtimes/appimage.nix
     ./17-app-runtimes/flatpak.nix
-    ./18-ai-infra/ai-agent-stack.nix
-    ./15-storage/google-drive.nix
+    ./18-peripherals
+    ./19-optimizations
   ];
 }

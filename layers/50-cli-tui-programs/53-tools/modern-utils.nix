@@ -12,13 +12,13 @@ in
     programs = {
       bat = {
         enable = true;
-        config.theme = lib.mkIf cfg.theming.enable "matugen";
+        config.theme = lib.mkIf (cfg.theming.enable && !(config.stylix.enable or false)) "matugen";
       };
       ripgrep.enable = true;
       jq.enable = true;
       btop = {
         enable = true;
-        settings.color_theme = lib.mkIf cfg.theming.enable "matugen";
+        settings.color_theme = lib.mkIf (cfg.theming.enable && !(config.stylix.enable or false)) "matugen";
       };
       eza = {
         enable = true;
