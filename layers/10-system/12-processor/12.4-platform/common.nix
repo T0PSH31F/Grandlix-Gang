@@ -64,8 +64,6 @@ with lib;
       enable32Bit = true; # For 32-bit applications and games
     };
 
-
-
     # Storage optimization
     services.fstrim.enable = true; # SSD TRIM support
   };

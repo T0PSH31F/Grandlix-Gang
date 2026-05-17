@@ -220,6 +220,8 @@
                 ];
               }).config.system.build.isoImage;
 
+            formatter = pkgs.nixfmt-rfc-style;
+
             devShells.default = pkgs.mkShell {
               packages = with pkgs; [
                 clan-core.packages.${system}.clan-cli

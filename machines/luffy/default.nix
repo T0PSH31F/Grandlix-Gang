@@ -188,6 +188,7 @@
       signal.enable = true;
     };
 
+
     # Caddy Reverse Proxy
     caddy = {
       enable = true;
@@ -208,11 +209,8 @@
           encode zstd gzip
           header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
-          @ollama host ollama.lovelain.duckdns.org
-          handle @ollama { reverse_proxy localhost:11434 }
+          # ollama and qdrant moved to registry
 
-          @qdrant host qdrant.lovelain.duckdns.org
-          handle @qdrant { reverse_proxy localhost:6333 }
 
           @crawl4ai host crawl4ai.lovelain.duckdns.org
           handle @crawl4ai { reverse_proxy localhost:32775 }
@@ -279,6 +277,11 @@
         '';
       };
     };
+  };
+
+  layers.layer-20.services.config.reverseProxy.routes = {
+    ollama = 11434;
+    qdrant = 6333;
   };
 
   # ============================================================================

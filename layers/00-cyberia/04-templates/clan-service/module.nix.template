@@ -1,0 +1,25 @@
+{ config, lib, pkgs, ... }:
+
+let
+  cfg = config.layers.layer-20.services.config.new-service;
+in {
+  options.layers.layer-20.services.config.new-service = {
+    enable = lib.mkEnableOption "Description of new service";
+    
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 8080;
+      description = "Port for the service";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    # Systemd service definition
+    # systemd.services.new-service = { ... };
+    
+    # Reverse proxy integration
+    # layers.layer-20.services.config.reverseProxy.routes = {
+    #   subdomain = cfg.port;
+    # };
+  };
+}

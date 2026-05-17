@@ -43,7 +43,7 @@ let
           lib.mkMerge [
             wrappedNixosConf
             (lib.mkIf hasHomeConfig {
-              home-manager.users.t0psh31f = wrappedHomeConf;
+              home-manager.users.${config.layers.meta.primaryUser or "t0psh31f"} = wrappedHomeConf;
             })
           ]
         else

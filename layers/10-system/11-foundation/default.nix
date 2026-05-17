@@ -10,5 +10,8 @@
     ./nix-tools.nix
     ./overlays.nix
     ./base-packages.nix
+    ./meta.nix
+    ./manifest.nix
+    ./layer-registry.nix
   ];
 }

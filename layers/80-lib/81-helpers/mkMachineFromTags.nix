@@ -7,7 +7,10 @@
   */
   mkMachineFromTags = tags:
     let
-      resolveTag = tag: ../../../90-profiles/tags/${tag}.nix;
+      resolveTag = tag: 
+        let path = ../../../90-profiles/tags/${tag}.nix;
+        in if builtins.pathExists path then path 
+           else builtins.trace "WARNING: Tag profile not found: ${tag}" null;
     in
-    map resolveTag tags;
+    builtins.filter (x: x != null) (map resolveTag tags);
 }
