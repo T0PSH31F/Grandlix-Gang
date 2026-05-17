@@ -5,7 +5,7 @@ in
 {
   imports = [
     (mkDendriticModule "cursor" ./31-cursor/default.nix)
-    ./32-themes
+    ./32-boot
     (mkDendriticModule "gtk" ./33-gtk/default.nix)
     (mkDendriticModule "qt" ./34-qt/default.nix)
     (mkDendriticModule "stylix" ./35-stylix/default.nix)

@@ -9,7 +9,6 @@
     ./nix-settings.nix
     ./nix-tools.nix
     ./overlays.nix
-    ./packages.nix
-    ./resource-limits.nix
+    ./base-packages.nix
   ];
 }
