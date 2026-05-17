@@ -19,8 +19,8 @@ Welcome to the **Nix Flake Pirates (NFP)** NixOS configuration repository. This 
 
 | Character | Machine | Role | Specs & Tags | State |
 | :---: | :---: | :---: | :---: | :---: |
-| ![Zoro](assets/machines/zoro.png) | **Z0r0** | Media & Build Server | **CPU**: Ryzen 9, **RAM**: 64GB, **Tags**: Media-Server, AI-Server, Build-Server | 🟢 Active |
-| ![Luffy](assets/machines/luffy.png) | **Luffy** | Primary Workstation & AI | **CPU**: Intel i7-9700F, **RAM**: 24GB, **Tags**: Workstation, Desktop, AI-Server, Homelab | 🟢 Active |
+| ![Zoro](assets/machines/zoro.png) | **Z0r0** | Media & Build Server | **Laptop**: LG Gram 17z90q, **CPU**: i7-1260P, **RAM**: 32GB, **Tags**: Media-Server, AI-Server, Laptop | 🟢 Active |
+| ![Luffy](assets/machines/luffy.png) | **Luffy** | Primary Workstation & AI | **Desktop**: Custom, **CPU**: i7-9700F, **RAM**: 24GB, **Tags**: Workstation, Desktop, AI-Server, Homelab | 🟢 Active |
 
 ---
 
@@ -88,7 +88,7 @@ Managed via `flake.nix` and `flake-parts`:
 | `sops-nix` | Secrets Management | Encrypted secrets at rest |
 | `impermanence` | State Management | Opt-in persistence for stateless root |
 | `spicetify-nix` | Spotify Theming | Custom Spotify client theming |
-| `nixos-facter` | Hardware Detection | Auto-configured hardware support |
+| `nixos-hardware` | Hardware Quirks | Auto-configured hardware support |
 | `llm-agents` | AI Tooling | Local AI agent environment |
 
 ---
@@ -107,17 +107,24 @@ graph TD
         Z0r0[Z0r0 (Media Server)]
     end
     
-    subgraph Modules
-        Core[Core System]
-        Desktop[Desktop / Hyprland]
-        Services[AI / Media / Infra]
+    subgraph Layers (Dendritic V2)
+        Cyberia[00-Cyberia: Docs/Assets/Scripts]
+        System[10-System: Foundation/Hardware]
+        Services[20-Services: Infra/AI/Media]
+        Theming[30-Theming: UI/Stylix]
+        Desktop[40-Desktop: Hyprland/Wayland]
+        CLI[50-CLI: Shell/Tools]
+        GUI[60-GUI: Browsers/Activities]
+        Agents[70-Agents: LLM Tooling]
+        Lib[80-Lib: Nix SDK/Helpers]
+        Profiles[90-Profiles: Tag Aggregation]
     end
     
     Clan --> Luffy
     Clan --> Z0r0
     
-    Luffy --> Core & Desktop & Services
-    Z0r0 --> Core & Services
+    Luffy --> Profiles
+    Z0r0 --> Profiles
 ```
 
 ---
@@ -139,8 +146,13 @@ direnv allow
 
 ### 2. Update the Ship (Deploy)
 
+Updates are handled via a self-hosted GitHub Actions runner:
+1. Push changes to `main`.
+2. The `deploy.yml` workflow formats, checks, and deploys to all active machines.
+
+To manually trigger a deployment locally:
 ```bash
-clan machines update z0r0
+clan machines update luffy
 ```
 
 ### 3. Unlock the Treasure (Secrets)
