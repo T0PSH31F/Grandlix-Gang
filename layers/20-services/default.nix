@@ -21,5 +21,6 @@
     ./27-automation/n8n.nix
     ./27-automation/pastebin.nix
     ./27-automation/searxng.nix
+    ./29-ci
   ];
 }
