@@ -5,7 +5,7 @@
   ...
 }:
 let
-  cfg = config.layers.layer-10.system.ai-agent-stack;
+  cfg = config.layers.layer-70.agent.ai-agent-stack;
 
   # Python agent dependencies wrapper:
   agentDeps = pkgs.python3.withPackages (ps: with ps; [
@@ -38,7 +38,7 @@ in
     ../../20-services/25-data/langfuse.nix
   ];
 
-  options.layers.layer-10.system.ai-agent-stack = {
+  options.layers.layer-70.agent.ai-agent-stack = {
     enable = lib.mkEnableOption "Turn-key Universal PKB and Agent Stack";
   };
 

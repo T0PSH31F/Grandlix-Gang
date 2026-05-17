@@ -12,8 +12,6 @@
     ./disko.nix
     ./containers.nix
 
-    ../../layers/10-system
-    ../../layers/20-services
     ../../layers/10-system/13-users/t0psh31f.nix
   ];
 
@@ -49,10 +47,14 @@
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
-    layers.layer-10.system = {
+  layers = {
+    layer-10.system = {
       config.impermanence.enable = true;
+    };
+    layer-70.agent = {
       ai-agent-stack.enable = true;
     };
+  };
   layers.layer-20.services.config.your-spotify.enable = true;
 
   layers.layer-30.theming.themes.greeter.greetd = {

@@ -6,10 +6,10 @@
 }:
 with lib;
 let
-  cfg = config.hardware.razer;
+  cfg = config.layers.layer-10.system.peripherals.razer;
 in
 {
-  options.hardware.razer = {
+  options.layers.layer-10.system.peripherals.razer = {
     enable = mkEnableOption "Razer peripheral support (OpenRazer)";
 
     user = mkOption {

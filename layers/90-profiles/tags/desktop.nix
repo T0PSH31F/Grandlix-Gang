@@ -5,8 +5,8 @@
 
   layers = {
     layer-10.system = {
-      hardware.automount.enable = lib.mkDefault true;
-      hardware.bluetooth.enable = lib.mkDefault true;
+      peripherals.automount.enable = lib.mkDefault true;
+      peripherals.bluetooth.enable = lib.mkDefault true;
       flatpak.enable = lib.mkDefault true;
       appimage.enable = lib.mkDefault true;
     };

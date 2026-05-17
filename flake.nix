@@ -42,19 +42,11 @@
       url = "github:VirtCode/hypr-dynamic-cursors";
       inputs.hyprland.follows = "hyprland";
     };
-    # hyprland-plugins = {
-    #   url = "github:hyprwm/hyprland-plugins";
-    #   inputs.hyprland.follows = "hyprland";
-    # };
-    # hyprspace = {
-    #   url = "github:KZDKM/Hyprspace";
-    #   inputs.hyprland.follows = "hyprland";
-    # };
+
     impermanence = {
       url = "github:nix-community/impermanence";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    import-tree.url = "github:vic/import-tree";
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -62,9 +54,6 @@
     nixai = {
       url = "github:olafkfreund/nix-ai-help";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-facter-modules = {
-      url = "github:numtide/nixos-facter-modules";
     };
     niri = {
       url = "github:sodiboo/niri-flake";
@@ -120,7 +109,6 @@
       clan-core,
       flake-parts,
       home-manager,
-      import-tree,
       llm-agents,
       niri,
       noctalia,
@@ -184,31 +172,31 @@
 
         systems = [ "x86_64-linux" ];
 
-        flake.homeConfigurations = {
-          "root@vps" = inputs.home-manager.lib.homeManagerConfiguration {
-            pkgs = import inputs.nixpkgs {
-              system = "x86_64-linux";
-              config.allowUnfree = true;
-              overlays = [
-                (import ./layers/80-lib/82-overlays/custom-packages.nix)
-              ];
-            };
-            extraSpecialArgs = { inherit inputs; };
-            modules = [
-              ./layers/50-cli-tui-programs/50-entry/cli-tui.nix
-              {
-                home.username = "root";
-                home.homeDirectory = "/root";
-                # Standard age key location for NFP users
-                sops.age.keyFile = "/root/.config/sops/age/keys.txt";
-                # Enable Yazelix on VPS
-                programs.cli-environment.headless = true;
-                programs.cli-environment.theming.theme = "Tokyo Night Moon";
-                features.home.cli.yazelix.enable = true;
-              }
-            ];
-          };
-        };
+        # flake.homeConfigurations = {
+        #   "root@vps" = inputs.home-manager.lib.homeManagerConfiguration {
+        #     pkgs = import inputs.nixpkgs {
+        #       system = "x86_64-linux";
+        #       config.allowUnfree = true;
+        #       overlays = [
+        #         (import ./layers/80-lib/82-overlays/custom-packages.nix)
+        #       ];
+        #     };
+        #     extraSpecialArgs = { inherit inputs; };
+        #     modules = [
+        #       ./layers/50-cli-tui-programs/50-entry/cli-tui.nix
+        #       {
+        #         home.username = "root";
+        #         home.homeDirectory = "/root";
+        #         # Standard age key location for NFP users
+        #         sops.age.keyFile = "/root/.config/sops/age/keys.txt";
+        #         # Enable Yazelix on VPS
+        #         programs.cli-environment.headless = true;
+        #         programs.cli-environment.theming.theme = "Tokyo Night Moon";
+        #         features.home.cli.yazelix.enable = true;
+        #       }
+        #     ];
+        #   };
+        # };
 
         perSystem =
           {

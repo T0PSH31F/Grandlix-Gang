@@ -7,7 +7,7 @@
 with lib;
 let
   # Option for color variant
-  colorVariant = config.layers.layer-30.identity.themes.plymouth-hellonavi.color or "blue";
+  colorVariant = config.layers.layer-30.theming.themes.plymouth-hellonavi.color or "blue";
 
   # Base hellonavi theme from GitHub
   hellonavi-base = pkgs.fetchFromGitHub {

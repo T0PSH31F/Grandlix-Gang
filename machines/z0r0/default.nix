@@ -7,9 +7,6 @@
   imports = [
     ./hardware.nix
 
-    ../../layers/10-system
-    ../../layers/30-theming/32-themes
-    ../../layers/20-services
     ../../layers/10-system/13-users/t0psh31f.nix
   ];
 
@@ -46,8 +43,8 @@
   # Note: Most features are automatically enabled via machine.tags -> 90-profiles
   layers = {
     layer-10.system = {
-      hardware.corsair.enable = true;
-      hardware.openrgb.enable = true;
+      peripherals.corsair.enable = true;
+      peripherals.openrgb.enable = true;
       mobile.android.enable = true;
       config.impermanence.enable = true;
       virtualization.enable = true;

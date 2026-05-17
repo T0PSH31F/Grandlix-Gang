@@ -8,11 +8,6 @@
     # REQUIRED: Generate this via `nixos-generate-config` for bare-metal
     # ./hardware.nix
 
-    # Core Layers
-    ../../../10-system
-    ../../../20-services
-    ../../../30-theming/32-themes
-    
     # REQUIRED: Add your user identity here
     # ../../../10-system/13-users/username.nix
   ];
@@ -65,7 +60,7 @@
     # gui.gaming.enable = false; 
     
     # Example: Machine-specific hardware
-    # system.hardware.openrgb.enable = true;
+    # system.peripherals.openrgb.enable = true;
   };
 
   # ============================================================================

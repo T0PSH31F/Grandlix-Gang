@@ -22,38 +22,6 @@ with lib;
         - zen: Zen kernel for desktop responsiveness
       '';
     };
-
-    # Disk automounting
-    automount = {
-      enable = mkEnableOption "Automatic disk mounting with udisks2/udiskie";
-
-      useUdiskie = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Use udiskie for automatic mounting (userspace). If false, uses udisks2 only.";
-      };
-    };
-
-    # RGB lighting control
-    openrgb = {
-      enable = mkEnableOption "OpenRGB for RGB lighting control";
-
-      enableI2C = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Enable I2C support for RGB RAM and motherboards";
-      };
-    };
-
-    # Bluetooth support
-    bluetooth = {
-      enable = mkEnableOption "Bluetooth support";
-    };
-
-    # Corsair hardware support
-    corsair = {
-      enable = mkEnableOption "Corsair hardware support (ckb-next)";
-    };
   };
 
   config = {
@@ -77,7 +45,7 @@ with lib;
     # ============================================================================
 
     # Enable udisks2 service
-    services.udisks2.enable = mkIf config.layers.layer-10.system.hardware.automount.enable true;
+    services.udisks2.enable = mkIf config.layers.layer-10.system.peripherals.automount.enable true;
 
     # Add udiskie and udisks to system packages
 
@@ -85,28 +53,28 @@ with lib;
     # RGB LIGHTING (OpenRGB)
     # ============================================================================
 
-    services.hardware.openrgb = mkIf config.layers.layer-10.system.hardware.openrgb.enable {
+    services.hardware.openrgb = mkIf config.layers.layer-10.system.peripherals.openrgb.enable {
       enable = true;
       #  motherboard = "amd"; # or "intel" - auto-detected in most cases
     };
 
     # Enable I2C for RGB RAM and motherboard control
     hardware.i2c.enable = mkIf (
-      config.layers.layer-10.system.hardware.openrgb.enable && config.layers.layer-10.system.hardware.openrgb.enableI2C
+      config.layers.layer-10.system.peripherals.openrgb.enable && config.layers.layer-10.system.peripherals.openrgb.enableI2C
     ) true;
 
     # Enable Corsair RGB hardware support
-    hardware.ckb-next.enable = mkIf config.layers.layer-10.system.hardware.corsair.enable true;
+    hardware.ckb-next.enable = mkIf config.layers.layer-10.system.peripherals.corsair.enable true;
 
     # Add hardware packages
     environment.systemPackages =
-      (lib.optionals config.layers.layer-10.system.hardware.automount.enable (
+      (lib.optionals config.layers.layer-10.system.peripherals.automount.enable (
         with pkgs;
         [
           udisks
         ]
       ))
-      ++ (lib.optionals config.layers.layer-10.system.hardware.openrgb.enable [ pkgs.openrgb ])
+      ++ (lib.optionals config.layers.layer-10.system.peripherals.openrgb.enable [ pkgs.openrgb ])
       ++ (with pkgs; [
         logitech-udev-rules
         solaar
@@ -137,8 +105,8 @@ with lib;
     };
 
     # USB automounting
-    services.devmon.enable = mkIf config.layers.layer-10.system.hardware.automount.enable true;
-    services.gvfs.enable = mkIf config.layers.layer-10.system.hardware.automount.enable true;
+    services.devmon.enable = mkIf config.layers.layer-10.system.peripherals.automount.enable true;
+    services.gvfs.enable = mkIf config.layers.layer-10.system.peripherals.automount.enable true;
 
     # Storage optimization
     services.fstrim.enable = true; # SSD TRIM support

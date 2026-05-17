@@ -12,5 +12,5 @@
     asr-tts.enable = lib.mkDefault true;
   };
 
-  layers.layer-10.system.ai-agent-stack.enable = lib.mkDefault true;
+  layers.layer-70.agent.ai-agent-stack.enable = lib.mkDefault true;
 }
