@@ -19,6 +19,8 @@
           authorizedKeys = {
             "mykey" =
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFDNnynMbFWatSFdANzbJ8iiEKL7+9ZpDaMLrWRQjyH user@host";
+            "luffy" =
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDg4e32XqA2CyYsHyl+urGN1Soiz00DLgc+dkDw/uFCw luffy@agentaflow.com";
           };
           certificate.searchDomains = [ "grandlix.local" ];
         };
@@ -119,7 +121,7 @@
         input = "clan-core";
       };
       roles.default = {
-        tags = [ "dev" ]; # Development machines
+        tags = [ "development" ]; # Development machines
         extraModules = [ ../../10-system/13-packages/dev.nix ];
       };
     };

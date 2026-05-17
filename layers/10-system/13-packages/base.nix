@@ -50,6 +50,7 @@
     aria2
     curl
     rsync
+    sshfs
     wget
 
     # Security & Secrets

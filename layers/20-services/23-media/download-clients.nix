@@ -117,8 +117,8 @@ in
         if [ -f "$prompts/rpc_secret" ]; then
           cat "$prompts/rpc_secret" > "$out/rpc_secret"
         else
-          echo "Error: Prompt rpc_secret not found" >&2
-          exit 1
+          # Generate a secure random token if no prompt is provided
+          head -c 32 /dev/urandom | base64 | tr -d '\n' > "$out/rpc_secret"
         fi
       '';
     };

@@ -1,4 +1,5 @@
-{ osConfig ? config, 
+{
+  osConfig ? config,
   config,
   lib,
   ...
@@ -23,25 +24,23 @@ in
       export QT_QPA_PLATFORMTHEME_QT6=qt6ct
       export QT_QPA_PLATFORMTHEME=qt6ct
       export MOZ_ENABLE_WAYLAND=1
-      export WAYLAND_DISPLAY=wayland-1   
+      export WAYLAND_DISPLAY=wayland-1
       export NIXOS_OZONE_WL=1
       export QT_MEDIA_BACKEND=gstreamer
-    '' + lib.optionalString cfg.isNvidia ''
+
+      export ELECTRON_OZONE_PLATFORM_HINT=auto
+    ''
+    + lib.optionalString cfg.isNvidia ''
 
       # NVIDIA Specific
-      export LIBVA_DRIVER_NAME=nvidia
-      export GBM_BACKEND=nvidia-drm
-      export __GLX_VENDOR_LIBRARY_NAME=nvidia
       export NVD_BACKEND=direct
-      export AQ_NO_MODIFIERS=1
-      export WLR_DRM_NO_ATOMIC=1
-      export WLR_NO_HARDWARE_CURSORS=1
+      export LIBVA_DRIVER_NAME=nvidia
+      export __GLX_VENDOR_LIBRARY_NAME=nvidia
     '';
 
     xdg.configFile."uwsm/env-hyprland".text = ''
-      export HYPRCURSOR_THEME=rose-pine-hyprcursor
+      export HYPRCURSOR_THEME=Sonic-Hyprcursor
       export HYPRCURSOR_SIZE=32
-      export ELECTRON_OZONE_PLATFORM_HINT=auto
       export _JAVA_AWT_WM_NONREPARENTING=1
       export GTK_USE_PORTAL=1
     '';

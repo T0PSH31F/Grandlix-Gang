@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -36,10 +35,12 @@ in
     ];
 
     # Persistence
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
-        "/var/lib/signal-cli-daemon"
-      ];
-    };
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            "/var/lib/signal-cli-daemon"
+          ];
+        };
   };
 }

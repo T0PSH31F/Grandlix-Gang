@@ -41,7 +41,7 @@ in
     services.searx = {
       enable = true;
       package = pkgs.searxng;
-      
+
       settings = mkMerge [
         {
           server = {
@@ -85,6 +85,14 @@ in
             }
             {
               name = "wikipedia";
+              disabled = false;
+            }
+            {
+              name = "perplexity";
+              disabled = false;
+            }
+            {
+              name = "youtube";
               disabled = false;
             }
           ];

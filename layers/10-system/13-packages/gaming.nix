@@ -85,6 +85,7 @@ with lib;
         gamemode
         gamescope
         goverlay
+        rpcs3
         mangohud
         vintagestory
       ]

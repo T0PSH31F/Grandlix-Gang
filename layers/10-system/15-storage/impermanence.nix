@@ -49,8 +49,7 @@ with lib;
         "/etc/ssh/ssh_host_rsa_key"
         "/etc/ssh/ssh_host_rsa_key.pub"
 
-        # SOPS age key
-        "/var/lib/sops-nix/key.txt"
+        # SOPS age key (generated automatically from ssh keys)
 
         # User and group database files
         # "/etc/passwd"

@@ -38,13 +38,7 @@
   #   "cache-server": Enables Harmonia Nix binary cache.
   #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
   # ----------------------------------------------------------------------------
-  machine.tags = [
-    "desktop"
-    "laptop"
-    "dev"
-    "ai"
-    "media"
-  ];
+
 
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)

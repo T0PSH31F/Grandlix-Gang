@@ -11,7 +11,7 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "justchokingaround";
     repo = "jerry";
-    rev = "1x2c6yj3z16az7zy2hsd7hdm3gh1vajxmxw9alfzws9ni6yqvg27";
+    rev = "main";
     sha256 = "sha256-R7yNvYk2af4dVYn32qXaAb5RGzxNQ+H/+cqEP6Q3TPQ=";
   };
 

@@ -10,7 +10,6 @@
       "https://vicinae.cachix.org"
       "https://hyprland.cachix.org"
       "https://niri.cachix.org"
-      "https://mic92.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -20,7 +19,6 @@
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-      "mic92.cachix.org-1:2Vf2WbWuQDWg9s2ykt8ZzNt6gtB+oqjEUo3vAqVM0GA="
     ];
   };
 
@@ -28,6 +26,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.sops-nix.follows = "sops-nix";
     };
@@ -69,8 +68,11 @@
     };
     niri = {
       url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+    };
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -85,6 +87,7 @@
     };
     vicinae = {
       url = "github:vicinaehq/vicinae";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     vicinae-extensions = {
       url = "github:vicinaehq/extensions";
@@ -158,18 +161,20 @@
         };
 
         # Register clan services from new structure
-        flake.clan.modules = {
-          # AI services
-          ai = ./layers/20-services/28-clan-services/sillytavern/module.nix;
+        flake.clan = {
+          modules = {
+            # AI services
+            ai = ./layers/20-services/28-clan-services/sillytavern/module.nix;
 
-          # Desktop/Infrastructure services bundle
-          desktop = ./layers/20-services/28-clan-services/homepage-dashboard/module.nix;
+            # Desktop/Infrastructure services bundle
+            desktop = ./layers/20-services/28-clan-services/homepage-dashboard/module.nix;
 
-          # Media services
-          media = ./layers/20-services/28-clan-services/aria2/module.nix;
+            # Media services
+            media = ./layers/20-services/28-clan-services/aria2/module.nix;
 
-          # Binary cache
-          nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
+            # Binary cache
+            nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
+          };
         };
 
         systems = [ "x86_64-linux" ];

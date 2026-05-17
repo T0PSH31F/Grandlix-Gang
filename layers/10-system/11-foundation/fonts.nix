@@ -7,6 +7,7 @@
     packages = with pkgs; [
       nerd-fonts.jetbrains-mono
       nerd-fonts.fira-code
+      nerd-fonts.symbols-only
       inter
       font-awesome
       material-design-icons
@@ -19,12 +20,12 @@
       enable = true;
       defaultFonts = {
         monospace = [
-          "JetBrainsMono Nerd Font"
-          "FiraCode Nerd Font"
+          "JetBrains Mono Nerd Font"
+          "Fira Code Nerd Font"
         ];
         sansSerif = [ "Inter" ];
         emoji = [
-          "twitter-color-emoji"
+          "Twitter Color Emoji"
         ];
       };
     };

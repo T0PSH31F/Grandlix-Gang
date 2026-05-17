@@ -18,7 +18,6 @@ in
         espeak-ng
         onnxruntime
         voxtype-onnx
-        python3Packages.pip
         pipx
       ];
     })

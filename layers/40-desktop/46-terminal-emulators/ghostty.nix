@@ -15,8 +15,10 @@ in
       enableZshIntegration = true;
       settings = {
         # theme = "catppuccin-mocha";
-        font-family = "JetBrainsMono Nerd Font";
+        font-family = "JetBrains Mono Nerd Font";
         font-size = 16;
+        cursor-style = "block";
+        cursor-style-blink = true;
         shell-integration-features = true;
         window-decoration = false;
         confirm-close-surface = false;

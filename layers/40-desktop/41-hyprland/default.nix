@@ -77,7 +77,19 @@ in
   };
 
   # Home Manager level config
-  home = { config, ... }: {
+  home = { config, ... }:
+  let
+    sonic-hyprcursor = pkgs.stdenv.mkDerivation {
+      pname = "sonic-hyprcursor";
+      version = "1.0.0";
+      src = ../../00-cyberia/02-assets/cursors/Sonic-cursor-hyprcursor;
+      installPhase = ''
+        mkdir -p $out/share/icons/Sonic-Hyprcursor
+        cp -r Sonic-Hyprcursor/* $out/share/icons/Sonic-Hyprcursor/
+      '';
+    };
+  in
+  {
     imports = lib.optionals cfg.enable [
       ./scripts.nix
       ./monitors.nix
@@ -127,7 +139,7 @@ in
       qt6Packages.qt5compat
       qt6Packages.qt6ct
       rofi
-      rose-pine-hyprcursor
+      sonic-hyprcursor
       slurp
       socat
       steam-rom-manager
@@ -143,8 +155,8 @@ in
     ];
 
     home.pointerCursor = {
-      package = pkgs.rose-pine-cursor;
-      name = "rose-pine";
+      package = sonic-hyprcursor;
+      name = "Sonic-Hyprcursor";
       size = 32;
       gtk.enable = true;
       x11.enable = true;
@@ -153,9 +165,15 @@ in
         size = 32;
       };
     };
+    
+    gtk = {
+      enable = true;
+      gtk4.theme = null;
+    };
 
     wayland.windowManager.hyprland = {
       enable = true;
+      configType = "hyprlang";
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
       portalPackage =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
@@ -216,8 +234,6 @@ in
         # NVIDIA stability fixes (no-op on Intel/AMD)
         render = lib.mkIf cfg.isNvidia {
           direct_scanout = false;   # Prevent buffer format mismatches on NVIDIA multi-monitor
-          explicit_sync = false;     # Prevents glitching on some NVIDIA driver versions
-          explicit_sync_kms = false;
         };
       };
     };

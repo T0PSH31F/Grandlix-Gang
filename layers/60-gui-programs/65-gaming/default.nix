@@ -41,10 +41,41 @@ in
     };
 
     programs.fuse.enable = true;
-    environment.systemPackages = with pkgs; [ antimicrox bottles gamemode gamescope goverlay mangohud vintagestory ]
+    environment.systemPackages = with pkgs; [
+      antimicrox
+      bottles
+      gamemode
+      gamescope
+      goverlay
+      mangohud
+      vintagestory
+      ]
       ++ (lib.optionals config.layers.layer-60.gui.gaming.enableEmulators [
-        (retroarch.withCores (cores: with cores; [ beetle-psx-hw desmume dolphin flycast genesis-plus-gx mgba mupen64plus ppsspp snes9x ]))
-        cemu dolphin-emu hactool joycond melonds ns-usbloader nstool nsz nx2elf pcsx2 rpcs3 ryubing sixpair usb-modeswitch usb-modeswitch-data
+        (retroarch.withCores (cores: with cores; [
+          beetle-psx-hw
+          desmume
+          dolphin
+          flycast
+          genesis-plus-gx
+          mgba
+          mupen64plus
+          ppsspp
+          snes9x ]))
+        cemu
+        dolphin-emu
+        hactool
+        joycond
+        melonds
+        ns-usbloader
+        nstool
+        nsz
+        nx2elf
+        pcsx2
+        rpcs3
+        ryubing
+        sixpair
+        usb-modeswitch
+        usb-modeswitch-data
       ]);
 
     hardware.graphics = { enable = true; enable32Bit = true; };
@@ -58,10 +89,26 @@ in
   };
 
   home = { config, osConfig, ... }: mkIf osConfig.layers.layer-60.gui.gaming.enable {
-    home.packages = with pkgs; [ cartridges prismlauncher umu-launcher steam-run-free nero-umu protonplus protontricks ];
+    home.packages = with pkgs; [
+      cartridges
+      prismlauncher
+      umu-launcher
+      steam-run-free
+      nero-umu
+      protonplus
+      protontricks
+      ];
+
     programs.lutris = {
       enable = mkDefault true;
-      extraPackages = with pkgs; [ mangohud winetricks gamescope gamemode umu-launcher steam-run ];
+      extraPackages = with pkgs; [
+        mangohud
+        winetricks
+        gamescope
+        gamemode
+        umu-launcher
+        steam-run
+        ];
     };
   };
 }

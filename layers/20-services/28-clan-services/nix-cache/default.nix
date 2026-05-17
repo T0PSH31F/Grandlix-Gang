@@ -24,8 +24,10 @@ in
   manifest.name = "nix-cache";
   manifest.description = "Serve the nix store between machines in your network";
   manifest.categories = [ "Utility" ];
+  manifest.readme = "This service sets up a Harmonia binary cache on the server machines and configures client machines to use it.";
 
   roles.server = {
+    description = "The machine that serves the nix store";
 
     interface.options = {
       priority = lib.mkOption {
@@ -71,6 +73,7 @@ in
   };
 
   roles.client = {
+    description = "The machine that uses the nix store from servers";
 
     perInstance =
       { instanceName, roles, ... }:

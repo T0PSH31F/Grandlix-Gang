@@ -38,7 +38,7 @@ float noise(vec2 p) {
 
 // Water breathing technique - fluid flowing lines
 float waterFlow(vec2 p, vec2 start, vec2 end, float time, float seed) {
-    vec2 direction = norm(end - start);
+    vec2 direction = normalize(end - start);
     vec2 perpendicular = vec2(-direction.y, direction.x);
     float totalLength = distance(start, end);
 

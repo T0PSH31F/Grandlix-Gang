@@ -13,15 +13,20 @@ with lib; {
     # AppImage support via appimage-run
     environment.systemPackages = with pkgs; [
       appimage-run
+      appimageupdate-qt
+      libappimage
+      squashfs-tools-ng
+      squashfsTools
+      squashfuse
     ];
 
     # Enable FUSE for AppImage
     programs.appimage = {
       enable = true;
-      binfmt = true; # Register AppImage files to run directly
+      binfmt = false; # We use manual binfmt below instead to avoid SquashFS errors
     };
 
-    # Required for AppImages
+    # Required for AppImages (manual binfmt prevents SquashFS superblock errors)
     boot.binfmt.registrations.appimage = {
       wrapInterpreterInShell = false;
       interpreter = "${pkgs.appimage-run}/bin/appimage-run";
@@ -30,5 +35,6 @@ with lib; {
       mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
       magicOrExtension = ''\x7fELF....AI\x02'';
     };
+
   };
 }

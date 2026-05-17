@@ -53,6 +53,9 @@ in
         NEXTAUTH_SECRET = cfg.nextAuthSecret;
         SALT = cfg.salt;
       };
+      volumes = [
+        "/run/postgresql:/run/postgresql"
+      ];
       extraOptions = [
         "--network=host" # Access local postgres easily
       ];

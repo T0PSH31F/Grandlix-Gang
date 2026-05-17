@@ -20,7 +20,7 @@ in
 
     home.packages = with pkgs; [
       biome bun carapace erdtree fd ffmpeg gh imagemagick jq lazygit
-      markdown-oxide nil nixd nixfmt-rfc-style nushell onefetch ouch
+      markdown-oxide nil nixd nixfmt nushell onefetch ouch
       oxlint p7zip pandoc poppler-utils ripgrep ruff tinymist
       ty typescript-language-server typst uv yaml-language-server zsh
     ];

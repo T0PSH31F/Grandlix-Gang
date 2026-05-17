@@ -43,17 +43,7 @@
   #   "cache-server": Enables Harmonia Nix binary cache.
   #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
   # ----------------------------------------------------------------------------
-  machine.tags = [
-    "workstation"
-    "desktop"
-    "gaming"
-    "server"
-    "homelab"
-    "cache-server"
-    "ai-server"
-    "development"
-    "media"
-  ];
+
   nixpkgs.config.allowUnfree = true;
 
   # ============================================================================
@@ -153,7 +143,7 @@
     };
 
     immich-server = {
-      enable = true;
+      enable = false;
       port = 2283;
     };
 
@@ -184,7 +174,17 @@
     # Moved from Nami
     n8n-server.enable = true;
     komga-server.enable = true;
-    mautrix-bridges.enable = true;
+    matrix-server = {
+      enable = true;
+      serverName = "matrix.local";
+    };
+    mautrix-bridges = {
+      enable = true;
+      homeserverUrl = "http://localhost:8008";
+      homeserverDomain = "matrix.local";
+      whatsapp.enable = true;
+      signal.enable = true;
+    };
 
     # Caddy Reverse Proxy
     caddy = {
@@ -308,7 +308,7 @@
   # ============================================================================
   # 05 - SECURITY & SECRETS (SOPS/ACME)
   # ============================================================================
-  sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+  sops.age.keyFile = "/persist/home/t0psh31f/.config/sops/age/keys.txt";
   sops.secrets."duckdns-token" = {
     sopsFile = lib.mkForce ../../layers/00-cyberia/03-treasure/secrets/duckdns.yaml;
     format = lib.mkForce "yaml";

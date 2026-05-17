@@ -79,6 +79,12 @@ in
         bindkey '^Y' autosuggest-accept
         bindkey '^E' autosuggest-clear
         if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+          # Display machine-specific MOTD or default to nami
+          if [ "$HOST" = "z0r0" ]; then
+            cat ${motdPkg}/z0r0.txt
+          else
+            cat ${motdPkg}/nami.txt
+          fi
           if command -v fastfetch >/dev/null 2>&1; then fastfetch; fi
         fi
         ${lib.optionalString cfg.theming.enable "[ -f ~/.config/fzf/matugen.conf ] && source ~/.config/fzf/matugen.conf"}

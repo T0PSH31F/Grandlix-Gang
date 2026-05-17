@@ -17,7 +17,7 @@ in
     programs.waveterm = {
       enable = true;
       settings = {
-        "term:fontfamily" = "JetBrainsMono Nerd Font";
+        "term:fontfamily" = "JetBrains Mono Nerd Font";
         "term:fontsize" = 14;
         "window:transparent" = true;
         "window:opacity" = 0.92;

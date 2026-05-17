@@ -6,12 +6,8 @@ let
         "desktop"
         "development"
         "gaming"
-        "ai-server"
-        "homelab"
-        "cache-server"
         "media-server"
         "laptop"
-        "dev"
         "media"
       ];
       deploy.targetHost = "root@100.95.168.90";
@@ -61,9 +57,16 @@ in
           name = "wireguard";
           input = "clan-core";
         };
-        roles.peer.machines = {
-          luffy = { };
-          z0r0 = { };
+        roles = {
+          controller.machines.luffy = {
+            settings = {
+              endpoint = "nixfp.duckdns.org";
+              port = 51820;
+            };
+          };
+          peer.machines = {
+            z0r0 = { };
+          };
         };
       };
 
@@ -82,7 +85,7 @@ in
           input = "self";
         };
         roles.sillytavern.machines = {
-          z0r0 = { };
+          luffy = { };
         };
       };
     };
@@ -90,6 +93,7 @@ in
 
   machines = {
     z0r0 = {
+      machine.tags = machinesInventory.z0r0.tags;
       imports = [
         ./machines/z0r0/default.nix
       ]
@@ -97,6 +101,7 @@ in
     };
 
     luffy = {
+      machine.tags = machinesInventory.luffy.tags;
       imports = [
         ./machines/luffy/default.nix
       ]

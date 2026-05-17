@@ -9,5 +9,6 @@
     ./17-app-runtimes/appimage.nix
     ./17-app-runtimes/flatpak.nix
     ./18-ai-infra/ai-agent-stack.nix
+    ./15-storage/google-drive.nix
   ];
 }
