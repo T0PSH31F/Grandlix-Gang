@@ -40,48 +40,9 @@ with lib;
       (mkIf (config.layers.layer-10.system.hardware.kernel == "zen") pkgs.linuxPackages_zen)
     ];
 
-    # ============================================================================
-    # DISK AUTOMOUNTING
-    # ============================================================================
+    # Automounting extracted to 18-peripherals/automount.nix
 
-    # Enable udisks2 service
-    services.udisks2.enable = mkIf config.layers.layer-10.system.peripherals.automount.enable true;
-
-    # Add udiskie and udisks to system packages
-
-    # ============================================================================
-    # RGB LIGHTING (OpenRGB)
-    # ============================================================================
-
-    services.hardware.openrgb = mkIf config.layers.layer-10.system.peripherals.openrgb.enable {
-      enable = true;
-    };
-
-    # Enable I2C for RGB RAM and motherboard control
-    hardware.i2c.enable = mkIf (
-      config.layers.layer-10.system.peripherals.openrgb.enable && config.layers.layer-10.system.peripherals.openrgb.enableI2C
-    ) true;
-
-    # Enable Corsair RGB hardware support
-    hardware.ckb-next.enable = mkIf config.layers.layer-10.system.peripherals.corsair.enable true;
-
-    # Add hardware packages
-    environment.systemPackages =
-      (lib.optionals config.layers.layer-10.system.peripherals.automount.enable (
-        with pkgs;
-        [
-          udisks
-        ]
-      ))
-      ++ (lib.optionals config.layers.layer-10.system.peripherals.openrgb.enable [ pkgs.openrgb ])
-      ++ (with pkgs; [
-        logitech-udev-rules
-        solaar
-      ]);
-
-    # Add user to i2c group for RGB control
-    # This will need to be added to user configuration
-    # users.users.<username>.extraGroups = [ "i2c" ];
+    # RGB and Logitech extracted to 18-peripherals/
 
     # ============================================================================
     # GENERAL HARDWARE SUPPORT
@@ -103,9 +64,7 @@ with lib;
       enable32Bit = true; # For 32-bit applications and games
     };
 
-    # USB automounting
-    services.devmon.enable = mkIf config.layers.layer-10.system.peripherals.automount.enable true;
-    services.gvfs.enable = mkIf config.layers.layer-10.system.peripherals.automount.enable true;
+
 
     # Storage optimization
     services.fstrim.enable = true; # SSD TRIM support

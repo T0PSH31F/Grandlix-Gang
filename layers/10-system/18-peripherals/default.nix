@@ -12,8 +12,12 @@ let
 in
 {
   imports = [
+    ./automount.nix
     ./bluetooth.nix
+    ./controllers.nix
+    ./logitech.nix
     ./razer.nix
+    ./rgb.nix
     ./touchpad.nix
   ];
 
@@ -62,7 +66,10 @@ in
   config = lib.mkIf cfg.enable {
     # 1. Enable sub-peripherals by default under the master switch
     layers.layer-10.system.peripherals = {
+      automount.enable = lib.mkDefault true;
       bluetooth.enable = lib.mkDefault true;
+      controllers.enable = lib.mkDefault true;
+      logitech.enable = lib.mkDefault true;
       touchpad.enable = lib.mkDefault (builtins.elem "laptop" clanTags);
       razer.enable = lib.mkDefault true;
     };
