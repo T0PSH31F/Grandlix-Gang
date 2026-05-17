@@ -3,7 +3,13 @@ result*
 .envrc.cache
 *.log
 *.txt
+*.err
+*.pyc
+__pycache__/
 test-hm.nix
 *.bak
 *.old
 fix_*.py
+.directory
+*.code-workspace
+inventory.json

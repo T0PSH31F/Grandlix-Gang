@@ -79,13 +79,10 @@ in
       ]);
 
     hardware.graphics = { enable = true; enable32Bit = true; };
-    # boot.kernelModules = [ "ntsync" ];
-    # boot.kernel.sysctl = { "vm.max_map_count" = 2147483642; };
     hardware.xone.enable = mkDefault true;
     hardware.xpadneo.enable = mkDefault true;
     services = { input-remapper.enable = true; system76-scheduler.enable = true; udev.packages = with pkgs; [ ns-usbloader ]; };
     networking.firewall = { allowedTCPPorts = [ 27036 27037 ]; allowedUDPPorts = [ 27031 27036 ]; };
-    # boot.kernelParams = [ "split_lock_detect=off" ];
   };
 
   home = { config, osConfig, ... }: mkIf osConfig.layers.layer-60.gui.gaming.enable {

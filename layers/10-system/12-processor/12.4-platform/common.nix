@@ -55,7 +55,6 @@ with lib;
 
     services.hardware.openrgb = mkIf config.layers.layer-10.system.peripherals.openrgb.enable {
       enable = true;
-      #  motherboard = "amd"; # or "intel" - auto-detected in most cases
     };
 
     # Enable I2C for RGB RAM and motherboard control
