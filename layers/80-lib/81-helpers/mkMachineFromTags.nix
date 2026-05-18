@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ ... }:
 {
   /*
     Resolves tags from clan-core machine definitions into profile imports.

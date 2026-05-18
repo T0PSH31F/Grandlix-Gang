@@ -188,7 +188,6 @@
       signal.enable = true;
     };
 
-
     # Caddy Reverse Proxy
     caddy = {
       enable = true;
