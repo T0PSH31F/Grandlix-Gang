@@ -24,7 +24,6 @@ in
       export QT_QPA_PLATFORMTHEME_QT6=qt6ct
       export QT_QPA_PLATFORMTHEME=qt6ct
       export MOZ_ENABLE_WAYLAND=1
-      export WAYLAND_DISPLAY=wayland-1
       export NIXOS_OZONE_WL=1
       export QT_MEDIA_BACKEND=gstreamer
 

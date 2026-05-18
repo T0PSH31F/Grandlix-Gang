@@ -38,6 +38,12 @@ let
       disable_hyprland_logo = true
       disable_splash_rendering = true
     }
+
+    ${optionalString (config.hardware.nvidia.enable or false) ''
+      cursor {
+        no_hardware_cursors = true
+      }
+    ''}
   '';
 in
 {
