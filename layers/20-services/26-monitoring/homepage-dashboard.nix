@@ -18,6 +18,8 @@ let
     service: default:
     if service == "grafana" then
       toString config.layers.layer-20.services.config.monitoring.grafana.port
+    else if service == "adguard" || service == "adguardhome" then
+      toString config.layers.layer-20.services.config.adguard.port
     else if hasAttr service config.services && hasAttr "port" config.services.${service} then
       toString config.services.${service}.port
     else
@@ -381,11 +383,11 @@ in
             (optional (isServiceEnabled "adguardhome") {
               "AdGuard Home" = {
                 icon = "adguard-home.png";
-                href = "http://localhost:3001";
+                href = "http://localhost:${getServicePort "adguard" 3002}";
                 description = "DNS Filtering";
                 widget = {
                   type = "adguard";
-                  url = "http://localhost:3001";
+                  url = "http://localhost:${getServicePort "adguard" 3002}";
                   username = "{{HOMEPAGE_VAR_ADGUARD_USERNAME}}";
                   password = "{{HOMEPAGE_VAR_ADGUARD_PASSWORD}}";
                 };

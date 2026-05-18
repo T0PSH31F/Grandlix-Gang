@@ -16,7 +16,7 @@ in
 
     port = mkOption {
       type = types.port;
-      default = 3001;
+      default = 3002;
       description = "Web interface port";
     };
 
