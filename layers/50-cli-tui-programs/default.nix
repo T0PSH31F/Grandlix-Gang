@@ -15,6 +15,7 @@ in
     (mkDendriticModule "keybindings" ./59-integrations/keybindings.nix)
     (mkDendriticModule "yazelix-style" ./59-integrations/yazelix-style.nix)
     (mkDendriticModule "zellij" ./54-multiplexers/zellij.nix)
+    (mkDendriticModule "tmux" ./54-multiplexers/tmux.nix)
     (mkDendriticModule "starship" ./55-prompt/starship.nix)
     (mkDendriticModule "bash" ./51-shells/bash.nix)
     (mkDendriticModule "common-shell" ./51-shells/common.nix)

@@ -6,5 +6,6 @@
     ./matrix.nix
     ./mautrix.nix
     ./your-spotify.nix
+    ./signal-cli-daemon.nix
   ];
 }

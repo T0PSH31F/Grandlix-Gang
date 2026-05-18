@@ -8,13 +8,13 @@ let
   clanTags = osConfig.machine.tags or [ ];
 in
 {
-  options.layers.layer-60.gui.thunderbird = {
+  options.layers.layer-60.gui.browsers.thunderbird = {
     enable = lib.mkEnableOption "Thunderbird Mail Client" // {
       default = builtins.elem "desktop" clanTags || builtins.elem "workstation" clanTags;
     };
   };
 
-  home = lib.mkIf config.layers.layer-60.gui.thunderbird.enable {
+  home = lib.mkIf config.layers.layer-60.gui.browsers.thunderbird.enable {
     programs.thunderbird = {
       enable = true;
       profiles = {

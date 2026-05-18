@@ -26,7 +26,10 @@ in
         enableBashIntegration = true;
         git = true;
         icons = "always";
-        extraOptions = [ "-a" "-1" ];
+        extraOptions = [
+          "-a"
+          "-1"
+        ];
       };
       zoxide = {
         enable = true;
@@ -43,13 +46,19 @@ in
       fd = {
         enable = true;
         hidden = true;
-        ignores = [ ".git" ".DS_Store" ];
+        ignores = [
+          ".git"
+          ".DS_Store"
+        ];
       };
       pay-respects = {
         enable = true;
         enableBashIntegration = true;
         enableZshIntegration = true;
-        options = [ "--alias" "f" ];
+        options = [
+          "--alias"
+          "f"
+        ];
       };
       carapace = {
         enable = true;
@@ -58,9 +67,26 @@ in
       };
     };
     home.packages = with pkgs; [
-      bar cloudflare-cli cpx detox procs dust duf tokei hyperfine
-      tealdeer trash-cli trippy rsyncy stripe-cli supabase-cli pv
-      pq-cli progress xxh wrangler
+      bar
+      cloudflare-cli
+      cpx
+      detox
+      duf
+      dust
+      hyperfine
+      pq-cli
+      procs
+      progress
+      pv
+      rsyncy
+      stripe-cli
+      supabase-cli
+      tealdeer
+      tokei
+      trash-cli
+      trippy
+      wrangler
+      xxh
     ];
   };
 }

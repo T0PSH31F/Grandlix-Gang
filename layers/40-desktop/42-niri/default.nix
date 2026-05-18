@@ -1,4 +1,8 @@
 { osConfig ? config, pkgs, lib, config, inputs, ... }: {
+  imports = [
+    inputs.niri.nixosModules.niri
+  ];
+
   options.layers.layer-40.desktop.niri = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -7,9 +11,24 @@
     };
   };
 
+  nixos = lib.mkIf osConfig.layers.layer-40.desktop.niri.enable {
+    programs.niri = {
+      enable = true;
+      package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-stable;
+    };
+
+    programs.uwsm = {
+      enable = true;
+      waylandCompositors.niri = {
+        prettyName = "Niri";
+        comment = "Niri compositor managed by UWSM";
+        binPath = "/run/current-system/sw/bin/niri";
+      };
+    };
+  };
+
   home = {
     imports = [
-      inputs.niri.homeModules.config
       ./settings.nix
       ./keybinds.nix
       ./outputs.nix
