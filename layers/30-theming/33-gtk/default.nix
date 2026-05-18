@@ -23,6 +23,7 @@ in
     home.packages = with pkgs; [
       adw-gtk3
       nwg-look
+      candy-icons
     ];
 
     gtk = lib.mkIf (!(config.stylix.enable or false)) {
@@ -30,6 +31,10 @@ in
       theme = {
         name = "adw-gtk3-dark";
         package = pkgs.adw-gtk3;
+      };
+      iconTheme = {
+        name = "candy-icons";
+        package = pkgs.candy-icons;
       };
       gtk4.extraConfig = {
         gtk-application-prefer-dark-theme = 1;

@@ -8,6 +8,7 @@ in
     # Multi-class modules (wrapped)
     (mkDendriticModule "fallbacks" ./52-editors/fallbacks.nix)
     (mkDendriticModule "helix" ./52-editors/helix.nix)
+    (mkDendriticModule "gedit" ./52-editors/gedit.nix)
     (mkDendriticModule "alternatives" ./56-file-managers/alternatives.nix)
     (mkDendriticModule "superfile" ./56-file-managers/superfile.nix)
     (mkDendriticModule "yazi" ./56-file-managers/yazi.nix)

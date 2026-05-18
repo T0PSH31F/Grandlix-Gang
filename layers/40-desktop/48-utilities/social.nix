@@ -1,4 +1,10 @@
-{ pkgs, lib, config, ... }: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
   options.layers.layer-40.desktop.social = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -9,16 +15,18 @@
 
   home = lib.mkIf config.layers.layer-40.desktop.social.enable {
     home.packages = with pkgs; [
-      beeper
-      beeper-bridge-manager
+      # beeper
+      # beeper-bridge-manager
       signal-desktop
       signal-cli
       ayugram-desktop
       tdl
       element-desktop
+      cinny
       vesktop
       equibop
       caprine
+      ferdium
     ];
   };
 }

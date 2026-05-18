@@ -19,7 +19,7 @@ Welcome to the **Nix Flake Pirates (NFP)** NixOS configuration repository. This 
 
 | Character | Machine | Role | Specs & Tags | State |
 | :---: | :---: | :---: | :---: | :---: |
-| ![Zoro](assets/machines/zoro.png) | **Z0r0** | Media & Build Server | **Laptop**: LG Gram 17z90q, **CPU**: i7-1260P, **RAM**: 32GB, **Tags**: Media-Server, AI-Server, Laptop | 🟢 Active |
+| ![Zoro](assets/machines/zoro.png) | **Z0r0** | Media & Build Server | **Laptop**: LG Gram 17z90q, **CPU**: i7-1260P, **RAM**: 16GB, **Tags**: Media-Server, AI-Server, Laptop | 🟢 Active |
 | ![Luffy](assets/machines/luffy.png) | **Luffy** | Primary Workstation & AI | **Desktop**: Custom, **CPU**: i7-9700F, **RAM**: 24GB, **Tags**: Workstation, Desktop, AI-Server, Homelab | 🟢 Active |
 
 ---
@@ -101,12 +101,12 @@ This configuration follows the **Clan-Core** architecture for scalable fleet man
 graph TD
     User[t0psh31f] -->|Manages| Flake[Flake.nix]
     Flake -- Imports --> Clan[Clan Inventory]
-    
+
     subgraph Hosts
         Luffy[Luffy (Workstation)]
         Z0r0[Z0r0 (Media Server)]
     end
-    
+
     subgraph Layers (Dendritic V2)
         Cyberia[00-Cyberia: Docs/Assets/Scripts]
         System[10-System: Foundation/Hardware]
@@ -119,10 +119,10 @@ graph TD
         Lib[80-Lib: Nix SDK/Helpers]
         Profiles[90-Profiles: Tag Aggregation]
     end
-    
+
     Clan --> Luffy
     Clan --> Z0r0
-    
+
     Luffy --> Profiles
     Z0r0 --> Profiles
 ```

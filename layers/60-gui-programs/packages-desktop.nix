@@ -24,8 +24,13 @@ in
       lobster
       swappy
       wf-recorder
-      candy-icons
       hicolor-icon-theme
+
+      # Accessories/Utilities
+      file-roller
+      pavucontrol
+      nwg-displays
+      webull-desktop
     ];
   };
 }

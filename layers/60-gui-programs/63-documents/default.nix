@@ -39,6 +39,30 @@ in
         description = "Enable note-taking tools (Obsidian)";
       };
     };
+
+    nextcloud = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Nextcloud client tools";
+      };
+    };
+
+    zlibrary = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Z-Library Desktop client";
+      };
+    };
+
+    email = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Tutanota secure mail client";
+      };
+    };
   };
 
   home = lib.mkIf config.layers.layer-60.gui.documents.enable {
@@ -51,6 +75,12 @@ in
         pkgs.sigil
       ])
       (lib.optional config.layers.layer-60.gui.documents.notes.enable pkgs.obsidian)
+      (lib.optionals config.layers.layer-60.gui.documents.nextcloud.enable [
+        pkgs.nextcloud-client
+        pkgs.nextcloud-talk-desktop
+      ])
+      (lib.optional config.layers.layer-60.gui.documents.zlibrary.enable pkgs.z-library-desktop)
+      (lib.optional config.layers.layer-60.gui.documents.email.enable pkgs.tutanota-desktop)
       pkgs.hicolor-icon-theme
     ];
   };

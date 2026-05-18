@@ -11,7 +11,7 @@ in
 {
   options.layers.layer-60.gui.dev-tools = {
     enable = lib.mkEnableOption "GUI development tools" // {
-      default = builtins.elem "dev" clanTags;
+      default = builtins.elem "development" clanTags || builtins.elem "dev" clanTags;
     };
   };
 
@@ -26,6 +26,10 @@ in
       jq
       yq
       vhs
+
+      # Database GUI Managers
+      beekeeper-studio
+      pgadmin4-desktopmode
     ];
 
     home.activation.setupSshConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

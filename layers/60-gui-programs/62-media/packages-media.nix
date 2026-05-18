@@ -24,6 +24,8 @@ in
       transmission_4
       pirate-get 
       yt-dlp
+      jellyfin-desktop
+      spotdl
     ];
   };
 }
