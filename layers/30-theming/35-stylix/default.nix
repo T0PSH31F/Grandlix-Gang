@@ -69,4 +69,9 @@ in
       };
     };
   };
+
+  # 2. Home Manager integration fixes
+  home = lib.mkIf (cfg.enable && (inputs ? stylix)) {
+    stylix.targets.firefox.enable = false;
+  };
 }

@@ -38,7 +38,7 @@ in
   home = lib.mkIf (cfg.enable && cfg.shells.zsh.enable) {
     programs.zsh = {
       enable = true;
-      dotDir = ".config/zsh";
+      dotDir = "${config.users.users.${config.layers.meta.primaryUser}.home}/.config/zsh";
       enableVteIntegration = true;
       autocd = true;
       enableCompletion = true;

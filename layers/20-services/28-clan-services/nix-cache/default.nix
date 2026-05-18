@@ -62,12 +62,12 @@ in
 
             networking.firewall.allowedTCPPorts = [ 5000 ];
 
-            services.harmonia.enable = true;
+            services.harmonia.cache.enable = true;
             # $ nix-store --generate-binary-cache-key cache.yourdomain.tld-1 harmonia.secret harmonia.pub
-            services.harmonia.signKeyPaths = [
+            services.harmonia.cache.signKeyPaths = [
               config.clan.core.vars.generators.harmonia-private.files.sign-key.path
             ];
-            services.harmonia.settings.priority = settings.priority;
+            services.harmonia.cache.settings.priority = settings.priority;
           };
       };
   };

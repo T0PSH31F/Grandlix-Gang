@@ -27,20 +27,21 @@ in
       hicolor-icon-theme
     ];
 
-    gtk = lib.mkIf (!(config.stylix.enable or false)) {
-      enable = true;
-      theme = {
+    gtk = {
+      gtk4.theme = null;
+      enable = lib.mkIf (!(config.stylix.enable or false)) true;
+      theme = lib.mkIf (!(config.stylix.enable or false)) {
         name = "adw-gtk3-dark";
         package = pkgs.adw-gtk3;
       };
-      iconTheme = {
+      iconTheme = lib.mkIf (!(config.stylix.enable or false)) {
         name = "candy-icons";
         package = pkgs.candy-icons;
       };
-      gtk4.extraConfig = {
+      gtk4.extraConfig = lib.mkIf (!(config.stylix.enable or false)) {
         gtk-application-prefer-dark-theme = 1;
       };
-      gtk3.extraConfig = {
+      gtk3.extraConfig = lib.mkIf (!(config.stylix.enable or false)) {
         gtk-application-prefer-dark-theme = 1;
       };
     };

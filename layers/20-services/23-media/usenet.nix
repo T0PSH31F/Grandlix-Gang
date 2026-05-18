@@ -33,6 +33,7 @@ in
     # ============================================================================
     services.sabnzbd = mkIf cfg.sabnzbd.enable {
       enable = true;
+      configFile = null;
       user = mediaCfg.user;
       group = mediaCfg.group;
     };
