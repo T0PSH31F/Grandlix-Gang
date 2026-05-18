@@ -16,5 +16,13 @@ in
     environment.systemPackages = with pkgs; [
       udisks
     ];
+
+    home-manager.users.${config.layers.meta.primaryUser} = lib.mkIf cfg.useUdiskie {
+      services.udiskie = {
+        enable = true;
+        tray = "auto";
+        notify = true;
+      };
+    };
   };
 }

@@ -1,0 +1,25 @@
+{
+  config,
+  lib,
+  osConfig ? config,
+  ...
+}:
+let
+  cfg = config.layers.layer-60.gui.browsers.firefox;
+in
+{
+  options.layers.layer-60.gui.browsers.firefox = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = builtins.elem "desktop" (osConfig.machine.tags or [ ]) || builtins.elem "workstation" (osConfig.machine.tags or [ ]);
+      description = "Enable Firefox browser";
+    };
+  };
+
+  home = lib.mkIf cfg.enable {
+    programs.firefox = {
+      enable = true;
+      configPath = ".mozilla/firefox";
+    };
+  };
+}

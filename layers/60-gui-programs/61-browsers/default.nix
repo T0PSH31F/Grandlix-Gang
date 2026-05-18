@@ -6,5 +6,6 @@ in
   imports = [
     (mkDendriticModule "brave" ./brave.nix)
     (mkDendriticModule "librewolf" ./librewolf.nix)
+    (mkDendriticModule "firefox" ./firefox.nix)
   ];
 }

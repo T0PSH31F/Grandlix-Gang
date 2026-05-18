@@ -24,6 +24,7 @@ in
       adw-gtk3
       nwg-look
       candy-icons
+      hicolor-icon-theme
     ];
 
     gtk = lib.mkIf (!(config.stylix.enable or false)) {

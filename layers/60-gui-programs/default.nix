@@ -10,7 +10,7 @@ in
     (mkDendriticModule "development" ./64-development/default.nix)
     (mkDendriticModule "gaming" ./65-gaming/default.nix)
     (mkDendriticModule "security" ./66-security/default.nix)
-    (mkDendriticModule "packages-desktop" ./packages-desktop.nix)
+    (mkDendriticModule "communication" ./68-communication/default.nix)
     (mkDendriticModule "activities" ./67-activities/default.nix)
   ];
 }

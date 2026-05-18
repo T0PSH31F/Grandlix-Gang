@@ -63,6 +63,14 @@ in
         description = "Enable Tutanota secure mail client";
       };
     };
+
+    finance = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable financial trading apps (Webull)";
+      };
+    };
   };
 
   home = lib.mkIf config.layers.layer-60.gui.documents.enable {
@@ -81,6 +89,7 @@ in
       ])
       (lib.optional config.layers.layer-60.gui.documents.zlibrary.enable pkgs.z-library-desktop)
       (lib.optional config.layers.layer-60.gui.documents.email.enable pkgs.tutanota-desktop)
+      (lib.optional config.layers.layer-60.gui.documents.finance.enable pkgs.webull-desktop)
       pkgs.hicolor-icon-theme
     ];
   };

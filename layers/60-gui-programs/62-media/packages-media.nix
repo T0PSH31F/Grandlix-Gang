@@ -20,12 +20,14 @@ in
       deluge
       ffmpeg-full
       imagemagick
-      obs-studio
-      transmission_4
-      pirate-get 
-      yt-dlp
       jellyfin-desktop
+      jerry
+      lobster
+      obs-studio
+      pirate-get
       spotdl
+      transmission_4
+      yt-dlp
     ];
   };
 }
