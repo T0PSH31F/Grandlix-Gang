@@ -19,11 +19,9 @@ in
     environment.systemPackages = with pkgs; [
       deluge
       ffmpeg-full
-      imagemagick
       jellyfin-desktop
       jerry
       lobster
-      obs-studio
       pirate-get
       spotdl
       transmission_4

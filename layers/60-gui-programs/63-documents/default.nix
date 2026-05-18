@@ -10,7 +10,6 @@ in
 {
   imports = [
     (mkDendriticModule "zathura" ./zathura.nix)
-    (mkDendriticModule "feh" ./feh.nix)
   ];
 
   options.layers.layer-60.gui.documents = {

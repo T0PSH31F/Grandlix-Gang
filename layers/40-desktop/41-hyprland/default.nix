@@ -101,16 +101,13 @@ in
 
     config = lib.mkIf cfg.enable {
       home.packages = with pkgs; [
-      adw-gtk3
       awww
       cliphist
-      gedit
       ghostty
       google-chrome
       grim
       hue-plus
       hueadm
-      hyprcursor
       wl-freeze
       hyprkeys
       hyprland-autoname-workspaces
@@ -123,30 +120,19 @@ in
       hyprpwcenter
       hyprsysteminfo
       hyprviz
-      jq
       kitty
       libnotify
-      matugen
-      nemo-with-extensions
-      nwg-look
       openhue-cli
       openrgb-with-all-plugins
       playerctl
       pyprland
       pywalfox-native
-      qt5.qtwayland
-      qt6.qtwayland
-      qt6Packages.qt5compat
-      qt6Packages.qt6ct
       rofi
-      sonic-hyprcursor
       slurp
-      socat
       steam-rom-manager
       swappy
       swayimg
       swaynotificationcenter
-      udiskie
       warp-terminal
       wev
       wl-clipboard

@@ -5,7 +5,6 @@
     ./office.nix
     ./recording.nix
     ./3d-modeling.nix
-    ./streaming.nix
     ./pentesting
   ];
 }

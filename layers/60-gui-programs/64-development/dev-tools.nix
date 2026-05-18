@@ -18,12 +18,10 @@ in
   home = { config, lib, osConfig, ... }: lib.mkIf osConfig.layers.layer-60.gui.dev-tools.enable {
     home.packages = with pkgs; [
       # Editor tooling
-      neovim
       haxor-news
       # CLIs
       httpie
       curlie
-      jq
       yq
       vhs
 

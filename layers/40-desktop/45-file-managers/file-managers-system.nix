@@ -23,7 +23,6 @@
     nemo-fileroller
     folder-color-switcher
     gnome-control-center
-    rclone
     # calibre
     cosmic-files
     koreader
@@ -42,8 +41,5 @@
     kdePackages.dolphin-plugins
     kdePackages.kio-extras # Extra protocols support
     kdePackages.kio-admin # Admin support
-
-    # File Roller (Archive Manager for Nemo/Thunar)
-    file-roller
   ];
 }
