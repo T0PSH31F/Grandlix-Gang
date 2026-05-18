@@ -1,0 +1,23 @@
+{
+  pkgs,
+  lib,
+  config,
+  osConfig ? config,
+  ...
+}:
+let
+  clanTags = osConfig.machine.tags or [ ];
+in
+{
+  options.layers.layer-60.gui.browsers.google-chrome = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = builtins.elem "desktop" clanTags;
+      description = "Enable Google Chrome browser";
+    };
+  };
+
+  home = lib.mkIf config.layers.layer-60.gui.browsers.google-chrome.enable {
+    home.packages = [ pkgs.google-chrome ];
+  };
+}

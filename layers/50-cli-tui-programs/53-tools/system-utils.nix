@@ -10,26 +10,29 @@ in
 {
   home = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
+      blahaj
       bottom
       btop
-      fastfetch
-      gping
-      htop
-      iftop
-      iotop
-      tailscale
       chafa
-      ffmpeg
-      tmuxai
-      blahaj
       charasay
+      fastfetch
+      ffmpeg
       figlet
       fortune-kind
+      gping
       gum
+      htop
+      hue-plus
+      hueadm
+      iftop
+      iotop
       lolcat
-      sl
       neo-cowsay
+      openhue-cli
+      sl
+      tailscale
       terminal-parrot
+      tmuxai
       toilet
     ];
     programs.rbw.enable = true;

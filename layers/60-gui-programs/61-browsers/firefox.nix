@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   osConfig ? config,
   ...
 }:
@@ -17,6 +18,7 @@ in
   };
 
   home = lib.mkIf cfg.enable {
+    home.packages = [ pkgs.pywalfox-native ];
     programs.firefox = {
       enable = true;
       configPath = ".mozilla/firefox";

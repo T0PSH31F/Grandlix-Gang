@@ -12,7 +12,7 @@ in
     (lib.mkIf periph.openrgb.enable {
       services.hardware.openrgb.enable = true;
       hardware.i2c.enable = lib.mkIf periph.openrgb.enableI2C true;
-      environment.systemPackages = with pkgs; [ openrgb ];
+      environment.systemPackages = with pkgs; [ openrgb-with-all-plugins ];
     })
 
     (lib.mkIf periph.corsair.enable {

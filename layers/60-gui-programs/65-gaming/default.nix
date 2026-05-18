@@ -94,6 +94,7 @@ in
       nero-umu
       protonplus
       protontricks
+      steam-rom-manager
       ];
 
     programs.lutris = {

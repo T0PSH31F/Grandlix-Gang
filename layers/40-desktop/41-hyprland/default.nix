@@ -103,11 +103,7 @@ in
       home.packages = with pkgs; [
       awww
       cliphist
-      ghostty
-      google-chrome
       grim
-      hue-plus
-      hueadm
       wl-freeze
       hyprkeys
       hyprland-autoname-workspaces
@@ -120,20 +116,14 @@ in
       hyprpwcenter
       hyprsysteminfo
       hyprviz
-      kitty
       libnotify
-      openhue-cli
-      openrgb-with-all-plugins
       playerctl
       pyprland
-      pywalfox-native
       rofi
       slurp
-      steam-rom-manager
       swappy
       swayimg
       swaynotificationcenter
-      warp-terminal
       wev
       wl-clipboard
       xdg-user-dirs
