@@ -6,6 +6,7 @@
 }:
 let
   cfg = osConfig.layers.layer-40.desktop.hyprland;
+  sfxCfg = osConfig.layers.layer-30.theming.sfx;
 
   # ── IPC Audio Feedback Daemon ────────────────────────────────────
   hypr-sfx = pkgs.writeShellScriptBin "hypr-sfx" ''
@@ -43,7 +44,7 @@ let
       local file="$SOUND_DIR/$1"
       if [ -f "$file" ]; then
         # Rate-limit movewindow sounds to 5 per second
-        if [[ "$1" == "${cfg.sfx.sounds.moveWindow}" ]]; then
+        if [[ "$1" == "${sfxCfg.sounds.moveWindow}" ]]; then
            local now=$(date +%s%3N)
            if (( now - LAST_MOVE < 200 )); then
               return
@@ -58,10 +59,10 @@ let
 
     ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:"$SOCKET" | while IFS= read -r line; do
       case "$line" in
-        activewindow\>\>*)  play_sound "${cfg.sfx.sounds.switchFocus}"  ;;
-        movewindow\>\>*)    play_sound "${cfg.sfx.sounds.moveWindow}"   ;;
-        openwindow\>\>*)    play_sound "${cfg.sfx.sounds.openWindow}"   ;;
-        closewindow\>\>*)   play_sound "${cfg.sfx.sounds.closeWindow}"  ;;
+        activewindow\>\>*)  play_sound "${sfxCfg.sounds.switchFocus}"  ;;
+        movewindow\>\>*)    play_sound "${sfxCfg.sounds.moveWindow}"   ;;
+        openwindow\>\>*)    play_sound "${sfxCfg.sounds.openWindow}"   ;;
+        closewindow\>\>*)   play_sound "${sfxCfg.sounds.closeWindow}"  ;;
       esac
     done
   '';
@@ -73,10 +74,10 @@ let
     if [ -f "$MUTE_FILE" ]; then
       rm -f "$MUTE_FILE"
       ${pkgs.libnotify}/bin/notify-send -t 2000 -i audio-volume-high "UI Sounds" "Unmuted"
-      ${pkgs.pipewire}/bin/pw-play "$HOME/Clan/NFP/layers/00-cyberia/02-assets/SFX/${cfg.sfx.sounds.openWindow}" &
+      ${pkgs.pipewire}/bin/pw-play "$HOME/Clan/NFP/layers/00-cyberia/02-assets/SFX/${sfxCfg.sounds.openWindow}" &
     else
       touch "$MUTE_FILE"
-      ${pkgs.pipewire}/bin/pw-play "$HOME/Clan/NFP/layers/00-cyberia/02-assets/SFX/${cfg.sfx.sounds.closeWindow}"
+      ${pkgs.pipewire}/bin/pw-play "$HOME/Clan/NFP/layers/00-cyberia/02-assets/SFX/${sfxCfg.sounds.closeWindow}"
       ${pkgs.libnotify}/bin/notify-send -t 2000 -i audio-volume-muted "UI Sounds" "Muted"
     fi
   '';

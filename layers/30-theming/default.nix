@@ -9,5 +9,6 @@ in
     (mkDendriticModule "gtk" ./33-gtk/default.nix)
     (mkDendriticModule "qt" ./34-qt/default.nix)
     (mkDendriticModule "stylix" ./35-stylix/default.nix)
+    (mkDendriticModule "sfx" ./36-sfx/default.nix)
   ];
 }

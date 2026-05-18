@@ -28,37 +28,6 @@ in
       default = builtins.elem "laptop" (osConfig.machine.tags or [ ]);
       description = "Internal: True if the machine is a laptop";
     };
-
-    sfx = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable UI sound effects daemon";
-      };
-
-      sounds = {
-        switchFocus = lib.mkOption {
-          type = lib.types.str;
-          default = "switch-focus.wav";
-          description = "Sound to play when focusing a window";
-        };
-        moveWindow = lib.mkOption {
-          type = lib.types.str;
-          default = "move-window.wav";
-          description = "Sound to play when moving a window";
-        };
-        openWindow = lib.mkOption {
-          type = lib.types.str;
-          default = "open-window.wav";
-          description = "Sound to play when opening a window";
-        };
-        closeWindow = lib.mkOption {
-          type = lib.types.str;
-          default = "close-window.wav";
-          description = "Sound to play when closing a window";
-        };
-      };
-    };
   };
 
   nixos = lib.mkIf cfg.enable {
@@ -78,17 +47,6 @@ in
 
   # Home Manager level config
   home = { config, ... }:
-  let
-    sonic-hyprcursor = pkgs.stdenv.mkDerivation {
-      pname = "sonic-hyprcursor";
-      version = "1.0.0";
-      src = ../../00-cyberia/02-assets/cursors/Sonic-cursor-hyprcursor;
-      installPhase = ''
-        mkdir -p $out/share/icons/Sonic-Hyprcursor
-        cp -r Sonic-Hyprcursor/* $out/share/icons/Sonic-Hyprcursor/
-      '';
-    };
-  in
   {
     imports = lib.optionals cfg.enable [
       ./scripts.nix
@@ -129,23 +87,6 @@ in
       xdg-user-dirs
       xdg-utils
     ];
-
-    home.pointerCursor = {
-      package = sonic-hyprcursor;
-      name = "Sonic-Hyprcursor";
-      size = 32;
-      gtk.enable = true;
-      x11.enable = true;
-      hyprcursor = {
-        enable = true;
-        size = 32;
-      };
-    };
-    
-    gtk = {
-      enable = true;
-      gtk4.theme = null;
-    };
 
     wayland.windowManager.hyprland = {
       enable = true;
