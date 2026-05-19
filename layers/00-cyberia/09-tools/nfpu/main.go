@@ -2,14 +2,16 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"nfpu/registry"
+	"os"
+
+	tea "github.com/charmbracelet/bubbletea"
+	"nfpu/tui"
 )
 
 func main() {
-	reg, err := registry.ExecuteNixEval("eval-registry.nix")
-	if err != nil {
-		log.Fatalf("Error: %v", err)
+	p := tea.NewProgram(tui.InitModel())
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
 	}
-	fmt.Printf("Successfully loaded registry for %d machines.\n", len(reg))
 }
