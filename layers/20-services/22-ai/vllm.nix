@@ -1,0 +1,121 @@
+# vLLM Inference Server NixOS Service
+# layers/20-services/22-ai/vllm.nix
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+with lib;
+let
+  cfg = config.services.vllm-server;
+in
+{
+  options.services.vllm-server = {
+    enable = mkEnableOption "vLLM Inference Server";
+
+    port = mkOption {
+      type = types.port;
+      default = 8086;
+      description = "Port to listen on";
+    };
+
+    host = mkOption {
+      type = types.str;
+      default = "0.0.0.0";
+      description = "Host address to bind to";
+    };
+
+    model = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Model to serve (Hugging Face repo or local path)";
+      example = "meta-llama/Meta-Llama-3-8B-Instruct";
+    };
+
+    extraFlags = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Extra command-line flags to pass to vllm";
+    };
+
+    acceleration = mkOption {
+      type = types.nullOr (
+        types.enum [
+          "cuda"
+          "rocm"
+          false
+        ]
+      );
+      default = null;
+      description = "GPU acceleration type";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    # 1. Package inclusion
+    environment.systemPackages = [
+      (if cfg.acceleration == "rocm" then pkgs.pkgsRocm.vllm or pkgs.vllm else pkgs.vllm)
+    ];
+
+    # 2. Systemd Service
+    systemd.services.vllm-server = {
+      description = "vLLM Inference Server";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+
+      serviceConfig = {
+        ExecStart =
+          let
+            package = if cfg.acceleration == "rocm" then pkgs.pkgsRocm.vllm or pkgs.vllm else pkgs.vllm;
+
+            args = [
+              "serve"
+              (if cfg.model != null then toString cfg.model else "")
+              "--host"
+              cfg.host
+              "--port"
+              (toString cfg.port)
+            ]
+            ++ cfg.extraFlags;
+          in
+          "${package}/bin/vllm ${escapeShellArgs args}";
+
+        User = "vllm";
+        Group = "vllm";
+        WorkingDirectory = "/var/lib/vllm";
+        StateDirectory = "vllm";
+        Restart = "on-failure";
+        PrivateTmp = true;
+      };
+    };
+
+    # 3. User definitions
+    users.users.vllm = {
+      group = "vllm";
+      isSystemUser = true;
+      description = "vLLM Server User";
+      home = "/var/lib/vllm";
+      createHome = true;
+    };
+    users.groups.vllm = { };
+
+    # 4. Firewall
+    networking.firewall.allowedTCPPorts = [ cfg.port ];
+
+    # 5. Impermanence
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = "/var/lib/vllm";
+              user = "vllm";
+              group = "vllm";
+              mode = "0750";
+            }
+          ];
+        };
+  };
+}

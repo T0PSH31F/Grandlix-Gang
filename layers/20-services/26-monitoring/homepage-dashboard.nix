@@ -427,6 +427,27 @@ in
                 description = "llama.cpp Inference Server";
               };
             })
+            (optional (isServiceEnabled "litellm") {
+              "LiteLLM" = {
+                icon = "litellm.png";
+                href = "http://localhost:${toString config.services.litellm-proxy.port}";
+                description = "LiteLLM Router & Gateway";
+              };
+            })
+            (optional (isServiceEnabled "llama-swap") {
+              "llama-swap" = {
+                icon = "mdi-swap-horizontal";
+                href = "http://localhost:${toString config.services.llama-swap-proxy.port}";
+                description = "Local LLM Backend Router";
+              };
+            })
+            (optional (isServiceEnabled "vllm-server") {
+              "vLLM" = {
+                icon = "vllm.png";
+                href = "http://localhost:${toString config.services.vllm-server.port}";
+                description = "vLLM Inference Server";
+              };
+            })
             {
               "n8n" = {
                 icon = "n8n.png";

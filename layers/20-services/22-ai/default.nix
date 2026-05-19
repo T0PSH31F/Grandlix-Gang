@@ -9,5 +9,8 @@
     ./voice.nix
     ./wyoming.nix
     ./llama-cpp.nix
+    ./litellm.nix
+    ./llama-swap.nix
+    ./vllm.nix
   ];
 }
