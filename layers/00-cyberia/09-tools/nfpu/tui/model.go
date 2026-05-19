@@ -2,6 +2,7 @@ package tui
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -58,20 +59,62 @@ func (m model) View() string {
 		return fmt.Sprintf("Error loading registry: %v\n", m.err)
 	}
 	if m.loading {
-		return "Loading Nix configuration...\n"
+		spinnerStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+		return fmt.Sprintf("\n  %s Loading Nix configuration...\n", spinnerStyle.Render("⏳"))
 	}
 
 	var sb strings.Builder
-	titleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("205")).MarginBottom(1)
+	
+	// Styles
+	titleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("205")).MarginLeft(2).MarginBottom(1).MarginTop(1)
+	machineStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("39")).MarginLeft(2)
+	enabledStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("42"))
+	disabledStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	optionStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("252"))
+
 	sb.WriteString(titleStyle.Render("NFP Option Registry (Read-Only)"))
 	sb.WriteString("\n\n")
 
-	for machineName, config := range m.registry {
-		sb.WriteString(fmt.Sprintf("🖥️  %s\n", lipgloss.NewStyle().Bold(true).Render(machineName)))
-		// Very simple dump for now
-		sb.WriteString(fmt.Sprintf("   Found %d services\n\n", len(config.Services)))
+	// To keep things deterministic, we should sort the machine names and services
+	var machines []string
+	for k := range m.registry {
+		machines = append(machines, k)
+	}
+	sort.Strings(machines)
+
+	for _, machineName := range machines {
+		config := m.registry[machineName]
+		sb.WriteString(fmt.Sprintf("%s\n", machineStyle.Render(fmt.Sprintf("🖥️  %s", machineName))))
+		
+		var services []string
+		for k := range config.Services {
+			services = append(services, k)
+		}
+		sort.Strings(services)
+
+		if len(services) == 0 {
+			sb.WriteString(disabledStyle.Render("     No services found.\n"))
+		}
+
+		for _, svc := range services {
+			val := config.Services[svc]
+			isEnabled, ok := val.(bool)
+			
+			// Format the name slightly nicer by stripping "services."
+			displayName := strings.TrimPrefix(svc, "services.")
+
+			if ok && isEnabled {
+				sb.WriteString(fmt.Sprintf("     %s %s\n", enabledStyle.Render("[✓]"), optionStyle.Render(displayName)))
+			} else {
+				sb.WriteString(fmt.Sprintf("     %s %s\n", disabledStyle.Render("[ ]"), disabledStyle.Render(displayName)))
+			}
+		}
+		sb.WriteString("\n")
 	}
 
-	sb.WriteString("\nPress 'q' to quit.\n")
+	helpStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("241")).MarginLeft(2)
+	sb.WriteString(helpStyle.Render("Press 'q' to quit."))
+	sb.WriteString("\n")
+	
 	return sb.String()
 }
