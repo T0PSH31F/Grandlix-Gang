@@ -75,7 +75,7 @@ in
   options.clan.services.desktop.homepage-dashboard = {
     enable = mkEnableOption "Homepage Dashboard Clan Service";
   };
-  
+
   config = mkIf (cfg.enable || config.clan.services.desktop.homepage-dashboard.enable) {
     services.homepage-dashboard = {
       enable = true;
@@ -396,7 +396,7 @@ in
           ];
         }
         {
-          "AI & Automation" = [
+          "AI & Automation" = flatten [
             {
               "Open WebUI" = {
                 icon = "openai.png";
@@ -420,6 +420,13 @@ in
                 # Native NixOS service - no container reference
               };
             }
+            (optional (isServiceEnabled "llama-cpp-server") {
+              "llama.cpp" = {
+                icon = "llama.png";
+                href = "http://localhost:${toString config.services.llama-cpp-server.port}";
+                description = "llama.cpp Inference Server";
+              };
+            })
             {
               "n8n" = {
                 icon = "n8n.png";

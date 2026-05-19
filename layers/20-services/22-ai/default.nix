@@ -8,5 +8,6 @@
     ./sillytavern.nix
     ./voice.nix
     ./wyoming.nix
+    ./llama-cpp.nix
   ];
 }
