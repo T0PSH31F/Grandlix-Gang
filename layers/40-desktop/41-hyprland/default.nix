@@ -184,6 +184,13 @@ in
       position = "center"
       lazy = true
     '';
+    
+    home.activation.hyprlandSourceFix = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      mkdir -p ~/.config/hypr/noctalia
+      touch ~/.config/hypr/noctalia/noctalia-colors.conf
+      touch ~/.config/hypr/monitors.conf
+    '';
+    
     xdg.enable = true;
     };
   };
