@@ -185,7 +185,7 @@ in
       lazy = true
     '';
     
-    home.activation.hyprlandSourceFix = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.hyprlandSourceFix = config.lib.dag.entryAfter ["writeBoundary"] ''
       mkdir -p ~/.config/hypr/noctalia
       touch ~/.config/hypr/noctalia/noctalia-colors.conf
       touch ~/.config/hypr/monitors.conf
