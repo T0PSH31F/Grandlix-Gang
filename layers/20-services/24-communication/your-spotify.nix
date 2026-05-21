@@ -69,19 +69,18 @@ in
         if cfg.spotifySecretFile != null then
           cfg.spotifySecretFile
         else
-          "/var/lib/your_spotify/spotify_secret"
+          "/var/lib/your_spotify_secret"
       );
       nginxVirtualHost = cfg.nginxVirtualHost;
     };
 
     systemd.tmpfiles.rules = [
-      "d /var/lib/your_spotify 0750 your_spotify your_spotify -"
-      "f /var/lib/your_spotify/spotify_secret 0600 your_spotify your_spotify - DUMMY"
+      "f /var/lib/your_spotify_secret 0644 root root - DUMMY"
     ];
 
     # MongoDB Container (SSPL licensed, avoids local compilation)
     virtualisation.oci-containers.containers.your-spotify-db = {
-      image = "mongodb:7.0";
+      image = "mongo:7.0";
       ports = [ "27017:27017" ];
       volumes = [
         "/var/lib/mongodb-container:/data/db"

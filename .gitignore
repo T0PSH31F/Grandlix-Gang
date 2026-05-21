@@ -13,3 +13,5 @@ fix_*.py
 .directory
 *.code-workspace
 inventory.json
+.worktrees/
+.superpowers/

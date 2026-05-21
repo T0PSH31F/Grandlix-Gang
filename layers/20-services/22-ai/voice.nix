@@ -13,7 +13,7 @@ in
 
     sttPort = lib.mkOption {
       type = lib.types.port;
-      default = 8082;
+      default = 8089;
       description = "Port for local whisper.cpp server";
     };
 

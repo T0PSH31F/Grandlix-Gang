@@ -126,7 +126,9 @@ let
         return {"status": "healthy"}
 
     if __name__ == "__main__":
-        uvicorn.run(app, host="0.0.0.0", port=8000)
+        import os
+        port = int(os.getenv("PORT", "8010"))
+        uvicorn.run(app, host="0.0.0.0", port=port)
   '';
 
 in
@@ -136,7 +138,7 @@ in
 
     port = lib.mkOption {
       type = lib.types.port;
-      default = 8000;
+      default = 8010;
       description = "Port to listen on";
     };
 
@@ -168,6 +170,7 @@ in
         DB_PORT = "5432";
         LLM_API_BASE = cfg.llmApiBase;
         LLM_MODEL = cfg.llmModel;
+        PORT = toString cfg.port;
       };
 
       serviceConfig = {

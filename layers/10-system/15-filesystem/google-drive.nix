@@ -5,6 +5,7 @@ let
 in
 {
   environment.systemPackages = [ pkgs.rclone ];
+  environment.persistence."/persist".users.${user}.directories = [ ".config/rclone" ];
   systemd.services.rclone-gdrive-mount = {
     description = "Mount Google Drive via rclone";
     after = [ "network-online.target" ];

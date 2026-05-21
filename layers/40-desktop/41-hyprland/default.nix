@@ -101,8 +101,8 @@ in
 
       settings = {
         source = [
-          "~/.config/hypr/noctalia/noctalia-colors.conf"
-          "~/.config/hypr/monitors.conf"
+          "${config.home.homeDirectory}/.config/hypr/noctalia/noctalia-colors.conf"
+          "${config.home.homeDirectory}/.config/hypr/monitors.conf"
         ];
 
         "$primary" = "0xfff28fad";

@@ -56,7 +56,7 @@ with lib;
         "opcache.interned_strings_buffer" = "16";
       };
 
-      extraOptions = {
+      settings = {
         overwriteprotocol = "https";
       };
     };

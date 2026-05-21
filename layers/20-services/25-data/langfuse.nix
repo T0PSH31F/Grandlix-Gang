@@ -18,7 +18,7 @@ in
 
     databaseUrl = lib.mkOption {
       type = lib.types.str;
-      default = "postgresql:///langfuse?host=/run/postgresql";
+      default = "postgresql://postgres@localhost/langfuse?host=/run/postgresql";
       description = "PostgreSQL DB connection string for Langfuse runtime";
     };
 
@@ -43,7 +43,7 @@ in
     };
 
     virtualisation.oci-containers.containers.langfuse = {
-      image = "ghcr.io/langfuse/langfuse:latest";
+      image = "ghcr.io/langfuse/langfuse:2";
       ports = [ "${toString cfg.port}:3000" ];
       environment = {
         PORT = "3000";

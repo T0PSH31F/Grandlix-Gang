@@ -38,8 +38,8 @@ in
       after = [ "bluetooth.service" ];
       partOf = [ "bluetooth.service" ];
       serviceConfig = {
-        Type = "forking";
-        ExecStart = "${pkgs.bluez}/bin/bluetoothctl connect-all";
+        Type = "oneshot";
+        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/timeout 10 ${pkgs.bluez}/bin/bluetoothctl connect-all || true'";
         RemainAfterExit = true;
       };
       wantedBy = [ "default.target" ];

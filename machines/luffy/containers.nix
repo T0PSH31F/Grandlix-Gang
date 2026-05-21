@@ -4,32 +4,32 @@
   virtualisation.oci-containers.containers = {
 
     crawl4ai = {
-      image = "crawl4ai/crawl4ai:latest";
+      image = "unclecode/crawl4ai:latest";
       ports = [ "32775:11235" ];
     };
 
     skyvern-ui = {
-      image = "ghcr.io/skyvern-ai/skyvern-ui:latest";
+      image = "public.ecr.aws/skyvern/skyvern-ui:latest";
       ports = [ "32776:8080" ];
     };
 
     skyvern-api = {
-      image = "ghcr.io/skyvern-ai/skyvern:latest";
+      image = "public.ecr.aws/skyvern/skyvern:latest";
       ports = [ "32779:8000" ];
     };
 
     skyvern-chrome = {
-      image = "ghcr.io/skyvern-ai/chrome:latest";
-      ports = [ "32780:9222" ];
+      image = "ghcr.io/browserless/chromium:latest";
+      ports = [ "32780:3000" ];
     };
 
     sim-studio-ui = {
-      image = "simstudio/ui:latest"; # Replace with precise tag if needed
+      image = "ghcr.io/simstudioai/simstudio:latest";
       ports = [ "32790:3000" ];
     };
 
     sim-studio-realtime = {
-      image = "simstudio/realtime:latest"; # Replace with precise tag if needed
+      image = "ghcr.io/simstudioai/realtime:latest";
       ports = [ "32789:8080" ];
     };
 
@@ -41,17 +41,20 @@
     };
 
     openclaw = {
-      image = "openclaw/openclaw:latest"; # Replace with precise tag if needed
+      image = "ghcr.io/openclaw/openclaw:latest";
       ports = [ "59879:8080" ];
     };
 
     spacedrive = {
-      image = "spacedrive/server:latest";
+      image = "ghcr.io/spacedriveapp/spacedrive/server:latest";
       ports = [
         "32768:7373"
         "32769:8080"
       ];
       volumes = [ "/var/lib/spacedrive:/data" ];
+      environment = {
+        SD_AUTH = "disabled";
+      };
     };
 
     beszel-hub = {
@@ -65,7 +68,7 @@
       ports = [ "3000:3000" ];
       volumes = [
         "/var/lib/homepage:/app/config"
-        "/var/run/docker.sock:/var/run/docker.sock:ro"
+        "/run/podman/podman.sock:/var/run/docker.sock:ro"
       ];
     };
   };

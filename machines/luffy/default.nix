@@ -79,6 +79,7 @@
     adguard = {
       enable = true;
       port = 3002; # avoids homepage and grafana
+      bindHosts = [ "127.0.0.1" "192.168.1.53" "100.80.146.120" ];
     };
   };
 
