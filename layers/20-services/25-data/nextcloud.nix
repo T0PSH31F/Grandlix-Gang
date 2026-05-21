@@ -50,12 +50,20 @@ with lib;
 
       maxUploadSize = "16G";
 
-      https = true;
+      https = false;
 
       phpOptions = {
         "opcache.interned_strings_buffer" = "16";
       };
+
+      extraOptions = {
+        overwriteprotocol = "https";
+      };
     };
+
+    systemd.tmpfiles.rules = [
+      "f /etc/nextcloud-admin-pass 0600 nextcloud nextcloud - admin"
+    ];
 
     # PostgreSQL for Nextcloud
     services.postgresql = {

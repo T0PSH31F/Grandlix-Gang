@@ -69,4 +69,11 @@
       ];
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/maxkb 0755 root root -"
+    "d /var/lib/spacedrive 0755 root root -"
+    "d /var/lib/beszel 0755 root root -"
+    "d /var/lib/homepage 0755 root root -"
+  ];
 }

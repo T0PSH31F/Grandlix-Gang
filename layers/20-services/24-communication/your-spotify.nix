@@ -74,6 +74,11 @@ in
       nginxVirtualHost = cfg.nginxVirtualHost;
     };
 
+    systemd.tmpfiles.rules = [
+      "d /var/lib/your_spotify 0750 your_spotify your_spotify -"
+      "f /var/lib/your_spotify/spotify_secret 0600 your_spotify your_spotify - DUMMY"
+    ];
+
     # MongoDB Container (SSPL licensed, avoids local compilation)
     virtualisation.oci-containers.containers.your-spotify-db = {
       image = "mongodb:7.0";

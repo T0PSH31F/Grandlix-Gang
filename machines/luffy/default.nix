@@ -251,7 +251,7 @@
           handle @kavita { reverse_proxy localhost:5000 }
 
           @headscale host headscale.lovelain.duckdns.org
-          handle @headscale { reverse_proxy localhost:8080 }
+          handle @headscale { reverse_proxy localhost:8086 }
 
           @chat host chat.lovelain.duckdns.org
           handle @chat { reverse_proxy localhost:3004 }
