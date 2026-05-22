@@ -56,6 +56,11 @@ final: prev: {
     '';
   };
 
+  # Disable glances test suite as they try to bind to localhost and fail in sandbox
+  glances = prev.glances.overridePythonAttrs (old: {
+    doCheck = false;
+  });
+
   # Fix for noto-fonts-subset build failure (cp fails when glob matches no files)
   noto-fonts-subset = final.runCommand "noto-fonts-subset" { } ''
     mkdir -p "$out/share/fonts/noto/"

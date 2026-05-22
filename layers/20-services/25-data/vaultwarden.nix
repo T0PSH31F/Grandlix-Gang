@@ -14,8 +14,19 @@ in
   };
 
   config = mkIf cfg.enable {
+    clan.core.vars.generators.vaultwarden = {
+      files."vaultwarden.env" = {
+        secret = true;
+      };
+      script = ''
+        TOKEN=$(${pkgs.openssl}/bin/openssl rand -hex 32)
+        echo "ADMIN_TOKEN=$TOKEN" > "$out/vaultwarden.env"
+      '';
+    };
+
     services.vaultwarden = {
       enable = true;
+      environmentFile = config.clan.core.vars.generators.vaultwarden.files."vaultwarden.env".path;
       config = {
         ROCKET_ADDRESS = "0.0.0.0";
         ROCKET_PORT = 8222;
