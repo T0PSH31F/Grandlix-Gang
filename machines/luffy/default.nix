@@ -21,28 +21,9 @@
   networking.hostName = "luffy";
   system.stateVersion = "25.05";
 
-  # ----------------------------------------------------------------------------
-  # AVAILABLE PROFILES / TAGS
-  # ----------------------------------------------------------------------------
-  # Tags define the machine's role and automatically enable corresponding features.
-  # See `layers/90-profiles/tags/` for explicit definitions.
-  #
-  # Hardware/Form Factor:
-  #   "workstation" : Enables base limits, themes, and network tools (avahi, tailscale, ssh).
-  #   "desktop"     : Enables graphical hardware features (bluetooth), automount, portals, flatpak.
-  #   "laptop"      : Enables battery optimizations and wireless tools.
-  #
-  # Roles:
-  #   "server"      : Enables server base infra (monitoring, tailscale, adguard).
-  #   "development" : Enables coding tools, Python, VSCode, and dev agents (Opencode, Antigravity).
-  #   "gaming"      : Enables Steam, GameMode, Lutris, emulators, etc.
-  #   "ai-server"   : Enables local AI backend (llms, sillytavern, wyoming, ai-services, dashboard).
-  #   "homelab"     : Enables home infra (home-assistant, searxng, headscale, vaultwarden, etc).
-  #   "cache-server": Enables Harmonia Nix binary cache.
-  #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
-  # ----------------------------------------------------------------------------
-
   nixpkgs.config.allowUnfree = true;
+
+  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
@@ -57,12 +38,13 @@
   };
   layers.layer-20.services.config.your-spotify.enable = true;
 
-  layers.layer-30.theming.themes.greeter.greetd = {
-    enable = true;
+  # Switch to SDDM for stability and better NVIDIA support
+  layers.layer-30.theming.themes.greeter = {
+    sddm.enable = true;
+    greetd.enable = false;
   };
 
-  # Pure Wayland — no X server needed with greetd/ReGreet
-  services.xserver.enable = lib.mkForce false;
+  # Pure Wayland — no X server needed
 
   layers.layer-40.desktop = {
     hyprland.enable = true;
@@ -84,6 +66,7 @@
 
   hardware.nvidia = {
     enable = true;
+    modesetting.enable = true;
     package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
@@ -208,9 +191,6 @@
           encode zstd gzip
           header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
-          # ollama and qdrant moved to registry
-
-
           @crawl4ai host crawl4ai.lovelain.duckdns.org
           handle @crawl4ai { reverse_proxy localhost:32775 }
 
@@ -306,7 +286,6 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    # users.t0psh31f.imports = [ inputs.niri.homeModules.config ];
   };
 
   # ============================================================================
