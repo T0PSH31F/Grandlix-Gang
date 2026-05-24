@@ -99,7 +99,7 @@ Declarative disk partitioning templates for NixOS using [disko](https://github.c
    ```
    Then update the template:
    ```nix
-   passwordFile = config.clan.core.facts.services.disk-password.secret."disk-password".path;
+   passwordFile = config.clan.core.vars.generators.disk-password.files."disk-password".path;
    ```
 
 4. **Import in machine config:**

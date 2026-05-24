@@ -14,9 +14,13 @@ in
     serviceConfig = {
       Type = "simple";
       User = user;
-      ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p ${mountPoint}";
+      ExecStartPre = [
+        "-/run/wrappers/bin/fusermount3 -u ${mountPoint}"
+        "-/run/wrappers/bin/fusermount -u ${mountPoint}"
+        "${pkgs.coreutils}/bin/mkdir -p ${mountPoint}"
+      ];
       ExecStart = "${pkgs.rclone}/bin/rclone mount gdrive: ${mountPoint} --vfs-cache-mode full";
-      ExecStop = "/run/current-system/sw/bin/fusermount -u ${mountPoint}";
+      ExecStop = "/run/wrappers/bin/fusermount3 -u ${mountPoint}";
       Restart = "on-failure";
     };
   };

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -22,20 +23,21 @@ in
       description = "PostgreSQL DB connection string for Langfuse runtime";
     };
 
-    nextAuthSecret = lib.mkOption {
-      type = lib.types.str;
-      default = "my-super-secret-next-auth-key-change-me";
-      description = "NextAuth secret (use sops in prod)";
-    };
-
-    salt = lib.mkOption {
-      type = lib.types.str;
-      default = "my-super-secret-salt-change-me";
-      description = "Salt string (use sops in prod)";
-    };
   };
 
   config = lib.mkIf cfg.enable {
+    clan.core.vars.generators.langfuse = {
+      files."langfuse.env" = {
+        secret = true;
+      };
+      script = ''
+        NEXTAUTH=$(${pkgs.openssl}/bin/openssl rand -base64 32)
+        SALT=$(${pkgs.openssl}/bin/openssl rand -hex 16)
+        echo "NEXTAUTH_SECRET=$NEXTAUTH" > "$out/langfuse.env"
+        echo "SALT=$SALT" >> "$out/langfuse.env"
+      '';
+    };
+
     # Auto-provision the langfuse DB in Postgres
     services.postgresql = {
       ensureDatabases = [ "langfuse" ];
@@ -45,13 +47,14 @@ in
     virtualisation.oci-containers.containers.langfuse = {
       image = "ghcr.io/langfuse/langfuse:2";
       ports = [ "${toString cfg.port}:3000" ];
+      environmentFiles = [
+        config.clan.core.vars.generators.langfuse.files."langfuse.env".path
+      ];
       environment = {
-        PORT = "3000";
+        PORT = toString cfg.port;
         NODE_ENV = "production";
         NEXT_PUBLIC_SIGN_UP_DISABLED = "false";
         DATABASE_URL = cfg.databaseUrl;
-        NEXTAUTH_SECRET = cfg.nextAuthSecret;
-        SALT = cfg.salt;
       };
       volumes = [
         "/run/postgresql:/run/postgresql"

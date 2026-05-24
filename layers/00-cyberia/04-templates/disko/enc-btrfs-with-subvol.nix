@@ -30,7 +30,7 @@
               name = "swap_crypted";
               # Using the same password file approach for simplicity,
               # but separate LUKS headers provide better isolation.
-              passwordFile = config.clan.core.facts.services.disk-password.secret."disk-password".path;
+              passwordFile = config.clan.core.vars.generators.disk-password.files."disk-password".path;
               content = {
                 type = "swap";
                 discardPolicy = "both";
@@ -48,7 +48,7 @@
               # passwordFile = "/tmp/secret.key"; # echo "password" > /tmp/secret.key before install
 
               # Option 2: Use clan secrets (recommended for production)
-              passwordFile = config.clan.core.facts.services.disk-password.secret."disk-password".path;
+              passwordFile = config.clan.core.vars.generators.disk-password.files."disk-password".path;
 
               settings = {
                 allowDiscards = true; # Enables TRIM for SSDs

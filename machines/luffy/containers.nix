@@ -65,10 +65,16 @@
 
     homepage-dashboard = {
       image = "ghcr.io/gethomepage/homepage:latest";
-      ports = [ "3000:3000" ];
+      # Limit network exposure to localhost since public access is proxied securely via Caddy
+      ports = [ "127.0.0.1:3006:3000" ];
       volumes = [
         "/var/lib/homepage:/app/config"
-        "/run/podman/podman.sock:/var/run/docker.sock:ro"
+        # SECURITY NOTE: Exposing the host's Podman/Docker socket allows container escaping.
+        # Homepage only uses this for the optional container status widget. 
+        # Since it is not actively required/used in our configurations, we disable it.
+        # If needed in the future, prefer using a secure API proxy (e.g. docker-socket-proxy)
+        # to restrict socket queries to read-only container status endpoints.
+        # "/run/podman/podman.sock:/var/run/docker.sock:ro"
       ];
     };
   };

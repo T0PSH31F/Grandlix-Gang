@@ -4,102 +4,102 @@ let
 in
 {
   wayland.windowManager.hyprland.settings = {
-    windowrulev2 = [
-      "center,title:^(Open File)(.*)$"
-      "float,title:^(Open File)(.*)$"
-      "center,title:^(Select a File)(.*)$"
-      "float,title:^(Select a File)(.*)$"
-      "center,title:^(Choose wallpaper)(.*)$"
-      "float,title:^(Choose wallpaper)(.*)$"
-      "size 60% 65%,title:^(Choose wallpaper)(.*)$"
-      "center,title:^(Open Folder)(.*)$"
-      "float,title:^(Open Folder)(.*)$"
-      "center,title:^(Save As)(.*)$"
-      "float,title:^(Save As)(.*)$"
-      "center,title:^(Library)(.*)$"
-      "float,title:^(Library)(.*)$"
-      "center,title:^(File Upload)(.*)$"
-      "float,title:^(File Upload)(.*)$"
-      "center,title:^(.*)(wants to save)$"
-      "float,title:^(.*)(wants to save)$"
-      "center,title:^(.*)(wants to open)$"
-      "float,title:^(.*)(wants to open)$"
+    windowrule = [
+      "center 1, match:title ^(Open File)(.*)$"
+      "float 1, match:title ^(Open File)(.*)$"
+      "center 1, match:title ^(Select a File)(.*)$"
+      "float 1, match:title ^(Select a File)(.*)$"
+      "center 1, match:title ^(Choose wallpaper)(.*)$"
+      "float 1, match:title ^(Choose wallpaper)(.*)$"
+      "size 60% 65%, match:title ^(Choose wallpaper)(.*)$"
+      "center 1, match:title ^(Open Folder)(.*)$"
+      "float 1, match:title ^(Open Folder)(.*)$"
+      "center 1, match:title ^(Save As)(.*)$"
+      "float 1, match:title ^(Save As)(.*)$"
+      "center 1, match:title ^(Library)(.*)$"
+      "float 1, match:title ^(Library)(.*)$"
+      "center 1, match:title ^(File Upload)(.*)$"
+      "float 1, match:title ^(File Upload)(.*)$"
+      "center 1, match:title ^(.*)(wants to save)$"
+      "float 1, match:title ^(.*)(wants to save)$"
+      "center 1, match:title ^(.*)(wants to open)$"
+      "float 1, match:title ^(.*)(wants to open)$"
 
       # Specific Apps
-      "float,class:^(blueberry\\.py)$"
-      "float,class:^(guifetch)$"
-      "float,class:^(pavucontrol)$"
-      "size 45% 45%,class:^(pavucontrol)$"
-      "center,class:^(pavucontrol)$"
-      "float,class:^(org\\.pulseaudio\\.pavucontrol)$"
-      "size 45% 45%,class:^(org\\.pulseaudio\\.pavucontrol)$"
-      "center,class:^(org\\.pulseaudio\\.pavucontrol)$"
-      "float,class:^(nm-connection-editor)$"
-      "size 45% 45%,class:^(nm-connection-editor)$"
-      "center,class:^(nm-connection-editor)$"
-      "float,class:.*plasmawindowed.*"
-      "float,class:kcm_.*"
-      "float,class:.*bluedevilwizard"
-      "float,title:.*Welcome"
-      "float,title:.*Shell conflicts.*"
-      "float,class:org\\.freedesktop\\.impl\\.portal\\.desktop\\.kde"
-      "size 60% 65%,class:org\\.freedesktop\\.impl\\.portal\\.desktop\\.kde"
-      "float,class:^(Zotero)$"
-      "size 45% 45%,class:^(Zotero)$"
+      "float 1, match:class ^(blueberry\\.py)$"
+      "float 1, match:class ^(guifetch)$"
+      "float 1, match:class ^(pavucontrol)$"
+      "size 45% 45%, match:class ^(pavucontrol)$"
+      "center 1, match:class ^(pavucontrol)$"
+      "float 1, match:class ^(org\\.pulseaudio\\.pavucontrol)$"
+      "size 45% 45%, match:class ^(org\\.pulseaudio\\.pavucontrol)$"
+      "center 1, match:class ^(org\\.pulseaudio\\.pavucontrol)$"
+      "float 1, match:class ^(nm-connection-editor)$"
+      "size 45% 45%, match:class ^(nm-connection-editor)$"
+      "center 1, match:class ^(nm-connection-editor)$"
+      "float 1, match:class .*plasmawindowed.*"
+      "float 1, match:class kcm_.*"
+      "float 1, match:class .*bluedevilwizard"
+      "float 1, match:title .*Welcome"
+      "float 1, match:title .*Shell conflicts.*"
+      "float 1, match:class org\\.freedesktop\\.impl\\.portal\\.desktop\\.kde"
+      "size 60% 65%, match:class org\\.freedesktop\\.impl\\.portal\\.desktop\\.kde"
+      "float 1, match:class ^(Zotero)$"
+      "size 45% 45%, match:class ^(Zotero)$"
 
       # Move / Focus
-      "float,class:^(plasma-changeicons)$"
-      "noinitialfocus,class:^(plasma-changeicons)$"
-      "move 999999 999999,class:^(plasma-changeicons)$"
-      "move 40 80,title:^(Copying — Dolphin)$"
+      "float 1, match:class ^(plasma-changeicons)$"
+      "no_initial_focus 1, match:class ^(plasma-changeicons)$"
+      "move 999999 999999, match:class ^(plasma-changeicons)$"
+      "move 40 80, match:title ^(Copying — Dolphin)$"
 
       # Tiling
-      "tile,class:^dev\\.warp\\.Warp$"
+      "tile 1, match:class ^dev\\.warp\\.Warp$"
 
       # Picture-in-Picture
-      "float,title:^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
-      "keepaspectratio,title:^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
-      "move 73% 72%,title:^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
-      "size 25% 25%,title:^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
-      "pin,title:^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
+      "float 1, match:title ^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
+      "keep_aspect_ratio 1, match:title ^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
+      "move 73% 72%, match:title ^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
+      "size 25% 25%, match:title ^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
+      "pin 1, match:title ^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
 
       # Tearing
-      "immediate,title:.*\\.exe"
-      "immediate,title:.*minecraft.*"
-      "immediate,class:^(steam_app).*"
+      "immediate 1, match:title .*\\.exe"
+      "immediate 1, match:title .*minecraft.*"
+      "immediate 1, match:class ^(steam_app).*"
     ];
 
     # ######## Workspace rules ########
     workspace = [
-      "special:special,gapsout:30"
+      "special:special, gapsout:30"
     ];
 
     # ######## Layer rules ########
     layerrule = let
       baseRules = [
-        "xray 1,.*"
-        "noanim,vicinae"
-        "noanim,selection"
-        "noanim,anyrun"
-        "noanim,hyprpicker"
-        "blur,gtk-layer-shell"
-        "blur,launcher"
-        "blur,notifications"
-        "blur,logout_dialog"
+        "xray 1, match:namespace .*"
+        "no_anim 1, match:namespace vicinae"
+        "no_anim 1, match:namespace selection"
+        "no_anim 1, match:namespace anyrun"
+        "no_anim 1, match:namespace hyprpicker"
+        "blur 1, match:namespace gtk-layer-shell"
+        "blur 1, match:namespace launcher"
+        "blur 1, match:namespace notifications"
+        "blur 1, match:namespace logout_dialog"
 
         # Quickshell
-        "blurpopups,quickshell:.*"
-        "blur,quickshell:.*"
-        "blur,quickshell:session"
+        "blur_popups 1, match:namespace quickshell:.*"
+        "blur 1, match:namespace quickshell:.*"
+        "blur 1, match:namespace quickshell:session"
               
         # Fast Launchers
-        "noanim,gtk4-layer-shell"
+        "no_anim 1, match:namespace gtk4-layer-shell"
 
         # Noctalia Shell
-        "blur,^(noctalia)$"
-        "xray 1,^(noctalia)$"
-        "blur,^(noctalia-shell)$"
-        "xray 1,^(noctalia-shell)$"
+        "blur 1, match:namespace ^(noctalia)$"
+        "xray 1, match:namespace ^(noctalia)$"
+        "blur 1, match:namespace ^(noctalia-shell)$"
+        "xray 1, match:namespace ^(noctalia-shell)$"
       ];
     in if isLuffy then
       builtins.filter (rule: !(lib.strings.hasInfix "blur" rule)) baseRules

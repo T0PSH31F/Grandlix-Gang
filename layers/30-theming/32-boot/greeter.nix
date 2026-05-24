@@ -8,7 +8,7 @@ with lib;
 let
   cfg = config.layers.layer-30.theming.themes.greeter;
 
-  # SDDM Sugar Dark with custom video background
+  # SDDM Sugar Dark with custom background
   sddm-theme-custom = pkgs.stdenv.mkDerivation {
     name = "sddm-theme-sugar-dark-custom";
     src = pkgs.sddm-sugar-dark;
@@ -17,20 +17,27 @@ let
       mkdir -p $out/share/sddm/themes/sugar-dark
       cp -R $src/share/sddm/themes/sugar-dark/. $out/share/sddm/themes/sugar-dark/
       chmod -R u+w $out/share/sddm/themes/sugar-dark/
-      # Overwrite the background with your mp4/gif
-      cp "${cfg.sddm.background}" $out/share/sddm/themes/sugar-dark/Background.mp4
 
-      # Patch theme.conf to use Background.mp4
-      sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/themes/sugar-dark/theme.conf
+      # Determine if background is a video or image
+      BACKGROUND_FILE="${cfg.sddm.background}"
+      EXTENSION="${"$"}{BACKGROUND_FILE##*.}"
+
+      if [[ "$EXTENSION" == "mp4" || "$EXTENSION" == "webm" ]]; then
+        cp "$BACKGROUND_FILE" $out/share/sddm/themes/sugar-dark/Background.mp4
+        sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/themes/sugar-dark/theme.conf
+      else
+        cp "$BACKGROUND_FILE" $out/share/sddm/themes/sugar-dark/Background.jpg
+        sed -i 's/Background=.*/Background="Background.jpg"/' $out/share/sddm/themes/sugar-dark/theme.conf
+      fi
     '';
   };
 
   # Greetd / Hyprland config
   greetdHyprConfig = pkgs.writeText "greetd-hyprland.conf" ''
     # Start mpv to play the background video
-    exec-once = ${pkgs.mpv}/bin/mpv --loop --no-audio --vo=wayland "${cfg.greetd.background}"
+    exec-once = ${pkgs.mpv}/bin/mpv --loop --no-audio --vo=gpu "${cfg.greetd.background}"
     # Start the actual greeter (ReGreet is a good GTK4 choice)
-    exec-once = ${pkgs.regreet}/bin/regreet; hyprctl dispatch exit
+    exec-once = sh -c "${pkgs.regreet}/bin/regreet; hyprctl dispatch exit"
 
     monitor=,highrr,auto,1
     # Minimal styling to stay out of the way
@@ -49,10 +56,10 @@ in
 {
   options.layers.layer-30.theming.themes.greeter = {
     sddm = {
-      enable = mkEnableOption "SDDM with Sugar Candy theme";
+      enable = mkEnableOption "SDDM with Sugar Dark theme";
       background = mkOption {
         type = types.path;
-        default = ../../00-cyberia/02-assets/sddm_background/one-piece-skull.1920x1080.mp4;
+        default = ../../00-cyberia/02-assets/sddm_background/fallback1.jpg;
         description = "Path to the background video/image for SDDM";
       };
     };

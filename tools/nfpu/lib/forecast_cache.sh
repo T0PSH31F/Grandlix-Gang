@@ -10,7 +10,7 @@ if command -v nix-weather >/dev/null 2>&1; then
     DERIVATIONS=$(nix build ".#nixosConfigurations.luffy.config.system.build.toplevel" \
         --no-link --dry-run --keep-going \
         | grep '^building' | awk '{print $2}')
-    echo "$DERIVATIONS" | nix-weather forecast
+    echo "$DERIVATIONS" | nix-forecast 
 else
     echo "⚠️  nix-weather not installed – showing a quick local‑cache summary."
     nix build ".#nixosConfigurations.luffy.config.system.build.toplevel" \

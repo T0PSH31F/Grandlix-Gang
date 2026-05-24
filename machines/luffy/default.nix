@@ -50,6 +50,7 @@
   layers = {
     layer-10.system = {
       config.impermanence.enable = true;
+      virtualization.enable = true;
     };
     layer-70.agent = {
       ai-agent-stack.enable = true;
@@ -57,12 +58,13 @@
   };
   layers.layer-20.services.config.your-spotify.enable = true;
 
-  layers.layer-30.theming.themes.greeter.greetd = {
-    enable = true;
+  layers.layer-30.theming.themes.greeter = {
+    sddm.enable = true;
+    greetd.enable = false;
   };
 
-  # Pure Wayland — no X server needed with greetd/ReGreet
-  services.xserver.enable = lib.mkForce false;
+  # SDDM uses X11 by default in this config, which is safer for many setups
+  services.xserver.enable = true;
 
   layers.layer-40.desktop = {
     hyprland.enable = true;
@@ -200,7 +202,7 @@
         extraConfig = ''
           encode zstd gzip
           header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-          reverse_proxy localhost:3000
+          reverse_proxy localhost:3006
         '';
       };
       virtualHosts."*.lovelain.duckdns.org" = {

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -28,14 +29,27 @@ with lib;
 
     grafana.port = mkOption {
       type = types.port;
-      default = 3000;
+      default = 3008;
       description = "Grafana port";
     };
   };
 
   config = mkIf config.layers.layer-20.services.config.monitoring.enable {
-    sops.secrets.grafana_pass = {
-      sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+    clan.core.vars.generators.grafana = {
+      files."admin-password" = {
+        secret = true;
+        owner = "grafana";
+        group = "grafana";
+      };
+      files."secret-key" = {
+        secret = true;
+        owner = "grafana";
+        group = "grafana";
+      };
+      script = ''
+        ${pkgs.openssl}/bin/openssl rand -base64 18 | tr -d '\n' > "$out/admin-password"
+        ${pkgs.openssl}/bin/openssl rand -hex 24 | tr -d '\n' > "$out/secret-key"
+      '';
     };
 
     # ============================================================================
@@ -192,10 +206,8 @@ with lib;
           root_url = "http://%(domain)s:%(http_port)s/";
         };
         security = {
-          admin_password = "$__file{${config.sops.secrets.grafana_pass.path}}";
-          # Required for NixOS 26.05+
-          # Using the legacy default key as recommended for non-breaking migration
-          secret_key = "SW2YcwTIb9zpOOhoPsMm";
+          admin_password = "$__file{${config.clan.core.vars.generators.grafana.files."admin-password".path}}";
+          secret_key = "$__file{${config.clan.core.vars.generators.grafana.files."secret-key".path}}";
         };
       };
     };

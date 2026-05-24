@@ -184,12 +184,20 @@ in
       position = "center"
       lazy = true
     '';
-    
-    home.activation.hyprlandSourceFix = config.lib.dag.entryAfter ["writeBoundary"] ''
-      mkdir -p ~/.config/hypr/noctalia
-      touch ~/.config/hypr/noctalia/noctalia-colors.conf
-      touch ~/.config/hypr/monitors.conf
-    '';
+
+
+    systemd.user.services.hyprland-init-files = {
+      Unit = {
+        Description = "Ensure Hyprland optional configuration files exist";
+        Before = [ "graphical-session-pre.target" ];
+        WantedBy = [ "graphical-session-pre.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr/noctalia && touch %h/.config/hypr/noctalia/noctalia-colors.conf %h/.config/hypr/monitors.conf'";
+      };
+    };
     
     xdg.enable = true;
     };

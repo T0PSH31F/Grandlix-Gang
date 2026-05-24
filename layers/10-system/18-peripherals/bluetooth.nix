@@ -27,6 +27,13 @@ in
     # Bluetooth services
     services.blueman.enable = true;
 
+    # Prevent Bluetooth USB controllers from auto-suspending (turning off on idle)
+    services.udev.extraRules = ''
+      # Disable USB autosuspend for Bluetooth controllers by driver name and class
+      ACTION=="add", SUBSYSTEM=="usb", DRIVERS=="btusb", ATTR{power/control}="on"
+      ACTION=="add", SUBSYSTEM=="usb", ATTRS{bInterfaceClass}=="e0", ATTRS{bInterfaceSubClass}=="01", ATTRS{bInterfaceProtocol}=="01", ATTR{power/control}="on"
+    '';
+
     # Bluetooth packages
     environment.systemPackages = with pkgs; [
       bluez

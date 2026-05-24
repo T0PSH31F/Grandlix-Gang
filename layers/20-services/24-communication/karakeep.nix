@@ -16,7 +16,7 @@ in
 
     port = mkOption {
       type = types.port;
-      default = 3000;
+      default = 3007;
       description = "Web interface port";
     };
 
@@ -46,6 +46,7 @@ in
 
       # Environment configuration
       extraEnvironment = {
+        PORT = toString cfg.port;
         NEXTAUTH_URL = "http://localhost:${toString cfg.port}";
       }
       // optionalAttrs (cfg.ollamaUrl != null) {
