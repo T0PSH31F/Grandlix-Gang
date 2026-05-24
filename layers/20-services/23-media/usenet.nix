@@ -73,6 +73,11 @@ in
     # ============================================================================
     environment.systemPackages = (optional cfg.pan.enable pkgs.pan);
 
+    systemd.tmpfiles.rules = 
+      (optional cfg.sabnzbd.enable "d /var/lib/sabnzbd 0750 ${mediaCfg.user} ${mediaCfg.group} -") ++
+      (optional cfg.nzbget.enable "d /var/lib/nzbget 0750 ${mediaCfg.user} ${mediaCfg.group} -") ++
+      (optional cfg.nzbhydra2.enable "d /var/lib/nzbhydra2 0750 ${mediaCfg.user} ${mediaCfg.group} -");
+
     networking.firewall.allowedTCPPorts = 
       (optional cfg.nzbget.enable cfg.nzbget.port) ++
       (optional cfg.sabnzbd.enable cfg.sabnzbd.port) ++

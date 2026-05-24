@@ -31,6 +31,7 @@
   layers = {
     layer-10.system = {
       config.impermanence.enable = true;
+      virtualization.enable = true;
     };
     layer-70.agent = {
       ai-agent-stack.enable = true;
@@ -44,7 +45,8 @@
     greetd.enable = false;
   };
 
-  # Pure Wayland — no X server needed
+  # SDDM uses X11 by default in this config, which is safer for many setups
+  services.xserver.enable = true;
 
   layers.layer-40.desktop = {
     hyprland.enable = true;
@@ -61,6 +63,7 @@
     adguard = {
       enable = true;
       port = 3002; # avoids homepage and grafana
+      bindHosts = [ "127.0.0.1" "192.168.1.53" "100.80.146.120" ];
     };
   };
 
@@ -182,7 +185,7 @@
         extraConfig = ''
           encode zstd gzip
           header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-          reverse_proxy localhost:3000
+          reverse_proxy localhost:3006
         '';
       };
       virtualHosts."*.lovelain.duckdns.org" = {
@@ -231,7 +234,7 @@
           handle @kavita { reverse_proxy localhost:5000 }
 
           @headscale host headscale.lovelain.duckdns.org
-          handle @headscale { reverse_proxy localhost:8080 }
+          handle @headscale { reverse_proxy localhost:8086 }
 
           @chat host chat.lovelain.duckdns.org
           handle @chat { reverse_proxy localhost:3004 }

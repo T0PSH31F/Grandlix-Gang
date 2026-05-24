@@ -26,9 +26,29 @@ with lib;
       default = "/var/lib/nextcloud";
       description = "Data directory for Nextcloud";
     };
+
+    adminPasswordFile = mkOption {
+      type = types.path;
+      default = config.clan.core.vars.generators.nextcloud.files."admin-password".path;
+      description = ''
+        Path to the file containing the Nextcloud admin password.
+        By default, this is automatically generated using a Clan vars generator.
+      '';
+    };
   };
 
   config = mkIf config.services.nextcloud-server.enable {
+    clan.core.vars.generators.nextcloud = {
+      files."admin-password" = {
+        secret = true;
+        owner = "nextcloud";
+        group = "nextcloud";
+      };
+      script = ''
+        ${pkgs.openssl}/bin/openssl rand -base64 18 | tr -d '\n' > "$out/admin-password"
+      '';
+    };
+
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud33;
@@ -36,7 +56,7 @@ with lib;
 
       config = {
         adminuser = config.services.nextcloud-server.adminUser;
-        adminpassFile = "/etc/nextcloud-admin-pass";
+        adminpassFile = config.services.nextcloud-server.adminPasswordFile;
 
         dbtype = "pgsql";
         dbhost = "/run/postgresql";
@@ -50,10 +70,14 @@ with lib;
 
       maxUploadSize = "16G";
 
-      https = true;
+      https = false;
 
       phpOptions = {
         "opcache.interned_strings_buffer" = "16";
+      };
+
+      settings = {
+        overwriteprotocol = "https";
       };
     };
 

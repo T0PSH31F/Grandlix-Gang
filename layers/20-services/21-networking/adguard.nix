@@ -25,19 +25,30 @@ in
       default = 53;
       description = "DNS server port";
     };
+
+    bindHosts = mkOption {
+      type = types.listOf types.str;
+      default = [ "0.0.0.0" ];
+      description = "IP addresses AdGuard Home should bind its DNS server to";
+    };
   };
 
   config = mkIf cfg.enable {
+    # Disable systemd-resolved listener to free up port 53 for AdGuard Home
+    services.resolved.settings = {
+      Resolve = {
+        DNSStubListener = "no";
+      };
+    };
+
     services.adguardhome = {
       enable = true;
       openFirewall = true;
+      port = cfg.port;
       mutableSettings = true;
       settings = {
-        http = {
-          address = "0.0.0.0:${toString cfg.port}";
-        };
         dns = {
-          bind_hosts = [ "0.0.0.0" ];
+          bind_hosts = cfg.bindHosts;
           port = cfg.dnsPort;
           bootstrap_dns = [
             "9.9.9.9"
@@ -54,8 +65,15 @@ in
       };
     };
 
-    # Fix StateDirectory conflict with impermanence
-    systemd.services.adguardhome.serviceConfig.StateDirectory = lib.mkForce [ ];
+    # Fix StateDirectory conflict with impermanence by using static user
+    systemd.services.adguardhome = {
+      environment.STATE_DIRECTORY = "/var/lib/AdGuardHome";
+      serviceConfig = {
+        DynamicUser = lib.mkForce false;
+        StateDirectory = lib.mkForce [ ];
+        ReadWritePaths = [ "/var/lib/AdGuardHome" ];
+      };
+    };
 
     # Impermanence support
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {

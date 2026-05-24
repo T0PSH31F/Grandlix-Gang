@@ -9,7 +9,7 @@
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
     # Import theme modules to allow consistent styling
-    ../../30-theming
+    ../../30-theming/32-boot
     ../../10-system/11-foundation/fonts.nix
   ];
 

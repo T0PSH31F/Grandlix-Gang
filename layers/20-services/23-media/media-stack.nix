@@ -48,7 +48,7 @@ with lib;
 
     # Enable Usenet & Recyclarr by default with media-stack
     layers.layer-20.services.config.usenet = {
-      enable = mkDefault true;
+      enable = mkDefault false;
       sabnzbd.enable = mkDefault true;
       nzbget.enable = mkDefault true;
       nzbhydra2.enable = mkDefault true;

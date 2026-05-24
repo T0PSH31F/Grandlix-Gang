@@ -271,7 +271,10 @@ in
     };
 
     # Fix StateDirectory conflict with impermanence
-    systemd.services.qdrant.serviceConfig.StateDirectory = lib.mkForce [ ];
+    systemd.services.qdrant.serviceConfig = {
+      StateDirectory = lib.mkForce [ ];
+      ReadWritePaths = [ "/var/lib/qdrant" ];
+    };
 
     # ChromaDB vector database - native NixOS service
     services.chromadb = mkIf config.services.ai-services.chromadb.enable {
@@ -284,6 +287,7 @@ in
     systemd.services.chromadb = mkIf config.services.ai-services.chromadb.enable {
       serviceConfig.DynamicUser = lib.mkForce false;
       serviceConfig.StateDirectory = lib.mkForce null;
+      serviceConfig.ReadWritePaths = [ "/var/lib/chromadb" ];
     };
 
     # Create static user for ChromaDB

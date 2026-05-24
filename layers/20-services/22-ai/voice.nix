@@ -13,7 +13,7 @@ in
 
     sttPort = lib.mkOption {
       type = lib.types.port;
-      default = 8082;
+      default = 8089;
       description = "Port for local whisper.cpp server";
     };
 
@@ -50,6 +50,12 @@ in
         DynamicUser = true;
         StateDirectory = "whisper"; # /var/lib/whisper
       };
+      
+      preStart = ''
+        if [ ! -f /var/lib/whisper/ggml-base.en.bin ]; then
+          ${pkgs.curl}/bin/curl -L -o /var/lib/whisper/ggml-base.en.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
+        fi
+      '';
     };
 
     # 3. XTTSv2 / OpenVoice Docker deployment

@@ -98,6 +98,7 @@ with lib;
         # Database configuration
         database = {
           name = "psycopg2";
+          allow_unsafe_locale = true;
           args = {
             user = "matrix-synapse";
             database = "matrix-synapse";

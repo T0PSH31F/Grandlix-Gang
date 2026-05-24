@@ -126,7 +126,9 @@ let
         return {"status": "healthy"}
 
     if __name__ == "__main__":
-        uvicorn.run(app, host="0.0.0.0", port=8000)
+        import os
+        port = int(os.getenv("PORT", "8010"))
+        uvicorn.run(app, host="0.0.0.0", port=port)
   '';
 
 in
@@ -136,7 +138,7 @@ in
 
     port = lib.mkOption {
       type = lib.types.port;
-      default = 8000;
+      default = 8010;
       description = "Port to listen on";
     };
 
@@ -151,29 +153,56 @@ in
       default = "openai/gpt-4o-mini";
       description = "Model to use for LLM Generation";
     };
+
+    apiSecretFile = lib.mkOption {
+      type = lib.types.path;
+      default = config.clan.core.vars.generators.brain-service.files."env".path;
+      description = "Path to the environment file containing the LLM API key.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
+    clan.core.vars.generators.brain-service = {
+      files."env" = {
+        secret = true;
+        owner = "postgres";
+        group = "postgres";
+      };
+      prompts."api-key" = {
+        type = "hidden";
+        description = "OpenRouter/OpenAI API key for Brain Service";
+      };
+      script = ''
+        if [ -f "$prompts/api-key" ]; then
+          API_KEY=$(cat "$prompts/api-key")
+        else
+          API_KEY="dummy"
+        fi
+        echo "LLM_API_KEY=$API_KEY" > "$out/env"
+      '';
+    };
+
     systemd.services.brain-service = {
       description = "Brain Service PKB API";
       wantedBy = [ "multi-user.target" ];
       after = [ "postgresql.service" "postgresql-extensions.service" ];
       requires = [ "postgresql.service" ];
-      
+
       environment = {
         DB_NAME = "vectordb";
         DB_USER = "postgres";
-        # DB_PASS should be handled via sops-nix in a production environment via `EnvironmentFile`
         DB_HOST = "127.0.0.1";
         DB_PORT = "5432";
         LLM_API_BASE = cfg.llmApiBase;
         LLM_MODEL = cfg.llmModel;
+        PORT = toString cfg.port;
       };
 
       serviceConfig = {
         ExecStart = "${pythonEnv}/bin/python ${brainScript}";
         Restart = "on-failure";
         User = "postgres"; # Run as postgres to avoid local socket auth issues unless properly mapped
+        EnvironmentFile = cfg.apiSecretFile;
       };
     };
   };

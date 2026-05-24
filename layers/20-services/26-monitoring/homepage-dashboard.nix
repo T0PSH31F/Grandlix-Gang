@@ -362,7 +362,7 @@ in
             (optional (isServiceEnabled "grafana") {
               "Grafana" = {
                 icon = "grafana.png";
-                href = "http://localhost:${getServicePort "grafana" 3000}";
+                href = "http://localhost:${getServicePort "grafana" 3008}";
                 description = "Metrics & Dashboards";
               };
             })
@@ -427,14 +427,14 @@ in
                 description = "llama.cpp Inference Server";
               };
             })
-            (optional (isServiceEnabled "litellm") {
+            (optional (isServiceEnabled "litellm-proxy") {
               "LiteLLM" = {
                 icon = "litellm.png";
                 href = "http://localhost:${toString config.services.litellm-proxy.port}";
                 description = "LiteLLM Router & Gateway";
               };
             })
-            (optional (isServiceEnabled "llama-swap") {
+            (optional (isServiceEnabled "llama-swap-proxy") {
               "llama-swap" = {
                 icon = "mdi-swap-horizontal";
                 href = "http://localhost:${toString config.services.llama-swap-proxy.port}";
@@ -466,7 +466,7 @@ in
             {
               "Karakeep" = {
                 icon = "mdi-bookmark-multiple";
-                href = "http://localhost:3000";
+                href = "http://localhost:3007";
                 description = "Bookmark Manager";
               };
             }

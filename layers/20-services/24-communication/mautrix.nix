@@ -132,7 +132,7 @@ with lib;
         };
         bridge = {
           permissions = {
-            "*" = "relaybot";
+            "*" = "relay";
             ${config.services.mautrix-bridges.homeserverDomain} = "user";
           };
         };
@@ -150,14 +150,14 @@ with lib;
         appservice = {
           address = "http://localhost:${toString config.services.mautrix-bridges.whatsapp.port}";
           port = config.services.mautrix-bridges.whatsapp.port;
-          database = {
-            type = "postgres";
-            uri = "postgresql:///mautrix-whatsapp?host=/run/postgresql";
-          };
+        };
+        database = {
+          type = "postgres";
+          uri = "postgresql:///mautrix-whatsapp?host=/run/postgresql";
         };
         bridge = {
           permissions = {
-            "*" = "relaybot";
+            "*" = "relay";
             ${config.services.mautrix-bridges.homeserverDomain} = "user";
           };
         };
@@ -175,11 +175,14 @@ with lib;
         appservice = {
           address = "http://localhost:${toString config.services.mautrix-bridges.signal.port}";
           port = config.services.mautrix-bridges.signal.port;
-          database = "postgresql:///mautrix-signal?host=/run/postgresql";
+        };
+        database = {
+          type = "postgres";
+          uri = "postgresql:///mautrix-signal?host=/run/postgresql";
         };
         bridge = {
           permissions = {
-            "*" = "relaybot";
+            "*" = "relay";
             ${config.services.mautrix-bridges.homeserverDomain} = "user";
           };
         };
