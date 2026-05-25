@@ -56,16 +56,20 @@ in
       # ── Fonts: the only thing Stylix owns ──
       fonts = {
         monospace = {
-          package = pkgs.nerd-fonts.fira-code;
-          name = "FiraCode Nerd Font";
+          package = pkgs.nerd-fonts.jetbrains-mono;
+          name = "JetBrainsMono Nerd Font";
         };
         sansSerif = {
-          package = pkgs.dejavu_fonts;
-          name = "DejaVu Sans";
+          package = pkgs.nerd-fonts.noto;
+          name = "Noto Sans Nerd Font";
         };
         serif = {
-          package = pkgs.dejavu_fonts;
-          name = "DejaVu Serif";
+          package = pkgs.nerd-fonts.noto;
+          name = "Noto Serif Nerd Font";
+        };
+        emoji = {
+          package = pkgs.twitter-color-emoji;
+          name = "Twitter Color Emoji";
         };
         sizes = {
           applications = 12;
