@@ -57,10 +57,7 @@
   # THEMES
   # ============================================================================
   layers.layer-30.theming.themes.greeter = {
-    sddm = {
-      enable = true;
-      background = ../../../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif;
-    };
+    sddm.enable = true;
     greetd.enable = false;
   };
   layers.layer-30.theming.themes.plymouth-hellonavi.enable = true;

@@ -8,30 +8,6 @@ with lib;
 let
   cfg = config.layers.layer-30.theming.themes.greeter;
 
-  # SDDM Sugar Dark with custom background
-  sddm-theme-custom = pkgs.stdenv.mkDerivation {
-    name = "sddm-theme-sugar-dark-custom";
-    src = pkgs.sddm-sugar-dark;
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/share/sddm/themes/sugar-dark
-      cp -R $src/share/sddm/themes/sugar-dark/. $out/share/sddm/themes/sugar-dark/
-      chmod -R u+w $out/share/sddm/themes/sugar-dark/
-
-      # Determine if background is a video or image
-      BACKGROUND_FILE="${cfg.sddm.background}"
-      EXTENSION="${"$"}{BACKGROUND_FILE##*.}"
-
-      if [[ "$EXTENSION" == "mp4" || "$EXTENSION" == "webm" ]]; then
-        cp "$BACKGROUND_FILE" $out/share/sddm/themes/sugar-dark/Background.mp4
-        sed -i 's/Background=.*/Background="Background.mp4"/' $out/share/sddm/themes/sugar-dark/theme.conf
-      else
-        cp "$BACKGROUND_FILE" $out/share/sddm/themes/sugar-dark/Background.jpg
-        sed -i 's/Background=.*/Background="Background.jpg"/' $out/share/sddm/themes/sugar-dark/theme.conf
-      fi
-    '';
-  };
-
   # Greetd / Hyprland config
   greetdHyprConfig = pkgs.writeText "greetd-hyprland.conf" ''
     # Start mpv to play the background video
@@ -57,11 +33,6 @@ in
   options.layers.layer-30.theming.themes.greeter = {
     sddm = {
       enable = mkEnableOption "SDDM with Sugar Dark theme";
-      background = mkOption {
-        type = types.path;
-        default = ../../00-cyberia/02-assets/sddm_background/fallback1.jpg;
-        description = "Path to the background video/image for SDDM";
-      };
     };
     greetd = {
       enable = mkEnableOption "Greetd with ReGreet and Hyprland";
@@ -98,7 +69,7 @@ in
       };
 
       environment.systemPackages = [
-        sddm-theme-custom
+        pkgs.sddm-sugar-dark
       ];
     })
 

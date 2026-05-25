@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.layers.layer-50.cli;
+  matugenEnabled = config.layers.layer-50.cli.theming.matugen.enable or false;
 in
 {
   home =
@@ -24,7 +25,7 @@ in
       programs.git = {
         enable = true;
         includes =
-          (lib.optionals cfg.theming.enable [
+          (lib.optionals matugenEnabled [
             { path = "~/.config/delta/matugen-theme.gitconfig"; }
           ])
           ++ [
@@ -34,7 +35,7 @@ in
         settings = {
           init.defaultBranch = "main";
           core.editor = "hx";
-          delta = lib.mkIf cfg.theming.enable { features = "matugen"; };
+          delta = lib.mkIf matugenEnabled { features = "matugen"; };
         };
       };
 

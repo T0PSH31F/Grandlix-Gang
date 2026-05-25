@@ -55,10 +55,7 @@
     };
 
     layer-30.theming.themes.greeter = {
-      sddm = {
-        enable = true;
-        background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
-      };
+      sddm.enable = true;
       greetd.enable = false;
     };
 
