@@ -43,6 +43,8 @@
   nixpkgs.config.permittedInsecurePackages = [
     "beekeeper-studio-5.5.7"
     "olm-3.2.16"
+    "nodejs-20.20.2"
+    "nodejs-slim-20.20.2"
   ];
 
   # Bootloader

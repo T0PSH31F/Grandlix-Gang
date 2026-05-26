@@ -34,6 +34,18 @@ in
       ACTION=="add", SUBSYSTEM=="usb", ATTRS{bInterfaceClass}=="e0", ATTRS{bInterfaceSubClass}=="01", ATTRS{bInterfaceProtocol}=="01", ATTR{power/control}="on"
     '';
 
+    # Prevent TLP from turning off bluetooth on boot or when switching power sources
+    services.tlp.settings = lib.mkIf (config.services.tlp.enable or false) {
+      DEVICES_TO_DISABLE_ON_STARTUP = "none";
+      DEVICES_TO_DISABLE_ON_BAT_NOT_IN_USE = "none";
+      DEVICES_TO_DISABLE_ON_LAN_CONNECT = "none";
+      DEVICES_TO_DISABLE_ON_WIFI_CONNECT = "none";
+      DEVICES_TO_DISABLE_ON_WWAN_CONNECT = "none";
+      DEVICES_TO_ENABLE_ON_STARTUP = "bluetooth";
+      DEVICES_TO_ENABLE_ON_AC = "bluetooth";
+      DEVICES_TO_ENABLE_ON_BAT = "bluetooth";
+    };
+
     # Bluetooth packages
     environment.systemPackages = with pkgs; [
       bluez
