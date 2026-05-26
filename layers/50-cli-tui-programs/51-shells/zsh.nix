@@ -6,33 +6,47 @@
 }:
 let
   cfg = config.layers.layer-50.cli;
-  motdPkg =
-    pkgs.runCommand "nixos-motds"
-      {
-        buildInputs = [
-          pkgs.chafa
-          pkgs.figlet
-          pkgs.lolcat
-          pkgs.coreutils
-        ];
-      }
-      ''
-        mkdir -p $out
-        chafa --size=35x16 ${../../../layers/00-cyberia/02-assets/png-ico/Nami2.png} > $out/nami.txt
-        echo -ne "\033[16A" >> $out/nami.txt
-        figlet -c -f isometric2 NAMI | lolcat -f | while IFS= read -r line; do
-          echo -ne "\033[36C" >> $out/nami.txt
-          echo "$line" >> $out/nami.txt
-        done
-        echo -ne "\033[2B" >> $out/nami.txt
-        chafa --size=35x16 ${../../../layers/00-cyberia/02-assets/png-ico/roronoa-zoro.png} > $out/z0r0.txt
-        echo -ne "\033[16A" >> $out/z0r0.txt
-        figlet -c -f isometric2 ZORO | lolcat -f | while IFS= read -r line; do
-          echo -ne "\033[36C" >> $out/z0r0.txt
-          echo "$line" >> $out/z0r0.txt
-        done
-        echo -ne "\033[2B" >> $out/z0r0.txt
-      '';
+  hostName = config.networking.hostName or "nix";
+
+  # ── Per-machine MOTD assets ──
+  # Each machine gets its own chafa image + figlet banner.
+  # Place your preferred PNG at the referenced path — chafa renders it in-terminal.
+  motdAssets = {
+    z0r0 = {
+      image = ../../../layers/00-cyberia/02-assets/png-ico/roronoa-zoro-monkey-d-luffy-one-piece-vinsmoke-sanji-one-piece-f28baea931e3d454307ef781771688d6.png;
+      label = "Z0R0";
+    };
+    luffy = {
+      image = ../../../layers/00-cyberia/02-assets/png-ico/Luffyrave.png;
+      label = "LUFFY";
+    };
+  };
+
+  # Fall back to Nami for unknown hosts
+  currentAsset = motdAssets.${hostName} or {
+    image = ../../../layers/00-cyberia/02-assets/png-ico/Nami2.png;
+    label = "NFP";
+  };
+
+  motdPkg = pkgs.runCommand "nixos-motd-${hostName}"
+    {
+      buildInputs = [
+        pkgs.chafa
+        pkgs.figlet
+        pkgs.lolcat
+        pkgs.coreutils
+      ];
+    }
+    ''
+      mkdir -p $out
+      chafa --size=35x16 ${currentAsset.image} > $out/motd.txt
+      echo -ne "\033[16A" >> $out/motd.txt
+      figlet -c -f isometric2 ${currentAsset.label} | lolcat -f | while IFS= read -r line; do
+        echo -ne "\033[36C" >> $out/motd.txt
+        echo "$line" >> $out/motd.txt
+      done
+      echo -ne "\033[2B" >> $out/motd.txt
+    '';
 in
 {
   home = lib.mkIf (cfg.enable && cfg.shells.zsh.enable) {
@@ -79,13 +93,8 @@ in
         bindkey '^Y' autosuggest-accept
         bindkey '^E' autosuggest-clear
         if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-          # Display machine-specific MOTD or default to nami
-          if [ "$HOST" = "z0r0" ]; then
-            cat ${motdPkg}/z0r0.txt
-          else
-            cat ${motdPkg}/nami.txt
-          fi
-          if command -v fastfetch >/dev/null 2>&1; then fastfetch; fi
+          # Machine-specific MOTD greeting
+          cat ${motdPkg}/motd.txt
         fi
         ${lib.optionalString cfg.theming.enable "[ -f ~/.config/fzf/matugen.conf ] && source ~/.config/fzf/matugen.conf"}
         if command -v starship >/dev/null 2>&1; then eval "$(starship init zsh)"; fi

@@ -9,6 +9,7 @@ let
         "media-server"
         "laptop"
         "media"
+        "ai-server"
       ];
       deploy.targetHost = "root@100.95.168.90";
     };
