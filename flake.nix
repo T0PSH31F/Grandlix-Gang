@@ -29,6 +29,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.sops-nix.follows = "sops-nix";
+      inputs.disko.follows = "disko";
+      inputs.systems.follows = "systems";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
     home-manager = {
@@ -37,23 +39,31 @@
     };
     hyprland = {
       url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
     };
     hypr-dynamic-cursors = {
       url = "github:VirtCode/hypr-dynamic-cursors";
       inputs.hyprland.follows = "hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     impermanence = {
       url = "github:nix-community/impermanence";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "clan-core/treefmt-nix";
+      inputs.systems.follows = "systems";
     };
     nixai = {
       url = "github:olafkfreund/nix-ai-help";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
     niri = {
       url = "github:sodiboo/niri-flake";
@@ -65,6 +75,8 @@
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.noctalia-qs.inputs.treefmt-nix.follows = "clan-core/treefmt-nix";
+      inputs.noctalia-qs.inputs.systems.follows = "systems";
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -73,22 +85,37 @@
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
     };
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
     };
     vicinae = {
       url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
     };
     vicinae-extensions = {
       url = "github:vicinaehq/extensions";
       inputs.vicinae.follows = "vicinae";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "hyprland/pre-commit-hooks/flake-compat";
+      inputs.systems.follows = "systems";
     };
     yazelix-hm = {
       url = "github:luccahuguet/yazelix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+      inputs.beads.inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixgl.inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixgl.inputs.flake-utils.follows = "flake-utils";
+      inputs.zjstatus.inputs.flake-utils.follows = "flake-utils";
+      inputs.zjstatus.inputs.rust-overlay.follows = "wakatime-lsp/rust-overlay";
+      inputs.yazelixZellijPaneOrchestrator.inputs.flake-utils.follows = "flake-utils";
+      inputs.yazelixZellijPopup.inputs.flake-utils.follows = "flake-utils";
     };
     disko = {
       url = "github:nix-community/disko";
@@ -97,10 +124,19 @@
     wakatime-lsp = {
       url = "github:mrnossiom/wakatime-lsp";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.gitignore.follows = "hyprland/pre-commit-hooks/gitignore";
     };
     antigravity = {
       url = "github:Jacopone/Antigravity-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
+    # Utility inputs defined at top-level to allow follows
+    systems.url = "github:nix-systems/default";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
     };
   };
 
@@ -154,7 +190,7 @@
             };
         };
 
-        # Register clan services from new structure
+        # Register clan services
         flake.clan = {
           modules = {
             # AI services
@@ -223,9 +259,6 @@
 
             formatter = pkgs.nixfmt-tree;
 
-
-
-            # Image generation outputs using nixos-generators removed
             checks =
               let
                 theme-tests = import ./layers/00-cyberia/05-tests/themes.nix {
