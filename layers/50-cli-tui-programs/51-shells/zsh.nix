@@ -60,10 +60,9 @@ in
         if [ -e /etc/profile.d/nix.sh ]; then . /etc/profile.d/nix.sh; elif [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
       '';
       autosuggestion = {
-        enable = true;
-        highlight = "fg=#6c7086";
+        enable = false;
       };
-      syntaxHighlighting.enable = true;
+      syntaxHighlighting.enable = false;
       history = {
         append = true;
         expireDuplicatesFirst = true;
