@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
@@ -29,12 +30,16 @@ with lib;
     # KERNEL CONFIGURATION
     # ============================================================================
 
+    nixpkgs.overlays = mkIf (config.layers.layer-10.system.hardware.kernel == "cachyos") [
+      inputs.nix-cachyos-kernel.overlays.default
+    ];
+
     boot.kernelPackages = mkMerge [
       # Latest stable kernel (default)
       (mkIf (config.layers.layer-10.system.hardware.kernel == "latest") pkgs.linuxPackages_latest)
 
       # CachyOS kernel - optimized for performance
-      (mkIf (config.layers.layer-10.system.hardware.kernel == "cachyos") pkgs.linuxPackages_cachyos)
+      (mkIf (config.layers.layer-10.system.hardware.kernel == "cachyos") pkgs.cachyosKernels.linuxPackages-cachyos-latest)
 
       # Zen kernel - optimized for desktop/responsiveness
       (mkIf (config.layers.layer-10.system.hardware.kernel == "zen") pkgs.linuxPackages_zen)

@@ -10,6 +10,8 @@ in
     };
 
     home.shellAliases = {
+      set-ai = "uv run python ~/.local/bin/set-ai";
+      GLaDOS = "nix-shell -p portaudio --run \"export LD_LIBRARY_PATH=\\\$(echo \\\$NIX_LDFLAGS | grep -oP '/nix/store/[^ ]+portaudio[^ ]+/lib' | head -n 1); cd ~/Projects/GlaDos/GLaDOS && uv run glados start --input-mode audio\"";
       e = "hx"; edit = "hx"; vi = "hx"; vim = "hx"; v = "hx"; f = "yazi"; fm = "yazi";
       cat = "bat"; ps = "procs"; diff = "delta"; gg = "lazygit"; l = "eza -lh"; ll = "eza -lah"; ls = "eza"; tree = "eza --tree"; serve = "miniserve";
       ".." = "cd .."; "..." = "cd ../.."; "...." = "cd ../../.."; "....." = "cd ../../../..";

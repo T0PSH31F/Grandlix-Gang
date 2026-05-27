@@ -40,8 +40,11 @@ in
 
     spotifySecretFile = mkOption {
       type = types.nullOr types.path;
-      default = null;
-      description = "Path to file containing Spotify application secret";
+      default = config.clan.core.vars.generators.your-spotify.files."spotify-secret".path;
+      description = ''
+        Path to file containing Spotify application secret.
+        By default, this is automatically generated/prompted via Clan vars generator.
+      '';
     };
 
     nginxVirtualHost = mkOption {
@@ -52,6 +55,24 @@ in
   };
 
   config = mkIf cfg.enable {
+    clan.core.vars.generators.your-spotify = {
+      files."spotify-secret" = {
+        secret = true;
+      };
+      prompts."spotify-secret" = {
+        type = "hidden";
+        description = "Spotify application client secret";
+      };
+      script = ''
+        if [ -f "$prompts/spotify-secret" ]; then
+          cat "$prompts/spotify-secret" > "$out/spotify-secret"
+        else
+          # Generate a fallback dummy secret to avoid service startup crash on initial build
+          echo "DUMMY_SPOTIFY_SECRET" > "$out/spotify-secret"
+        fi
+      '';
+    };
+
     # Native NixOS Your Spotify service
     services.your_spotify = {
       enable = true;
@@ -65,18 +86,13 @@ in
         MONGO_ENDPOINT = "mongodb://localhost:27017/your_spotify";
       };
 
-      spotifySecretFile = mkDefault (
-        if cfg.spotifySecretFile != null then
-          cfg.spotifySecretFile
-        else
-          "/var/lib/your_spotify/spotify_secret"
-      );
+      spotifySecretFile = mkDefault cfg.spotifySecretFile;
       nginxVirtualHost = cfg.nginxVirtualHost;
     };
 
     # MongoDB Container (SSPL licensed, avoids local compilation)
     virtualisation.oci-containers.containers.your-spotify-db = {
-      image = "mongodb:7.0";
+      image = "mongo:7.0";
       ports = [ "27017:27017" ];
       volumes = [
         "/var/lib/mongodb-container:/data/db"

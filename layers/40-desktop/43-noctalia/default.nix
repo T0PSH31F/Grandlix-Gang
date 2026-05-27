@@ -31,7 +31,7 @@ in
     };
   };
 
-  home = { config, ... }: {
+  home = { config, lib, ... }: {
     imports = lib.optionals cfg.enable [
       ./ipc.nix
       ./mutable-includes.nix
@@ -44,15 +44,14 @@ in
         gst_all_1.gst-plugins-good
       ];
       programs.noctalia-shell = {
-      enable = true;
-      package = cfg.package;
-      settings = lib.mkForce (builtins.fromJSON (
-        builtins.replaceStrings 
-          [ "$HOME" ] 
-          [ config.home.homeDirectory ] 
-          (builtins.readFile ../../../layers/00-cyberia/02-assets/noctalia-config.json)
-      ));
-    };
+        enable = true;
+        package = cfg.package;
+      };
+
+      home.activation.setupNoctaliaConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        mkdir -p $HOME/.config/noctalia
+        install -m644 ${pkgs.writeText "noctalia-settings.json" (builtins.replaceStrings ["$HOME"] [config.home.homeDirectory] (builtins.readFile ../../../layers/00-cyberia/02-assets/noctalia-config.json))} $HOME/.config/noctalia/settings.json
+      '';
 
     systemd.user.services.noctalia-shell = {
       Unit = {

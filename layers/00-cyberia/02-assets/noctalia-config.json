@@ -198,7 +198,7 @@
                 "enabled": false
               }
             },
-            "refreshIntervalSec": 30
+            "refreshIntervalSec": 300
           },
           "id": "plugin:model-usage"
         },
@@ -367,7 +367,7 @@
   },
   "wallpaper": {
     "enabled": true,
-    "overviewEnabled": false,
+    "overviewEnabled": true,
     "directory": "$HOME/.background/4k Background",
     "monitorDirectories": [
       {
@@ -816,6 +816,10 @@
       {
         "enabled": true,
         "id": "wezterm"
+      },
+      {
+        "enabled": true,
+        "id": "starship"
       }
     ],
     "enableUserTheming": true

@@ -103,6 +103,7 @@ with lib;
             database = "matrix-synapse";
             cp_min = 5;
             cp_max = 10;
+            allow_unsafe_locale = true;
           };
         };
 

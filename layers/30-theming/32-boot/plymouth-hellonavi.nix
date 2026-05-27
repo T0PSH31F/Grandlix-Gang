@@ -97,9 +97,6 @@ in
       "rd.udev.log_level=3"
       "vt.global_cursor_default=0"
       "systemd.show_status=auto"
-      # CRITICAL for Plymouth on boot: Early KMS for Intel
-      "i915.modeset=1"
-      "i915.fastboot=1"
     ];
 
     # Hide kernel messages during boot

@@ -20,13 +20,24 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    clan.core.vars.generators.searxng = {
+      files."searxng.env" = {
+        secret = true;
+      };
+      script = ''
+        SECRET=$(${pkgs.openssl}/bin/openssl rand -hex 32)
+        echo "SEARX_SECRET_KEY=$SECRET" > "$out/searxng.env"
+      '';
+    };
+
     services.searx = {
       enable = true;
+      environmentFile = config.clan.core.vars.generators.searxng.files."searxng.env".path;
       settings = {
         server = {
           port = cfg.port;
           bind_address = "127.0.0.1";
-          secret_key = "@SEARX_SECRET_KEY@";
+          secret_key = "$SEARX_SECRET_KEY";
         };
         ui = {
           static_use_hash = true;

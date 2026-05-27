@@ -56,7 +56,7 @@ in
       ccusage # - Usage analysis tool for Claude Code
       # ccusage-amp # - Usage analysis tool for Amp CLI sessions
       # ccusage-codex # - Usage analysis tool for OpenAI Codex sessions
-      ccusage-opencode # - Usage analysis tool for OpenCode sessions
+      # ccusage-opencode # - Usage analysis tool for OpenCode sessions
       # ccusage-pi # - Pi-agent usage tracking for Claude Max
 
       # Workflow & Project Management

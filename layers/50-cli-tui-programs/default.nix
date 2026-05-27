@@ -112,6 +112,8 @@ in
       };
     };
 
-    layers.layer-50.cli.theming.matugen.enable = lib.mkDefault cfg.theming.enable;
+    # Matugen disabled — Noctalia owns all runtime theming (wallpaper → Material You colors)
+    # Matugen templates conflicted with Noctalia's own template system for the same apps
+    layers.layer-50.cli.theming.matugen.enable = lib.mkDefault false;
   };
 }

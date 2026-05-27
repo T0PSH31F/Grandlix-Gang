@@ -10,6 +10,13 @@
 with lib;
 let
   cfg = config.services.llama-cpp-server;
+  selectedLlamaPkg =
+    if cfg.acceleration == "cuda" then
+      pkgs.llama-cpp.override { cudaSupport = true; }
+    else if cfg.acceleration == "rocm" then
+      pkgs.llama-cpp.override { rocmSupport = true; }
+    else
+      pkgs.llama-cpp;
 in
 {
   options.services.llama-cpp-server = {
@@ -23,7 +30,7 @@ in
 
     host = mkOption {
       type = types.str;
-      default = "0.0.0.0";
+      default = "127.0.0.1";
       description = "Host address to bind to";
     };
 
@@ -61,16 +68,7 @@ in
 
   config = mkIf cfg.enable {
     # 1. System packages for raw binary access in CLI
-    environment.systemPackages = [
-      (
-        if cfg.acceleration == "cuda" then
-          pkgs.llama-cpp.override { cudaSupport = true; }
-        else if cfg.acceleration == "rocm" then
-          pkgs.llama-cpp.override { rocmSupport = true; }
-        else
-          pkgs.llama-cpp
-      )
-    ];
+    environment.systemPackages = [ selectedLlamaPkg ];
 
     # 2. Systemd Service
     systemd.services.llama-cpp-server = {
@@ -81,14 +79,6 @@ in
       serviceConfig = {
         ExecStart =
           let
-            package =
-              if cfg.acceleration == "cuda" then
-                pkgs.llama-cpp.override { cudaSupport = true; }
-              else if cfg.acceleration == "rocm" then
-                pkgs.llama-cpp.override { rocmSupport = true; }
-              else
-                pkgs.llama-cpp;
-
             args = [
               "--host"
               cfg.host
@@ -99,7 +89,7 @@ in
             ++ (lib.optional (cfg.model != null) (toString cfg.model))
             ++ cfg.extraFlags;
           in
-          "${package}/bin/llama-server ${escapeShellArgs args}";
+          "${selectedLlamaPkg}/bin/llama-server ${escapeShellArgs args}";
 
         User = "llama-cpp";
         Group = "llama-cpp";

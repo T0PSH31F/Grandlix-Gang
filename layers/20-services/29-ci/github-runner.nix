@@ -19,7 +19,7 @@ in
     
     tokenFile = lib.mkOption {
       type = lib.types.path;
-      default = config.sops.secrets."github-runner/token".path;
+      default = config.sops.secrets."github-runner/token".path or "/run/secrets/github-runner/token";
       description = "Path to file containing registration token";
     };
   };

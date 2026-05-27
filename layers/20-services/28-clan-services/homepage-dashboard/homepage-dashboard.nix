@@ -5,21 +5,20 @@
 }:
 
 {
-  # Clan facts - machine-specific generated data
-  clan.core.facts.services.homepage-dashboard = {
-    secret.api_keys = {
-      name = "homepage-api-keys";
-      generator.script = ''
-        echo "sonarr=$(${pkgs.openssl}/bin/openssl rand -hex 32)" > "$facts"/api_keys
-        echo "radarr=$(${pkgs.openssl}/bin/openssl rand -hex 32)" >> "$facts"/api_keys
-        echo "prowlarr=$(${pkgs.openssl}/bin/openssl rand -hex 32)" >> "$facts"/api_keys
-      '';
+  clan.core.vars.generators.homepage-dashboard = {
+    files."api_keys" = {
+      secret = true;
     };
+    files."port" = {
+      secret = false;
+    };
+    script = ''
+      echo "sonarr=$(${pkgs.openssl}/bin/openssl rand -hex 32)" > "$out"/api_keys
+      echo "radarr=$(${pkgs.openssl}/bin/openssl rand -hex 32)" >> "$out"/api_keys
+      echo "prowlarr=$(${pkgs.openssl}/bin/openssl rand -hex 32)" >> "$out"/api_keys
 
-    public.port = {
-      name = "homepage-port";
-      value = toString config.layers.layer-20.services.config.homepage-dashboard.port;
-    };
+      echo -n "${toString config.layers.layer-20.services.config.homepage-dashboard.port}" > "$out"/port
+    '';
   };
 
   # Import the actual module

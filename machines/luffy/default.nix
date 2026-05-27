@@ -21,35 +21,18 @@
   networking.hostName = "luffy";
   system.stateVersion = "25.05";
 
-  # ----------------------------------------------------------------------------
-  # AVAILABLE PROFILES / TAGS
-  # ----------------------------------------------------------------------------
-  # Tags define the machine's role and automatically enable corresponding features.
-  # See `layers/90-profiles/tags/` for explicit definitions.
-  #
-  # Hardware/Form Factor:
-  #   "workstation" : Enables base limits, themes, and network tools (avahi, tailscale, ssh).
-  #   "desktop"     : Enables graphical hardware features (bluetooth), automount, portals, flatpak.
-  #   "laptop"      : Enables battery optimizations and wireless tools.
-  #
-  # Roles:
-  #   "server"      : Enables server base infra (monitoring, tailscale, adguard).
-  #   "development" : Enables coding tools, Python, VSCode, and dev agents (Opencode, Antigravity).
-  #   "gaming"      : Enables Steam, GameMode, Lutris, emulators, etc.
-  #   "ai-server"   : Enables local AI backend (llms, sillytavern, wyoming, ai-services, dashboard).
-  #   "homelab"     : Enables home infra (home-assistant, searxng, headscale, vaultwarden, etc).
-  #   "cache-server": Enables Harmonia Nix binary cache.
-  #   "media-server": Enables the *arr stack, Jellyfin, Deluge, etc.
-  # ----------------------------------------------------------------------------
-
   nixpkgs.config.allowUnfree = true;
+
+  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
   # ============================================================================
   layers = {
     layer-10.system = {
+      hardware.kernel = "cachyos"; # Maximum performance for desktop
       config.impermanence.enable = true;
+      virtualization.enable = true;
     };
     layer-70.agent = {
       ai-agent-stack.enable = true;
@@ -57,12 +40,14 @@
   };
   layers.layer-20.services.config.your-spotify.enable = true;
 
-  layers.layer-30.theming.themes.greeter.greetd = {
-    enable = true;
+  # Switch to SDDM for stability and better NVIDIA support
+  layers.layer-30.theming.themes.greeter = {
+    sddm.enable = true;
+    greetd.enable = false;
   };
 
-  # Pure Wayland — no X server needed with greetd/ReGreet
-  services.xserver.enable = lib.mkForce false;
+  # SDDM uses X11 by default in this config, which is safer for many setups
+  services.xserver.enable = true;
 
   layers.layer-40.desktop = {
     hyprland.enable = true;
@@ -79,11 +64,13 @@
     adguard = {
       enable = true;
       port = 3002; # avoids homepage and grafana
+      bindHosts = [ "127.0.0.1" "192.168.1.53" "100.80.146.120" ];
     };
   };
 
   hardware.nvidia = {
     enable = true;
+    modesetting.enable = true;
     package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
@@ -96,22 +83,7 @@
 
     # Native Postgres (Shared for Nextcloud, Immich, MaxKB etc.)
     postgresql = {
-      enable = true;
       enableTCPIP = true;
-      ensureUsers = [
-        {
-          name = "nextcloud";
-          ensureDBOwnership = true;
-        }
-        {
-          name = "immich";
-          ensureDBOwnership = true;
-        }
-      ];
-      ensureDatabases = [
-        "nextcloud"
-        "immich"
-      ];
     };
 
     # DuckDNS Auto-Updater using ddclient
@@ -176,10 +148,6 @@
     # Moved from Nami
     n8n-server.enable = true;
     komga-server.enable = true;
-    matrix-server = {
-      enable = true;
-      serverName = "matrix.local";
-    };
     mautrix-bridges = {
       enable = true;
       homeserverUrl = "http://localhost:8008";
@@ -199,7 +167,7 @@
         extraConfig = ''
           encode zstd gzip
           header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-          reverse_proxy localhost:3000
+          reverse_proxy localhost:3006
         '';
       };
       virtualHosts."*.lovelain.duckdns.org" = {
@@ -207,9 +175,6 @@
         extraConfig = ''
           encode zstd gzip
           header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-
-          # ollama and qdrant moved to registry
-
 
           @crawl4ai host crawl4ai.lovelain.duckdns.org
           handle @crawl4ai { reverse_proxy localhost:32775 }
@@ -251,7 +216,7 @@
           handle @kavita { reverse_proxy localhost:5000 }
 
           @headscale host headscale.lovelain.duckdns.org
-          handle @headscale { reverse_proxy localhost:8080 }
+          handle @headscale { reverse_proxy localhost:8086 }
 
           @chat host chat.lovelain.duckdns.org
           handle @chat { reverse_proxy localhost:3004 }
@@ -306,7 +271,6 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    # users.t0psh31f.imports = [ inputs.niri.homeModules.config ];
   };
 
   # ============================================================================
@@ -328,7 +292,7 @@
   # ACME Let's Encrypt Wildcard via DuckDNS
   security.acme = {
     acceptTerms = true;
-    defaults.email = "admin@lovelain.duckdns.org";
+    defaults.email = lib.mkForce "admin@lovelain.duckdns.org";
     certs."lovelain.duckdns.org" = {
       domain = "*.lovelain.duckdns.org";
       extraDomainNames = [

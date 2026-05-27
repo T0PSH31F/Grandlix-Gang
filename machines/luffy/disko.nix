@@ -4,7 +4,7 @@
   disko.devices = {
     disk.main = {
       type = "disk";
-      device = "/dev/sda"; # UPDATE THIS TO MATCH YOUR DISK (e.g. /dev/sda, /dev/nvme0n1)
+      device = "/dev/nvme0n1"; # UPDATE THIS TO MATCH YOUR DISK (e.g. /dev/sda, /dev/nvme0n1)
       content = {
         type = "gpt";
         partitions = {
@@ -25,7 +25,7 @@
             size = "32G"; # Match RAM for hibernate support
             content = {
               type = "luks";
-              name = "swap_crypted";
+              name = "swap_crypted_nvme";
               passwordFile = "/tmp/secret.key";
               content = {
                 type = "swap";
@@ -38,7 +38,7 @@
             size = "100%";
             content = {
               type = "luks";
-              name = "crypted";
+              name = "crypted_nvme";
               passwordFile = "/tmp/secret.key";
               settings = {
                 allowDiscards = true;

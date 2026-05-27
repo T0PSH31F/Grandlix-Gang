@@ -1,4 +1,5 @@
 {
+  lib,
   ...
 }:
 {
@@ -43,8 +44,10 @@
   # Note: Most features are automatically enabled via machine.tags -> 90-profiles
   layers = {
     layer-10.system = {
+      hardware.kernel = "zen"; # Zen is best for laptops (responsiveness without thermal/battery penalty)
       peripherals.corsair.enable = true;
       peripherals.openrgb.enable = true;
+      peripherals.razer.enable = lib.mkForce false; # Disabled: openrazer driver incompatible with linux 7.0.10
       mobile.android.enable = true;
       config.impermanence.enable = true;
       virtualization.enable = true;
@@ -54,11 +57,9 @@
       adguard.enable = true;
     };
 
-    layer-30.theming.themes = {
-      greeter.greetd = {
-        enable = true;
-        background = ../../layers/00-cyberia/02-assets/sddm_background/roronoa-zoro_800.gif;
-      };
+    layer-30.theming.themes.greeter = {
+      sddm.enable = true;
+      greetd.enable = false;
     };
 
     layer-40.desktop = {
@@ -74,6 +75,15 @@
   # ============================================================================
   # 04 - SYSTEM & PROGRAM OVERRIDES
   # ============================================================================
+
+  services = {
+    llm-agents.enable = true;
+    llama-cpp-server.enable = true;
+    n8n-server.enable = true;
+    infrastructure.langfuse.enable = true;
+  };
+
+  clan.core.postgresql.enable = true;
 
   # ============================================================================
   # 05 - SECURITY & SECRETS (SOPS/ACME)

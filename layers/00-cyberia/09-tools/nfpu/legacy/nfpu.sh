@@ -18,7 +18,7 @@ BUILD_WATCHER="nix-output-monitor"
 # --------------------------------------------------------------
 # Helper functions
 # --------------------------------------------------------------
-header() { echo -e "\n\e[1;34=== $1 ===\e[0m\n"; }
+header() { echo -e "\n\e[1;34m=== $1 ===\e[0m\n"; }
 run() { "$@" || { echo "❌ Command failed: $*"; exit 1; }
 }
 
@@ -45,17 +45,23 @@ run "${REPO_ROOT}/tools/nfpu/lib/show_nix_plan.sh"
 # 4️⃣ Forecast binary‑cache hit‑rate
 # --------------------------------------------------------------
 header "Binary‑cache hit forecast"
+MACHINES=("luffy" "z0r0")
 if ${USE_NIX_WEATHER} && command -v nix-weather >/dev/null 2>&1; then
-    run "${REPO_ROOT}/tools/nfpu/lib/forecast_cache.sh"
+    for m in "${MACHINES[@]}"; do
+        run "${REPO_ROOT}/tools/nfpu/lib/forecast_cache.sh" "$m"
+    done
 else
     echo "⚠️  nix-weather not installed – falling back to simple local cache check."
     # Simple local‑cache check (list missing substitutes)
     NIX_SUBST=${NIX_SUBSTITUTOR:-https://cache.nixos.org}
     echo "  → Checking ${NIX_SUBST} …"
-    # Approximation: look for missing substitutes in the dry‑run output
-    nix build "${REPO_ROOT}"/.#nixosConfigurations.luffy.config.system.build.toplevel \
-        --no-link --dry-run --keep-going 2>/dev/null | \
-        grep -E 'building|reusing' | grep -v "substitutes:" || true
+    for m in "${MACHINES[@]}"; do
+        echo "  → Checking cache for machine: $m"
+        # Approximation: look for missing substitutes in the dry‑run output
+        nix build "${REPO_ROOT}"/.#nixosConfigurations."${m}".config.system.build.toplevel \
+            --no-link --dry-run --keep-going 2>/dev/null | \
+            grep -E 'building|reusing' | grep -v "substitutes:" || true
+    done
 fi
 
 # --------------------------------------------------------------

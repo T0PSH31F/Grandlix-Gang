@@ -96,13 +96,14 @@ in
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       systemd.enable = true;
       plugins = [
-        inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
+        # Temporarily disabled due to ABI mismatch with recent Hyprland commits (renderHWCursorBuffer)
+        # inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
       ];
 
       settings = {
         source = [
-          "~/.config/hypr/noctalia/noctalia-colors.conf"
-          "~/.config/hypr/monitors.conf"
+          "${config.home.homeDirectory}/.config/hypr/noctalia/noctalia-colors.conf"
+          "${config.home.homeDirectory}/.config/hypr/monitors.conf"
         ];
 
         "$primary" = "0xfff28fad";
@@ -184,6 +185,21 @@ in
       position = "center"
       lazy = true
     '';
+
+
+    systemd.user.services.hyprland-init-files = {
+      Unit = {
+        Description = "Ensure Hyprland optional configuration files exist";
+        Before = [ "graphical-session-pre.target" ];
+        WantedBy = [ "graphical-session-pre.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr/noctalia && touch %h/.config/hypr/noctalia/noctalia-colors.conf %h/.config/hypr/monitors.conf'";
+      };
+    };
+    
     xdg.enable = true;
     };
   };

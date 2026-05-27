@@ -30,6 +30,18 @@ in
   };
 
   config = mkIf cfg.enable {
+    clan.core.vars.generators.deluge = {
+      files."authFile" = {
+        secret = true;
+        owner = mediaCfg.user;
+        group = mediaCfg.group;
+      };
+      script = ''
+        PASSWORD=$(${pkgs.openssl}/bin/openssl rand -hex 16)
+        echo "localclient:$PASSWORD:10" > "$out/authFile"
+      '';
+    };
+
     # ============================================================================
     # DELUGE - Torrent Client
     # ============================================================================
@@ -39,7 +51,7 @@ in
       web.port = cfg.deluge.port;
 
       declarative = true;
-      authFile = pkgs.writeText "deluge-auth" "localclient:a7b8c9d0e1f2:10";
+      authFile = config.clan.core.vars.generators.deluge.files."authFile".path;
       config = {
         download_location = "${mediaCfg.downloadsDir}/torrents";
         max_active_downloading = 5;
@@ -89,19 +101,20 @@ in
     environment.systemPackages = mkIf cfg.aria2.enable [ 
       pkgs.aria2 
       pkgs.python3Packages.aria2p 
+      # pkgs.ariang # Disabled due to upstream npm build failure
     ];
     
     # Simple static web UI for Aria2
-    systemd.services.ariang = mkIf cfg.aria2.enable {
-      description = "AriaNg Web UI";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.python3}/bin/python3 -m http.server 6801 --directory ${pkgs.ariang}/share/ariang";
-        DynamicUser = true;
-        Restart = "always";
-      };
-    };
+    # systemd.services.ariang = mkIf cfg.aria2.enable {
+    #   description = "AriaNg Web UI";
+    #   after = [ "network.target" ];
+    #   wantedBy = [ "multi-user.target" ];
+    #   serviceConfig = {
+    #     ExecStart = "${pkgs.python3}/bin/python3 -m http.server 6801 --directory ${pkgs.ariang}/share/ariang";
+    #     DynamicUser = true;
+    #     Restart = "always";
+    #   };
+    # };
 
     clan.core.vars.generators.aria2 = {
       files."rpc_secret" = {
@@ -137,6 +150,13 @@ in
         save-session = "/var/lib/aria2/session.gz";
         input-file = "/var/lib/aria2/session.gz";
         save-session-interval = 60;
+      };
+    };
+
+    systemd.services.aria2 = mkIf cfg.aria2.enable {
+      serviceConfig = {
+        User = mkForce mediaCfg.user;
+        Group = mkForce mediaCfg.group;
       };
     };
 

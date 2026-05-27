@@ -29,7 +29,7 @@
     ../../../10-system
     ../../../10-system/12-processor
     ../../../10-system/11-foundation
-    ../../../30-theming/32-themes
+    ../../../30-theming/32-boot
     ../../../10-system/13-users/t0psh31f.nix
     ../../../40-desktop
   ];
@@ -57,10 +57,7 @@
   # THEMES
   # ============================================================================
   layers.layer-30.theming.themes.greeter = {
-    sddm = {
-      enable = true;
-      background = ../../../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif;
-    };
+    sddm.enable = true;
     greetd.enable = false;
   };
   layers.layer-30.theming.themes.plymouth-hellonavi.enable = true;

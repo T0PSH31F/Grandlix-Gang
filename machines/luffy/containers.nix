@@ -4,69 +4,85 @@
   virtualisation.oci-containers.containers = {
 
     crawl4ai = {
-      image = "crawl4ai/crawl4ai:latest";
+      image = "unclecode/crawl4ai@sha256:a45fd08f8f15f67026c1bff0a151f0479244caf6751a0c6943b3870efafcd025";
       ports = [ "32775:11235" ];
     };
 
     skyvern-ui = {
-      image = "ghcr.io/skyvern-ai/skyvern-ui:latest";
+      image = "public.ecr.aws/skyvern/skyvern-ui@sha256:5d963660ec3a0827f79b2e1549e99112d5e707926d623b9423c2cb0d31566cb7";
       ports = [ "32776:8080" ];
     };
 
     skyvern-api = {
-      image = "ghcr.io/skyvern-ai/skyvern:latest";
+      image = "public.ecr.aws/skyvern/skyvern@sha256:d52b7ddc32301f46de09ed340ab3097b22a2c13e4b3d99b76273a03c92fc7960";
       ports = [ "32779:8000" ];
     };
 
     skyvern-chrome = {
-      image = "ghcr.io/skyvern-ai/chrome:latest";
-      ports = [ "32780:9222" ];
+      image = "ghcr.io/browserless/chromium@sha256:8fb011d07d4f469ea936a0605b4705c7b585108a095d598fcd27b7bef9597caa";
+      ports = [ "32780:3000" ];
     };
 
     sim-studio-ui = {
-      image = "simstudio/ui:latest"; # Replace with precise tag if needed
+      image = "ghcr.io/simstudioai/simstudio@sha256:a96bec26e7bca9d125fe6d03e3030082cf97d074fae5b6a0387a44c591e1d1e1";
       ports = [ "32790:3000" ];
     };
 
     sim-studio-realtime = {
-      image = "simstudio/realtime:latest"; # Replace with precise tag if needed
+      image = "ghcr.io/simstudioai/realtime@sha256:fbedb2f0a393aa269f2e4041598434c472c72ab31c8fa1a83e8ebfd32a0de2e9";
       ports = [ "32789:8080" ];
     };
 
     maxkb = {
-      image = "1panel/maxkb:latest";
+      image = "1panel/maxkb@sha256:42aad1e002f28c6dd865b6f299297e44029477c1a7a6280c6427e5128b64b5fe";
       ports = [ "32784:8080" ];
       # Shared Postgres handled natively, but keeping data volume intact for other settings
       volumes = [ "/var/lib/maxkb:/var/lib/postgresql/data" ];
     };
 
     openclaw = {
-      image = "openclaw/openclaw:latest"; # Replace with precise tag if needed
+      image = "ghcr.io/openclaw/openclaw@sha256:dcfd148777401d1bbdc63eab5c2f280bbfa912dfb1818566f9d66bb96ffb3f95";
       ports = [ "59879:8080" ];
     };
 
     spacedrive = {
-      image = "spacedrive/server:latest";
+      image = "ghcr.io/spacedriveapp/spacedrive/server@sha256:fd3bc896f3a5b8e429e008cedde361d6b9468c48d8c81996fdb1d99e90e0837b";
       ports = [
         "32768:7373"
         "32769:8080"
       ];
       volumes = [ "/var/lib/spacedrive:/data" ];
+      environment = {
+        SD_AUTH = "disabled";
+      };
     };
 
     beszel-hub = {
-      image = "henrygd/beszel:latest";
+      image = "henrygd/beszel@sha256:a849ad80814b6a1a3be665304dcace5d4854b3bed7bde4dd1227e8ce1b82d477";
       ports = [ "32772:8090" ];
       volumes = [ "/var/lib/beszel:/beszel_data" ];
     };
 
     homepage-dashboard = {
-      image = "ghcr.io/gethomepage/homepage:latest";
-      ports = [ "3000:3000" ];
+      image = "ghcr.io/gethomepage/homepage@sha256:d8d784e5090111b6e4c56dfd90e272d2953a2094e87349f647165df0fa6c4401";
+      # Limit network exposure to localhost since public access is proxied securely via Caddy
+      ports = [ "127.0.0.1:3006:3000" ];
       volumes = [
         "/var/lib/homepage:/app/config"
-        "/var/run/docker.sock:/var/run/docker.sock:ro"
+        # SECURITY NOTE: Exposing the host's Podman/Docker socket allows container escaping.
+        # Homepage only uses this for the optional container status widget. 
+        # Since it is not actively required/used in our configurations, we disable it.
+        # If needed in the future, prefer using a secure API proxy (e.g. docker-socket-proxy)
+        # to restrict socket queries to read-only container status endpoints.
+        # "/run/podman/podman.sock:/var/run/docker.sock:ro"
       ];
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/maxkb 0755 root root -"
+    "d /var/lib/spacedrive 0755 root root -"
+    "d /var/lib/beszel 0755 root root -"
+    "d /var/lib/homepage 0755 root root -"
+  ];
 }
