@@ -25,7 +25,7 @@
             size = "32G"; # Match RAM for hibernate support
             content = {
               type = "luks";
-              name = "swap_crypted";
+              name = "swap_crypted_nvme";
               passwordFile = "/tmp/secret.key";
               content = {
                 type = "swap";
@@ -38,7 +38,7 @@
             size = "100%";
             content = {
               type = "luks";
-              name = "crypted";
+              name = "crypted_nvme";
               passwordFile = "/tmp/secret.key";
               settings = {
                 allowDiscards = true;
