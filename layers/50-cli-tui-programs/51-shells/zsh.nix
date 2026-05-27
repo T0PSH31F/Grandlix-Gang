@@ -81,29 +81,50 @@ in
         searchUpKey = "^[[A";
         searchDownKey = "^[[B";
       };
-      shellInit = ''
-        # Load Nix profile for Zsh sessions
-        if [ -e /etc/profile.d/nix.sh ]; then
-          . /etc/profile.d/nix.sh
-        elif [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
-          . $HOME/.nix-profile/etc/profile.d/nix.sh
-        fi
-
-        # Show MOTD if interactive
-        if [[ $- == *i* ]]; then
-          cat ${motdPkg}/motd.txt
-        fi
-
-        # Initialize Starship prompt
-        if command -v starship > /dev/null 2>&1; then
-          eval "$(starship init zsh)"
-        fi
-      '';
       shellAliases = {
         zls = "zellij list-sessions";
         zd = "zellij delete-session";
         zk = "zellij kill-session";
       };
+      initContent = ''
+        any-nix-shell zsh --info-right | source /dev/stdin
+        bindkey -v
+        export KEYTIMEOUT=1
+        bindkey '^Y' autosuggest-accept
+        bindkey '^E' autosuggest-clear
+        if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+          # Machine-specific MOTD greeting
+          cat ${motdPkg}/motd.txt
+        fi
+        ${lib.optionalString cfg.theming.enable "[ -f ~/.config/fzf/matugen.conf ] && source ~/.config/fzf/matugen.conf"}
+        if command -v starship >/dev/null 2>&1; then
+          # Sync and apply Noctalia theme palette to Starship config
+          local PALETTE_FILE=""
+          if [ -f "$HOME/.cache/noctalia/starship-palette.toml" ]; then
+            PALETTE_FILE="$HOME/.cache/noctalia/starship-palette.toml"
+          elif [ -f "$HOME/.config/noctalia/templates/starship.toml" ]; then
+            PALETTE_FILE="$HOME/.config/noctalia/templates/starship.toml"
+          fi
+
+          if [ ! -f "$HOME/.cache/starship/starship.toml" ] || [ "$HOME/.config/starship.toml" -nt "$HOME/.cache/starship/starship.toml" ]; then
+            mkdir -p "$HOME/.cache/starship"
+            cp "$HOME/.config/starship.toml" "$HOME/.cache/starship/starship.toml"
+            if [ -n "$PALETTE_FILE" ]; then
+              sed -i -E 's/^([[:space:]]*)palette([[:space:]]*)=.*/\1palette\2= "noctalia"/' "$HOME/.cache/starship/starship.toml" 2>/dev/null || sed -i '1i palette = "noctalia"' "$HOME/.cache/starship/starship.toml"
+              echo -e "\n# >>> NOCTALIA STARSHIP PALETTE >>>" >> "$HOME/.cache/starship/starship.toml"
+              cat "$PALETTE_FILE" >> "$HOME/.cache/starship/starship.toml"
+              echo "# <<< NOCTALIA STARSHIP PALETTE <<<" >> "$HOME/.cache/starship/starship.toml"
+            fi
+          fi
+          eval "$(starship init zsh)"
+        fi
+
+        ${lib.optionalString (!cfg.headless) ''
+          if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "Waveterm" ]] && [[ -z "$SSH_CONNECTION" ]]; then
+              if command -v zellij >/dev/null 2>&1; then zellij attach -c "$HOST"; fi
+          fi
+        ''}
+      '';
       antidote = {
         enable = true;
         useFriendlyNames = true;

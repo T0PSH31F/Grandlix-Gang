@@ -66,7 +66,9 @@ in
         enable = true;
         wayland.enable = false;
         theme = "sugar-dark";
-        settings = { Theme = "sugar-dark"; };
+        settings = {
+          Theme = { Current = "sugar-dark"; };
+        };
       };
 
       environment.systemPackages = [
