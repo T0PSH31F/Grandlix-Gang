@@ -60,9 +60,10 @@ in
         if [ -e /etc/profile.d/nix.sh ]; then . /etc/profile.d/nix.sh; elif [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
       '';
       autosuggestion = {
-        enable = false;
+        enable = true;
+        highlight = "fg=#6c7086";
       };
-      syntaxHighlighting.enable = false;
+      syntaxHighlighting.enable = true;
       history = {
         append = true;
         expireDuplicatesFirst = true;
@@ -86,6 +87,16 @@ in
           . /etc/profile.d/nix.sh
         elif [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
           . $HOME/.nix-profile/etc/profile.d/nix.sh
+        fi
+
+        # Show MOTD if interactive
+        if [[ $- == *i* ]]; then
+          cat ${motdPkg}/motd.txt
+        fi
+
+        # Initialize Starship prompt
+        if command -v starship > /dev/null 2>&1; then
+          eval "$(starship init zsh)"
         fi
       '';
       shellAliases = {
