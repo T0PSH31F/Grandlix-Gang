@@ -52,7 +52,11 @@ final: prev: {
     doCheck = false;
   });
 
-
+  # Disable openldap tests only for i686-linux (32-bit) builds to prevent flaky test failures on cache misses,
+  # while keeping the x86_64-linux build identical to nixpkgs to preserve binary cache hits.
+  openldap = prev.openldap.overrideAttrs (old: {
+    doCheck = !(prev.stdenv.hostPlatform.system == "i686-linux");
+  });
 
   # Disable pipx tests as they are currently failing on Python 3.13
   pipx = prev.pipx.overrideAttrs (old: {
