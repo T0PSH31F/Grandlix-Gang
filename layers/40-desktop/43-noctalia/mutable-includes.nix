@@ -20,13 +20,14 @@ in
 
     # ── Kitty ──────────────────────────────────────────────────────────
     # Noctalia's built-in kitty template generates to:
-    #   ~/.config/noctalia/templates/kitty.conf
-    # We set Kitty to use the Matugen theme (it looks in themes/ dir)
+    #   ~/.config/kitty/themes/noctalia.conf (and symlinks to current-theme.conf)
+    # We set Kitty to include the current theme file
     xdg.configFile."kitty/kitty.conf" = {
       text = ''
         # Kitty base config — managed by Home Manager
         # Dynamic colors are loaded from Noctalia's generated theme
-        include ~/.config/noctalia/templates/kitty.conf
+        include current-theme.conf
+
 
         # Font
         font_family      JetBrainsMono Nerd Font
@@ -84,14 +85,14 @@ in
 
     # ── Ghostty ────────────────────────────────────────────────────────
     # Noctalia's built-in ghostty template generates to:
-    #   ~/.config/noctalia/templates/ghostty-theme
-    # Ghostty looks for themes in ~/.config/ghostty/themes/
-    # We set the config to use the matugen theme name
+    #   ~/.config/ghostty/themes/noctalia
+    # We set the config to use the noctalia theme name
     xdg.configFile."ghostty/config" = {
       text = ''
         # Ghostty base config — managed by Home Manager
         # Dynamic theme loaded from Noctalia
-        theme = Matugen
+        theme = noctalia
+
 
         font-family = JetBrainsMono Nerd Font
         font-size = 16

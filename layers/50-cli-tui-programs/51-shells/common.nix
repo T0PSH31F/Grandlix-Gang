@@ -7,7 +7,10 @@ in
     home.sessionVariables = {
       EDITOR = "hx"; VISUAL = "hx"; PAGER = "bat";
       MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+      STARSHIP_CONFIG = lib.mkForce "$HOME/.cache/starship/starship.toml";
     };
+
+
 
     home.shellAliases = {
       set-ai = "uv run python ~/.local/bin/set-ai";

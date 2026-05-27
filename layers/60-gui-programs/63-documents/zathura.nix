@@ -14,6 +14,8 @@
       options = {
         selection-clipboard = "clipboard";
       };
+      extraConfig = "include noctaliarc";
     };
+
   };
 }

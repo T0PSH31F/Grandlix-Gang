@@ -32,6 +32,7 @@
         input.method = "pipewire";
         smoothing.monstercat = 1;
         color = {
+          theme = "'noctalia'";
           gradient = 1;
           gradient_count = 8;
           gradient_color_1 = "'#94e2d5'";
@@ -43,6 +44,7 @@
           gradient_color_7 = "'#eba0ac'";
           gradient_color_8 = "'#f38ba8'";
         };
+
       };
     };
 
