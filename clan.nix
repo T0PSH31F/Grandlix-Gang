@@ -77,7 +77,7 @@ in
           input = "self";
         };
         roles.server.machines.luffy = { };
-        # roles.client.machines.z0r0 = { };
+        roles.client.machines.z0r0 = { };
       };
 
       sillytavern = {

@@ -20,7 +20,7 @@ in
         "${pkgs.coreutils}/bin/mkdir -p ${mountPoint}"
       ];
       ExecStart = "${pkgs.rclone}/bin/rclone mount gdrive: ${mountPoint} --vfs-cache-mode full";
-      ExecStop = "/run/wrappers/bin/fusermount3 -u ${mountPoint}";
+      ExecStop = "-/run/wrappers/bin/fusermount3 -u ${mountPoint}";
       Restart = "on-failure";
     };
   };

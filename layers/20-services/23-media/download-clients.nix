@@ -101,19 +101,20 @@ in
     environment.systemPackages = mkIf cfg.aria2.enable [ 
       pkgs.aria2 
       pkgs.python3Packages.aria2p 
+      # pkgs.ariang # Disabled due to upstream npm build failure
     ];
     
     # Simple static web UI for Aria2
-    systemd.services.ariang = mkIf cfg.aria2.enable {
-      description = "AriaNg Web UI";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.python3}/bin/python3 -m http.server 6801 --directory ${pkgs.ariang}/share/ariang";
-        DynamicUser = true;
-        Restart = "always";
-      };
-    };
+    # systemd.services.ariang = mkIf cfg.aria2.enable {
+    #   description = "AriaNg Web UI";
+    #   after = [ "network.target" ];
+    #   wantedBy = [ "multi-user.target" ];
+    #   serviceConfig = {
+    #     ExecStart = "${pkgs.python3}/bin/python3 -m http.server 6801 --directory ${pkgs.ariang}/share/ariang";
+    #     DynamicUser = true;
+    #     Restart = "always";
+    #   };
+    # };
 
     clan.core.vars.generators.aria2 = {
       files."rpc_secret" = {

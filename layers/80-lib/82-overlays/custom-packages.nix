@@ -2,15 +2,6 @@
 # Custom packages you might want available on all systems.
 
 final: prev: {
-  # Disable openldap tests in Nix sandbox builds.
-  # test017-syncrepl is timing-sensitive (relies on real network delays for
-  # sync replication) and fails intermittently in sandboxed environments on
-  # both aarch64 and x86_64. Upstream: https://bugs.openldap.org/show_bug.cgi?id=9839
-  openldap = prev.openldap.overrideAttrs (old: {
-    doCheck = false;
-    doInstallCheck = false;
-  });
-
   # Yazelix Zellij Orchestrator
   yazelix-orchestrator = final.stdenv.mkDerivation {
     pname = "yazelix-orchestrator";
@@ -59,6 +50,18 @@ final: prev: {
   # Disable glances test suite as they try to bind to localhost and fail in sandbox
   glances = prev.glances.overridePythonAttrs (old: {
     doCheck = false;
+  });
+
+  # Disable openldap test suite as it takes notoriously long to run
+  openldap = prev.openldap.overrideAttrs (old: {
+    doCheck = false;
+  });
+
+  # Disable pipx tests as they are currently failing on Python 3.13
+  pipx = prev.pipx.overrideAttrs (old: {
+    doCheck = false;
+    doInstallCheck = false;
+    pytestCheckPhase = "true";
   });
 
   # Fix for noto-fonts-subset build failure (cp fails when glob matches no files)

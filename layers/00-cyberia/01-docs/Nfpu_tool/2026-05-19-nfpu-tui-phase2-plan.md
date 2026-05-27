@@ -8,22 +8,30 @@
 
 ---
 
-### Task 1: Integrate Bubbles Components
+## Task 1: Integrate Bubbles Components
+
 - Add list/tree Bubbles to `tui/model.go`.
 - Implement navigation (j/k, up/down, pgup/pgdown).
 - Implement selection highlighting.
 
-### Task 2: Implement Toggling State
+## Task 2: Implement Toggling State
+
 - Add a `Modified` boolean to the `MachineState` structs.
 - Map the spacebar/enter key to flip `true/false` states in memory.
 - Add visual indicators (e.g., `[✓]` -> `[*]`) for unsaved changes.
 
-### Task 3: Build the Nix Writer
-- Create `registry/writer.go`.
-- Implement logic to locate the corresponding `.nix` file (e.g., if toggling `activities.office.enable` on a tag, parse the tag's file).
-- Use regex or an AST parser to safely inject or modify `.enable = true/false;`.
+## Task 3: Build the Nix Writer (tui-overrides.nix)
 
-### Task 4: User Confirmation and Save Flow
+- Create `registry/writer.go`.
+- Rather than risking in-place modifications to user files, implement a separate machine-managed override mechanism:
+  - Implement `GenerateOverride` or `WriteOverride` in `registry/writer.go` to emit/maintain a minimal override module (`tui-overrides.nix` or a JSON overrides file converted to a Nix fragment).
+  - The generated override module will set target options (e.g. `activities.office.enable = true/false;`) using standard module imports or higher priority (e.g., `lib.mkForce`).
+  - Ensure the writer only writes to/modifies the `tui-overrides.nix` file.
+  - Implement durable serialization (e.g., JSON -> Nix conversion or direct Nix fragment writing).
+  - Document/ensure the main NixOS configuration imports `tui-overrides.nix` (e.g. via `imports = [ ./tui-overrides.nix ];` in host defaults), ensuring user comments/files remain completely untouched and merge conflicts are avoided.
+
+## Task 4: User Confirmation and Save Flow
+
 - Add a "Press 'S' to Save" keybinding.
 - Build an intermediate diff-view model showing pending changes.
 - Execute the save, then trigger a re-run of `eval-registry.nix` to ensure ground truth matches memory.

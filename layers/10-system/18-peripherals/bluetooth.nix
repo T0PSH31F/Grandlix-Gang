@@ -29,9 +29,10 @@ in
 
     # Prevent Bluetooth USB controllers from auto-suspending (turning off on idle)
     services.udev.extraRules = ''
-      # Disable USB autosuspend for Bluetooth controllers by driver name and class
-      ACTION=="add", SUBSYSTEM=="usb", DRIVERS=="btusb", ATTR{power/control}="on"
-      ACTION=="add", SUBSYSTEM=="usb", ATTRS{bInterfaceClass}=="e0", ATTRS{bInterfaceSubClass}=="01", ATTRS{bInterfaceProtocol}=="01", ATTR{power/control}="on"
+      # Disable USB autosuspend for Bluetooth controllers
+      ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{bDeviceClass}=="e0", ATTR{bDeviceSubClass}=="01", ATTR{bDeviceProtocol}=="01", ATTR{power/control}="on"
+      ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{ID_USB_INTERFACES}=="*:e00101:*", ATTR{power/control}="on"
+      ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_interface", DRIVERS=="btusb", RUN+="/bin/sh -c 'echo on > /sys$env{DEVPATH}/../power/control'"
     '';
 
     # Prevent TLP from turning off bluetooth on boot or when switching power sources
@@ -44,6 +45,7 @@ in
       DEVICES_TO_ENABLE_ON_STARTUP = "bluetooth";
       DEVICES_TO_ENABLE_ON_AC = "bluetooth";
       DEVICES_TO_ENABLE_ON_BAT = "bluetooth";
+      USB_EXCLUDE_BTUSB = 1;
     };
 
     # Bluetooth packages

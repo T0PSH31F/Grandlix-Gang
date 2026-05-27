@@ -52,8 +52,19 @@ in
       };
       
       preStart = ''
+        mkdir -p /var/lib/whisper
         if [ ! -f /var/lib/whisper/ggml-base.en.bin ]; then
-          ${pkgs.curl}/bin/curl -L -o /var/lib/whisper/ggml-base.en.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
+          echo "Downloading Whisper model (ggml-base.en.bin)..."
+          if ! ${pkgs.curl}/bin/curl -L -f -o /var/lib/whisper/ggml-base.en.bin "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"; then
+            echo "Failed to download ggml-base.en.bin" >&2
+            rm -f /var/lib/whisper/ggml-base.en.bin
+            exit 1
+          fi
+        fi
+        if [ ! -f /var/lib/whisper/ggml-base.en.bin ] || [ ! -s /var/lib/whisper/ggml-base.en.bin ]; then
+          echo "Failed to verify ggml-base.en.bin (missing or empty)" >&2
+          rm -f /var/lib/whisper/ggml-base.en.bin
+          exit 1
         fi
       '';
     };

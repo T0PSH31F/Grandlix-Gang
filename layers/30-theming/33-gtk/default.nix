@@ -29,19 +29,19 @@ in
 
     gtk = {
       gtk4.theme = null;
-      enable = lib.mkIf (!(config.stylix.enable or false)) true;
-      theme = lib.mkIf (!(config.stylix.enable or false)) {
+      enable = lib.mkIf (!(config.stylix.targets.gtk.enable or false)) true;
+      theme = lib.mkIf (!(config.stylix.targets.gtk.enable or false)) {
         name = "adw-gtk3-dark";
         package = pkgs.adw-gtk3;
       };
-      iconTheme = lib.mkIf (!(config.stylix.enable or false)) {
+      iconTheme = lib.mkIf (!(config.stylix.targets.gtk.enable or false)) {
         name = "candy-icons";
         package = pkgs.candy-icons;
       };
-      gtk4.extraConfig = lib.mkIf (!(config.stylix.enable or false)) {
+      gtk4.extraConfig = lib.mkIf (!(config.stylix.targets.gtk.enable or false)) {
         gtk-application-prefer-dark-theme = 1;
       };
-      gtk3.extraConfig = lib.mkIf (!(config.stylix.enable or false)) {
+      gtk3.extraConfig = lib.mkIf (!(config.stylix.targets.gtk.enable or false)) {
         gtk-application-prefer-dark-theme = 1;
       };
     };

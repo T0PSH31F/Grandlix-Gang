@@ -8,21 +8,34 @@
 
 ---
 
-### Task 1: Asynchronous SSH Worker Pool
+## Task 1: Asynchronous SSH Worker Pool
+
 - Create `status/checker.go`.
-- Implement an SSH client that reads `~/.ssh/config` or uses `tailscale status` and keys to connect to machines (Z0R0, Luffy).
-- Setup a worker pool to ping machines concurrently.
+- Implement a secure SSH client that:
+  - Supports configurable SSH key paths and optional passphrases with fallback to `ssh-agent`.
+  - Enforces strict host-key verification using a `known_hosts`-based callback (e.g., `knownhosts.New`) or explicit fingerprint validation. Avoids insecure `InsecureIgnoreHostKey` fallback, but exposes a safe override flag for bootstrapping.
+  - Keeps a persistent, thread-safe `ssh.Client` per host using connection pooling/reuse (mutex-protected checkout with keepalives) rather than initiating a new handshake per task.
+  - Implements timeouts, retries, and detailed logging for auth and host-key failures.
+- Setup a worker pool to execute machine checks concurrently.
+- Detect/handle privilege escalation for commands like `systemctl` (e.g., run via `sudo` when required or document/verify that the service is accessible to the invoking user).
 
-### Task 2: Service Verification
+## Task 2: Service Verification (with Service-to-Unit Mapping)
+
+- Define a service-to-unit mapping registry or naming convention in the Phase 1 JSON registry output (e.g., adding a `"units"` array or `"unitPattern"` field per service option path).
+- Resolve Nix option paths (e.g., `layers.layer-20.services.config.adguard.enable`) to one or more concrete systemd unit names:
+  - Handle template units (e.g., `container@NAME.service`).
+  - Support multiple units per service (e.g., `[ "matrix-synapse.service", "matrix-synapse-register.service" ]`).
 - Parse the registry for services that are *expected* to be running (e.g., `adguard.enable == true`).
-- For each enabled service, remotely execute `systemctl is-active [service-name]`.
-- Map the responses back to expected UI states (Running, Failed, Missing).
+- For each enabled service, iterate and resolve all corresponding systemd unit names, then remotely execute `systemctl is-active [unit-name]` for each.
+- Map the aggregate responses back to expected UI states (Running, Failed, Missing).
 
-### Task 3: Build Dashboard View
+## Task 3: Build Dashboard View
+
 - Create a new Bubbletea model `tui/dashboard.go`.
 - Use a split layout: Top half shows machine up/down status, bottom half shows service health matrix.
 - Use Lipgloss colors: Green (Healthy), Red (Failed/Offline), Yellow (Pending).
 
-### Task 4: Live Polling & Updates
+## Task 4: Live Polling & Updates
+
 - Implement a `tea.Tick` command that re-runs checks every X seconds.
 - Handle connection timeouts gracefully so the UI never hangs.

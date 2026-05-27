@@ -816,6 +816,10 @@
       {
         "enabled": true,
         "id": "wezterm"
+      },
+      {
+        "enabled": true,
+        "id": "starship"
       }
     ],
     "enableUserTheming": true

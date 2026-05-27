@@ -1,4 +1,5 @@
 {
+  lib,
   ...
 }:
 {
@@ -43,8 +44,10 @@
   # Note: Most features are automatically enabled via machine.tags -> 90-profiles
   layers = {
     layer-10.system = {
+      hardware.kernel = "zen"; # Zen is best for laptops (responsiveness without thermal/battery penalty)
       peripherals.corsair.enable = true;
       peripherals.openrgb.enable = true;
+      peripherals.razer.enable = lib.mkForce false; # Disabled: openrazer driver incompatible with linux 7.0.10
       mobile.android.enable = true;
       config.impermanence.enable = true;
       virtualization.enable = true;

@@ -10,6 +10,7 @@
       "https://vicinae.cachix.org"
       "https://hyprland.cachix.org"
       "https://niri.cachix.org"
+      "https://cache.garnix.io"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -19,6 +20,7 @@
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
+      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
   };
 
@@ -131,6 +133,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel/release";
+    };
 
     # Utility inputs defined at top-level to allow follows
     systems.url = "github:nix-systems/default";
@@ -157,6 +162,7 @@
       disko,
       wakatime-lsp,
       antigravity,
+      nix-cachyos-kernel,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -206,6 +212,22 @@
             nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
           };
         };
+
+        flake.nfpuRegistry =
+          let
+            extractMachineConfig = name: machine:
+              let
+                cfg = machine.config;
+                layer20Services = cfg.layers.layer-20.services.config or {};
+                services = builtins.mapAttrs (sName: sCfg: {
+                  enable = sCfg.enable or false;
+                }) layer20Services;
+              in {
+                services = services;
+                layer10 = cfg.layers.layer-10.system or {};
+              };
+          in
+          builtins.mapAttrs extractMachineConfig inputs.self.nixosConfigurations;
 
         systems = [ "x86_64-linux" ];
 

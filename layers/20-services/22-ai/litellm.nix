@@ -22,8 +22,14 @@ in
 
     host = mkOption {
       type = types.str;
-      default = "0.0.0.0";
-      description = "Host address to bind to";
+      default = "127.0.0.1";
+      description = "Host address to bind to. Set to 127.0.0.1 to restrict access to localhost.";
+    };
+
+    openFirewall = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Open ports in the firewall for LiteLLM. Note that external exposure also requires setting the host option to a non-loopback address.";
     };
 
     settings = mkOption {
@@ -43,6 +49,6 @@ in
     };
 
     # 2. Firewall
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
+    networking.firewall.allowedTCPPorts = mkIf cfg.openFirewall [ cfg.port ];
   };
 }

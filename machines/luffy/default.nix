@@ -30,6 +30,7 @@
   # ============================================================================
   layers = {
     layer-10.system = {
+      hardware.kernel = "cachyos"; # Maximum performance for desktop
       config.impermanence.enable = true;
       virtualization.enable = true;
     };
