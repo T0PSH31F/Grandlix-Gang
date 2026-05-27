@@ -39,7 +39,9 @@ in
 
     xdg.configFile."uwsm/env-hyprland".text = ''
       export HYPRCURSOR_THEME=Sonic-Hyprcursor
-      export HYPRCURSOR_SIZE=32
+      export HYPRCURSOR_SIZE=${toString osConfig.layers.layer-30.theming.cursor.size}
+      export XCURSOR_THEME=Sonic-Hyprcursor
+      export XCURSOR_SIZE=${toString osConfig.layers.layer-30.theming.cursor.size}
       export _JAVA_AWT_WM_NONREPARENTING=1
       export GTK_USE_PORTAL=1
     '';
