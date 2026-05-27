@@ -32,7 +32,7 @@ in
     stylix = {
       enable = true;
       # Required by Stylix but not used for theming — Noctalia sets wallpaper at runtime
-      image = ../../00-cyberia/02-assets/sddm_background/fallback1.jpg;
+
       polarity = "dark";
       base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
       homeManagerIntegration.autoImport = true;
