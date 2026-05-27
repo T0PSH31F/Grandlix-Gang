@@ -4,7 +4,7 @@
   disko.devices = {
     disk.main = {
       type = "disk";
-      device = "/dev/sda"; # UPDATE THIS TO MATCH YOUR DISK (e.g. /dev/sda, /dev/nvme0n1)
+      device = "/dev/nvme0n1"; # UPDATE THIS TO MATCH YOUR DISK (e.g. /dev/sda, /dev/nvme0n1)
       content = {
         type = "gpt";
         partitions = {
