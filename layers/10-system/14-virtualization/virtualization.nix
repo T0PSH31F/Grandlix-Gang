@@ -67,7 +67,7 @@ with lib;
       # Install virtualization tools
       environment.systemPackages = with pkgs; [
         # Running android apps natively
-        android-translation-layer
+        # android-translation-layer
         # QEMU and related tools
         qemu
         quickemu
