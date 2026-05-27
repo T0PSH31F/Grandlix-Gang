@@ -73,6 +73,15 @@
   # 04 - SYSTEM & PROGRAM OVERRIDES
   # ============================================================================
 
+  services = {
+    llm-agents.enable = true;
+    llama-cpp-server.enable = true;
+    n8n-server.enable = true;
+    infrastructure.langfuse.enable = true;
+  };
+
+  clan.core.postgresql.enable = true;
+
   # ============================================================================
   # 05 - SECURITY & SECRETS (SOPS/ACME)
   # ============================================================================

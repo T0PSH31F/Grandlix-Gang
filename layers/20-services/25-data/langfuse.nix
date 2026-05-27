@@ -39,9 +39,9 @@ in
     };
 
     # Auto-provision the langfuse DB in Postgres
-    services.postgresql = {
-      ensureDatabases = [ "langfuse" ];
-      # Langfuse connects directly to `postgresql` schema without TLS overhead since it's local
+    clan.core.postgresql = {
+      enable = true;
+      databases.langfuse.create.enable = true;
     };
 
     virtualisation.oci-containers.containers.langfuse = {

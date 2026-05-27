@@ -82,22 +82,7 @@
 
     # Native Postgres (Shared for Nextcloud, Immich, MaxKB etc.)
     postgresql = {
-      enable = true;
       enableTCPIP = true;
-      ensureUsers = [
-        {
-          name = "nextcloud";
-          ensureDBOwnership = true;
-        }
-        {
-          name = "immich";
-          ensureDBOwnership = true;
-        }
-      ];
-      ensureDatabases = [
-        "nextcloud"
-        "immich"
-      ];
     };
 
     # DuckDNS Auto-Updater using ddclient
@@ -162,10 +147,6 @@
     # Moved from Nami
     n8n-server.enable = true;
     komga-server.enable = true;
-    matrix-server = {
-      enable = true;
-      serverName = "matrix.local";
-    };
     mautrix-bridges = {
       enable = true;
       homeserverUrl = "http://localhost:8008";
@@ -310,7 +291,7 @@
   # ACME Let's Encrypt Wildcard via DuckDNS
   security.acme = {
     acceptTerms = true;
-    defaults.email = "admin@lovelain.duckdns.org";
+    defaults.email = lib.mkForce "admin@lovelain.duckdns.org";
     certs."lovelain.duckdns.org" = {
       domain = "*.lovelain.duckdns.org";
       extraDomainNames = [

@@ -89,6 +89,33 @@ in
           luffy = { };
         };
       };
+
+      matrix-synapse = {
+        module = {
+          name = "matrix-synapse";
+          input = "clan-core";
+        };
+        roles.default.machines = {
+          luffy = {
+            settings = {
+              server_tld = "matrix.local";
+              app_domain = "element.local";
+              acmeEmail = "admin@matrix.local";
+              users.t0psh31f = {
+                admin = true;
+              };
+            };
+          };
+        };
+      };
+
+      sshd = {
+        module = {
+          name = "sshd";
+          input = "clan-core";
+        };
+        roles.server.tags.all = { };
+      };
     };
   };
 
