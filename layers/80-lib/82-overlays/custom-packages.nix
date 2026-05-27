@@ -52,10 +52,7 @@ final: prev: {
     doCheck = false;
   });
 
-  # Disable openldap test suite as it takes notoriously long to run
-  openldap = prev.openldap.overrideAttrs (old: {
-    doCheck = false;
-  });
+
 
   # Disable pipx tests as they are currently failing on Python 3.13
   pipx = prev.pipx.overrideAttrs (old: {
