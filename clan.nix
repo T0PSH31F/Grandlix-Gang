@@ -116,8 +116,31 @@ in
         };
         roles.server.tags.all = { };
       };
+
+      syncthing = {
+        module = {
+          name = "syncthing";
+          input = "clan-core";
+        };
+        roles.peer.tags = [ "desktop" ];
+        roles.peer.settings.folders = {
+          notes = {
+            path = "/home/t0psh31f/Notes";
+          };
+          clan = {
+            path = "/home/t0psh31f/Clan";
+          };
+          hermes = {
+            path = "/home/t0psh31f/.hermes";
+          };
+          projects = {
+            path = "/home/t0psh31f/Projects";
+          };
+        };
+      };
     };
   };
+
 
   machines = {
     z0r0 = {

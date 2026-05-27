@@ -10,7 +10,9 @@ in
 {
   imports = [
     (mkDendriticModule "zathura" ./zathura.nix)
+    (mkDendriticModule "obsidian" ./obsidian.nix)
   ];
+
 
   options.layers.layer-60.gui.documents = {
     enable = lib.mkEnableOption "Documents & Publishing tools";
