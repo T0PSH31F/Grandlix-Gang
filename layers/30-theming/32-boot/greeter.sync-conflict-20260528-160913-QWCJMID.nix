@@ -8,13 +8,6 @@ with lib;
 let
   cfg = config.layers.layer-30.theming.themes.greeter;
 
-  # SDDM Astronaut theme with custom background
-  astronaut-theme = pkgs.sddm-astronaut.override {
-    themeConfig = {
-      Background = "../../00-cyberia/02-assets/sddm_background/fallback1.jpg";
-    };
-  };
-
   # Greetd / Hyprland config
   greetdHyprConfig = pkgs.writeText "greetd-hyprland.conf" ''
     # Start mpv to play the background video
@@ -39,7 +32,7 @@ in
 {
   options.layers.layer-30.theming.themes.greeter = {
     sddm = {
-      enable = mkEnableOption "SDDM with Astronaut theme";
+      enable = mkEnableOption "SDDM with Sugar Dark theme";
     };
     greetd = {
       enable = mkEnableOption "Greetd with ReGreet and Hyprland";
@@ -68,14 +61,18 @@ in
 
     # SDDM Implementation
     (mkIf cfg.sddm.enable {
+      services.xserver.enable = true;
       services.displayManager.sddm = {
         enable = true;
-        wayland.enable = true; # Astronaut is Qt6/Wayland friendly
-        theme = "sddm-astronaut-theme";
+        wayland.enable = false;
+        theme = "sugar-dark";
+        settings = {
+          Theme = { Current = "sugar-dark"; };
+        };
       };
 
       environment.systemPackages = [
-        astronaut-theme
+        pkgs.sddm-sugar-dark
       ];
     })
 

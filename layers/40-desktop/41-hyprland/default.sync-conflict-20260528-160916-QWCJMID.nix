@@ -31,9 +31,19 @@ in
   };
 
   nixos = lib.mkIf cfg.enable {
-    programs.hyprland = {
+    programs.hyprland.enable = true;
+    programs.hyprland.withUWSM = true;
+
+    programs.uwsm = {
       enable = true;
-      withUWSM = true;
+
+      waylandCompositors = {
+        hyprland = {
+          prettyName = "Hyprland";
+          comment = "Hyprland compositor managed by UWSM";
+          binPath = "/run/current-system/sw/bin/Hyprland";
+        };
+      };
     };
   };
 
@@ -86,7 +96,7 @@ in
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
       portalPackage =
         inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-      systemd.enable = false;
+      systemd.enable = true;
       plugins = [
         # Temporarily disabled due to ABI mismatch with recent Hyprland commits (renderHWCursorBuffer)
         # inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
@@ -118,7 +128,6 @@ in
         };
 
         exec-once = [
-          "uwsm finalize"
           "pypr & disown"
           "hypr-sfx & disown"
           "udiskie & disown"

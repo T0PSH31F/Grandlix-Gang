@@ -71,7 +71,7 @@ in
       controllers.enable = lib.mkDefault true;
       logitech.enable = lib.mkDefault true;
       touchpad.enable = lib.mkDefault (builtins.elem "laptop" clanTags);
-      razer.enable = lib.mkDefault true;
+      razer.enable = lib.mkDefault false; # Temporarily disabled due to build failure with kernel 7.0.10
     };
 
     # 2. Controllers integration (Xbox, PlayStation Dualshock/DualSense, etc.)
