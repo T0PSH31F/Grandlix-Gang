@@ -19,7 +19,7 @@ in
         "-/run/wrappers/bin/fusermount -u ${mountPoint}"
         "${pkgs.coreutils}/bin/mkdir -p ${mountPoint}"
       ];
-      ExecStart = "${pkgs.rclone}/bin/rclone mount gdrive: ${mountPoint} --vfs-cache-mode full";
+      ExecStart = "${pkgs.rclone}/bin/rclone mount gdrive: ${mountPoint} --config /home/${user}/.config/rclone/rclone.conf --vfs-cache-mode full";
       ExecStop = "-/run/wrappers/bin/fusermount3 -u ${mountPoint}";
       Restart = "on-failure";
     };

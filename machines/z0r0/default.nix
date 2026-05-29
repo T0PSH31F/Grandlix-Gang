@@ -85,8 +85,6 @@
     sillytavern.enable = false;
   };
 
-  systemd.services.rclone-gdrive-mount.enable = false;
-
   clan.core.postgresql.enable = true;
 
   # ============================================================================
