@@ -159,14 +159,14 @@ with lib;
         if [[ ! -e /mnt/@root-blank ]]; then
             btrfs subvolume snapshot -r /mnt/@root /mnt/@root-blank
         fi
-        btrfs subvolume delete /mnt/@root
+        btrfs subvolume delete --recursive /mnt/@root
         btrfs subvolume snapshot /mnt/@root-blank /mnt/@root
 
         # Rollback @home
         if [[ ! -e /mnt/@home-blank ]]; then
             btrfs subvolume snapshot -r /mnt/@home /mnt/@home-blank
         fi
-        btrfs subvolume delete /mnt/@home
+        btrfs subvolume delete --recursive /mnt/@home
         btrfs subvolume snapshot /mnt/@home-blank /mnt/@home
 
         umount /mnt

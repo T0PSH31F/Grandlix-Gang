@@ -9,7 +9,6 @@
   # ============================================================================
   imports = [
     ./hardware.nix
-    ./disko.nix
     ./containers.nix
 
     ../../layers/10-system/13-users/t0psh31f.nix
