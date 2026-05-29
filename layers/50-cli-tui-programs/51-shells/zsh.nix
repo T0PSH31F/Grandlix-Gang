@@ -106,7 +106,10 @@ in
             PALETTE_FILE="$HOME/.config/noctalia/templates/starship.toml"
           fi
 
-          if [ ! -f "$HOME/.cache/starship/starship.toml" ] || [ "$HOME/.config/starship.toml" -nt "$HOME/.cache/starship/starship.toml" ]; then
+          if [ ! -f "$HOME/.cache/starship/starship.toml" ] || \
+             [ "$HOME/.config/starship.toml" -nt "$HOME/.cache/starship/starship.toml" ] || \
+             ( [ -n "$PALETTE_FILE" ] && [ "$PALETTE_FILE" -nt "$HOME/.cache/starship/starship.toml" ] ) || \
+             ! grep -q "NOCTALIA STARSHIP PALETTE" "$HOME/.cache/starship/starship.toml" 2>/dev/null; then
             mkdir -p "$HOME/.cache/starship"
             cp "$HOME/.config/starship.toml" "$HOME/.cache/starship/starship.toml"
             if [ -n "$PALETTE_FILE" ]; then
