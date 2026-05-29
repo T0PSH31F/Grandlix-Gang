@@ -57,7 +57,6 @@ with lib;
           # Projects and work
           "Clan"
           "Projects"
-          "projects"
           "Documents"
           "Downloads"
           "Pictures"
