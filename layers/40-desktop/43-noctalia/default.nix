@@ -48,36 +48,9 @@ in
         package = cfg.package;
       };
 
-      xdg.configFile."noctalia/colors.json".enable = lib.mkForce false;
-
       home.activation.setupNoctaliaConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
         mkdir -p $HOME/.config/noctalia
         install -m644 ${pkgs.writeText "noctalia-settings.json" (builtins.replaceStrings ["$HOME"] [config.home.homeDirectory] (builtins.readFile ../../../layers/00-cyberia/02-assets/noctalia-config.json))} $HOME/.config/noctalia/settings.json
-        if [ -L $HOME/.config/noctalia/colors.json ]; then
-          rm $HOME/.config/noctalia/colors.json
-        fi
-        if [ ! -f $HOME/.config/noctalia/colors.json ]; then
-          install -m644 ${pkgs.writeText "noctalia-default-colors.json" ''
-            {
-              "mError": "#c0caf5",
-              "mHover": "#b4f9f8",
-              "mOnError": "#1a1b26",
-              "mOnHover": "#1a1b26",
-              "mOnPrimary": "#1a1b26",
-              "mOnSecondary": "#1a1b26",
-              "mOnSurface": "#a9b1d6",
-              "mOnSurfaceVariant": "#787c99",
-              "mOnTertiary": "#1a1b26",
-              "mOutline": "#444b6a",
-              "mPrimary": "#2ac3de",
-              "mSecondary": "#bb9af7",
-              "mShadow": "#1a1b26",
-              "mSurface": "#1a1b26",
-              "mSurfaceVariant": "#16161e",
-              "mTertiary": "#b4f9f8"
-            }
-          ''} $HOME/.config/noctalia/colors.json
-        fi
       '';
 
     systemd.user.services.noctalia-shell = {

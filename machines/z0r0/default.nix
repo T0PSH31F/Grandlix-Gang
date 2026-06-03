@@ -81,8 +81,6 @@
     llama-cpp-server.enable = true;
     n8n-server.enable = true;
     infrastructure.langfuse.enable = true;
-    # Disabled problematic services
-    sillytavern.enable = false;
   };
 
   clan.core.postgresql.enable = true;

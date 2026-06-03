@@ -62,6 +62,10 @@ with lib;
 
     # Enable redistributable firmware (doesn't require allowUnfree)
     hardware.enableRedistributableFirmware = true;
+    hardware.firmware = [
+      pkgs.linux-firmware
+      pkgs.sof-firmware
+    ];
 
     # Graphics support
     hardware.graphics = {

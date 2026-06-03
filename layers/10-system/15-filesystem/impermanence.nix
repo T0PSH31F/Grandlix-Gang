@@ -57,6 +57,7 @@ with lib;
           # Projects and work
           "Clan"
           "Projects"
+          "projects"
           "Documents"
           "Downloads"
           "Pictures"
@@ -102,7 +103,7 @@ with lib;
           ".pki"
           ".thunderbird"
           ".background"
-          ".antigravity"
+#           ".antigravity"
           ".gemini"
           ".hermes"
           ".kodi"
@@ -154,18 +155,33 @@ with lib;
         mkdir -p /mnt
         mount -t btrfs -o subvol=/ ${config.fileSystems."/".device} /mnt
 
+        # Function to delete subvolume recursively
+        delete_subvolume_recursively() {
+          local subvol=$1
+          # List all child subvolumes
+          # 'btrfs subvolume list -o' lists subvolumes below the given path
+          for child in $(btrfs subvolume list -o "$subvol" | cut -f 9- -d ' ' | tac); do
+            btrfs subvolume delete "/mnt/$child"
+          done
+          btrfs subvolume delete "/mnt/$subvol"
+        }
+
         # Rollback @root
-        if [[ ! -e /mnt/@root-blank ]]; then
-            btrfs subvolume snapshot -r /mnt/@root /mnt/@root-blank
+        if [[ -e /mnt/@root ]]; then
+            if [[ ! -e /mnt/@root-blank ]]; then
+                btrfs subvolume snapshot -r /mnt/@root /mnt/@root-blank
+            fi
+            delete_subvolume_recursively "@root"
         fi
-        btrfs subvolume delete --recursive /mnt/@root
         btrfs subvolume snapshot /mnt/@root-blank /mnt/@root
 
         # Rollback @home
-        if [[ ! -e /mnt/@home-blank ]]; then
-            btrfs subvolume snapshot -r /mnt/@home /mnt/@home-blank
+        if [[ -e /mnt/@home ]]; then
+            if [[ ! -e /mnt/@home-blank ]]; then
+                btrfs subvolume snapshot -r /mnt/@home /mnt/@home-blank
+            fi
+            delete_subvolume_recursively "@home"
         fi
-        btrfs subvolume delete --recursive /mnt/@home
         btrfs subvolume snapshot /mnt/@home-blank /mnt/@home
 
         umount /mnt

@@ -42,17 +42,6 @@ in
   inventory = {
     machines = machinesInventory;
     instances = {
-      zerotier = {
-        module = {
-          name = "zerotier";
-          input = "clan-core";
-        };
-        roles.peer.machines = {
-          luffy = { };
-          z0r0 = { };
-        };
-      };
-
       wireguard = {
         module = {
           name = "wireguard";
@@ -67,6 +56,33 @@ in
           };
           peer.machines = {
             z0r0 = { };
+          };
+        };
+      };
+
+      wifi = {
+        module = {
+          name = "wifi";
+          input = "clan-core";
+        };
+        roles.default.machines = {
+          z0r0 = {
+            settings = {
+              networks.home = {
+                enable = true;
+                autoConnect = true;
+                keyMgmt = "wpa-psk";
+              };
+            };
+          };
+          luffy = {
+            settings = {
+              networks.home = {
+                enable = true;
+                autoConnect = true;
+                keyMgmt = "wpa-psk";
+              };
+            };
           };
         };
       };
@@ -116,31 +132,8 @@ in
         };
         roles.server.tags.all = { };
       };
-
-      syncthing = {
-        module = {
-          name = "syncthing";
-          input = "clan-core";
-        };
-        roles.peer.tags = [ "desktop" ];
-        roles.peer.settings.folders = {
-          notes = {
-            path = "/home/t0psh31f/Notes";
-          };
-          clan = {
-            path = "/home/t0psh31f/Clan";
-          };
-          hermes = {
-            path = "/home/t0psh31f/.hermes";
-          };
-          projects = {
-            path = "/home/t0psh31f/Projects";
-          };
-        };
-      };
     };
   };
-
 
   machines = {
     z0r0 = {

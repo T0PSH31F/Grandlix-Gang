@@ -87,9 +87,27 @@ in
     };
 
     # Fix for STATE_DIRECTORY failure with impermanence
-    systemd.services.n8n.serviceConfig = {
-      StateDirectory = lib.mkForce [ ]; # Disable systemd management
+    systemd.services.n8n = {
+      after = [ "network-online.target" "postgresql.service" "persist.mount" ];
+      serviceConfig = {
+        DynamicUser = lib.mkForce false; # Must be false for persistent storage
+        User = "n8n";
+        Group = "n8n";
+        StateDirectory = lib.mkForce [ ];
+        # Robustness
+        Restart = lib.mkForce "always";
+        RestartSec = lib.mkForce "10s";
+        StartLimitIntervalSec = 0;
+      };
     };
+
+    # Ensure the user exists since DynamicUser is disabled
+    users.users.n8n = {
+      isSystemUser = true;
+      group = "n8n";
+      home = cfg.dataDir;
+    };
+    users.groups.n8n = { };
 
     systemd.tmpfiles.rules = [
       "d /persist${cfg.dataDir} 0700 n8n n8n -"

@@ -41,7 +41,8 @@ in
     systemd.services.whisper-server = {
       description = "Local STT Server using whisper.cpp";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
 
       serviceConfig = {
         # Using a dummy wrapper script; in production, you would pull the exact ggml-base.en.bin model

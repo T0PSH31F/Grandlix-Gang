@@ -154,6 +154,8 @@ in
     };
 
     systemd.services.aria2 = mkIf cfg.aria2.enable {
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
       serviceConfig = {
         User = mkForce mediaCfg.user;
         Group = mkForce mediaCfg.group;

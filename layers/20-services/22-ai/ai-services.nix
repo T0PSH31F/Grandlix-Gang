@@ -434,7 +434,7 @@ in
 
       # Inference
       #gpt4all # Run LLMs locally on consumer hardware
-      # lmstudio # GUI for running local LLMs (Temporarily disabled due to build failure)
+      lmstudio # GUI for running local LLMs
       jan
       qdrant # Vector database for AI applications
       ramalama # Tool for managing AI models

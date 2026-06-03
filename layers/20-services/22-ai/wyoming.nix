@@ -52,7 +52,6 @@ in
         inherit (cfg.faster-whisper) model;
         language = "en";
         device = "cpu";
-        zeroconf.enable = false;
       };
 
       piper.servers.local = mkIf cfg.piper.enable {

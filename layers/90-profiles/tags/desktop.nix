@@ -12,9 +12,4 @@
     };
     layer-40.desktop.frameworks.portals.enable = lib.mkDefault true;
   };
-
-  services.syncthing = {
-    user = lib.mkForce "t0psh31f";
-    group = lib.mkForce "users";
-  };
 }

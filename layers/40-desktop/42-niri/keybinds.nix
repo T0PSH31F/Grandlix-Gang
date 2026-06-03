@@ -79,11 +79,8 @@ in
       "Mod+J" = {
         action = focus-window-down;
       };
-      # "Mod+K" = {
-      #   action = focus-window-up;
-      # };
       "Mod+K" = {
-        action = spawn "qs" "-c" "noctalia-shell" "ipc" "call" "plugin:keybind-cheatsheet" "toggle";
+        action = focus-window-up;
       };
       "Mod+Left" = {
         action = focus-column-left;
