@@ -118,14 +118,14 @@
       hostName = "nextcloud.lovelain.duckdns.org";
     };
 
-    # Prevent Nginx from conflicting with Caddy's 80/443 binding
+    # Prevent Nginx from conflicting with Caddy's 80/443 binding and Open-WebUI's 8080 binding
     nginx = {
-      defaultHTTPListenPort = 8080;
+      defaultHTTPListenPort = 8084;
       virtualHosts = {
         "nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
           {
             addr = "127.0.0.1";
-            port = 8080;
+            port = 8084;
           }
         ];
         "element.local" = {
@@ -159,7 +159,7 @@
         "searx.local".listen = lib.mkForce [
           {
             addr = "127.0.0.1";
-            port = 8080;
+            port = 8084;
           }
         ];
       };
@@ -242,7 +242,7 @@
           handle @maxkb { reverse_proxy localhost:32784 }
 
           @nextcloud host nextcloud.lovelain.duckdns.org
-          handle @nextcloud { reverse_proxy localhost:8080 }
+          handle @nextcloud { reverse_proxy localhost:8084 }
 
 
           @spacedrive host spacedrive.lovelain.duckdns.org
