@@ -19,6 +19,17 @@ fix_perms() {
   local mode="$4"
 
   if [ -d "$dir" ]; then
+    # Verify user exists, fallback to root
+    if ! id -u "$user" >/dev/null 2>&1; then
+      echo "Warning: User '$user' does not exist. Falling back to 'root'."
+      user="root"
+    fi
+    # Verify group exists, fallback to root
+    if ! getent group "$group" >/dev/null 2>&1; then
+      echo "Warning: Group '$group' does not exist. Falling back to 'root'."
+      group="root"
+    fi
+
     echo "Adjusting: $dir -> $user:$group ($mode)"
     chown -R "$user:$group" "$dir"
     chmod "$mode" "$dir"
