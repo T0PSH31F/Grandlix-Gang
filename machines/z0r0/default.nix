@@ -18,6 +18,18 @@
   networking.hostName = "z0r0";
   system.stateVersion = "25.05";
 
+
+  # Use GRUB for better reliability with this specific hardware/impermanence setup
+  boot.loader = { 
+    systemd-boot.enable = lib.mkForce true;
+    efi.canTouchEfiVariables = true;
+  # grub = {
+  #  enable = true;
+  #  device = "nodev";
+  #  efiSupport = true;
+  #  useOSProber = true;
+  };
+  
   # ----------------------------------------------------------------------------
   # AVAILABLE PROFILES / TAGS
   # ----------------------------------------------------------------------------
@@ -58,8 +70,8 @@
     };
 
     layer-30.theming.themes.greeter = {
-      sddm.enable = true;
-      greetd.enable = false;
+      sddm.enable = false;
+      greetd.enable = true;
     };
 
     layer-40.desktop = {
@@ -79,11 +91,13 @@
   services = {
     llm-agents.enable = true;
     llama-cpp-server.enable = true;
-    n8n-server.enable = true;
+    n8n-server.enable = false;
     infrastructure.langfuse.enable = true;
     # Disabled problematic services
     sillytavern.enable = false;
   };
+
+  systemd.services.rclone-gdrive-mount.enable = false;
 
   clan.core.postgresql.enable = true;
 
@@ -91,6 +105,6 @@
   # 05 - SECURITY & SECRETS (SOPS/ACME)
   # ============================================================================
   sops = {
-    age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+    age.keyFile = "/persist/home/t0psh31f/.config/sops/age/keys.txt";
   };
 }

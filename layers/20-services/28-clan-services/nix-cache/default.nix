@@ -6,29 +6,26 @@ let
     ;
 
   varsForInstance = instanceName: pkgs: {
-    clan.core.vars.generators.harmonia = {
-      share = true;
-      files.sign-key.secret = true;
-      files.sign-key.deploy = false;
-      files.pub-key.secret = false;
-      script = ''
-        ${pkgs.nix}/bin/nix-store --generate-binary-cache-key ${instanceName}-1 \
-          $out/sign-key \
-          $out/pub-key
-      '';
+      clan.core.vars.generators.harmonia = {
+        share = true;
+        files.sign-key.secret = true;
+        files.sign-key.deploy = false;
+        files.pub-key.secret = false;
+        script = ''
+          ${pkgs.nix}/bin/nix-store --generate-binary-cache-key ${instanceName}-1 \
+            $out/sign-key \
+            $out/pub-key
+        '';
+      };
     };
-  };
 in
 {
   _class = "clan.service";
-  manifest.name = "nix-cache";
+  manifest.name = "clan-core/nix-cache";
   manifest.description = "Serve the nix store between machines in your network";
   manifest.categories = [ "Utility" ];
-  manifest.readme = "This service sets up a Harmonia binary cache on the server machines and configures client machines to use it.";
 
   roles.server = {
-    description = "The machine that serves the nix store";
-
     interface.options = {
       priority = lib.mkOption {
         type = lib.types.int;
@@ -62,21 +59,16 @@ in
 
             networking.firewall.allowedTCPPorts = [ 5000 ];
 
-            services.harmonia.cache.enable = true;
-            # $ nix-store --generate-binary-cache-key cache.yourdomain.tld-1 harmonia.secret harmonia.pub
-            services.harmonia.cache.signKeyPaths = [
-              config.clan.core.vars.generators.harmonia-private.files.sign-key.path
-            ];
-            services.harmonia.cache.settings.priority = settings.priority;
+            services.harmonia.enable = true;
+            services.harmonia.signKeyPaths = [ config.clan.core.vars.generators.harmonia-private.files.sign-key.path ];
+            services.harmonia.settings.priority = settings.priority;
           };
       };
   };
 
   roles.client = {
-    description = "The machine that uses the nix store from servers";
-
     perInstance =
-      { instanceName, roles, ... }:
+      { settings, instanceName, roles,... }:
       {
         nixosModule =
           { config, pkgs, ... }:
@@ -86,10 +78,10 @@ in
             ];
 
             # trust and use the cache
-            nix.settings.substituters = lib.mkAfter (
-              flip map (attrNames roles.server.machines) (machineName: "http://${machineName}:5000")
+            nix.settings.substituters = flip map (attrNames roles.server.machines) (
+              machineName: "http://${machineName}.d:5000"
             );
-            nix.settings.trusted-public-keys = lib.mkAfter [
+            nix.settings.trusted-public-keys = [
               config.clan.core.vars.generators.harmonia.files.pub-key.value
             ];
           };

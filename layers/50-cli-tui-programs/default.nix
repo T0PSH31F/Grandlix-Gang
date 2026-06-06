@@ -30,6 +30,7 @@ in
     (mkDendriticModule "system-utils" ./53-tools/system-utils.nix)
     (mkDendriticModule "yazelix" ./59-integrations/yazelix.nix)
     (mkDendriticModule "vivid" ./58-theming/vivid.nix)
+    (mkDendriticModule "terminal-toys" ./58-theming/terminal-toys.nix)
     ./packages-dev.nix
     
     # Tiered sub-entry points
@@ -95,6 +96,10 @@ in
       type = lib.types.bool;
       default = false;
       description = "Enable Python and related tools (uv, etc.)";
+    };
+
+    terminal-toys = {
+      enable = lib.mkEnableOption "Fun terminal toys (cmatrix, cbonsai, etc.)";
     };
 
     headless = lib.mkEnableOption "Headless/VPS environment optimizations";

@@ -61,6 +61,10 @@
 
                 subvolumes = {
                   # Root subvolume - wiped on every boot for impermanence
+                  # IMPORTANT: After initial install, you MUST manually create a blank snapshot:
+                  # mount /dev/mapper/crypted /mnt
+                  # btrfs subvolume snapshot /mnt/@root /mnt/@root-blank
+                  # umount /mnt
                   "@root" = {
                     mountpoint = "/";
                     mountOptions = [

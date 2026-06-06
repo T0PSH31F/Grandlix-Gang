@@ -7,34 +7,6 @@
 with lib;
 let
   cfg = config.layers.layer-30.theming.themes.greeter;
-
-  # SDDM Astronaut theme with custom background
-  astronaut-theme = pkgs.sddm-astronaut.override {
-    themeConfig = {
-      Background = "../../00-cyberia/02-assets/sddm_background/fallback1.jpg";
-    };
-  };
-
-  # Greetd / Hyprland config
-  greetdHyprConfig = pkgs.writeText "greetd-hyprland.conf" ''
-    # Start mpv to play the background video
-    exec-once = ${pkgs.mpv}/bin/mpv --loop --no-audio --vo=gpu "${cfg.greetd.background}"
-    # Start the actual greeter (ReGreet is a good GTK4 choice)
-    exec-once = sh -c "${pkgs.regreet}/bin/regreet; hyprctl dispatch exit"
-
-    monitor=,highrr,auto,1
-    # Minimal styling to stay out of the way
-    misc {
-      disable_hyprland_logo = true
-      disable_splash_rendering = true
-    }
-
-    ${optionalString (config.hardware.nvidia.enable or false) ''
-      cursor {
-        no_hardware_cursors = true
-      }
-    ''}
-  '';
 in
 {
   options.layers.layer-30.theming.themes.greeter = {
@@ -42,13 +14,8 @@ in
       enable = mkEnableOption "SDDM with Astronaut theme";
     };
     greetd = {
-      enable = mkEnableOption "Greetd with ReGreet and Hyprland";
+      enable = mkEnableOption "Greetd with ReGreet (cage)";
       background = mkOption {
-        type = types.path;
-        default = ../../00-cyberia/02-assets/sddm_background/one-piece-skull.1920x1080.mp4;
-        description = "Path to the background video for Greetd/Hyprland";
-      };
-      greetd-background = mkOption {
         type = types.path;
         default = ../../00-cyberia/02-assets/sddm_background/fallback1.jpg;
         description = "Path to the background image for ReGreet";
@@ -70,22 +37,27 @@ in
     (mkIf cfg.sddm.enable {
       services.displayManager.sddm = {
         enable = true;
-        wayland.enable = true; # Astronaut is Qt6/Wayland friendly
+        wayland.enable = true;
         theme = "sddm-astronaut-theme";
       };
 
       environment.systemPackages = [
-        astronaut-theme
+        (pkgs.sddm-astronaut.override {
+          themeConfig = {
+            Background = "../../00-cyberia/02-assets/sddm_background/fallback1.jpg";
+          };
+        })
       ];
     })
 
-    # Greetd Implementation
+    # Greetd Implementation (cage + regreet per best practice)
     (mkIf cfg.greetd.enable {
       services.greetd = {
         enable = true;
         settings = {
           default_session = {
-            command = "${pkgs.hyprland}/bin/Hyprland --config ${greetdHyprConfig}";
+            # Minimal, stable Wayland greeter host (cage kiosk)
+            command = "${pkgs.cage}/bin/cage -s -- ${pkgs.regreet}/bin/regreet";
             user = "greeter";
           };
         };
@@ -95,7 +67,7 @@ in
         enable = true;
         settings = {
           background = {
-            path = builtins.toString cfg.greetd.greetd-background;
+            path = builtins.toString cfg.greetd.background;
             fit = "Cover";
           };
           GTK = lib.mkDefault {
@@ -107,3 +79,4 @@ in
     })
   ];
 }
+

@@ -143,9 +143,9 @@ in
         };
 
         # NVIDIA stability fixes (no-op on Intel/AMD)
-        render = lib.mkIf cfg.isNvidia {
-          direct_scanout = false;   # Prevent buffer format mismatches on NVIDIA multi-monitor
-        };
+        # render = lib.mkIf cfg.isNvidia {
+        #   direct_scanout = false;   # Prevent buffer format mismatches on NVIDIA multi-monitor
+        # };
       };
     };
 

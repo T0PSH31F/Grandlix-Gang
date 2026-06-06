@@ -11,45 +11,49 @@
 
   # Boot configuration - LUKS encryption
   boot.initrd = {
-    luks.devices."crypted".device = "/dev/disk/by-uuid/458b615c-3ac2-4cff-98a2-c8e266bae90f";
+    luks.devices."crypted" = {
+      device = "/dev/disk/by-uuid/458b615c-3ac2-4cff-98a2-c8e266bae90f";
+      allowDiscards = true;
+      bypassWorkqueues = true;
+    };
   };
 
   # Filesystems (btrfs subvolumes)
   fileSystems."/" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@root" ];
+    options = [ "subvol=@root" "compress=zstd" "noatime" ];
   };
 
   fileSystems."/var/log" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@log" ];
+    options = [ "subvol=@log" "compress=zstd" "noatime" ];
   };
 
   fileSystems."/nix" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@nix" ];
+    options = [ "subvol=@nix" "compress=zstd" "noatime" ];
   };
 
   fileSystems."/persist" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@persist" ];
+    options = [ "subvol=@persist" "compress=zstd" "noatime" ];
     neededForBoot = true;
   };
 
   fileSystems."/backup" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@backup" ];
+    options = [ "subvol=@backup" "compress=zstd" "noatime" ];
   };
 
   fileSystems."/home" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@home" ];
+    options = [ "subvol=@home" "compress=zstd" "noatime" ];
     neededForBoot = true;
   };
 

@@ -22,7 +22,18 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  # ============================================================================
+  # 02 - BOOT & KERNEL (Systemd-Boot)
+  # ============================================================================
+  boot.loader = {
+    systemd-boot.enable = true;
+    systemd-boot.configurationLimit = lib.mkForce null; # Do not prune old generations
+    efi.canTouchEfiVariables = true;
+    timeout = 5;
+  };
   boot.kernelParams = [ "nvidia-drm.modeset=1" ];
+
+  nix.gc.automatic = lib.mkForce false; # Do not run automatic GC/delete generations
 
   # ============================================================================
   # 02 - LAYERED FEATURE FLAGS (Overrides)
@@ -32,6 +43,7 @@
       hardware.kernel = "cachyos"; # Maximum performance for desktop
       config.impermanence.enable = true;
       virtualization.enable = true;
+      mobile.android.enable = true;
     };
     layer-70.agent = {
       ai-agent-stack.enable = true;
@@ -41,12 +53,11 @@
 
   # Switch to SDDM for stability and better NVIDIA support
   layers.layer-30.theming.themes.greeter = {
-    sddm.enable = true;
-    greetd.enable = false;
+    sddm.enable = false;
+    greetd.enable = true;
   };
 
-  # SDDM uses X11 by default in this config, which is safer for many setups
-  services.xserver.enable = true;
+  # xserver not needed with cage greeter
 
   layers.layer-40.desktop = {
     hyprland.enable = true;
@@ -115,10 +126,6 @@
       ];
     };
 
-    immich-server = {
-      enable = false;
-      port = 2283;
-    };
 
     vaultwarden = {
       enable = true;
@@ -140,7 +147,6 @@
       sillytavern.enable = true;
       jan.enable = true;
       aider.enable = true;
-      cherry-studio.enable = true;
       postgresql.enable = true;
     };
 
@@ -199,8 +205,6 @@
           @nextcloud host nextcloud.lovelain.duckdns.org
           handle @nextcloud { reverse_proxy localhost:8080 }
 
-          @immich host immich.lovelain.duckdns.org
-          handle @immich { reverse_proxy localhost:2283 }
 
           @spacedrive host spacedrive.lovelain.duckdns.org
           handle @spacedrive { reverse_proxy localhost:32768 }

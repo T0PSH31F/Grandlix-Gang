@@ -91,11 +91,6 @@ in
       StateDirectory = lib.mkForce [ ]; # Disable systemd management
     };
 
-    systemd.tmpfiles.rules = [
-      "d /persist${cfg.dataDir} 0700 n8n n8n -"
-      "d ${cfg.dataDir} 0700 n8n n8n -"
-    ];
-
     # Additional packages for n8n integrations
     environment.systemPackages = with pkgs; [
       # For executing shell commands in workflows

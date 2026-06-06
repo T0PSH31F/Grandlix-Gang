@@ -92,7 +92,7 @@
   fileSystems."/storage" = {
     device = "/dev/mapper/luffy_storage";
     fsType = "btrfs";
-    options = [ "compress=zstd" "noatime" ];
+    options = [ "compress=zstd" "noatime" "nofail" ];
   };
 
   # Swap Configuration

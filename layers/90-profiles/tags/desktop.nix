@@ -11,6 +11,7 @@
       appimage.enable = lib.mkDefault true;
     };
     layer-40.desktop.frameworks.portals.enable = lib.mkDefault true;
+    layer-50.cli.terminal-toys.enable = lib.mkDefault true;
   };
 
   services.syncthing = {

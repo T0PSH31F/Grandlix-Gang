@@ -51,14 +51,6 @@ in
         };
       };
 
-      # Immich - Photo/Video indexing
-      immich-server = {
-        serviceConfig = {
-          Slice = lib.mkForce "background.slice";
-          MemoryHigh = "2G";
-          MemoryMax = "3G";
-        };
-      };
 
       # Calibre-Web
       calibre-web = {

@@ -25,7 +25,7 @@ in
     ];
 
     config = lib.mkIf osConfig.layers.layer-60.gui.spicetify.enable {
-      stylix.targets.spicetify.enable = false;
+
       programs.spicetify = {
         enable = true;
         theme = spicePkgs.themes.comfy;

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   ...
 }:
@@ -31,10 +32,10 @@ with lib;
         # System directories
         "/var/lib/systemd"
         "/var/lib/nixos"
-        "/var/log"
 
         # Network configuration
         "/etc/NetworkManager/system-connections"
+        "/var/lib/NetworkManager"
 
         # SSH host keys
         "/etc/ssh"
@@ -43,12 +44,6 @@ with lib;
       files = [
         # Machine identity
         "/etc/machine-id"
-
-        # SOPS age key (generated automatically from ssh keys)
-        # User and group database files
-        # "/etc/passwd"
-        # "/etc/shadow"
-        # "/etc/group"
       ];
 
       # Per-user persistence
@@ -74,20 +69,14 @@ with lib;
           # Development caches
           ".cache"
 
-          # Browser profiles (if needed)
+          # Browser profiles
           ".mozilla"
-          ".config/chromium"
-          ".config/BraveSoftware"
-
-          # VS Code / editors
-          ".vscode"
-          ".config/Code"
 
           # Shell history & state
           ".local/share/fish"
           ".local/share/zsh"
 
-          # Legacy/Custom User Data (Preserved)
+          # Legacy/Custom User Data
           "Agents"
           "NixOS"
           "Public"
@@ -120,20 +109,24 @@ with lib;
       };
     };
 
-    # Ensure proper permissions for service directories
-    # Only create directories for services that are actually enabled on this machine
+    # Ensure proper permissions for core persistence directories
     systemd.tmpfiles.rules = [
-      # Core persistence directory
       "d ${config.layers.layer-10.system.config.impermanence.persistPath} 0755 root root -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/etc 0755 root root -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/etc/ssh 0755 root root -"
 
       # User home persistence
-      "d /persist/home/t0psh31f 0700 t0psh31f users"
-      "d /persist/home/t0psh31f/.ssh 0700 t0psh31f users"
-      "d /persist/home/t0psh31f/.gnupg 0700 t0psh31f users"
-
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f 0700 t0psh31f users -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.ssh 0700 t0psh31f users -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.gnupg 0700 t0psh31f users -"
+      
+      # Noctalia state (moved from activationScripts)
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.local/share/noctalia 0700 t0psh31f users -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.cache/noctalia 0700 t0psh31f users -"
     ];
+
+    # Suppress sudo lecture on every boot
+    security.sudo.extraConfig = "Defaults lecture = never";
 
     # ============================================================================
     # BTRFS ROOT & HOME WITH SNAPSHOT ROLLBACK
@@ -144,29 +137,42 @@ with lib;
 
     # Btrfs snapshot rollback for impermanence (Systemd Initrd Version)
     boot.initrd.systemd.services.rollback = {
-      description = "Rollback BTRFS root and home snapshots";
+      description = "Rollback BTRFS root subvolume to a pristine state";
       wantedBy = [ "initrd.target" ];
-      after = [ "initrd-root-device.target" ];
+      # Wait for the LUKS device to be unlocked
+      after = [ "systemd-cryptsetup@crypted.service" ];
       before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
+      path = with pkgs; [ btrfs-progs coreutils util-linux gnused gawk ];
       script = ''
         mkdir -p /mnt
-        mount -t btrfs -o subvol=/ ${config.fileSystems."/".device} /mnt
+        # Use the explicit device mapper path for the unlocked LUKS container
+        mount -o subvol=/ /dev/mapper/crypted /mnt
 
-        # Rollback @root
-        if [[ ! -e /mnt/@root-blank ]]; then
-            btrfs subvolume snapshot -r /mnt/@root /mnt/@root-blank
+        # Delete nested subvolumes inside @root first to avoid "Directory not empty"
+        # We sort by depth (descending) to ensure nested subvolumes are deleted first
+        if [ -d /mnt/@root ]; then
+          echo "Cleaning up nested subvolumes under /@root..."
+          btrfs subvolume list /mnt | 
+            sed -rn 's/^.*path (@root\/.*)$/\1/p' | 
+            sort -r | 
+            while read subvolume; do
+              echo "deleting /$subvolume subvolume..."
+              btrfs subvolume delete "/mnt/$subvolume"
+            done
+          
+          echo "deleting /@root subvolume..."
+          btrfs subvolume delete /mnt/@root
         fi
-        btrfs subvolume delete --recursive /mnt/@root
+
+        # Restore @root from the blank snapshot
+        echo "restoring blank /@root subvolume..."
         btrfs subvolume snapshot /mnt/@root-blank /mnt/@root
 
-        # Rollback @home
-        if [[ ! -e /mnt/@home-blank ]]; then
-            btrfs subvolume snapshot -r /mnt/@home /mnt/@home-blank
-        fi
-        btrfs subvolume delete --recursive /mnt/@home
-        btrfs subvolume snapshot /mnt/@home-blank /mnt/@home
+        # NOTE: We DO NOT roll back @home. Wiping @home destroys the mount points
+        # for impermanence bind-mounts from /persist, causing race conditions
+        # that lead to login failures (black screens).
 
         umount /mnt
       '';
@@ -177,18 +183,8 @@ with lib;
     # ============================================================================
     # Mark persistent storage as needed for boot
     fileSystems."/persist".neededForBoot = true;
-    fileSystems."/var/log".neededForBoot = true;
     fileSystems."/home".neededForBoot = true;
 
-    # Activation script to ensure persistence dirs exist with correct permissions
-    system.activationScripts.ensurePersistenceDirs = {
-      text = ''
-        mkdir -p /persist/home/t0psh31f/.local/share/noctalia
-        mkdir -p /persist/home/t0psh31f/.cache/noctalia
-        chown -R t0psh31f:users /persist/home/t0psh31f/.local/share 2>/dev/null || true
-        chown -R t0psh31f:users /persist/home/t0psh31f/.cache 2>/dev/null || true
-      '';
-      deps = [ ];
-    };
+
   };
 }

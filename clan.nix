@@ -6,10 +6,10 @@ let
         "desktop"
         "development"
         "gaming"
-        "media-server"
         "laptop"
         "media"
         "ai-server"
+        "intel-12th-gen"
       ];
       deploy.targetHost = "root@100.95.168.90";
     };
@@ -25,6 +25,7 @@ let
         "ai-server"
         "development"
         "media"
+        "intel-9th-gen"
       ];
       deploy.targetHost = "root@100.80.146.120";
     };
@@ -42,53 +43,43 @@ in
   inventory = {
     machines = machinesInventory;
     instances = {
-      zerotier = {
-        module = {
-          name = "zerotier";
-          input = "clan-core";
-        };
-        roles.peer.machines = {
-          luffy = { };
-          z0r0 = { };
-        };
-      };
+      # zerotier = {
+      #   module = {
+      #     name = "zerotier";
+      #     input = "clan-core";
+      #   };
+      #   roles.peer.machines = {
+      #     luffy = { };
+      #     z0r0 = { };
+      #   };
+      # };
 
-      wireguard = {
-        module = {
-          name = "wireguard";
-          input = "clan-core";
-        };
-        roles = {
-          controller.machines.luffy = {
-            settings = {
-              endpoint = "nixfp.duckdns.org";
-              port = 51820;
-            };
-          };
-          peer.machines = {
-            z0r0 = { };
-          };
-        };
-      };
+      # wireguard = {
+      #   module = {
+      #     name = "wireguard";
+      #     input = "clan-core";
+      #   };
+      #   roles = {
+      #     controller.machines.luffy = {
+      #       settings = {
+      #         endpoint = "nixfp.duckdns.org";
+      #         port = 51820;
+      #       };
+      #     };
+      #     peer.machines = {
+      #       z0r0 = { };
+      #     };
+      #   };
+      # };
 
-      nix-cache = {
-        module = {
-          name = "nix-cache";
-          input = "self";
-        };
-        roles.server.machines.luffy = { };
-        roles.client.machines.z0r0 = { };
-      };
-
-      sillytavern = {
-        module = {
-          name = "ai";
-          input = "self";
-        };
-        roles.sillytavern.machines = {
-          luffy = { };
-        };
-      };
+      # nix-cache = {
+      #   module = {
+      #     name = "nix-cache";
+      #     input = "self";
+      #   };
+      #   roles.server.machines.luffy = { };
+      #   roles.client.machines.z0r0 = { };
+      # };
 
       matrix-synapse = {
         module = {
@@ -157,7 +148,6 @@ in
         ./machines/luffy/default.nix
       ]
       ++ mkMachineFromTags machinesInventory.luffy.tags;
-      clan.services.ai.sillytavern.enable = true;
     };
 
   };

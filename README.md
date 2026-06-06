@@ -111,7 +111,7 @@ graph TD
         Cyberia[00-Cyberia: Docs/Assets/Scripts]
         System[10-System: Foundation/Hardware]
         Services[20-Services: Infra/AI/Media]
-        Theming[30-Theming: UI/Stylix]
+        Theming[30-Theming: UI]
         Desktop[40-Desktop: Hyprland/Wayland]
         CLI[50-CLI: Shell/Tools]
         GUI[60-GUI: Browsers/Activities]

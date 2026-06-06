@@ -72,11 +72,8 @@ in
     };
   };
 
-  options.clan.services.desktop.homepage-dashboard = {
-    enable = mkEnableOption "Homepage Dashboard Clan Service";
-  };
 
-  config = mkIf (cfg.enable || config.clan.services.desktop.homepage-dashboard.enable) {
+  config = mkIf cfg.enable {
     services.homepage-dashboard = {
       enable = true;
       listenPort = cfg.port;
@@ -397,29 +394,6 @@ in
         }
         {
           "AI & Automation" = flatten [
-            {
-              "Open WebUI" = {
-                icon = "openai.png";
-                href = "http://localhost:8080";
-                description = "LLM Interface";
-                # Native NixOS service - no container reference
-              };
-            }
-            {
-              "NextJS Ollama UI" = {
-                icon = "openai.png";
-                href = "http://localhost:3001";
-                description = "NextJS LLM UI";
-              };
-            }
-            {
-              "SillyTavern" = {
-                icon = "mdi-chat";
-                href = "http://localhost:8000";
-                description = "Character AI Chat";
-                # Native NixOS service - no container reference
-              };
-            }
             (optional (isServiceEnabled "llama-cpp-server") {
               "llama.cpp" = {
                 icon = "llama.png";
@@ -441,35 +415,6 @@ in
                 description = "Local LLM Backend Router";
               };
             })
-            (optional (isServiceEnabled "vllm-server") {
-              "vLLM" = {
-                icon = "vllm.png";
-                href = "http://localhost:${toString config.services.vllm-server.port}";
-                description = "vLLM Inference Server";
-              };
-            })
-            {
-              "n8n" = {
-                icon = "n8n.png";
-                href = "http://localhost:5678";
-                description = "Workflow Automation";
-              };
-            }
-            {
-              "Qdrant" = {
-                icon = "qdrant.png";
-                href = "http://localhost:6333/dashboard";
-                description = "Vector Database";
-                # Native NixOS service - no container reference
-              };
-            }
-            {
-              "Karakeep" = {
-                icon = "mdi-bookmark-multiple";
-                href = "http://localhost:3007";
-                description = "Bookmark Manager";
-              };
-            }
             (optional (isServiceEnabled "langfuse") {
               "Langfuse" = {
                 icon = "mdi-brain";
@@ -541,26 +486,6 @@ in
                 description = "Meta Search Engine";
               };
             })
-            (optional (isServiceEnabled "immich") {
-              "Immich" = {
-                icon = "immich.png";
-                href = "http://localhost:2283";
-                description = "Photo Management";
-                widget = {
-                  type = "immich";
-                  url = "http://localhost:2283";
-                  key = "{{HOMEPAGE_VAR_IMMICH_KEY}}";
-                  version = 2;
-                };
-              };
-            })
-            {
-              "Portainer" = {
-                icon = "portainer.png";
-                href = "http://localhost:9000";
-                description = "Container Management";
-              };
-            }
             (optional (isServiceEnabled "matrix-synapse") {
               "Matrix Synapse" = {
                 icon = "matrix.png";
@@ -575,13 +500,6 @@ in
                 description = "Matrix Bridges Status";
               };
             })
-            {
-              "Caddy" = {
-                icon = "caddy.png";
-                href = "http://localhost:2019";
-                description = "Web Server";
-              };
-            }
             (optional (isServiceEnabled "vaultwarden") {
               "Vaultwarden" = {
                 icon = "vaultwarden.png";

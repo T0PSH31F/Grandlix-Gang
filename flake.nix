@@ -89,12 +89,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
     };
-    stylix = {
-      url = "github:danth/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.systems.follows = "systems";
-    };
+
     vicinae = {
       url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -154,7 +149,7 @@
       niri,
       noctalia,
       spicetify-nix,
-      stylix,
+
       vicinae,
       vicinae-extensions,
       nixai,
@@ -199,15 +194,6 @@
         # Register clan services
         flake.clan = {
           modules = {
-            # AI services
-            ai = ./layers/20-services/28-clan-services/sillytavern/module.nix;
-
-            # Desktop/Infrastructure services bundle
-            desktop = ./layers/20-services/28-clan-services/homepage-dashboard/module.nix;
-
-            # Media services
-            media = ./layers/20-services/28-clan-services/aria2/module.nix;
-
             # Binary cache
             nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
           };

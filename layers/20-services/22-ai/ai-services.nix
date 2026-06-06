@@ -342,16 +342,6 @@ in
     };
     users.groups.ollama = mkIf cfg.ollama.enable { };
 
-    systemd.tmpfiles.rules =
-      (optional cfg.ollama.enable "d /var/lib/ollama 0750 ollama ollama -")
-      ++ (optional cfg.ollama.enable "d /var/lib/ollama/models 0750 ollama ollama -")
-      ++ (optional cfg.localai.enable "d /persist/var/lib/localai 0750 localai localai -")
-      ++ (optional cfg.chromadb.enable "d /persist/var/lib/chromadb 0750 chromadb chromadb -")
-      ++ [
-        "d /persist/var/lib/nextjs-ollama-llm-ui 0750 nextjs-ollama-llm-ui nextjs-ollama-llm-ui -"
-        "d /var/lib/nextjs-ollama-llm-ui 0750 nextjs-ollama-llm-ui nextjs-ollama-llm-ui -"
-      ];
-
     # Enable docker/podman only for LocalAI (still needs container)
     virtualisation.podman.enable = mkIf cfg.localai.enable true;
     virtualisation.oci-containers.backend = mkIf cfg.localai.enable "podman";
@@ -396,11 +386,10 @@ in
     # Ensure data is persisted
     environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
       directories = [
-        # "/var/lib/docker" # Persist all docker volumes
-        "/var/lib/ollama"
-        "/var/lib/qdrant"
-        "/var/lib/localai"
-        "/var/lib/nextjs-ollama-llm-ui"
+        { directory = "/var/lib/ollama"; user = "ollama"; group = "ollama"; mode = "0750"; }
+        { directory = "/var/lib/qdrant"; user = "qdrant"; group = "qdrant"; mode = "0750"; }
+        { directory = "/var/lib/localai"; user = "root"; group = "root"; mode = "0750"; }
+        { directory = "/var/lib/nextjs-ollama-llm-ui"; user = "nextjs-ollama-llm-ui"; group = "nextjs-ollama-llm-ui"; mode = "0750"; }
       ];
 
       users.t0psh31f = {

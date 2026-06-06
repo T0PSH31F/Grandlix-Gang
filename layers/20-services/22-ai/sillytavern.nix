@@ -37,7 +37,7 @@ with lib;
     networking.firewall.allowedTCPPorts = [ config.services.sillytavern-app.port ];
 
     # Ensure data is persisted
-    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
+    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
       directories = [
         {
           directory = "/var/lib/sillytavern";

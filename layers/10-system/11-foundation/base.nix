@@ -48,19 +48,25 @@
   ];
 
   # Bootloader
-  boot.loader.systemd-boot = {
-    enable = true;
-    configurationLimit = 10; # Increased for more rollback room
+  boot = { 
+    loader = { 
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 10; # Increased for more rollback room
+        };
+      efi.canTouchEfiVariables = true;
+      };
+
+    blacklistedKernelModules = [
+      "8250"
+      "8250_pci"
+      "serial_core"
+    ];
+    initrd = {  
+      systemd.enable = true;
+      compressor = "zstd";
+    };
   };
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.blacklistedKernelModules = [
-    "8250"
-    "8250_pci"
-    "serial_core"
-  ];
-
-  boot.initrd.compressor = "zstd";
 
   # Locale & Time
   time.timeZone = "America/Los_Angeles";
@@ -101,9 +107,11 @@
 
   # Root password from secrets
   # Fallback root password - change immediately after first login with `passwd`
-  users.users.root.hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
-  users.users.root.hashedPasswordFile = lib.mkForce null;
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
-  ];
+  users.users.root = { 
+    hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
+    hashedPasswordFile = lib.mkForce null;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
+    ];
+  };
 }

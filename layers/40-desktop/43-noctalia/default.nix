@@ -19,9 +19,9 @@ in
     };
 
     backend = lib.mkOption {
-      type = lib.types.enum [ "hyprland" "niri" ];
+      type = lib.types.enum [ "hyprland" "niri" "both" ];
       default = "hyprland";
-      description = "Which compositor backend to use with Noctalia";
+      description = "Which compositor backend to use with Noctalia (both = dual sessions via ReGreet)";
     };
 
     package = lib.mkOption {

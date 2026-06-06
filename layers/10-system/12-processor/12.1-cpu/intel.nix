@@ -1,39 +1,56 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
 {
-  options.hardware.intel.enable = mkEnableOption "Intel graphics support";
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  hasTag = tag: builtins.elem tag (config.machine.tags or [ ]);
+in
+{
+  config = lib.mkMerge [
+    # Common Intel & GPU settings
+    (lib.mkIf (hasTag "intel-9th-gen" || hasTag "intel-12th-gen") {
+      boot.kernelModules = [ "kvm-intel" ];
+      hardware.enableRedistributableFirmware = true;
+      hardware.graphics = {
+        enable = true;
+        extraPackages = with pkgs; [
+          libva-vdpau-driver
+          libvdpau-va-gl
+        ];
+      };
+    })
 
-  config = mkIf config.hardware.intel.enable {
-    # Intel driver configuration
-    services.xserver.videoDrivers = [ "modesetting" ];
+    # i7-9700F (9th gen Coffee Lake) - luffy
+    (lib.mkIf (hasTag "intel-9th-gen") {
+      # F-series has no iGPU, avoid i915 driver overhead
+      boot.initrd.kernelModules = lib.mkForce [ ];
 
-    # Enable Intel GPU support
-    boot.initrd.kernelModules = [ "i915" ];
+      hardware.graphics.extraPackages = with pkgs; [
+        intel-vaapi-driver # i965 driver
+      ];
 
-    # Intel GPU early loading
-    boot.kernelParams = [ "i915.enable_guc=2" ];
+      # TLP for server/workstation stability on older chips
+      services.tlp.enable = lib.mkDefault true;
+      services.power-profiles-daemon.enable = lib.mkDefault false;
+    })
 
-    # Intel specific packages
-    environment.systemPackages = with pkgs; [
-      intel-gpu-tools
-      nvtopPackages.intel
-    ];
+    # i7-1260P (12th gen Alder Lake) - z0r0
+    (lib.mkIf (hasTag "intel-12th-gen") {
+      boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
+      boot.initrd.kernelModules = [ "i915" ];
 
-    # Graphics packages for Intel (already configured in default.nix)
-    hardware.graphics.extraPackages = with pkgs; [
-      intel-media-driver
-      vaapiIntel
-      intel-compute-runtime
-      intel-ocl
-    ];
+      hardware.graphics.extraPackages = with pkgs; [
+        intel-media-driver # iHD driver
+        intel-compute-runtime
+        intel-ocl
+      ];
 
-    hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [
-      vaapiIntel
-    ];
-
-    # Intel GPU power management
-    powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  };
+      # Modern power management for hybrid architectures
+      services.power-profiles-daemon.enable = lib.mkDefault true;
+      services.thermald.enable = lib.mkForce false; # Often fails on 12th gen laptops
+      services.hardware.bolt.enable = true;
+    })
+  ];
 }
