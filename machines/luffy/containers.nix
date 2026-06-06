@@ -35,11 +35,6 @@
       volumes = [ "/var/lib/maxkb:/var/lib/postgresql/data" ];
     };
 
-    openclaw = {
-      image = "ghcr.io/openclaw/openclaw@sha256:dcfd148777401d1bbdc63eab5c2f280bbfa912dfb1818566f9d66bb96ffb3f95";
-      ports = [ "59879:8080" ];
-    };
-
     spacedrive = {
       image = "ghcr.io/spacedriveapp/spacedrive/server@sha256:fd3bc896f3a5b8e429e008cedde361d6b9468c48d8c81996fdb1d99e90e0837b";
       ports = [

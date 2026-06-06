@@ -88,6 +88,9 @@
   # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
   # ============================================================================
   services = {
+    # Disable SillyTavern Tag Default to completely disable it
+    sillytavern.enable = lib.mkForce false;
+
     # Headscale Server
     headscale-server.enable = true;
 
@@ -125,20 +128,34 @@
             port = 8080;
           }
         ];
-        "element.local".listen = lib.mkForce [
-          {
-            addr = "127.0.0.1";
-            port = 8443;
-            ssl = true;
-          }
-        ];
-        "matrix.local".listen = lib.mkForce [
-          {
-            addr = "127.0.0.1";
-            port = 8443;
-            ssl = true;
-          }
-        ];
+        "element.local" = {
+          enableACME = lib.mkForce false;
+          forceSSL = lib.mkForce false;
+          onlySSL = lib.mkForce true;
+          sslCertificate = "/var/lib/acme/element.local/fullchain.pem";
+          sslCertificateKey = "/var/lib/acme/element.local/key.pem";
+          listen = lib.mkForce [
+            {
+              addr = "127.0.0.1";
+              port = 8443;
+              ssl = true;
+            }
+          ];
+        };
+        "matrix.local" = {
+          enableACME = lib.mkForce false;
+          forceSSL = lib.mkForce false;
+          onlySSL = lib.mkForce true;
+          sslCertificate = "/var/lib/acme/matrix.local/fullchain.pem";
+          sslCertificateKey = "/var/lib/acme/matrix.local/key.pem";
+          listen = lib.mkForce [
+            {
+              addr = "127.0.0.1";
+              port = 8443;
+              ssl = true;
+            }
+          ];
+        };
         "searx.local".listen = lib.mkForce [
           {
             addr = "127.0.0.1";
@@ -263,6 +280,24 @@
 
           @spotify host spotify.lovelain.duckdns.org
           handle @spotify { reverse_proxy localhost:3457 }
+        '';
+      };
+      virtualHosts."element.local" = {
+        extraConfig = ''
+          reverse_proxy https://127.0.0.1:8443 {
+            transport http {
+              tls_insecure_skip_verify
+            }
+          }
+        '';
+      };
+      virtualHosts."matrix.local" = {
+        extraConfig = ''
+          reverse_proxy https://127.0.0.1:8443 {
+            transport http {
+              tls_insecure_skip_verify
+            }
+          }
         '';
       };
     };
