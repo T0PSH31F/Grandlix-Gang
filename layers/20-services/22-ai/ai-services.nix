@@ -271,9 +271,11 @@ in
     };
 
     # Fix StateDirectory conflict with impermanence
-    systemd.services.qdrant.serviceConfig = {
-      StateDirectory = lib.mkForce [ ];
-      ReadWritePaths = [ "/var/lib/qdrant" ];
+    systemd.services.qdrant = mkIf config.services.ai-services.qdrant.enable {
+      serviceConfig = {
+        StateDirectory = lib.mkForce [ ];
+        ReadWritePaths = [ "/var/lib/qdrant" ];
+      };
     };
 
     # ChromaDB vector database - native NixOS service
