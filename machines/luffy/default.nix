@@ -72,7 +72,7 @@
       prometheus.port = 9090;
     };
     adguard = {
-      enable = true;
+      enable = false; # Commented out/disabled to unblock rebuild
       port = 3002; # avoids homepage and grafana
       bindHosts = [ "127.0.0.1" "192.168.1.53" "100.80.146.120" ];
     };
@@ -118,12 +118,34 @@
     # Prevent Nginx from conflicting with Caddy's 80/443 binding
     nginx = {
       defaultHTTPListenPort = 8080;
-      virtualHosts."nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
-        {
-          addr = "127.0.0.1";
-          port = 8080;
-        }
-      ];
+      virtualHosts = {
+        "nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
+          {
+            addr = "127.0.0.1";
+            port = 8080;
+          }
+        ];
+        "element.local".listen = lib.mkForce [
+          {
+            addr = "127.0.0.1";
+            port = 8443;
+            ssl = true;
+          }
+        ];
+        "matrix.local".listen = lib.mkForce [
+          {
+            addr = "127.0.0.1";
+            port = 8443;
+            ssl = true;
+          }
+        ];
+        "searx.local".listen = lib.mkForce [
+          {
+            addr = "127.0.0.1";
+            port = 8080;
+          }
+        ];
+      };
     };
 
 
@@ -137,14 +159,14 @@
 
     ai-services = {
       enable = true;
-      qdrant.enable = true;
+      qdrant.enable = false; # Commented out/disabled to unblock rebuild
       ollama = {
         enable = true;
         acceleration = "cuda";
       };
       chromadb.enable = true;
       open-webui.enable = true;
-      sillytavern.enable = true;
+      sillytavern.enable = false; # Commented out/disabled to unblock rebuild
       jan.enable = true;
       aider.enable = true;
       postgresql.enable = true;

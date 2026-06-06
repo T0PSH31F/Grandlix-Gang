@@ -28,11 +28,6 @@
       ports = [ "32790:3000" ];
     };
 
-    sim-studio-realtime = {
-      image = "ghcr.io/simstudioai/realtime@sha256:fbedb2f0a393aa269f2e4041598434c472c72ab31c8fa1a83e8ebfd32a0de2e9";
-      ports = [ "32789:8080" ];
-    };
-
     maxkb = {
       image = "1panel/maxkb@sha256:42aad1e002f28c6dd865b6f299297e44029477c1a7a6280c6427e5128b64b5fe";
       ports = [ "32784:8080" ];
