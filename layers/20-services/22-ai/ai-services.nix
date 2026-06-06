@@ -286,6 +286,8 @@ in
     # ChromaDB Service Customization
     systemd.services.chromadb = mkIf config.services.ai-services.chromadb.enable {
       serviceConfig.DynamicUser = lib.mkForce false;
+      serviceConfig.User = "chromadb";
+      serviceConfig.Group = "chromadb";
       serviceConfig.StateDirectory = lib.mkForce [ ];
       serviceConfig.ReadWritePaths = [ "/var/lib/chromadb" ];
     };
@@ -328,6 +330,8 @@ in
     # Ollama Service Customization (only when enabled)
     systemd.services.ollama = mkIf cfg.ollama.enable {
       serviceConfig.DynamicUser = lib.mkForce false;
+      serviceConfig.User = "ollama";
+      serviceConfig.Group = "ollama";
       serviceConfig.StateDirectory = lib.mkForce [ ];
       serviceConfig.ReadWritePaths = [ "/var/lib/ollama" ];
     };

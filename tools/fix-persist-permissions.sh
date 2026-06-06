@@ -61,7 +61,7 @@ systemctl restart adguardhome.service \
                   backup-vaultwarden.service \
                   nextjs-ollama-llm-ui.service \
                   chromadb.service \
-                  nextcloud.service \
+                  phpfpm-nextcloud.service \
                   nginx.service \
                   caddy.service || true
 
