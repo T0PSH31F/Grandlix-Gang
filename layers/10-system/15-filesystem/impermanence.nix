@@ -145,11 +145,11 @@ with lib;
       before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
-      path = [ pkgs.btrfs-progs pkgs.coreutils pkgs.util-linux pkgs.gnused pkgs.gawk ];
+      path = [ pkgs.btrfs-progs pkgs.coreutils pkgs.util-linuxMinimal pkgs.gnused pkgs.gawk ];
       script = ''
         ${pkgs.coreutils}/bin/mkdir -p /mnt
         # Use the explicit device mapper path for the unlocked LUKS container
-        ${pkgs.util-linux}/bin/mount -o subvol=/ /dev/mapper/crypted /mnt
+        ${pkgs.util-linuxMinimal}/bin/mount -o subvol=/ /dev/mapper/crypted /mnt
 
         # Delete nested subvolumes inside @root first to avoid "Directory not empty"
         # We sort by depth (descending) to ensure nested subvolumes are deleted first
@@ -175,7 +175,7 @@ with lib;
         # for impermanence bind-mounts from /persist, causing race conditions
         # that lead to login failures (black screens).
 
-        ${pkgs.util-linux}/bin/umount /mnt
+        ${pkgs.util-linuxMinimal}/bin/umount /mnt
       '';
     };
 

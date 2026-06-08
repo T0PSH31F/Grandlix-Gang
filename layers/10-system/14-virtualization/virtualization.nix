@@ -31,6 +31,17 @@ with lib;
         "kvm"
       ];
 
+      # Enable IOMMU and nested virtualization for PCI/USB passthrough and VM performance
+      boot.kernelParams = [
+        "intel_iommu=on"
+        "amd_iommu=on"
+        "iommu=pt"
+      ];
+      boot.extraModprobeConfig = ''
+        options kvm_intel nested=1
+        options kvm_amd nested=1
+      '';
+
       # Enable virtualization
       virtualisation = {
         # Enable libvirtd for QEMU/KVM

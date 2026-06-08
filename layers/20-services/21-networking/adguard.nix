@@ -65,6 +65,14 @@ in
       };
     };
 
+    users.users.adguardhome = {
+      isSystemUser = true;
+      group = "adguardhome";
+      description = "AdGuard Home Daemon User";
+      home = "/var/lib/AdGuardHome";
+    };
+    users.groups.adguardhome = {};
+
     # Fix StateDirectory conflict with impermanence by using static user
     systemd.services.adguardhome = {
       after = [ "network-online.target" "persist.mount" ];
@@ -72,6 +80,8 @@ in
       environment.STATE_DIRECTORY = "/var/lib/AdGuardHome";
       serviceConfig = {
         DynamicUser = lib.mkForce false;
+        User = "adguardhome";
+        Group = "adguardhome";
         StateDirectory = lib.mkForce [ ];
         ReadWritePaths = [ "/var/lib/AdGuardHome" ];
         Restart = lib.mkForce "always";

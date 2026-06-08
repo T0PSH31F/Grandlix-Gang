@@ -135,6 +135,13 @@ with lib;
 
         auth_enabled = false;
 
+        common = {
+          ring = {
+            instance_interface_names = [ "lo" "wlp0s20f3" "tailscale0" ];
+            kvstore.store = "inmemory";
+          };
+        };
+
         memberlist = {
           bind_addr = [ "127.0.0.1" ];
         };
