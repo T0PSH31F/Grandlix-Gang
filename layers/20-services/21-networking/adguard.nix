@@ -67,11 +67,16 @@ in
 
     # Fix StateDirectory conflict with impermanence by using static user
     systemd.services.adguardhome = {
+      after = [ "network-online.target" "persist.mount" ];
+      wants = [ "network-online.target" ];
       environment.STATE_DIRECTORY = "/var/lib/AdGuardHome";
       serviceConfig = {
         DynamicUser = lib.mkForce false;
         StateDirectory = lib.mkForce [ ];
         ReadWritePaths = [ "/var/lib/AdGuardHome" ];
+        Restart = lib.mkForce "always";
+        RestartSec = lib.mkForce "10s";
+        StartLimitIntervalSec = 0;
       };
     };
 

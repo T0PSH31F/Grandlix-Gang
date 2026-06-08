@@ -26,7 +26,7 @@ in
 
         cursor-style = "block";
         cursor-style-blink = true;
-        custom-shader = "${../../../layers/00-cyberia/02-assets/shaders/manga_slash.glsl}";
+        custom-shader = "${../../../layers/00-cyberia/02-assets/shaders/cursor.glsl}";
 
         keybind = [
           "ctrl+alt+v=new_split:right"

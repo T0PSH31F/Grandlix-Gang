@@ -77,22 +77,6 @@ final: prev: {
     touch "$out/share/fonts/noto/.keep"
   '';
 
-  # Fix for lmstudio icon extraction build failure (icon moved to root of extracted appimage)
-  lmstudio = prev.lmstudio.overrideAttrs (oldAttrs: {
-    buildCommand = builtins.replaceStrings
-      [
-        "/usr/share/icons/hicolor/0x0/apps/lm-studio.png"
-        "install -m 755"
-        "patchelf --set-interpreter"
-      ]
-      [
-        "/resources/app/.webpack/Icon-512x512.png"
-        "# install -m 755"
-        "# patchelf --set-interpreter"
-      ]
-      oldAttrs.buildCommand;
-  });
-
   # Fix for browserify build failure: npm: command not found
   # browserify = prev.nodePackages.browserify.overrideAttrs (old: {
   #   nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
@@ -109,28 +93,4 @@ final: prev: {
       });
     })
   ];
-
-  # Disabled openrazer overlay due to kernel incompatibility
-  # linuxPackages = prev.linuxPackages.extend (lfinal: lprev: {
-  #   openrazer = lprev.openrazer.overrideAttrs (oldAttrs: {
-  #     postPatch = (oldAttrs.postPatch or "") + ''
-  #       substituteInPlace driver/razerkbd_driver.c \
-  #         --replace-fail 'hid_report_raw_event(hdev, HID_INPUT_REPORT, xdata, sizeof(xdata), 0);' \
-  #                        'hid_report_raw_event(hdev, HID_INPUT_REPORT, xdata, sizeof(xdata), sizeof(xdata), 0);'
-  #     '';
-  #   });
-  # });
-
-  # Disabled cachyosKernels openrazer overlay
-  # cachyosKernels = prev.cachyosKernels // {
-  #   linuxPackages-cachyos-latest = prev.cachyosKernels.linuxPackages-cachyos-latest.extend (lfinal: lprev: {
-  #     openrazer = lprev.openrazer.overrideAttrs (oldAttrs: {
-  #       postPatch = (oldAttrs.postPatch or "") + ''
-  #         substituteInPlace driver/razerkbd_driver.c \
-  #           --replace-fail 'hid_report_raw_event(hdev, HID_INPUT_REPORT, xdata, sizeof(xdata), 0);' \
-  #                          'hid_report_raw_event(hdev, HID_INPUT_REPORT, xdata, sizeof(xdata), sizeof(xdata), 0);'
-  #       '';
-  #     });
-  #   });
-  # };
 }

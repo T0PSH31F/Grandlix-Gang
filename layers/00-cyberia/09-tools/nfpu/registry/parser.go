@@ -8,7 +8,7 @@ import (
 
 // Raw representation of the Nix output
 type RawMachineConfig struct {
-	Services map[string]interface{} `json:"services"`
+	Options map[string]interface{} `json:"options"`
 }
 
 type Registry map[string]RawMachineConfig

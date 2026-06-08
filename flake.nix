@@ -123,7 +123,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.gitignore.follows = "hyprland/pre-commit-hooks/gitignore";
     };
-    antigravity = {
+     antigravity = {
       url = "github:Jacopone/Antigravity-nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
@@ -156,7 +156,7 @@
       yazelix-hm,
       disko,
       wakatime-lsp,
-      antigravity,
+#       antigravity,
       nix-cachyos-kernel,
       ...
     }:

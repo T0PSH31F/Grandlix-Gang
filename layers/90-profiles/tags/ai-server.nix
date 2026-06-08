@@ -15,7 +15,7 @@
     ai-services = {
       enable = lib.mkDefault true;
       chromadb.enable = lib.mkDefault true;
-      lmstudio.enable = lib.mkDefault false;
+      lmstudio.enable = lib.mkDefault true;
       jan.enable = lib.mkDefault true;
       aider.enable = lib.mkDefault true;
     };

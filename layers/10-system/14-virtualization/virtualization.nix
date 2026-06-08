@@ -61,6 +61,11 @@ with lib;
         oci-containers.backend = mkDefault "podman";
       };
 
+      systemd.services.libvirtd = {
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+      };
+
       # The GUI to manage the VM
       programs.virt-manager.enable = true;
 

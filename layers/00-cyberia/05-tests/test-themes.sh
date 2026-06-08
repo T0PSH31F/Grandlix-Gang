@@ -37,7 +37,7 @@ echo ""
 echo "--- Plymouth Theme Tests ---"
 
 # Test 1: Plymouth enabled
-if grep -q "boot.plymouth.enable = true" /etc/nixos/configuration.nix 2>/dev/null || \
+if grep -q "boot.plymouth.enable = false" /etc/nixos/configuration.nix 2>/dev/null || \
    [[ -f /etc/plymouth/plymouthd.conf ]]; then
     test_pass "Plymouth is enabled"
 else

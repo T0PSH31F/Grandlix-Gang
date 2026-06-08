@@ -19,7 +19,7 @@
     "kernel.unprivileged_userns_clone" = 1;
   };
 
-  # Bootloader
+  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -102,6 +102,5 @@
       discardPolicy = "both";
     }
   ];
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

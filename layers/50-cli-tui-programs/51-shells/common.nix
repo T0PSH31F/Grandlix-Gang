@@ -26,7 +26,7 @@ in
     };
 
     programs.zsh.initContent = lib.mkIf cfg.shells.zsh.enable ''
-      proj() { local project_dir="$HOME/Projects"; if [[ -d "$project_dir" ]]; then cd "$project_dir/$1" 2>/dev/null || cd "$project_dir"; fi; }
+      proj() { local project_dir="$HOME/projects"; if [[ -d "$project_dir" ]]; then cd "$project_dir/$1" 2>/dev/null || cd "$project_dir"; fi; }
       clandir() { local clan_dir="$HOME/Clan"; if [[ -d "$clan_dir" ]]; then cd "$clan_dir/$1" 2>/dev/null || cd "$clan_dir"; fi; }
       ns() { nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history; }
       sshks() { ssh-keyscan -t ed25519 192.168.1.0/24 >> ~/.ssh/known_hosts; }

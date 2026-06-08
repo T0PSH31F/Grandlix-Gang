@@ -52,6 +52,7 @@ with lib;
           # Projects and work
           "Clan"
           "Projects"
+          "projects"
           "Documents"
           "Downloads"
           "Pictures"
@@ -91,7 +92,7 @@ with lib;
           ".pki"
           ".thunderbird"
           ".background"
-          ".antigravity"
+#           ".antigravity"
           ".gemini"
           ".hermes"
           ".kodi"

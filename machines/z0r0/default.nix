@@ -93,8 +93,6 @@
     llama-cpp-server.enable = true;
     n8n-server.enable = false;
     infrastructure.langfuse.enable = true;
-    # Disabled problematic services
-    sillytavern.enable = false;
   };
 
   systemd.services.rclone-gdrive-mount.enable = false;

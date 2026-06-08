@@ -121,8 +121,7 @@ in
         "$mod, h, movefocus, l"
         "$mod, l, movefocus, r"
         "$mod, j, movefocus, u"
-        # "$mod, k, movefocus, d" # Overridden by keybind cheatsheet
-        "$mod, K, exec, qs -c \"noctalia-shell\" ipc call plugin:keybind-cheatsheet toggle"
+        "$mod, k, movefocus, d"
 
         "$mod CTRL, right, workspace, +1"
         "$mod CTRL, left, workspace, -1"

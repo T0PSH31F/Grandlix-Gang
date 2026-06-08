@@ -43,43 +43,69 @@ in
   inventory = {
     machines = machinesInventory;
     instances = {
-      # zerotier = {
-      #   module = {
-      #     name = "zerotier";
-      #     input = "clan-core";
-      #   };
-      #   roles.peer.machines = {
-      #     luffy = { };
-      #     z0r0 = { };
-      #   };
-      # };
+      wireguard = {
+        module = {
+          name = "wireguard";
+          input = "clan-core";
+        };
+        roles = {
+          controller.machines.luffy = {
+            settings = {
+              endpoint = "nixfp.duckdns.org";
+              port = 51820;
+            };
+          };
+          peer.machines = {
+            z0r0 = { };
+          };
+        };
+      };
 
-      # wireguard = {
-      #   module = {
-      #     name = "wireguard";
-      #     input = "clan-core";
-      #   };
-      #   roles = {
-      #     controller.machines.luffy = {
-      #       settings = {
-      #         endpoint = "nixfp.duckdns.org";
-      #         port = 51820;
-      #       };
-      #     };
-      #     peer.machines = {
-      #       z0r0 = { };
-      #     };
-      #   };
-      # };
+      wifi = {
+        module = {
+          name = "wifi";
+          input = "clan-core";
+        };
+        roles.default.machines = {
+          z0r0 = {
+            settings = {
+              networks.home = {
+                enable = true;
+                autoConnect = true;
+                keyMgmt = "wpa-psk";
+              };
+            };
+          };
+          luffy = {
+            settings = {
+              networks.home = {
+                enable = true;
+                autoConnect = true;
+                keyMgmt = "wpa-psk";
+              };
+            };
+          };
+        };
+      };
 
-      # nix-cache = {
-      #   module = {
-      #     name = "nix-cache";
-      #     input = "self";
-      #   };
-      #   roles.server.machines.luffy = { };
-      #   roles.client.machines.z0r0 = { };
-      # };
+      nix-cache = {
+        module = {
+          name = "nix-cache";
+          input = "self";
+        };
+        roles.server.machines.luffy = { };
+        roles.client.machines.z0r0 = { };
+      };
+
+      sillytavern = {
+        module = {
+          name = "ai";
+          input = "self";
+        };
+        roles.sillytavern.machines = {
+          luffy = { };
+        };
+      };
 
       matrix-synapse = {
         module = {
@@ -107,31 +133,8 @@ in
         };
         roles.server.tags.all = { };
       };
-
-      syncthing = {
-        module = {
-          name = "syncthing";
-          input = "clan-core";
-        };
-        roles.peer.tags = [ "desktop" ];
-        roles.peer.settings.folders = {
-          notes = {
-            path = "/home/t0psh31f/Notes";
-          };
-          clan = {
-            path = "/home/t0psh31f/Clan";
-          };
-          hermes = {
-            path = "/home/t0psh31f/.hermes";
-          };
-          projects = {
-            path = "/home/t0psh31f/Projects";
-          };
-        };
-      };
     };
   };
-
 
   machines = {
     z0r0 = {
