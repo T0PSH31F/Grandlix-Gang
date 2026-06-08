@@ -145,37 +145,37 @@ with lib;
       before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
-      path = with pkgs; [ btrfs-progs coreutils util-linux gnused gawk ];
+      path = [ pkgs.btrfs-progs pkgs.coreutils pkgs.util-linux pkgs.gnused pkgs.gawk ];
       script = ''
-        mkdir -p /mnt
+        ${pkgs.coreutils}/bin/mkdir -p /mnt
         # Use the explicit device mapper path for the unlocked LUKS container
-        mount -o subvol=/ /dev/mapper/crypted /mnt
+        ${pkgs.util-linux}/bin/mount -o subvol=/ /dev/mapper/crypted /mnt
 
         # Delete nested subvolumes inside @root first to avoid "Directory not empty"
         # We sort by depth (descending) to ensure nested subvolumes are deleted first
         if [ -d /mnt/@root ]; then
           echo "Cleaning up nested subvolumes under /@root..."
-          btrfs subvolume list /mnt | 
-            sed -rn 's/^.*path (@root\/.*)$/\1/p' | 
-            sort -r | 
+          ${pkgs.btrfs-progs}/bin/btrfs subvolume list /mnt | 
+            ${pkgs.gnused}/bin/sed -rn 's/^.*path (@root\/.*)$/\1/p' | 
+            ${pkgs.coreutils}/bin/sort -r | 
             while read subvolume; do
               echo "deleting /$subvolume subvolume..."
-              btrfs subvolume delete "/mnt/$subvolume"
+              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "/mnt/$subvolume"
             done
           
           echo "deleting /@root subvolume..."
-          btrfs subvolume delete /mnt/@root
+          ${pkgs.btrfs-progs}/bin/btrfs subvolume delete /mnt/@root
         fi
 
         # Restore @root from the blank snapshot
         echo "restoring blank /@root subvolume..."
-        btrfs subvolume snapshot /mnt/@root-blank /mnt/@root
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot /mnt/@root-blank /mnt/@root
 
         # NOTE: We DO NOT roll back @home. Wiping @home destroys the mount points
         # for impermanence bind-mounts from /persist, causing race conditions
         # that lead to login failures (black screens).
 
-        umount /mnt
+        ${pkgs.util-linux}/bin/umount /mnt
       '';
     };
 

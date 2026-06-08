@@ -9,7 +9,7 @@
     mcp.enable = lib.mkDefault true;
     claude-code.enable = lib.mkDefault true;
     gemini-cli.enable = lib.mkDefault true;
-    asr-tts.enable = lib.mkDefault true;
+    asr-tts.enable = lib.mkDefault false;
   };
 
   layers.layer-70.agent.ai-agent-stack.enable = lib.mkDefault true;

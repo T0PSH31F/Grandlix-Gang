@@ -16,7 +16,7 @@ case $MACHINE in
         ;;
     z0r0)
         UUID="458b615c-3ac2-4cff-98a2-c8e266bae90f"
-        BOOT_UUID="E6FA-59AC"
+        BOOT_UUID="3824-3E8C"
         ;;
     *)
         echo "Unknown machine: $MACHINE"

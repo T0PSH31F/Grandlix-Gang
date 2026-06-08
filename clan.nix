@@ -97,16 +97,6 @@ in
         roles.client.machines.z0r0 = { };
       };
 
-      sillytavern = {
-        module = {
-          name = "ai";
-          input = "self";
-        };
-        roles.sillytavern.machines = {
-          luffy = { };
-        };
-      };
-
       matrix-synapse = {
         module = {
           name = "matrix-synapse";
