@@ -89,6 +89,7 @@
   # ============================================================================
 
   services = {
+    ai-services.lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
     llm-agents.enable = true;
     llama-cpp-server.enable = true;
     n8n-server.enable = false;

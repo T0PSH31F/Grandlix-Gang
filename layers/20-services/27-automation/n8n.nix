@@ -120,6 +120,8 @@ in
       bash
       curl
       jq
+      nodejs
+      python3
       # For Python nodes
     ];
 

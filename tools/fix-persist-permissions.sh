@@ -32,6 +32,8 @@ fix_perms() {
 
     echo "Adjusting: $dir -> $user:$group ($mode)"
     chown -R "$user:$group" "$dir"
+    chmod -R u+rwX,g+rX,o-rwx "$dir" # Ensure owner can read/write, group can read, others nothing
+    # Also apply the specific master directory mode if provided
     chmod "$mode" "$dir"
   else
     echo "Skipping:  $dir (does not exist)"
@@ -50,6 +52,7 @@ fix_perms "/persist/var/vaultwarden-backup" "vaultwarden" "vaultwarden" "0700"
 fix_perms "/persist/var/lib/nextjs-ollama-llm-ui" "nextjs-ollama-llm-ui" "nextjs-ollama-llm-ui" "0750"
 fix_perms "/persist/var/lib/chromadb" "chromadb" "chromadb" "0750"
 fix_perms "/persist/var/lib/nextcloud" "nextcloud" "nextcloud" "0750"
+fix_perms "/persist/var/lib/n8n" "n8n" "n8n" "0700"
 
 echo "=== Restarting impacted services ==="
 systemctl restart adguardhome.service \
@@ -62,6 +65,7 @@ systemctl restart adguardhome.service \
                   nextjs-ollama-llm-ui.service \
                   chromadb.service \
                   phpfpm-nextcloud.service \
+                  n8n.service \
                   nginx.service \
                   caddy.service || true
 

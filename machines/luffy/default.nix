@@ -44,6 +44,7 @@
       config.impermanence.enable = true;
       virtualization.enable = true;
       mobile.android.enable = true;
+      peripherals.razer.enable = lib.mkForce false; # Disabled: openrazer driver incompatible with linux 7.0.10
     };
     layer-70.agent = {
       ai-agent-stack.enable = true;
@@ -185,6 +186,7 @@
       open-webui.enable = true;
       sillytavern.enable = false; # Commented out/disabled to unblock rebuild
       jan.enable = true;
+      lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
       aider.enable = true;
       postgresql.enable = true;
     };
