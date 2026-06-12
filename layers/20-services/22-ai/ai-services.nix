@@ -35,7 +35,7 @@ in
 
       port = mkOption {
         type = types.int;
-        default = 8080;
+        default = 8082;
         description = "Open WebUI port";
       };
     };
@@ -273,7 +273,6 @@ in
     # Fix StateDirectory conflict with impermanence
     systemd.services.qdrant = mkIf config.services.ai-services.qdrant.enable {
       serviceConfig = {
-        StateDirectory = lib.mkForce [ ];
         ReadWritePaths = [ "/var/lib/qdrant" ];
       };
     };
@@ -334,6 +333,7 @@ in
       serviceConfig.DynamicUser = lib.mkForce false;
       serviceConfig.User = "ollama";
       serviceConfig.Group = "ollama";
+      serviceConfig.ProtectHome = lib.mkForce false;
       serviceConfig.StateDirectory = lib.mkForce [ ];
       serviceConfig.ReadWritePaths = [ "/var/lib/ollama" ];
     };

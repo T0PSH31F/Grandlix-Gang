@@ -100,7 +100,7 @@ in
       matrix-synapse = {
         module = {
           name = "matrix-synapse";
-          input = "clan-core";
+          input = "self";
         };
         roles.default.machines = {
           luffy = {

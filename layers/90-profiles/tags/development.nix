@@ -8,7 +8,7 @@
   layers = {
     layer-50.cli.pythonTools.enable = lib.mkDefault true;
     layer-70.agent = {
-#       antigravity.enable = lib.mkDefault true;
+      antigravity.enable = lib.mkDefault true;
       opencode = {
         enable = lib.mkDefault true;
         desktop = lib.mkDefault true;

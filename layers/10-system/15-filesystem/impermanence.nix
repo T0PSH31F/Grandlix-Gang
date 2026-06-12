@@ -92,7 +92,7 @@ with lib;
           ".pki"
           ".thunderbird"
           ".background"
-#           ".antigravity"
+          ".antigravity"
           ".gemini"
           ".hermes"
           ".kodi"
