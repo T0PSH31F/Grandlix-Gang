@@ -359,10 +359,6 @@
         "lovelain.duckdns.org"
         "t0psh31f.duckdns.org"
         "nixfp.duckdns.org"
-        "chat.lovelain.duckdns.org"
-        "n8n.lovelain.duckdns.org"
-        "komga.lovelain.duckdns.org"
-        "spotify.lovelain.duckdns.org"
       ];
       dnsProvider = "duckdns";
       environmentFile = config.sops.templates."duckdns-env".path;
