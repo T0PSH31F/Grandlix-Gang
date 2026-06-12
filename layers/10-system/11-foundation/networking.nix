@@ -92,10 +92,7 @@
     };
   };
 
-  systemd.services.zerotierone = {
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-  };
+
 
   # services.tailscale.enable = true; # Moved to service-distribution.nix
 

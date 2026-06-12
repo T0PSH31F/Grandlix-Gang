@@ -58,10 +58,10 @@ in
             server_name = settings.server_tld;
             database = {
               name = "psycopg2";
+              allow_unsafe_locale = true; # Critical for existing database compatibility
               args = {
                 user = "matrix-synapse";
                 database = "matrix-synapse";
-                allow_unsafe_locale = true; # Critical for existing database compatibility
               };
             };
           };
