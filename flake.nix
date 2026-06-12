@@ -156,7 +156,7 @@
       yazelix-hm,
       disko,
       wakatime-lsp,
-#       antigravity,
+      antigravity,
       nix-cachyos-kernel,
       ...
     }:
@@ -196,6 +196,8 @@
           modules = {
             # Binary cache
             nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
+            # Matrix Synapse
+            matrix-synapse = ./layers/20-services/28-clan-services/matrix-synapse/module.nix;
           };
         };
 

@@ -23,9 +23,11 @@ in
   _class = "clan.service";
   manifest.name = "clan-core/nix-cache";
   manifest.description = "Serve the nix store between machines in your network";
+  manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "Utility" ];
 
   roles.server = {
+    description = "The server role provides the nix-cache service using harmonia";
     interface.options = {
       priority = lib.mkOption {
         type = lib.types.int;
@@ -59,14 +61,15 @@ in
 
             networking.firewall.allowedTCPPorts = [ 5000 ];
 
-            services.harmonia.enable = true;
-            services.harmonia.signKeyPaths = [ config.clan.core.vars.generators.harmonia-private.files.sign-key.path ];
-            services.harmonia.settings.priority = settings.priority;
+            services.harmonia.cache.enable = true;
+            services.harmonia.cache.signKeyPaths = [ config.clan.core.vars.generators.harmonia-private.files.sign-key.path ];
+            services.harmonia.cache.settings.priority = settings.priority;
           };
       };
   };
 
   roles.client = {
+    description = "The client role configures the machine to use the nix-cache server";
     perInstance =
       { settings, instanceName, roles,... }:
       {

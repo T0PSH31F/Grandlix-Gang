@@ -16,7 +16,7 @@ with lib;
 
     dataDir = mkOption {
       type = types.str;
-      default = "/var/lib/sillytavern";
+      default = "/var/lib/SillyTavern";
       description = "Data directory for SillyTavern";
     };
   };
@@ -40,7 +40,7 @@ with lib;
     environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
       directories = [
         {
-          directory = "/var/lib/sillytavern";
+          directory = "/var/lib/SillyTavern";
           user = "sillytavern";
           group = "sillytavern";
           mode = "0755";

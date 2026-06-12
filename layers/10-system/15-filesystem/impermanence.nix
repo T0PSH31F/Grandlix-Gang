@@ -92,7 +92,7 @@ with lib;
           ".pki"
           ".thunderbird"
           ".background"
-#           ".antigravity"
+          ".antigravity"
           ".gemini"
           ".hermes"
           ".kodi"
@@ -140,14 +140,27 @@ with lib;
     boot.initrd.systemd.services.rollback = {
       description = "Rollback BTRFS root subvolume to a pristine state";
       wantedBy = [ "initrd.target" ];
-      # Wait for the LUKS device to be unlocked
-      after = [ "systemd-cryptsetup@crypted.service" ];
+      # Wait for the LUKS device to be unlocked and udev to create the device mapper node
+      wants = [ "dev-mapper-crypted.device" ];
+      after = [
+        "systemd-cryptsetup@crypted.service"
+        "dev-mapper-crypted.device"
+      ];
       before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
-      path = [ pkgs.btrfs-progs pkgs.coreutils pkgs.util-linuxMinimal pkgs.gnused pkgs.gawk ];
+      path = [ pkgs.btrfs-progs pkgs.coreutils pkgs.util-linuxMinimal ];
       script = ''
         ${pkgs.coreutils}/bin/mkdir -p /mnt
+
+        # Explicitly wait up to 10 seconds for the udev node to be created
+        for i in {1..10}; do
+          if [ -e /dev/mapper/crypted ]; then
+            break
+          fi
+          ${pkgs.coreutils}/bin/sleep 1
+        done
+
         # Use the explicit device mapper path for the unlocked LUKS container
         ${pkgs.util-linuxMinimal}/bin/mount -o subvol=/ /dev/mapper/crypted /mnt
 
@@ -155,12 +168,14 @@ with lib;
         # We sort by depth (descending) to ensure nested subvolumes are deleted first
         if [ -d /mnt/@root ]; then
           echo "Cleaning up nested subvolumes under /@root..."
-          ${pkgs.btrfs-progs}/bin/btrfs subvolume list /mnt | 
-            ${pkgs.gnused}/bin/sed -rn 's/^.*path (@root\/.*)$/\1/p' | 
+          ${pkgs.btrfs-progs}/bin/btrfs subvolume list -o /mnt/@root | 
+            ${pkgs.coreutils}/bin/cut -f 9- -d ' ' | 
             ${pkgs.coreutils}/bin/sort -r | 
-            while read subvolume; do
-              echo "deleting /$subvolume subvolume..."
-              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "/mnt/$subvolume"
+            while read -r subvolume; do
+              if [ -n "$subvolume" ]; then
+                echo "deleting /$subvolume subvolume..."
+                ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "/mnt/$subvolume"
+              fi
             done
           
           echo "deleting /@root subvolume..."

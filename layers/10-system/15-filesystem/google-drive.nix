@@ -14,6 +14,7 @@ in
     serviceConfig = {
       Type = "simple";
       User = user;
+      Environment = "PATH=/run/wrappers/bin";
       ExecStartPre = [
         "-/run/wrappers/bin/fusermount3 -u ${mountPoint}"
         "-/run/wrappers/bin/fusermount -u ${mountPoint}"

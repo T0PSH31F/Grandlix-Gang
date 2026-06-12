@@ -88,6 +88,7 @@ in
 
     # Fix for STATE_DIRECTORY failure with impermanence
     systemd.services.n8n = {
+      wants = [ "network-online.target" ];
       after = [ "network-online.target" "postgresql.service" "persist.mount" ];
       serviceConfig = {
         DynamicUser = lib.mkForce false; # Must be false for persistent storage
@@ -120,6 +121,8 @@ in
       bash
       curl
       jq
+      nodejs
+      python3
       # For Python nodes
     ];
 

@@ -12,14 +12,38 @@ in
   _class = "clan.service";
   manifest.name = "clan-core/matrix-synapse";
   manifest.description = "Official Matrix Synapse homeserver for secure communication";
+  manifest.readme = builtins.readFile ./README.md;
   manifest.categories = [ "Communication" ];
 
   roles.default = {
+    description = "The default role provides both the synapse homeserver and element web client";
     interface.options = {
-      serverName = mkOption {
+      server_tld = mkOption {
         type = types.str;
         default = "matrix.local";
         description = "The domain name of the Matrix homeserver";
+      };
+
+      app_domain = mkOption {
+        type = types.str;
+        default = "element.local";
+        description = "The domain name of the Element web client";
+      };
+
+      acmeEmail = mkOption {
+        type = types.str;
+        description = "Email address for ACME registration";
+      };
+
+      users = mkOption {
+        type = types.attrsOf (types.submodule {
+          options.admin = mkOption {
+            type = types.bool;
+            default = false;
+          };
+        });
+        default = { };
+        description = "Users to create";
       };
       
       # Following the pattern from clan docs for official services
@@ -27,11 +51,11 @@ in
     };
 
     perInstance = { settings, ... }: {
-      nixosModule = { config, ... }: {
+      nixosModule = { config, pkgs, ... }: {
         services.matrix-synapse = {
           enable = true;
           settings = {
-            server_name = settings.serverName;
+            server_name = settings.server_tld;
             database = {
               name = "psycopg2";
               args = {
@@ -41,6 +65,13 @@ in
               };
             };
           };
+        };
+
+        # Element Web client
+        services.nginx.virtualHosts.${settings.app_domain} = {
+          enableACME = true;
+          forceSSL = true;
+          root = pkgs.element-web;
         };
 
         # Infrastructure requirements
@@ -59,7 +90,6 @@ in
         environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
           directories = [
             "/var/lib/matrix-synapse"
-            "/var/lib/postgresql"
           ];
         };
       };

@@ -35,7 +35,7 @@ in
 
       port = mkOption {
         type = types.int;
-        default = 8080;
+        default = 8082;
         description = "Open WebUI port";
       };
     };
@@ -273,7 +273,6 @@ in
     # Fix StateDirectory conflict with impermanence
     systemd.services.qdrant = mkIf config.services.ai-services.qdrant.enable {
       serviceConfig = {
-        StateDirectory = lib.mkForce [ ];
         ReadWritePaths = [ "/var/lib/qdrant" ];
       };
     };
@@ -334,6 +333,7 @@ in
       serviceConfig.DynamicUser = lib.mkForce false;
       serviceConfig.User = "ollama";
       serviceConfig.Group = "ollama";
+      serviceConfig.ProtectHome = lib.mkForce false;
       serviceConfig.StateDirectory = lib.mkForce [ ];
       serviceConfig.ReadWritePaths = [ "/var/lib/ollama" ];
     };
@@ -429,21 +429,21 @@ in
 
       # Inference
       #gpt4all # Run LLMs locally on consumer hardware
-      lmstudio # GUI for running local LLMs
-      jan
+      # lmstudio # GUI for running local LLMs (Handled by conditional below)
+      # jan (Handled by conditional below)
       qdrant # Vector database for AI applications
       ramalama # Tool for managing AI models
 
       # Interfaces
       bluemail # Email client with AI integration
-      cherry-studio # Desktop LLM client
+      # cherry-studio # Desktop LLM client (Handled by conditional below)
       librechat # Open-source AI chat interface
       nextjs-ollama-llm-ui # Web UI for Ollama
       # sillytavern # Advanced LLM interface for roleplay
       # windsurf # Agentic IDE
 
       # CLI & TUI
-      # aider-chat-full # CLI for AI pair programming
+      # aider-chat-full # CLI for AI pair programming (Handled by conditional below)
       # crush (Provided by llm-agents.nix)
       # krillinai # AI agent tool
       skills
@@ -455,7 +455,10 @@ in
       # -  # Real-time conversational AI
       # piper-tts # Local neural text-to-speech engine
       # whisper-ctranslate2 # High-performance speech-to-text
-    ];
+    ] ++ lib.optional cfg.lmstudio.enable pkgs.lmstudio
+      ++ lib.optional cfg.jan.enable pkgs.jan
+      ++ lib.optional cfg.cherry-studio.enable pkgs.cherry-studio
+      ++ lib.optional cfg.aider.enable pkgs.aider-chat;
 
   };
 }
