@@ -153,9 +153,19 @@
           onlySSL = lib.mkForce true;
           sslCertificate = "/var/lib/acme/matrix.local/fullchain.pem";
           sslCertificateKey = "/var/lib/acme/matrix.local/key.pem";
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8008";
+            proxyWebsockets = true;
+            extraConfig = ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_read_timeout 600s;
+            '';
+          };
           listen = lib.mkForce [
             {
-              addr = "127.0.0.1";
+              addr = "0.0.0.0";
               port = 8443;
               ssl = true;
             }
@@ -167,6 +177,24 @@
             port = 8084;
           }
         ];
+        "hermes-matrix.local" = {
+          listen = lib.mkForce [
+            {
+              addr = "0.0.0.0";
+              port = 8087;
+              extraParameters = [ "default_server" ];
+            }
+          ];
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:8008";
+            proxyWebsockets = true;
+            extraConfig = ''
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            '';
+          };
+        };
       };
     };
 
@@ -330,6 +358,9 @@
       80
       443
       22
+      8008 # Matrix Synapse direct access for hermes gateway
+      8443 # Nginx SSL proxy for Matrix/Element (bypass Caddy TLS issues)
+      8087 # Nginx HTTP proxy for Matrix (no SSL, for hermes gateway)
     ];
   };
 

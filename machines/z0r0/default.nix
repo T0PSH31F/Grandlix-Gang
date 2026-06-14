@@ -105,4 +105,9 @@
   sops = {
     age.keyFile = "/persist/home/t0psh31f/.config/sops/age/keys.txt";
   };
+
+  # Matrix homeserver (luffy) reachable via LAN for hermes gateway
+  networking.extraHosts = ''
+    192.168.1.54 matrix.local element.local
+  '';
 }
