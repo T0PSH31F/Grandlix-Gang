@@ -19,4 +19,5 @@
   layers.layer-75.mcp.enable = lib.mkDefault true;
 
   layers.layer-76.hermes.enable = lib.mkDefault true;
+  layers.layer-76.hermes.workspace.enable = lib.mkDefault true;
 }

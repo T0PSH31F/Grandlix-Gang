@@ -17,6 +17,8 @@ let
 
     luffy = {
       tags = [
+        "ai"
+        "ai-agent"
         "workstation"
         "desktop"
         "gaming"

@@ -138,7 +138,7 @@ let
       --transition-fps 60
 
     # ── Step 2: Command Noctalia to regenerate templates ──
-    noctalia-shell ipc wallpaper setFromPath "$WALLPAPER" 2>/dev/null || true
+    noctalia-shell ipc call wallpaper set "$WALLPAPER" "all" 2>/dev/null || true
 
     # ── Step 3: Wait for Noctalia's Matugen to finish generating ──
     sleep 2

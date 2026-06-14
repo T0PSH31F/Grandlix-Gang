@@ -128,6 +128,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    hermes-workspace = {
+      url = "github:outsourc-e/hermes-workspace";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel/release";
     };
@@ -158,6 +162,7 @@
       wakatime-lsp,
       antigravity,
       nix-cachyos-kernel,
+      hermes-workspace,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
