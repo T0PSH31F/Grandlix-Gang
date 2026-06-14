@@ -20,12 +20,24 @@ in
         simplified_ui = true;
 
         keybinds = {
-          normal = { "bind \"Ctrl q\"" = { Quit = { }; }; };
+          normal = {
+            "bind \"Ctrl q\"" = {
+              Quit = { };
+            };
+          };
           pane = {
-            "bind \"h\"" = { MoveFocus = "Left"; };
-            "bind \"j\"" = { MoveFocus = "Down"; };
-            "bind \"k\"" = { MoveFocus = "Up"; };
-            "bind \"l\"" = { MoveFocus = "Right"; };
+            "bind \"h\"" = {
+              MoveFocus = "Left";
+            };
+            "bind \"j\"" = {
+              MoveFocus = "Down";
+            };
+            "bind \"k\"" = {
+              MoveFocus = "Up";
+            };
+            "bind \"l\"" = {
+              MoveFocus = "Right";
+            };
           };
         };
       };

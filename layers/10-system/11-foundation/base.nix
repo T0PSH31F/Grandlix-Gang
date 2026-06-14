@@ -28,9 +28,11 @@
 
   _module.args.osConfig = config;
 
-  _module.args.lib = lib.extend (final: prev: {
-    hm = inputs.home-manager.lib.hm;
-  });
+  _module.args.lib = lib.extend (
+    final: prev: {
+      hm = inputs.home-manager.lib.hm;
+    }
+  );
 
   home-manager = {
     useGlobalPkgs = true;
@@ -52,21 +54,21 @@
   ];
 
   # Bootloader
-  boot = { 
-    loader = { 
+  boot = {
+    loader = {
       systemd-boot = {
         enable = true;
         configurationLimit = 10; # Increased for more rollback room
-        };
-      efi.canTouchEfiVariables = true;
       };
+      efi.canTouchEfiVariables = true;
+    };
 
     blacklistedKernelModules = [
       "8250"
       "8250_pci"
       "serial_core"
     ];
-    initrd = {  
+    initrd = {
       systemd.enable = true;
       compressor = "zstd";
     };
@@ -114,7 +116,7 @@
 
   # Root password from secrets
   # Fallback root password - change immediately after first login with `passwd`
-  users.users.root = { 
+  users.users.root = {
     hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
     hashedPasswordFile = lib.mkForce null;
     openssh.authorizedKeys.keys = [

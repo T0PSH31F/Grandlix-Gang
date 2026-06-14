@@ -1,3 +1,7 @@
+# Deprecated — moved to layers/75-mcp/server-catalog.nix
+# This file exists as a backward-compatibility alias.
+# All new config should use layers.layer-75.mcp.* options.
+
 {
   config,
   lib,
@@ -5,60 +9,21 @@
   ...
 }:
 {
-  options.layers.layer-70.agent.mcp = {
-    enable = lib.mkEnableOption "Model Context Protocol (MCP) servers";
+  imports = [ ../../75-mcp ];
 
+  options.layers.layer-70.agent.mcp = {
+    enable = lib.mkEnableOption "Model Context Protocol (MCP) servers [DEPRECATED: use layers.layer-75.mcp.enable]";
     servers = lib.mkOption {
       type = lib.types.attrsOf lib.types.anything;
       default = { };
-      description = "MCP servers to configure globally.";
+      description = "MCP servers [DEPRECATED: use layers.layer-75.mcp.servers]";
     };
   };
 
-  home = lib.mkIf config.layers.layer-70.agent.mcp.enable {
-    home.packages = with pkgs; [
-      kilocode-cli
-      picoclaw
-      zeroclaw
-      crush
-      mcp-nixos
-      ha-mcp
-      github-mcp-server
-      perplexity-mcp
-    ];
-
-    programs.mcp = {
-      enable = true;
-      servers = lib.recursiveUpdate {
-        browser-use = {
-          command = "npx";
-          args = [ "-y" "@modelcontextprotocol/server-browser-use" ];
-        };
-        file-manager = {
-          command = "npx";
-          args = [ "-y" "@modelcontextprotocol/server-file-manager" ];
-        };
-        sequential-thinking = {
-          command = "npx";
-          args = [ "-y" "@modelcontextprotocol/server-sequential-thinking" ];
-        };
-        mcp-registry = {
-          command = "npx";
-          args = [ "-y" "@modelcontextprotocol/server-registry" ];
-        };
-        mcp-nixos = {
-          command = lib.getExe pkgs.mcp-nixos;
-          args = [ ];
-        };
-        github = {
-          command = lib.getExe pkgs.github-mcp-server;
-          args = [ ];
-        };
-        ha-mcp = {
-          command = lib.getExe pkgs.ha-mcp;
-          args = [ ];
-        };
-      } config.layers.layer-70.agent.mcp.servers;
+  config = lib.mkIf config.layers.layer-70.agent.mcp.enable {
+    layers.layer-75.mcp = {
+      enable = lib.mkForce true;
+      servers = config.layers.layer-70.agent.mcp.servers;
     };
   };
 }

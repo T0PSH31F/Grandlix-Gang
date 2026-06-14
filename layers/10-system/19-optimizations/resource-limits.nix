@@ -51,7 +51,6 @@ in
         };
       };
 
-
       # Calibre-Web
       calibre-web = {
         serviceConfig = {

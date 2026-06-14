@@ -60,7 +60,7 @@
       volumes = [
         "/var/lib/homepage:/app/config"
         # SECURITY NOTE: Exposing the host's Podman/Docker socket allows container escaping.
-        # Homepage only uses this for the optional container status widget. 
+        # Homepage only uses this for the optional container status widget.
         # Since it is not actively required/used in our configurations, we disable it.
         # If needed in the future, prefer using a secure API proxy (e.g. docker-socket-proxy)
         # to restrict socket queries to read-only container status endpoints.

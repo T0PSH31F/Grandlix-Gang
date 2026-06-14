@@ -5,7 +5,12 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
   cfg = config.clan.services.matrix-synapse;
 in
 {
@@ -36,63 +41,69 @@ in
       };
 
       users = mkOption {
-        type = types.attrsOf (types.submodule {
-          options.admin = mkOption {
-            type = types.bool;
-            default = false;
-          };
-        });
+        type = types.attrsOf (
+          types.submodule {
+            options.admin = mkOption {
+              type = types.bool;
+              default = false;
+            };
+          }
+        );
         default = { };
         description = "Users to create";
       };
-      
+
       # Following the pattern from clan docs for official services
       enable = mkEnableOption "Matrix Synapse homeserver";
     };
 
-    perInstance = { settings, ... }: {
-      nixosModule = { config, pkgs, ... }: {
-        services.matrix-synapse = {
-          enable = true;
-          settings = {
-            server_name = settings.server_tld;
-            database = {
-              name = "psycopg2";
-              allow_unsafe_locale = true; # Critical for existing database compatibility
-              args = {
-                user = "matrix-synapse";
-                database = "matrix-synapse";
+    perInstance =
+      { settings, ... }:
+      {
+        nixosModule =
+          { config, pkgs, ... }:
+          {
+            services.matrix-synapse = {
+              enable = true;
+              settings = {
+                server_name = settings.server_tld;
+                database = {
+                  name = "psycopg2";
+                  allow_unsafe_locale = true; # Critical for existing database compatibility
+                  args = {
+                    user = "matrix-synapse";
+                    database = "matrix-synapse";
+                  };
+                };
               };
             };
+
+            # Element Web client
+            services.nginx.virtualHosts.${settings.app_domain} = {
+              enableACME = true;
+              forceSSL = true;
+              root = pkgs.element-web;
+            };
+
+            # Infrastructure requirements
+            services.postgresql = {
+              enable = true;
+              ensureDatabases = [ "matrix-synapse" ];
+              ensureUsers = [
+                {
+                  name = "matrix-synapse";
+                  ensureDBOwnership = true;
+                }
+              ];
+            };
+
+            # Persistence integration
+            environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
+              directories = [
+                "/var/lib/matrix-synapse"
+              ];
+            };
           };
-        };
-
-        # Element Web client
-        services.nginx.virtualHosts.${settings.app_domain} = {
-          enableACME = true;
-          forceSSL = true;
-          root = pkgs.element-web;
-        };
-
-        # Infrastructure requirements
-        services.postgresql = {
-          enable = true;
-          ensureDatabases = [ "matrix-synapse" ];
-          ensureUsers = [
-            {
-              name = "matrix-synapse";
-              ensureDBOwnership = true;
-            }
-          ];
-        };
-
-        # Persistence integration
-        environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
-          directories = [
-            "/var/lib/matrix-synapse"
-          ];
-        };
       };
-    };
   };
 }

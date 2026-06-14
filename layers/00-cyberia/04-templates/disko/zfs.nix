@@ -1,7 +1,8 @@
 # ZFS Disko Template
 # Designed for servers: NAS, FTP, Web Servers
 # Features: LUKS encryption, ZFS with datasets, snapshots
-{config, ...}: {
+{ config, ... }:
+{
   disko.devices = {
     disk.main = {
       type = "disk";
@@ -16,7 +17,10 @@
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
-              mountOptions = ["defaults" "umask=0077"];
+              mountOptions = [
+                "defaults"
+                "umask=0077"
+              ];
             };
           };
           luks = {

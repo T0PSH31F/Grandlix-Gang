@@ -7,7 +7,8 @@
 #
 # For apps where Noctalia's built-in templates already handle the color
 # file generation, we only need to wire up the source/include directive.
-{ osConfig ? config, 
+{
+  osConfig ? config,
   config,
   lib,
   ...

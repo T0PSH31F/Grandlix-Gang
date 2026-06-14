@@ -70,24 +70,17 @@ with lib;
       config.services.home-assistant-server.port
     ];
 
-  # Ensure data is persisted
+    # Ensure data is persisted
 
+    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
 
-  environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
+      directories = [
 
+        "/var/lib/hass"
 
-    directories = [
+      ];
 
-
-
-      "/var/lib/hass"
-
-
-
-    ];
-
-
-  };
+    };
 
   };
 }

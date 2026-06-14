@@ -26,7 +26,9 @@
   themes = {
     sugar-dark = {
       enable = true;
-      background = "${./../../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif}";
+      background = "${
+        ./../../../layers/00-cyberia/02-assets/sddm_background/the-world-of-one-piece_800.gif
+      }";
     };
     plymouth-hellonavi.enable = true;
   };

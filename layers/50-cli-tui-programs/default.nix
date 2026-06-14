@@ -1,6 +1,8 @@
 { config, lib, ... }:
 let
-  inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; }) mkDendriticModule;
+  inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; })
+    mkDendriticModule
+    ;
   cfg = config.layers.layer-50.cli;
 in
 {
@@ -32,7 +34,7 @@ in
     (mkDendriticModule "vivid" ./58-theming/vivid.nix)
     (mkDendriticModule "terminal-toys" ./58-theming/terminal-toys.nix)
     ./packages-dev.nix
-    
+
     # Tiered sub-entry points
     ./57-services
   ];
@@ -50,11 +52,31 @@ in
       };
       theme = lib.mkOption {
         type = lib.types.enum [
-          "Catppuccin Lavender" "Cherry Blossom" "Cyberpunk" "Everdeer" "Everforest"
-          "GitHub Dark" "Gruber Darker" "GruvboxAlt" "Hexa34C" "Lilac AMOLED"
-          "Miasma" "Monochrome" "NaySayer" "Noctalia legacy" "Oasis Abyss"
-          "Occult Umbral" "One" "Osaka jade" "Oxide" "Oxocarbon" "Peche"
-          "Tokyo Night Moon" "Tokyo Night" "Vesper" "tokyo-night"
+          "Catppuccin Lavender"
+          "Cherry Blossom"
+          "Cyberpunk"
+          "Everdeer"
+          "Everforest"
+          "GitHub Dark"
+          "Gruber Darker"
+          "GruvboxAlt"
+          "Hexa34C"
+          "Lilac AMOLED"
+          "Miasma"
+          "Monochrome"
+          "NaySayer"
+          "Noctalia legacy"
+          "Oasis Abyss"
+          "Occult Umbral"
+          "One"
+          "Osaka jade"
+          "Oxide"
+          "Oxocarbon"
+          "Peche"
+          "Tokyo Night Moon"
+          "Tokyo Night"
+          "Vesper"
+          "tokyo-night"
         ];
         default = "tokyo-night";
         description = "Static theme to use in headless mode";

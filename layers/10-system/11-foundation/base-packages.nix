@@ -44,7 +44,7 @@
     qpdf
 
     # Isolation
-    bubblewrap   
+    bubblewrap
 
     # Network tools
     aria2

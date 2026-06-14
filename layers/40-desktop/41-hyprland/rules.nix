@@ -75,35 +75,37 @@ in
     ];
 
     # ######## Layer rules ########
-    layerrule = let
-      baseRules = [
-        "xray 1, match:namespace .*"
-        "no_anim 1, match:namespace vicinae"
-        "no_anim 1, match:namespace selection"
-        "no_anim 1, match:namespace anyrun"
-        "no_anim 1, match:namespace hyprpicker"
-        "blur 1, match:namespace gtk-layer-shell"
-        "blur 1, match:namespace launcher"
-        "blur 1, match:namespace notifications"
-        "blur 1, match:namespace logout_dialog"
+    layerrule =
+      let
+        baseRules = [
+          "xray 1, match:namespace .*"
+          "no_anim 1, match:namespace vicinae"
+          "no_anim 1, match:namespace selection"
+          "no_anim 1, match:namespace anyrun"
+          "no_anim 1, match:namespace hyprpicker"
+          "blur 1, match:namespace gtk-layer-shell"
+          "blur 1, match:namespace launcher"
+          "blur 1, match:namespace notifications"
+          "blur 1, match:namespace logout_dialog"
 
-        # Quickshell
-        "blur_popups 1, match:namespace quickshell:.*"
-        "blur 1, match:namespace quickshell:.*"
-        "blur 1, match:namespace quickshell:session"
-              
-        # Fast Launchers
-        "no_anim 1, match:namespace gtk4-layer-shell"
+          # Quickshell
+          "blur_popups 1, match:namespace quickshell:.*"
+          "blur 1, match:namespace quickshell:.*"
+          "blur 1, match:namespace quickshell:session"
 
-        # Noctalia Shell
-        "blur 1, match:namespace ^(noctalia)$"
-        "xray 1, match:namespace ^(noctalia)$"
-        "blur 1, match:namespace ^(noctalia-shell)$"
-        "xray 1, match:namespace ^(noctalia-shell)$"
-      ];
-    in if isLuffy then
-      builtins.filter (rule: !(lib.strings.hasInfix "blur" rule)) baseRules
-    else
-      baseRules;
+          # Fast Launchers
+          "no_anim 1, match:namespace gtk4-layer-shell"
+
+          # Noctalia Shell
+          "blur 1, match:namespace ^(noctalia)$"
+          "xray 1, match:namespace ^(noctalia)$"
+          "blur 1, match:namespace ^(noctalia-shell)$"
+          "xray 1, match:namespace ^(noctalia-shell)$"
+        ];
+      in
+      if isLuffy then
+        builtins.filter (rule: !(lib.strings.hasInfix "blur" rule)) baseRules
+      else
+        baseRules;
   };
 }

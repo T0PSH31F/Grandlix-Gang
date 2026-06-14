@@ -87,7 +87,9 @@ with lib;
           job_name = "prometheus";
           static_configs = [
             {
-              targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.prometheus.port}" ];
+              targets = [
+                "localhost:${toString config.layers.layer-20.services.config.monitoring.prometheus.port}"
+              ];
             }
           ];
         }
@@ -117,7 +119,9 @@ with lib;
           job_name = "grafana";
           static_configs = [
             {
-              targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.grafana.port}" ];
+              targets = [
+                "localhost:${toString config.layers.layer-20.services.config.monitoring.grafana.port}"
+              ];
             }
           ];
         }
@@ -137,7 +141,11 @@ with lib;
 
         common = {
           ring = {
-            instance_interface_names = [ "lo" "wlp0s20f3" "tailscale0" ];
+            instance_interface_names = [
+              "lo"
+              "wlp0s20f3"
+              "tailscale0"
+            ];
             kvstore.store = "inmemory";
           };
         };

@@ -71,7 +71,6 @@ in
       # };
     };
 
-
     networking.firewall = {
       allowedTCPPorts = [
         10200 # piper

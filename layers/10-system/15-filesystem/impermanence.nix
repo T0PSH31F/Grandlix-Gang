@@ -120,7 +120,7 @@ with lib;
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f 0700 t0psh31f users -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.ssh 0700 t0psh31f users -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.gnupg 0700 t0psh31f users -"
-      
+
       # Noctalia state (moved from activationScripts)
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.local/share/noctalia 0700 t0psh31f users -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.cache/noctalia 0700 t0psh31f users -"
@@ -149,7 +149,11 @@ with lib;
       before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
-      path = [ pkgs.btrfs-progs pkgs.coreutils pkgs.util-linuxMinimal ];
+      path = [
+        pkgs.btrfs-progs
+        pkgs.coreutils
+        pkgs.util-linuxMinimal
+      ];
       script = ''
         ${pkgs.coreutils}/bin/mkdir -p /mnt
 
@@ -200,7 +204,6 @@ with lib;
     # Mark persistent storage as needed for boot
     fileSystems."/persist".neededForBoot = true;
     fileSystems."/home".neededForBoot = true;
-
 
   };
 }

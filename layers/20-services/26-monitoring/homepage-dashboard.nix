@@ -72,7 +72,6 @@ in
     };
   };
 
-
   config = mkIf cfg.enable {
     services.homepage-dashboard = {
       enable = true;

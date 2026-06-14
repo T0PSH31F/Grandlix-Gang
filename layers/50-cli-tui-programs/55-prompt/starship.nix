@@ -53,33 +53,162 @@ in
           ))
         ];
 
-        fill = { symbol = "·"; disabled = false; };
-        character = { success_symbol = "[ ](bold blue)"; error_symbol = "[ ](bold red)"; vimcmd_symbol = "[ ](bold yellow)"; };
+        fill = {
+          symbol = "·";
+          disabled = false;
+        };
+        character = {
+          success_symbol = "[ ](bold blue)";
+          error_symbol = "[ ](bold red)";
+          vimcmd_symbol = "[ ](bold yellow)";
+        };
         os = {
           disabled = false;
           style = "bg:color_orange fg:color_bg1";
-          symbols = { Ubuntu = "🐧"; NixOS = "[ ](bg:color_orange fg:cyan)"; Windows = "󰍲"; SUSE = ""; Raspbian = "󰐿"; Mint = "󰣭"; Macos = "󰀵"; Manjaro = ""; Linux = "󰌽"; Gentoo = "󰣨"; Fedora = "󰣛"; Alpine = ""; Amazon = ""; Android = ""; AOSC = ""; Arch = "󰣇"; Artix = "󰣇"; EndeavourOS = ""; CentOS = ""; Debian = "󰣚"; Redhat = "󱄛"; RedHatEnterprise = "󱄛"; Pop = ""; };
+          symbols = {
+            Ubuntu = "🐧";
+            NixOS = "[ ](bg:color_orange fg:cyan)";
+            Windows = "󰍲";
+            SUSE = "";
+            Raspbian = "󰐿";
+            Mint = "󰣭";
+            Macos = "󰀵";
+            Manjaro = "";
+            Linux = "󰌽";
+            Gentoo = "󰣨";
+            Fedora = "󰣛";
+            Alpine = "";
+            Amazon = "";
+            Android = "";
+            AOSC = "";
+            Arch = "󰣇";
+            Artix = "󰣇";
+            EndeavourOS = "";
+            CentOS = "";
+            Debian = "󰣚";
+            Redhat = "󱄛";
+            RedHatEnterprise = "󱄛";
+            Pop = "";
+          };
         };
-        username = { show_always = true; style_user = "bg:color_orange fg:color_fg0"; style_root = "bg:color_orange fg:color_fg0"; format = "[  $user]($style)"; };
+        username = {
+          show_always = true;
+          style_user = "bg:color_orange fg:color_fg0";
+          style_root = "bg:color_orange fg:color_fg0";
+          format = "[  $user]($style)";
+        };
         directory = {
-          style = "fg:color_fg0 bg:color_yellow"; format = "[ 📂 $path ]($style)"; truncation_length = 3; truncation_symbol = "…/";
-          substitutions = { "Documents" = " "; "Downloads" = "󱃩 "; "Music" = " "; "Notes" = " "; "Pictures" = "   "; "Projects" = "  "; "Videos" = " "; "Agents" = " "; "Games" = "  "; "Clan" = " "; ".config" = " "; ".local" = " "; ".nix" = "󱄅 "; ".ssh" = "󰣀 "; ".gemini" = "󰪁 "; ".mozilla" = " "; ".npm" = " "; ".pnpm" = " "; ".yarn" = " "; ".rustup" = "󱘗 "; ".cargo" = "󱣘 "; ".git" = " "; };
+          style = "fg:color_fg0 bg:color_yellow";
+          format = "[ 📂 $path ]($style)";
+          truncation_length = 3;
+          truncation_symbol = "…/";
+          substitutions = {
+            "Documents" = " ";
+            "Downloads" = "󱃩 ";
+            "Music" = " ";
+            "Notes" = " ";
+            "Pictures" = "   ";
+            "Projects" = "  ";
+            "Videos" = " ";
+            "Agents" = " ";
+            "Games" = "  ";
+            "Clan" = " ";
+            ".config" = " ";
+            ".local" = " ";
+            ".nix" = "󱄅 ";
+            ".ssh" = "󰣀 ";
+            ".gemini" = "󰪁 ";
+            ".mozilla" = " ";
+            ".npm" = " ";
+            ".pnpm" = " ";
+            ".yarn" = " ";
+            ".rustup" = "󱘗 ";
+            ".cargo" = "󱣘 ";
+            ".git" = " ";
+          };
         };
-        env_var.USER = { format = "[   $env_value  ](bg:color_bg3 fg:color_fg0)"; disabled = false; };
-        git_branch = { symbol = ""; style = "bg:color_green"; format = "[[ $symbol $branch ](fg:color_fg0 bg:color_green)]($style)"; };
-        git_status = { style = "bg:color_green"; format = "[[($all_status$ahead_behind )](fg:color_bg1 bg:color_green)]($style)"; stashed = "💾"; ahead = "📥"; behind = "📤"; conflicted = "⁉️"; deleted = "🗑️"; renamed = "🎭"; modified = "🚧"; staged = "🏗️"; untracked = "❓"; };
-        memory_usage = { disabled = false; threshold = -1; symbol = "🐏"; style = "bg:color_purple fg:color_bg1"; format = "[[ $symbol$ram ](fg:color_bg1 bg:color_purple)]($style)"; };
-        nodejs = { symbol = ""; style = "bg:color_aqua"; format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)"; };
-        c = { symbol = " "; style = "bg:color_aqua"; format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)"; };
-        cpp = { symbol = " "; style = "bg:color_aqua"; format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)"; };
-        rust = { symbol = ""; style = "bg:color_aqua"; format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)"; };
-        golang = { symbol = ""; style = "bg:color_aqua"; format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)"; };
-        python = { symbol = ""; style = "bg:color_aqua"; format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)"; };
-        docker_context = { symbol = ""; style = "bg:color_bg3"; format = "[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)"; };
-        cmd_duration = { min_time = 500; style = "bg:color_aqua fg:color_bg1"; format = "[  🏁$duration ]($style)"; };
-        time = { disabled = false; time_format = "%R"; style = "bg:color_bg1 fg:color_fg0"; format = "[[ ∞ $time ]($style)]($style)"; };
+        env_var.USER = {
+          format = "[   $env_value  ](bg:color_bg3 fg:color_fg0)";
+          disabled = false;
+        };
+        git_branch = {
+          symbol = "";
+          style = "bg:color_green";
+          format = "[[ $symbol $branch ](fg:color_fg0 bg:color_green)]($style)";
+        };
+        git_status = {
+          style = "bg:color_green";
+          format = "[[($all_status$ahead_behind )](fg:color_bg1 bg:color_green)]($style)";
+          stashed = "💾";
+          ahead = "📥";
+          behind = "📤";
+          conflicted = "⁉️";
+          deleted = "🗑️";
+          renamed = "🎭";
+          modified = "🚧";
+          staged = "🏗️";
+          untracked = "❓";
+        };
+        memory_usage = {
+          disabled = false;
+          threshold = -1;
+          symbol = "🐏";
+          style = "bg:color_purple fg:color_bg1";
+          format = "[[ $symbol$ram ](fg:color_bg1 bg:color_purple)]($style)";
+        };
+        nodejs = {
+          symbol = "";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+        c = {
+          symbol = " ";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+        cpp = {
+          symbol = " ";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+        rust = {
+          symbol = "";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+        golang = {
+          symbol = "";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+        python = {
+          symbol = "";
+          style = "bg:color_aqua";
+          format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_aqua)]($style)";
+        };
+        docker_context = {
+          symbol = "";
+          style = "bg:color_bg3";
+          format = "[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)";
+        };
+        cmd_duration = {
+          min_time = 500;
+          style = "bg:color_aqua fg:color_bg1";
+          format = "[  🏁$duration ]($style)";
+        };
+        time = {
+          disabled = false;
+          time_format = "%R";
+          style = "bg:color_bg1 fg:color_fg0";
+          format = "[[ ∞ $time ]($style)]($style)";
+        };
         line_break.disabled = false;
-        sudo = { disabled = false; symbol = "  "; format = "[$symbol]($style)"; style = "bold yellow"; };
+        sudo = {
+          disabled = false;
+          symbol = "  ";
+          format = "[$symbol]($style)";
+          style = "bold yellow";
+        };
       };
     };
   };

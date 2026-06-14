@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.layers.layer-20.services.config.avahi = {
     enable = mkEnableOption "Avahi mDNS/DNS-SD daemon for local hostname resolution";
   };
@@ -53,7 +54,7 @@ with lib; {
     };
 
     # Open firewall for mDNS
-    networking.firewall.allowedUDPPorts = [5353]; # mDNS
+    networking.firewall.allowedUDPPorts = [ 5353 ]; # mDNS
 
     # Install Avahi utilities
     environment.systemPackages = with pkgs; [

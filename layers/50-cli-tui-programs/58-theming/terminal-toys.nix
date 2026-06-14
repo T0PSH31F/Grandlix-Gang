@@ -12,21 +12,21 @@ in
     home.packages = with pkgs; [
       blahaj
       cbonsai
-      cfonts 
+      cfonts
       chafa
       charasay
-      cmatrix 
+      cmatrix
       figlet
       fortune-kind
-      lavat 
+      lavat
       lolcat
       neo-cowsay
       neo
       fastfetch
-      sl 
+      sl
       terminal-parrot
       terminaltexteffects
-      terminal-toys 
+      terminal-toys
       toilet
       unimatrix
     ];

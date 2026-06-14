@@ -8,7 +8,8 @@
 with lib;
 
 {
-  options.layers.layer-10.system.peripherals.touchpad.enable = mkEnableOption "Enhanced touchpad support";
+  options.layers.layer-10.system.peripherals.touchpad.enable =
+    mkEnableOption "Enhanced touchpad support";
 
   config = mkIf config.layers.layer-10.system.peripherals.touchpad.enable {
     # Touchpad support via libinput

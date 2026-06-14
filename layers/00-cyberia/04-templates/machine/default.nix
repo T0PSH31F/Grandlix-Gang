@@ -1,6 +1,7 @@
 {
   ...
-}: {
+}:
+{
   # ============================================================================
   # 00 - CORE IMPORTS
   # ============================================================================
@@ -57,8 +58,8 @@
   # 2. You need to disable a feature that is normally enabled by a tag (e.g. gui.gaming.enable = false)
   layers = {
     # Example: Override a tag default
-    # gui.gaming.enable = false; 
-    
+    # gui.gaming.enable = false;
+
     # Example: Machine-specific hardware
     # system.peripherals.openrgb.enable = true;
   };
@@ -75,7 +76,7 @@
   # 04 - SYSTEM & PROGRAM OVERRIDES
   # ============================================================================
   # Advanced config, firewall rules, or specific unfree packages.
-  
+
   # ============================================================================
   # 05 - SECURITY & SECRETS (SOPS/ACME)
   # ============================================================================

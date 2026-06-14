@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.layers.layer-10.system.appimage = {
     enable = mkEnableOption "AppImage support";
   };

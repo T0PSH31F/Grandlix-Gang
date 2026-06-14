@@ -39,15 +39,17 @@ in
     };
 
     # Impermanence support
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
         {
-          directory = "/var/lib/komga";
-          user = "komga";
-          group = "komga";
-          mode = "0700";
-        }
-      ];
-    };
+          directories = [
+            {
+              directory = "/var/lib/komga";
+              user = "komga";
+              group = "komga";
+              mode = "0700";
+            }
+          ];
+        };
   };
 }

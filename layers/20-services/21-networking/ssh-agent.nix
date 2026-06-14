@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.services.ssh-agent;
@@ -6,7 +11,7 @@ in
 {
   options.services.ssh-agent = {
     enable = lib.mkEnableOption "SSH Agent service for desktop sessions";
-    
+
     package = lib.mkOption {
       type = lib.types.package;
       default = pkgs.openssh;

@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   imports = [
     ../../10-system/11-foundation
     ../../20-services/21-networking

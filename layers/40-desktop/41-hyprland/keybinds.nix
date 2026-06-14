@@ -1,4 +1,5 @@
-{ osConfig ? config, 
+{
+  osConfig ? config,
   config,
   lib,
   ...

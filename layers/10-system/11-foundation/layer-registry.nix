@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   options.layers.registry = lib.mkOption {
     type = lib.types.attrsOf lib.types.path;
     default = {
@@ -12,7 +13,7 @@
       "flatpak" = ../17-app-runtimes/flatpak.nix;
       "peripherals" = ../18-peripherals;
       "optimizations" = ../19-optimizations;
-      
+
       # 20-services
       # "networking" = ../../20-services/21-networking;
       # ... can be expanded

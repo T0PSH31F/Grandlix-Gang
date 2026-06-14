@@ -8,23 +8,23 @@
       # ── Nerd Font patched monospace families ──
       nerd-fonts.jetbrains-mono
       nerd-fonts.fira-code
-     # nerd-fonts.iosevka
-     # nerd-fonts.iosevka-term
+      # nerd-fonts.iosevka
+      # nerd-fonts.iosevka-term
       nerd-fonts.hack
       nerd-fonts.meslo-lg
       nerd-fonts.departure-mono # Pixel-style nerd font
       nerd-fonts.proggy-clean-tt # Pixel/bitmap nerd font
       nerd-fonts.gohufont # Bitmap nerd font
-     # nerd-fonts.terminess-ttf # Terminus nerd font
+      # nerd-fonts.terminess-ttf # Terminus nerd font
       nerd-fonts.symbols-only # Pure symbol/icon glyphs
 
       # ── Pixel / bitmap fonts ──
       cozette # Bitmap font with great unicode coverage
       tamzen # Clean bitmap font
-     # scientifica # Tall bitmap font
-     # zpix-pixel-font # CJK pixel font
+      # scientifica # Tall bitmap font
+      # zpix-pixel-font # CJK pixel font
       pixel-code
-      creep 
+      creep
       ark-pixel-font
       departure-mono
 

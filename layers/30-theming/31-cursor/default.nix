@@ -39,33 +39,35 @@ in
   };
 
   # Home Manager pointerCursor settings
-  home = { config, lib, ... }: lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      hyprcursor
-      sonic-hyprcursor
-    ];
+  home =
+    { config, lib, ... }:
+    lib.mkIf cfg.enable {
+      home.packages = with pkgs; [
+        hyprcursor
+        sonic-hyprcursor
+      ];
 
-    home.activation.cleanSonicCursor = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-      for target in "Sonic-Hyprcursor" "rose-pine"; do
-        for path in "$HOME/.local/share/icons/$target" "$HOME/.icons/$target"; do
-          if [ -d "$path" ] && [ ! -L "$path" ]; then
-            echo "Removing physical directory $path to avoid Home Manager symlink conflict"
-            rm -rf "$path"
-          fi
+      home.activation.cleanSonicCursor = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+        for target in "Sonic-Hyprcursor" "rose-pine"; do
+          for path in "$HOME/.local/share/icons/$target" "$HOME/.icons/$target"; do
+            if [ -d "$path" ] && [ ! -L "$path" ]; then
+              echo "Removing physical directory $path to avoid Home Manager symlink conflict"
+              rm -rf "$path"
+            fi
+          done
         done
-      done
-    '';
+      '';
 
-    home.pointerCursor = {
-      package = lib.mkForce sonic-hyprcursor;
-      name = lib.mkForce "Sonic-Hyprcursor";
-      size = lib.mkForce cfg.size;
-      gtk.enable = lib.mkForce true;
-      x11.enable = lib.mkForce true;
-      hyprcursor = {
-        enable = lib.mkForce true;
+      home.pointerCursor = {
+        package = lib.mkForce sonic-hyprcursor;
+        name = lib.mkForce "Sonic-Hyprcursor";
         size = lib.mkForce cfg.size;
+        gtk.enable = lib.mkForce true;
+        x11.enable = lib.mkForce true;
+        hyprcursor = {
+          enable = lib.mkForce true;
+          size = lib.mkForce cfg.size;
+        };
       };
     };
-  };
 }

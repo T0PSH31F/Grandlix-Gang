@@ -11,7 +11,8 @@ let
   selectedThemeName = config.layers.layer-50.cli.theming.theme;
   themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";
 
-  fillTemplate = templatePath: replacements:
+  fillTemplate =
+    templatePath: replacements:
     let
       content = builtins.readFile templatePath;
       keys = builtins.attrNames replacements;
@@ -37,7 +38,11 @@ in
   options.layers.layer-50.cli.theming.matugen = {
     enable = lib.mkEnableOption "Matugen dynamic theming for CLI tools";
     source = lib.mkOption {
-      type = lib.types.enum [ "wallpaper" "noctalia" "tokyo-night" ];
+      type = lib.types.enum [
+        "wallpaper"
+        "noctalia"
+        "tokyo-night"
+      ];
       default = if hasNoctalia then "noctalia" else "wallpaper";
       description = "Color scheme source for Matugen";
     };
@@ -59,11 +64,21 @@ in
         sha256 = "1fyr9phqvjci1pid0z9nzhima58sq0jnwx53jr7a33hc6w31jsha";
       };
 
-      ".config/noctalia/templates/zellij-colors.kdl" = lib.mkIf config.layers.layer-50.cli.headless { text = fillTemplate ./templates/zellij-colors.kdl matugenReplacements; };
-      ".config/noctalia/templates/yazi.toml" = lib.mkIf config.layers.layer-50.cli.headless { text = fillTemplate ./templates/yazi.toml matugenReplacements; };
-      ".config/noctalia/templates/fzf-colors.conf" = lib.mkIf config.layers.layer-50.cli.headless { text = fillTemplate ./templates/fzf-colors.conf matugenReplacements; };
-      ".config/noctalia/templates/starship.toml" = lib.mkIf config.layers.layer-50.cli.headless { text = fillTemplate ./templates/starship.toml matugenReplacements; };
-      ".config/noctalia/templates/btop.theme" = lib.mkIf config.layers.layer-50.cli.headless { text = fillTemplate ./templates/btop.theme matugenReplacements; };
+      ".config/noctalia/templates/zellij-colors.kdl" = lib.mkIf config.layers.layer-50.cli.headless {
+        text = fillTemplate ./templates/zellij-colors.kdl matugenReplacements;
+      };
+      ".config/noctalia/templates/yazi.toml" = lib.mkIf config.layers.layer-50.cli.headless {
+        text = fillTemplate ./templates/yazi.toml matugenReplacements;
+      };
+      ".config/noctalia/templates/fzf-colors.conf" = lib.mkIf config.layers.layer-50.cli.headless {
+        text = fillTemplate ./templates/fzf-colors.conf matugenReplacements;
+      };
+      ".config/noctalia/templates/starship.toml" = lib.mkIf config.layers.layer-50.cli.headless {
+        text = fillTemplate ./templates/starship.toml matugenReplacements;
+      };
+      ".config/noctalia/templates/btop.theme" = lib.mkIf config.layers.layer-50.cli.headless {
+        text = fillTemplate ./templates/btop.theme matugenReplacements;
+      };
       ".config/noctalia/templates/zsh-colors.sh" = lib.mkIf config.layers.layer-50.cli.headless {
         text = ''
           # Generated Zsh colors for ${selectedThemeName}

@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   imports = [
     ../../50-cli-tui-programs
     ../../60-gui-programs

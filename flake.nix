@@ -123,7 +123,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.gitignore.follows = "hyprland/pre-commit-hooks/gitignore";
     };
-     antigravity = {
+    antigravity = {
       url = "github:Jacopone/Antigravity-nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
@@ -203,16 +203,18 @@
 
         flake.nfpuRegistry =
           let
-            extractMachineConfig = name: machine:
+            extractMachineConfig =
+              name: machine:
               let
                 cfg = machine.config;
-                layer20Services = cfg.layers.layer-20.services.config or {};
+                layer20Services = cfg.layers.layer-20.services.config or { };
                 services = builtins.mapAttrs (sName: sCfg: {
                   enable = sCfg.enable or false;
                 }) layer20Services;
-              in {
+              in
+              {
                 services = services;
-                layer10 = cfg.layers.layer-10.system or {};
+                layer10 = cfg.layers.layer-10.system or { };
               };
           in
           builtins.mapAttrs extractMachineConfig inputs.self.nixosConfigurations;

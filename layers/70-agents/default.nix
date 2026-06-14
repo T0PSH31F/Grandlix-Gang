@@ -1,7 +1,9 @@
 # Agents Tier Entry Point
 { lib, ... }:
 let
-  inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; }) mkDendriticModule;
+  inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; })
+    mkDendriticModule
+    ;
 in
 {
   imports = [
@@ -15,5 +17,7 @@ in
     (mkDendriticModule "agent-audio" ./72-voice/asr-tts/agent-audio.nix)
     ./packages-ai.nix
     ./74-ai-infra
+    ../../layers/75-mcp
+    ../../layers/76-hermes-agent
   ];
 }

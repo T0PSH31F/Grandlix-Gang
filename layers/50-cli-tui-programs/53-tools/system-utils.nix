@@ -22,7 +22,7 @@ in
       hue-plus
       hueadm
       iftop
-      iotop 
+      iotop
       neohtop
       neowall
       openhue-cli

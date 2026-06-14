@@ -12,27 +12,94 @@ in
     programs.superfile = {
       enable = true;
       metadataPackage = pkgs.exiftool;
-      settings = { theme = "aura-theme-dark"; file_panel.show_hidden = true; };
+      settings = {
+        theme = "aura-theme-dark";
+        file_panel.show_hidden = true;
+      };
       themes."aura-theme-dark" = {
         code_syntax_highlight = "aura-dark";
-        full_screen_fg = "#edecee"; full_screen_bg = "#15141b";
-        gradient_color = [ "#a277ff" "#f694ff" ];
-        file_panel_fg = "#edecee"; file_panel_bg = "#15141b"; file_panel_border = "#29263c"; file_panel_border_active = "#a277ff"; file_panel_top_directory_icon = "#61ffca"; file_panel_top_path = "#82e2ff"; file_panel_item_selected_fg = "#15141b"; file_panel_item_selected_bg = "#a277ff";
-        footer_fg = "#edecee"; footer_bg = "#15141b"; footer_border = "#29263c"; footer_border_active = "#61ffca";
-        sidebar_fg = "#edecee"; sidebar_bg = "#15141b"; sidebar_title = "#82e2ff"; sidebar_border = "#15141b"; sidebar_border_active = "#f694ff"; sidebar_item_selected_fg = "#15141b"; sidebar_item_selected_bg = "#f694ff"; sidebar_divider = "#6d6d6d";
-        modal_fg = "#edecee"; modal_bg = "#15141b"; modal_border_active = "#6d6d6d"; modal_cancel_fg = "#15141b"; modal_cancel_bg = "#ff6767"; modal_confirm_fg = "#15141b"; modal_confirm_bg = "#61ffca";
-        help_menu_hotkey = "#82e2ff"; help_menu_title = "#f694ff";
-        cursor = "#a277ff"; correct = "#61ffca"; error = "#ff6767"; hint = "#82e2ff"; cancel = "#ff6767";
+        full_screen_fg = "#edecee";
+        full_screen_bg = "#15141b";
+        gradient_color = [
+          "#a277ff"
+          "#f694ff"
+        ];
+        file_panel_fg = "#edecee";
+        file_panel_bg = "#15141b";
+        file_panel_border = "#29263c";
+        file_panel_border_active = "#a277ff";
+        file_panel_top_directory_icon = "#61ffca";
+        file_panel_top_path = "#82e2ff";
+        file_panel_item_selected_fg = "#15141b";
+        file_panel_item_selected_bg = "#a277ff";
+        footer_fg = "#edecee";
+        footer_bg = "#15141b";
+        footer_border = "#29263c";
+        footer_border_active = "#61ffca";
+        sidebar_fg = "#edecee";
+        sidebar_bg = "#15141b";
+        sidebar_title = "#82e2ff";
+        sidebar_border = "#15141b";
+        sidebar_border_active = "#f694ff";
+        sidebar_item_selected_fg = "#15141b";
+        sidebar_item_selected_bg = "#f694ff";
+        sidebar_divider = "#6d6d6d";
+        modal_fg = "#edecee";
+        modal_bg = "#15141b";
+        modal_border_active = "#6d6d6d";
+        modal_cancel_fg = "#15141b";
+        modal_cancel_bg = "#ff6767";
+        modal_confirm_fg = "#15141b";
+        modal_confirm_bg = "#61ffca";
+        help_menu_hotkey = "#82e2ff";
+        help_menu_title = "#f694ff";
+        cursor = "#a277ff";
+        correct = "#61ffca";
+        error = "#ff6767";
+        hint = "#82e2ff";
+        cancel = "#ff6767";
       };
-      hotkeys = { confirm = [ "enter" "right" "l" ]; cancel = [ "escape" "left" "h" ]; };
+      hotkeys = {
+        confirm = [
+          "enter"
+          "right"
+          "l"
+        ];
+        cancel = [
+          "escape"
+          "left"
+          "h"
+        ];
+      };
       pinnedFolders = [
-        { name = "Home"; location = "/home/t0psh31f"; }
-        { name = "Downloads"; location = "/home/t0psh31f/Downloads"; }
-        { name = "Documents"; location = "/home/t0psh31f/Documents"; }
-        { name = "Music"; location = "/home/t0psh31f/Music"; }
-        { name = "Pictures"; location = "/home/t0psh31f/Pictures"; }
-        { name = "Videos"; location = "/home/t0psh31f/Videos"; }
-        { name = "Projects"; location = "/home/t0psh31f/Projects"; }
+        {
+          name = "Home";
+          location = "/home/t0psh31f";
+        }
+        {
+          name = "Downloads";
+          location = "/home/t0psh31f/Downloads";
+        }
+        {
+          name = "Documents";
+          location = "/home/t0psh31f/Documents";
+        }
+        {
+          name = "Music";
+          location = "/home/t0psh31f/Music";
+        }
+        {
+          name = "Pictures";
+          location = "/home/t0psh31f/Pictures";
+        }
+        {
+          name = "Videos";
+          location = "/home/t0psh31f/Videos";
+        }
+        {
+          name = "Projects";
+          location = "/home/t0psh31f/Projects";
+        }
       ];
     };
     xdg.configFile."superfile/theme/code_syntax_highlight/aura-dark.xml".text = ''

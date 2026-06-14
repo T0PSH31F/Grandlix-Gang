@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   options.layers.meta = {
     primaryUser = lib.mkOption {
       type = lib.types.str;

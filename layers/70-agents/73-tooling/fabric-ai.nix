@@ -13,7 +13,7 @@
       enable = true;
       enableZshIntegration = true;
       enableBashIntegration = true;
-      enableYtAlias = true; 
+      enableYtAlias = true;
       enablePatternsAliases = true;
     };
   };

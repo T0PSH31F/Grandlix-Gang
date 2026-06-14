@@ -6,18 +6,18 @@ let
     ;
 
   varsForInstance = instanceName: pkgs: {
-      clan.core.vars.generators.harmonia = {
-        share = true;
-        files.sign-key.secret = true;
-        files.sign-key.deploy = false;
-        files.pub-key.secret = false;
-        script = ''
-          ${pkgs.nix}/bin/nix-store --generate-binary-cache-key ${instanceName}-1 \
-            $out/sign-key \
-            $out/pub-key
-        '';
-      };
+    clan.core.vars.generators.harmonia = {
+      share = true;
+      files.sign-key.secret = true;
+      files.sign-key.deploy = false;
+      files.pub-key.secret = false;
+      script = ''
+        ${pkgs.nix}/bin/nix-store --generate-binary-cache-key ${instanceName}-1 \
+          $out/sign-key \
+          $out/pub-key
+      '';
     };
+  };
 in
 {
   _class = "clan.service";
@@ -62,7 +62,9 @@ in
             networking.firewall.allowedTCPPorts = [ 5000 ];
 
             services.harmonia.cache.enable = true;
-            services.harmonia.cache.signKeyPaths = [ config.clan.core.vars.generators.harmonia-private.files.sign-key.path ];
+            services.harmonia.cache.signKeyPaths = [
+              config.clan.core.vars.generators.harmonia-private.files.sign-key.path
+            ];
             services.harmonia.cache.settings.priority = settings.priority;
           };
       };
@@ -71,7 +73,12 @@ in
   roles.client = {
     description = "The client role configures the machine to use the nix-cache server";
     perInstance =
-      { settings, instanceName, roles,... }:
+      {
+        settings,
+        instanceName,
+        roles,
+        ...
+      }:
       {
         nixosModule =
           { config, pkgs, ... }:

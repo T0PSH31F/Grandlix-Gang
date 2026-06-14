@@ -46,6 +46,8 @@
 
     # Disable systemd-boot when using GRUB theme (use mkForce to override base.nix)
     boot.loader.systemd-boot.enable = lib.mkForce false;
-    boot.loader.efi.canTouchEfiVariables = lib.mkForce (!config.layers.layer-30.theming.themes.grub-lain.efiInstallAsRemovable);
+    boot.loader.efi.canTouchEfiVariables = lib.mkForce (
+      !config.layers.layer-30.theming.themes.grub-lain.efiInstallAsRemovable
+    );
   };
 }

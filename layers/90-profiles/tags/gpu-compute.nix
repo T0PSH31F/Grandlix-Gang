@@ -1,3 +1,4 @@
-{ ... }: {
+{ ... }:
+{
   # Profile for gpu-compute
 }

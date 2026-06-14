@@ -1,4 +1,5 @@
-{ osConfig ? config, 
+{
+  osConfig ? config,
   config,
   lib,
   ...
@@ -43,4 +44,3 @@ in
     '';
   };
 }
-

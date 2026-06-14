@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.hardware.audio.pipewire.enable = mkEnableOption "PipeWire audio system";
 
   config = mkIf config.hardware.audio.pipewire.enable {
@@ -40,6 +41,6 @@ with lib; {
     services.pulseaudio.enable = false;
 
     # Audio group for user
-    users.groups.audio = {};
+    users.groups.audio = { };
   };
 }

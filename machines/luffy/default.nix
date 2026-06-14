@@ -75,7 +75,11 @@
     adguard = {
       enable = false; # Commented out/disabled to unblock rebuild
       port = 3002; # avoids homepage and grafana
-      bindHosts = [ "127.0.0.1" "192.168.1.53" "100.80.146.120" ];
+      bindHosts = [
+        "127.0.0.1"
+        "192.168.1.53"
+        "100.80.146.120"
+      ];
     };
   };
 
@@ -165,7 +169,6 @@
         ];
       };
     };
-
 
     vaultwarden = {
       enable = true;

@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   imports = [
     ./ai.nix
   ];
@@ -14,6 +15,7 @@
     wyoming-services.enable = lib.mkDefault true;
     ai-services = {
       enable = lib.mkDefault true;
+      ollama.enable = lib.mkDefault true;
       chromadb.enable = lib.mkDefault true;
       lmstudio.enable = lib.mkDefault true;
       jan.enable = lib.mkDefault true;

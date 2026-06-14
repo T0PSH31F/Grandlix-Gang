@@ -6,7 +6,8 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   # Plymouth HelloNavi theme package
   plymouth-hellonavi = pkgs.stdenv.mkDerivation {
     pname = "plymouth-theme-hellonavi";
@@ -44,9 +45,10 @@
       cp -r * $out/share/sddm/themes/lain-wired/
     '';
   };
-in {
+in
+{
   # Test that Plymouth theme builds
-  plymouth-theme-builds = pkgs.runCommand "test-plymouth-theme" {} ''
+  plymouth-theme-builds = pkgs.runCommand "test-plymouth-theme" { } ''
     # Verify the theme package built
     test -d ${plymouth-hellonavi}/share/plymouth/themes/hellonavi
     test -f ${plymouth-hellonavi}/share/plymouth/themes/hellonavi/hellonavi.plymouth || \
@@ -55,7 +57,7 @@ in {
   '';
 
   # Test that SDDM theme builds
-  sddm-theme-builds = pkgs.runCommand "test-sddm-theme" {} ''
+  sddm-theme-builds = pkgs.runCommand "test-sddm-theme" { } ''
     # Verify the theme package built
     test -d ${sddm-lain}/share/sddm/themes/lain-wired
     ls ${sddm-lain}/share/sddm/themes/lain-wired/
@@ -63,7 +65,7 @@ in {
   '';
 
   # Combined test
-  all-themes = pkgs.runCommand "test-all-themes" {} ''
+  all-themes = pkgs.runCommand "test-all-themes" { } ''
     echo "All theme packages build successfully!"
     echo "Plymouth: ${plymouth-hellonavi}"
     echo "SDDM: ${sddm-lain}"

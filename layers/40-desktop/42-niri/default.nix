@@ -1,4 +1,12 @@
-{ osConfig ? config, pkgs, lib, config, inputs, ... }: {
+{
+  osConfig ? config,
+  pkgs,
+  lib,
+  config,
+  inputs,
+  ...
+}:
+{
   imports = [
     inputs.niri.nixosModules.niri
   ];
@@ -35,12 +43,15 @@
       ./uwsm.nix
     ];
 
-    home.packages = lib.mkIf osConfig.layers.layer-40.desktop.niri.enable (with pkgs; [
-      xwayland-satellite
-      nautilus
-      alacritty
-      fuzzel
-      swappy
-    ]);
+    home.packages = lib.mkIf osConfig.layers.layer-40.desktop.niri.enable (
+      with pkgs;
+      [
+        xwayland-satellite
+        nautilus
+        alacritty
+        fuzzel
+        swappy
+      ]
+    );
   };
 }

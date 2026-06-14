@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "fs-diff" (builtins.readFile ./fs-diff.sh))
     (pkgs.writeShellScriptBin "clan-validate" (builtins.readFile ./clan-validate.sh))

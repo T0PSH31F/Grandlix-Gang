@@ -9,6 +9,7 @@ let
         "laptop"
         "media"
         "ai-server"
+        "ai-agent"
         "intel-12th-gen"
       ];
       deploy.targetHost = "root@100.95.168.90";
@@ -110,6 +111,9 @@ in
               acmeEmail = "admin@matrix.local";
               users.t0psh31f = {
                 admin = true;
+              };
+              users.hermes = {
+                admin = false;
               };
             };
           };

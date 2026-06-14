@@ -23,30 +23,32 @@ let
   };
 
   # Fall back to Nami for unknown hosts
-  currentAsset = motdAssets.${hostName} or {
-    image = ../../../layers/00-cyberia/02-assets/png-ico/Nami2.png;
-    label = "NFP";
-  };
+  currentAsset =
+    motdAssets.${hostName} or {
+      image = ../../../layers/00-cyberia/02-assets/png-ico/Nami2.png;
+      label = "NFP";
+    };
 
-  motdPkg = pkgs.runCommand "nixos-motd-${hostName}"
-    {
-      buildInputs = [
-        pkgs.chafa
-        pkgs.figlet
-        pkgs.lolcat
-        pkgs.coreutils
-      ];
-    }
-    ''
-      mkdir -p $out
-      chafa --size=35x16 ${currentAsset.image} > $out/motd.txt
-      echo -ne "\033[16A" >> $out/motd.txt
-      figlet -c -f isometric2 ${currentAsset.label} | lolcat -f | while IFS= read -r line; do
-        echo -ne "\033[36C" >> $out/motd.txt
-        echo "$line" >> $out/motd.txt
-      done
-      echo -ne "\033[2B" >> $out/motd.txt
-    '';
+  motdPkg =
+    pkgs.runCommand "nixos-motd-${hostName}"
+      {
+        buildInputs = [
+          pkgs.chafa
+          pkgs.figlet
+          pkgs.lolcat
+          pkgs.coreutils
+        ];
+      }
+      ''
+        mkdir -p $out
+        chafa --size=35x16 ${currentAsset.image} > $out/motd.txt
+        echo -ne "\033[16A" >> $out/motd.txt
+        figlet -c -f isometric2 ${currentAsset.label} | lolcat -f | while IFS= read -r line; do
+          echo -ne "\033[36C" >> $out/motd.txt
+          echo "$line" >> $out/motd.txt
+        done
+        echo -ne "\033[2B" >> $out/motd.txt
+      '';
 in
 {
   home = lib.mkIf (cfg.enable && cfg.shells.zsh.enable) {

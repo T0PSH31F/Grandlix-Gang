@@ -18,7 +18,10 @@ in
         editor = {
           completion-trigger-len = 1;
           true-color = true;
-          rulers = [ 80 120 ];
+          rulers = [
+            80
+            120
+          ];
           end-of-line-diagnostics = "hint";
           inline-diagnostics = {
             cursor-line = "warning";
@@ -48,9 +51,23 @@ in
           soft-wrap.enable = true;
           text-width = 110;
           statusline = {
-            left = [ "mode" "spinner" "version-control" "file-name" "read-only-indicator" "file-modification-indicator" ];
+            left = [
+              "mode"
+              "spinner"
+              "version-control"
+              "file-name"
+              "read-only-indicator"
+              "file-modification-indicator"
+            ];
             center = [ ];
-            right = [ "diagnostics" "selections" "register" "position-percentage" "position" "file-encoding" ];
+            right = [
+              "diagnostics"
+              "selections"
+              "register"
+              "position-percentage"
+              "position"
+              "file-encoding"
+            ];
           };
         };
 
@@ -80,7 +97,9 @@ in
             "!" = "no_op";
             "ret" = "goto_word";
             backspace = {
-              r.r = [ ":sh bash -c 'file=\"%{buffer_name}\"; while [ \"$file\" != \"/\" ] && [ ! -f \"$file/Cargo.toml\" ]; do file=$(dirname \"$file\"); done; if [ -f \"$file/Cargo.toml\" ]; then cd \"$file\" && cargo run; else echo \"No Cargo.toml found\"; fi'" ];
+              r.r = [
+                ":sh bash -c 'file=\"%{buffer_name}\"; while [ \"$file\" != \"/\" ] && [ ! -f \"$file/Cargo.toml\" ]; do file=$(dirname \"$file\"); done; if [ -f \"$file/Cargo.toml\" ]; then cd \"$file\" && cargo run; else echo \"No Cargo.toml found\"; fi'"
+              ];
               v = {
                 n = "@i- [ ] ";
                 d = ":insert-output ${lib.getExe' pkgs.coreutils "date"} +'## %%H:%%M:%%S'";
@@ -89,7 +108,10 @@ in
                   "open_below"
                   ":insert-output ${lib.getExe' pkgs.coreutils "date"} +'## %%H:%%M:%%S'"
                 ];
-                r = [ ":insert-output vault-tasks --vault-path ./ fix" ":reload" ];
+                r = [
+                  ":insert-output vault-tasks --vault-path ./ fix"
+                  ":reload"
+                ];
               };
               y = ":yank-diagnostic";
             };
@@ -106,41 +128,157 @@ in
         language = [
           {
             name = "bash";
-            language-servers = [ "bash-language-server" "typos" "wakatime" ];
-            formatter = { command = "${pkgs.shfmt}/bin/shfmt"; args = [ "-i" "2" "-" ]; };
+            language-servers = [
+              "bash-language-server"
+              "typos"
+              "wakatime"
+            ];
+            formatter = {
+              command = "${pkgs.shfmt}/bin/shfmt";
+              args = [
+                "-i"
+                "2"
+                "-"
+              ];
+            };
           }
           {
             name = "c";
-            language-servers = [ "clangd" "typos" "wakatime" ];
-            formatter = { command = lib.getExe' pkgs.clang-tools "clang-format"; args = [ "-" ]; };
+            language-servers = [
+              "clangd"
+              "typos"
+              "wakatime"
+            ];
+            formatter = {
+              command = lib.getExe' pkgs.clang-tools "clang-format";
+              args = [ "-" ];
+            };
           }
-          { name = "fish"; language-servers = [ "fish" "typos" "wakatime" ]; }
-          { name = "java"; language-servers = [ "jdtls" "typos" "wakatime" ]; auto-format = true; }
-          { name = "javascript"; language-servers = [ "typescript-language-server" "typos" "wakatime" ]; auto-format = true; }
           {
-            name = "markdown";
-            language-servers = [ "ltex-ls" "markdown-oxide" "typos" "wakatime" ];
-            formatter = { command = lib.getExe pkgs.prettier; args = [ "--stdin-filepath" "file.md" ]; };
+            name = "fish";
+            language-servers = [
+              "fish"
+              "typos"
+              "wakatime"
+            ];
+          }
+          {
+            name = "java";
+            language-servers = [
+              "jdtls"
+              "typos"
+              "wakatime"
+            ];
             auto-format = true;
           }
-          { name = "nix"; language-servers = [ "nixd" "typos" "wakatime" ]; formatter.command = lib.getExe pkgs.nixfmt; auto-format = true; }
-          { name = "hyprland"; language-servers = [ "hyprls" "typos" "wakatime" ]; }
+          {
+            name = "javascript";
+            language-servers = [
+              "typescript-language-server"
+              "typos"
+              "wakatime"
+            ];
+            auto-format = true;
+          }
+          {
+            name = "markdown";
+            language-servers = [
+              "ltex-ls"
+              "markdown-oxide"
+              "typos"
+              "wakatime"
+            ];
+            formatter = {
+              command = lib.getExe pkgs.prettier;
+              args = [
+                "--stdin-filepath"
+                "file.md"
+              ];
+            };
+            auto-format = true;
+          }
+          {
+            name = "nix";
+            language-servers = [
+              "nixd"
+              "typos"
+              "wakatime"
+            ];
+            formatter.command = lib.getExe pkgs.nixfmt;
+            auto-format = true;
+          }
+          {
+            name = "hyprland";
+            language-servers = [
+              "hyprls"
+              "typos"
+              "wakatime"
+            ];
+          }
           {
             name = "ocaml";
-            file-types = [ "ml" "mli" ];
-            language-servers = [ "ocaml-lsp" "typos" "wakatime" ];
-            formatter = { command = lib.getExe pkgs.ocamlPackages.ocamlformat; args = [ "-" "--impl" "--enable-outside-detected-project" ]; };
+            file-types = [
+              "ml"
+              "mli"
+            ];
+            language-servers = [
+              "ocaml-lsp"
+              "typos"
+              "wakatime"
+            ];
+            formatter = {
+              command = lib.getExe pkgs.ocamlPackages.ocamlformat;
+              args = [
+                "-"
+                "--impl"
+                "--enable-outside-detected-project"
+              ];
+            };
             auto-format = true;
           }
           {
             name = "python";
             auto-format = true;
-            formatter = { command = "ruff"; args = [ "format" "--line-length=80" "-" ]; };
-            language-servers = [ "ty" "basedpyright" "ruff" ];
+            formatter = {
+              command = "ruff";
+              args = [
+                "format"
+                "--line-length=80"
+                "-"
+              ];
+            };
+            language-servers = [
+              "ty"
+              "basedpyright"
+              "ruff"
+            ];
           }
-          { name = "rust"; language-servers = [ "rust-analyzer" "typos" "wakatime" ]; }
-          { name = "toml"; language-servers = [ "taplo" "typos" "wakatime" ]; }
-          { name = "typst"; language-servers = [ "tinymist" "typos" "wakatime" ]; formatter.command = lib.getExe pkgs.typstyle; auto-format = true; }
+          {
+            name = "rust";
+            language-servers = [
+              "rust-analyzer"
+              "typos"
+              "wakatime"
+            ];
+          }
+          {
+            name = "toml";
+            language-servers = [
+              "taplo"
+              "typos"
+              "wakatime"
+            ];
+          }
+          {
+            name = "typst";
+            language-servers = [
+              "tinymist"
+              "typos"
+              "wakatime"
+            ];
+            formatter.command = lib.getExe pkgs.typstyle;
+            auto-format = true;
+          }
         ];
 
         language-server = {
@@ -150,9 +288,17 @@ in
           };
           ruff.command = lib.getExe pkgs.ruff;
           ty.command = lib.getExe pkgs.ty;
-          bash-language-server = { command = lib.getExe pkgs.bash-language-server; args = [ "start" ]; };
+          bash-language-server = {
+            command = lib.getExe pkgs.bash-language-server;
+            args = [ "start" ];
+          };
           jdtls = {
-            command = "${pkgs.jdt-language-server}/bin/${if lib.versionOlder pkgs.jdt-language-server.version "1.31.0" then "jdt-language-server" else "jdtls"}";
+            command = "${pkgs.jdt-language-server}/bin/${
+              if lib.versionOlder pkgs.jdt-language-server.version "1.31.0" then
+                "jdt-language-server"
+              else
+                "jdtls"
+            }";
             args = [ "--jvm-arg=-javaagent:${pkgs.lombok}/share/java/lombok.jar" ];
           };
           ltex-ls = {
@@ -184,11 +330,24 @@ in
             config.check = {
               checkOnSave = true;
               command = "clippy";
-              extraArgs = [ "--" "-W" "clippy::perf" "-W" "clippy::pedantic" "-A" "clippy::pedantic::missing_errors_doc" "-A" "clippy::needless_pass_by_value" ];
+              extraArgs = [
+                "--"
+                "-W"
+                "clippy::perf"
+                "-W"
+                "clippy::pedantic"
+                "-A"
+                "clippy::pedantic::missing_errors_doc"
+                "-A"
+                "clippy::needless_pass_by_value"
+              ];
             };
           };
           taplo.command = lib.getExe pkgs.taplo;
-          tinymist = { command = lib.getExe pkgs.tinymist; config.exportPdf = "onType"; };
+          tinymist = {
+            command = lib.getExe pkgs.tinymist;
+            config.exportPdf = "onType";
+          };
           typescript-language-server.command = lib.getExe pkgs.typescript-language-server;
           typos = {
             command = lib.getExe pkgs.typos-lsp;
@@ -197,7 +356,9 @@ in
               ratatui = "ratatui"
             '';
           };
-          wakatime.command = lib.getExe inputs.wakatime-lsp.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          wakatime.command =
+            lib.getExe
+              inputs.wakatime-lsp.packages.${pkgs.stdenv.hostPlatform.system}.default;
         };
       };
     };

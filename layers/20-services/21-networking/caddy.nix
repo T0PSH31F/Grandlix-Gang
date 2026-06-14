@@ -1,4 +1,4 @@
- {
+{
   config,
   lib,
   ...
@@ -44,7 +44,7 @@ with lib;
   options.layers.layer-20.services.config.reverseProxy = {
     routes = mkOption {
       type = types.attrsOf types.int;
-      default = {};
+      default = { };
       description = "Registry of subdomains to localhost ports. E.g. { ollama = 11434; }";
     };
   };
@@ -57,31 +57,36 @@ with lib;
         email ${config.services.caddy-server.email}
       '';
 
-      virtualHosts = let
-        baseVirtualHosts = mapAttrs
-          (name: value: {
+      virtualHosts =
+        let
+          baseVirtualHosts = mapAttrs (name: value: {
             inherit (value) extraConfig useACMEHost serverAliases;
-          })
-          config.services.caddy-server.virtualHosts;
-          
-        registryRoutes = {
-          "*.${config.layers.meta.domain or "lovelain.duckdns.org"}" = {
-            useACMEHost = config.layers.meta.domain or "lovelain.duckdns.org";
-            extraConfig = ''
-              encode zstd gzip
-              header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-              
-              ${concatStringsSep "\n" (mapAttrsToList (subdomain: port: ''
-                @${subdomain} host ${subdomain}.${config.layers.meta.domain or "lovelain.duckdns.org"}
-                handle @${subdomain} { reverse_proxy localhost:${toString port} }
-              '') config.layers.layer-20.services.config.reverseProxy.routes)}
-            '';
+          }) config.services.caddy-server.virtualHosts;
+
+          registryRoutes = {
+            "*.${config.layers.meta.domain or "lovelain.duckdns.org"}" = {
+              useACMEHost = config.layers.meta.domain or "lovelain.duckdns.org";
+              extraConfig = ''
+                encode zstd gzip
+                header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+                ${concatStringsSep "\n" (
+                  mapAttrsToList (subdomain: port: ''
+                    @${subdomain} host ${subdomain}.${config.layers.meta.domain or "lovelain.duckdns.org"}
+                    handle @${subdomain} { reverse_proxy localhost:${toString port} }
+                  '') config.layers.layer-20.services.config.reverseProxy.routes
+                )}
+              '';
+            };
           };
-        };
-      in 
-        if config.layers.layer-20.services.config.reverseProxy.routes != {} 
-        then lib.mkMerge [ baseVirtualHosts registryRoutes ]
-        else baseVirtualHosts;
+        in
+        if config.layers.layer-20.services.config.reverseProxy.routes != { } then
+          lib.mkMerge [
+            baseVirtualHosts
+            registryRoutes
+          ]
+        else
+          baseVirtualHosts;
     };
 
     # Firewall

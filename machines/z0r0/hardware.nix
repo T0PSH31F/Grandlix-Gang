@@ -22,38 +22,62 @@
   fileSystems."/" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@root" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@root"
+      "compress=zstd"
+      "noatime"
+    ];
   };
 
   fileSystems."/var/log" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@log" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@log"
+      "compress=zstd"
+      "noatime"
+    ];
   };
 
   fileSystems."/nix" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@nix" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@nix"
+      "compress=zstd"
+      "noatime"
+    ];
   };
 
   fileSystems."/persist" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@persist" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@persist"
+      "compress=zstd"
+      "noatime"
+    ];
     neededForBoot = true;
   };
 
   fileSystems."/backup" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@backup" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@backup"
+      "compress=zstd"
+      "noatime"
+    ];
   };
 
   fileSystems."/home" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=@home" "compress=zstd" "noatime" ];
+    options = [
+      "subvol=@home"
+      "compress=zstd"
+      "noatime"
+    ];
     neededForBoot = true;
   };
 

@@ -1,4 +1,5 @@
-{ lib, config, ... }: {
+{ lib, config, ... }:
+{
   options.layers.layer-40.desktop.terminals = {
     enable = lib.mkOption {
       type = lib.types.bool;

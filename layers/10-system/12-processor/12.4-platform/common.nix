@@ -39,7 +39,9 @@ with lib;
       (mkIf (config.layers.layer-10.system.hardware.kernel == "latest") pkgs.linuxPackages_latest)
 
       # CachyOS kernel - optimized for performance
-      (mkIf (config.layers.layer-10.system.hardware.kernel == "cachyos") pkgs.cachyosKernels.linuxPackages-cachyos-latest)
+      (mkIf (
+        config.layers.layer-10.system.hardware.kernel == "cachyos"
+      ) pkgs.cachyosKernels.linuxPackages-cachyos-latest)
 
       # Zen kernel - optimized for desktop/responsiveness
       (mkIf (config.layers.layer-10.system.hardware.kernel == "zen") pkgs.linuxPackages_zen)

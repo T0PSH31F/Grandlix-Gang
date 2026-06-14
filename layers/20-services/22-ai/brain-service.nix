@@ -30,15 +30,15 @@ let
     from fastapi import FastAPI, HTTPException
     from pydantic import BaseModel
     from typing import Optional, List, Dict, Any
-    
+
     from llama_index.core import VectorStoreIndex, Document
     from llama_index.vector_stores.postgres import PGVectorStore
     from llama_index.core import StorageContext
     from llama_index.llms.openai import OpenAI
     from llama_index.core import Settings
-    
+
     app = FastAPI(title="Brain Service PKB", description="Local Knowledge Base API")
-    
+
     # Configuration
     DB_NAME = os.getenv("DB_NAME", "vectordb")
     DB_USER = os.getenv("DB_USER", "postgres")
@@ -48,14 +48,14 @@ let
     LLM_API_KEY = os.getenv("LLM_API_KEY", "dummy")
     LLM_API_BASE = os.getenv("LLM_API_BASE", "https://openrouter.ai/api/v1")
     LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-4o-mini")
-    
+
     # Init LlamaIndex Settings
     Settings.llm = OpenAI(
         api_key=LLM_API_KEY, 
         api_base=LLM_API_BASE, 
         model=LLM_MODEL
     )
-    
+
     def get_index():
         vector_store = PGVectorStore.from_params(
             database=DB_NAME,
@@ -68,19 +68,19 @@ let
         )
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         return VectorStoreIndex.from_vector_store(vector_store, storage_context=storage_context)
-    
+
     class RememberRequest(BaseModel):
         text: str
         source: Optional[str] = None
         user: Optional[str] = None
         project: Optional[str] = None
         tags: Optional[List[str]] = None
-    
+
     class QueryRequest(BaseModel):
         question: str
         scope: Optional[str] = None
         user: Optional[str] = None
-    
+
     @app.post("/remember")
     async def remember(req: RememberRequest):
         try:
@@ -96,7 +96,7 @@ let
             return {"status": "success", "message": "Information ingested into Brain."}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
-    
+
     @app.post("/query")
     async def query(req: QueryRequest):
         try:
@@ -185,7 +185,10 @@ in
     systemd.services.brain-service = {
       description = "Brain Service PKB API";
       wantedBy = [ "multi-user.target" ];
-      after = [ "postgresql.service" "postgresql-extensions.service" ];
+      after = [
+        "postgresql.service"
+        "postgresql-extensions.service"
+      ];
       requires = [ "postgresql.service" ];
 
       environment = {

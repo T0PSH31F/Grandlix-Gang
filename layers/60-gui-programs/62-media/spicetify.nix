@@ -19,33 +19,35 @@ in
     };
   };
 
-  home = { config, osConfig, ... }: {
-    imports = lib.optionals osConfig.layers.layer-60.gui.spicetify.enable [
-      inputs.spicetify-nix.homeManagerModules.default
-    ];
+  home =
+    { config, osConfig, ... }:
+    {
+      imports = lib.optionals osConfig.layers.layer-60.gui.spicetify.enable [
+        inputs.spicetify-nix.homeManagerModules.default
+      ];
 
-    config = lib.mkIf osConfig.layers.layer-60.gui.spicetify.enable {
+      config = lib.mkIf osConfig.layers.layer-60.gui.spicetify.enable {
 
-      programs.spicetify = {
-        enable = true;
-        theme = spicePkgs.themes.comfy;
+        programs.spicetify = {
+          enable = true;
+          theme = spicePkgs.themes.comfy;
 
-        enabledExtensions = with spicePkgs.extensions; [
-          adblock
-          beautifulLyrics
-          betterGenres
-          fullAlbumDate
-          fullAppDisplay
-          hidePodcasts
-          historyShortcut
-          popupLyrics
-          shuffle
-          skipStats
-          songStats
-          volumePercentage
-          wikify
-        ];
+          enabledExtensions = with spicePkgs.extensions; [
+            adblock
+            beautifulLyrics
+            betterGenres
+            fullAlbumDate
+            fullAppDisplay
+            hidePodcasts
+            historyShortcut
+            popupLyrics
+            shuffle
+            skipStats
+            songStats
+            volumePercentage
+            wikify
+          ];
+        };
       };
     };
-  };
 }

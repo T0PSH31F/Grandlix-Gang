@@ -63,67 +63,68 @@ in
     let
       vllmPackage = if cfg.acceleration == "rocm" then pkgs.pkgsRocm.vllm or pkgs.vllm else pkgs.vllm;
     in
-      {
-        # 1. Package inclusion
-        environment.systemPackages = [ vllmPackage ];
+    {
+      # 1. Package inclusion
+      environment.systemPackages = [ vllmPackage ];
 
-        # 2. Systemd Service
-        systemd.services.vllm-server = {
-          description = "vLLM Inference Server";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" ];
+      # 2. Systemd Service
+      systemd.services.vllm-server = {
+        description = "vLLM Inference Server";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
 
-          serviceConfig = {
-            ExecStart =
-              let
-                args = [
-                  "serve"
-                ]
-                ++ optional (cfg.model != null) (toString cfg.model)
-                ++ [
-                  "--host"
-                  cfg.host
-                  "--port"
-                  (toString cfg.port)
-                ]
-                ++ cfg.extraFlags;
-              in
-              "${vllmPackage}/bin/vllm ${escapeShellArgs args}";
+        serviceConfig = {
+          ExecStart =
+            let
+              args = [
+                "serve"
+              ]
+              ++ optional (cfg.model != null) (toString cfg.model)
+              ++ [
+                "--host"
+                cfg.host
+                "--port"
+                (toString cfg.port)
+              ]
+              ++ cfg.extraFlags;
+            in
+            "${vllmPackage}/bin/vllm ${escapeShellArgs args}";
 
-            User = "vllm";
-            Group = "vllm";
-            WorkingDirectory = "/var/lib/vllm";
-            StateDirectory = "vllm";
-            Restart = "on-failure";
-            PrivateTmp = true;
-          };
+          User = "vllm";
+          Group = "vllm";
+          WorkingDirectory = "/var/lib/vllm";
+          StateDirectory = "vllm";
+          Restart = "on-failure";
+          PrivateTmp = true;
         };
+      };
 
-        # 3. User definitions
-        users.users.vllm = {
-          group = "vllm";
-          isSystemUser = true;
-          description = "vLLM Server User";
-          home = "/var/lib/vllm";
-          createHome = true;
-        };
-        users.groups.vllm = { };
+      # 3. User definitions
+      users.users.vllm = {
+        group = "vllm";
+        isSystemUser = true;
+        description = "vLLM Server User";
+        home = "/var/lib/vllm";
+        createHome = true;
+      };
+      users.groups.vllm = { };
 
-        # 4. Firewall
-        networking.firewall.allowedTCPPorts = mkIf cfg.openFirewall [ cfg.port ];
+      # 4. Firewall
+      networking.firewall.allowedTCPPorts = mkIf cfg.openFirewall [ cfg.port ];
 
       # 5. Impermanence
       environment.persistence."/persist" =
-        mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-          directories = [
-            {
-              directory = "/var/lib/vllm";
-              user = "vllm";
-              group = "vllm";
-              mode = "0750";
-            }
-          ];
-        };
+        mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+          {
+            directories = [
+              {
+                directory = "/var/lib/vllm";
+                user = "vllm";
+                group = "vllm";
+                mode = "0750";
+              }
+            ];
+          };
     }
   );
 }

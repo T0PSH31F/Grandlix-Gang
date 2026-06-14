@@ -1,7 +1,8 @@
 # Simple Disko Template
 # 1GB FAT32 boot + ext4 root (100%)
 # No encryption - for simple/testing setups
-{...}: {
+{ ... }:
+{
   disko.devices = {
     disk.main = {
       type = "disk";
@@ -16,7 +17,10 @@
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
-              mountOptions = ["defaults" "umask=0077"];
+              mountOptions = [
+                "defaults"
+                "umask=0077"
+              ];
             };
           };
           root = {

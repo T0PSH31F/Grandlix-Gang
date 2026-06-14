@@ -10,13 +10,13 @@ in
 {
   options.layers.layer-20.services.config.ci.github-runner = {
     enable = lib.mkEnableOption "GitHub Actions runner for deployment";
-    
+
     url = lib.mkOption {
       type = lib.types.str;
       default = "https://github.com/T0PSH31F/Grandlix-Gang";
       description = "Repository or org URL to register runner against";
     };
-    
+
     tokenFile = lib.mkOption {
       type = lib.types.path;
       default = config.sops.secrets."github-runner/token".path or "/run/secrets/github-runner/token";
@@ -40,7 +40,11 @@ in
         nix
         jq
       ];
-      extraLabels = [ "nixos" "deployer" "nfp" ];
+      extraLabels = [
+        "nixos"
+        "deployer"
+        "nfp"
+      ];
       replace = true;
     };
   };

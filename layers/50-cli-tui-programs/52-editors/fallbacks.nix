@@ -9,6 +9,11 @@ let
 in
 {
   home = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [ neovim micro vim nano ];
+    home.packages = with pkgs; [
+      neovim
+      micro
+      vim
+      nano
+    ];
   };
 }

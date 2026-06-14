@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   services = {
     searxng.enable = lib.mkDefault true;
     home-assistant-server.enable = lib.mkDefault true;

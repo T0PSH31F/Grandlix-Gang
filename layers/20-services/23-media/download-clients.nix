@@ -15,17 +15,26 @@ in
 
     deluge = {
       enable = mkEnableOption "Deluge torrent client";
-      port = mkOption { type = types.port; default = 8112; };
+      port = mkOption {
+        type = types.port;
+        default = 8112;
+      };
     };
 
     transmission = {
       enable = mkEnableOption "Transmission torrent client";
-      port = mkOption { type = types.port; default = 9091; };
+      port = mkOption {
+        type = types.port;
+        default = 9091;
+      };
     };
 
     aria2 = {
       enable = mkEnableOption "Aria2 download client";
-      port = mkOption { type = types.port; default = 6800; };
+      port = mkOption {
+        type = types.port;
+        default = 6800;
+      };
     };
   };
 
@@ -58,7 +67,10 @@ in
         max_active_seeding = 10;
         max_active_limit = 15;
         random_port = false;
-        listen_ports = [ 6881 6889 ];
+        listen_ports = [
+          6881
+          6889
+        ];
         enc_prefer_rc4 = true;
         enc_level = 1;
       };
@@ -98,12 +110,12 @@ in
     # ============================================================================
     # ARIA2 - Download Client (Preference)
     # ============================================================================
-    environment.systemPackages = mkIf cfg.aria2.enable [ 
-      pkgs.aria2 
-      pkgs.python3Packages.aria2p 
+    environment.systemPackages = mkIf cfg.aria2.enable [
+      pkgs.aria2
+      pkgs.python3Packages.aria2p
       # pkgs.ariang # Disabled due to upstream npm build failure
     ];
-    
+
     # Simple static web UI for Aria2
     # systemd.services.ariang = mkIf cfg.aria2.enable {
     #   description = "AriaNg Web UI";
@@ -163,31 +175,34 @@ in
     };
 
     # Directory structures
-    systemd.tmpfiles.rules = 
-      (optional cfg.transmission.enable "d /var/lib/transmission 0750 ${mediaCfg.user} ${mediaCfg.group} -") ++
-      (optionals cfg.aria2.enable [
+    systemd.tmpfiles.rules =
+      (optional cfg.transmission.enable "d /var/lib/transmission 0750 ${mediaCfg.user} ${mediaCfg.group} -")
+      ++ (optionals cfg.aria2.enable [
         "d ${mediaCfg.downloadsDir}/aria2 0755 ${mediaCfg.user} ${mediaCfg.group} -"
         "d /var/lib/aria2 0750 ${mediaCfg.user} ${mediaCfg.group} -"
         "f /var/lib/aria2/session.gz 0644 ${mediaCfg.user} ${mediaCfg.group} -"
       ]);
 
     # Firewall
-    networking.firewall.allowedTCPPorts = 
-      (optional cfg.deluge.enable cfg.deluge.port) ++
-      (optional cfg.transmission.enable cfg.transmission.port) ++
-      (optionals cfg.aria2.enable [ cfg.aria2.port 6801 ]);
+    networking.firewall.allowedTCPPorts =
+      (optional cfg.deluge.enable cfg.deluge.port)
+      ++ (optional cfg.transmission.enable cfg.transmission.port)
+      ++ (optionals cfg.aria2.enable [
+        cfg.aria2.port
+        6801
+      ]);
 
     # Persistence
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
-      directories = 
+      directories =
         (optional cfg.deluge.enable {
           directory = "/var/lib/deluge";
           user = mediaCfg.user;
           group = mediaCfg.group;
           mode = "0750";
-        }) ++
-        (optional cfg.transmission.enable "/var/lib/transmission") ++
-        (optional cfg.aria2.enable "/var/lib/aria2");
+        })
+        ++ (optional cfg.transmission.enable "/var/lib/transmission")
+        ++ (optional cfg.aria2.enable "/var/lib/aria2");
     };
   };
 }

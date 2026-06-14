@@ -1,5 +1,6 @@
 # System Tier Entry Point
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./11-foundation
     ./12-processor

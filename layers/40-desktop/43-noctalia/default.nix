@@ -19,7 +19,11 @@ in
     };
 
     backend = lib.mkOption {
-      type = lib.types.enum [ "hyprland" "niri" "both" ];
+      type = lib.types.enum [
+        "hyprland"
+        "niri"
+        "both"
+      ];
       default = "hyprland";
       description = "Which compositor backend to use with Noctalia (both = dual sessions via ReGreet)";
     };
@@ -31,48 +35,56 @@ in
     };
   };
 
-  home = { config, lib, ... }: {
-    imports = lib.optionals cfg.enable [
-      ./ipc.nix
-      ./mutable-includes.nix
-      inputs.noctalia.homeModules.default
-    ];
-
-    config = lib.mkIf cfg.enable {
-      home.packages = with pkgs; [
-        gst_all_1.gst-plugins-base
-        gst_all_1.gst-plugins-good
+  home =
+    { config, lib, ... }:
+    {
+      imports = lib.optionals cfg.enable [
+        ./ipc.nix
+        ./mutable-includes.nix
+        inputs.noctalia.homeModules.default
       ];
-      programs.noctalia-shell = {
-        enable = true;
-        package = cfg.package;
-      };
 
-      home.activation.setupNoctaliaConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        mkdir -p $HOME/.config/noctalia
-        install -m644 ${pkgs.writeText "noctalia-settings.json" (builtins.replaceStrings ["$HOME"] [config.home.homeDirectory] (builtins.readFile ../../../layers/00-cyberia/02-assets/noctalia-config.json))} $HOME/.config/noctalia/settings.json
-      '';
+      config = lib.mkIf cfg.enable {
+        home.packages = with pkgs; [
+          gst_all_1.gst-plugins-base
+          gst_all_1.gst-plugins-good
+        ];
+        programs.noctalia-shell = {
+          enable = true;
+          package = cfg.package;
+        };
 
-    systemd.user.services.noctalia-shell = {
-      Unit = {
-        Description = "Noctalia Desktop Shell";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${cfg.package}/bin/noctalia-shell";
-        Restart = "always";
-        RestartSec = "3";
-      };
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
+        home.activation.setupNoctaliaConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p $HOME/.config/noctalia
+          install -m644 ${
+            pkgs.writeText "noctalia-settings.json" (
+              builtins.replaceStrings [ "$HOME" ] [ config.home.homeDirectory ] (
+                builtins.readFile ../../../layers/00-cyberia/02-assets/noctalia-config.json
+              )
+            )
+          } $HOME/.config/noctalia/settings.json
+        '';
+
+        systemd.user.services.noctalia-shell = {
+          Unit = {
+            Description = "Noctalia Desktop Shell";
+            PartOf = [ "graphical-session.target" ];
+            After = [ "graphical-session.target" ];
+          };
+          Service = {
+            ExecStart = "${cfg.package}/bin/noctalia-shell";
+            Restart = "always";
+            RestartSec = "3";
+          };
+          Install = {
+            WantedBy = [ "graphical-session.target" ];
+          };
+        };
+
+        home.file = {
+          ".face".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
+          ".face.icon".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
+        };
       };
     };
-
-    home.file = {
-      ".face".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
-      ".face.icon".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
-    };
-    };
-  };
 }

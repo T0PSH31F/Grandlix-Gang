@@ -51,7 +51,7 @@ in
         DynamicUser = true;
         StateDirectory = "whisper"; # /var/lib/whisper
       };
-      
+
       preStart = ''
         mkdir -p /var/lib/whisper
         if [ ! -f /var/lib/whisper/ggml-base.en.bin ]; then

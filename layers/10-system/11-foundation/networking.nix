@@ -92,8 +92,6 @@
     };
   };
 
-
-
   # services.tailscale.enable = true; # Moved to service-distribution.nix
 
   # SSH Server Configuration

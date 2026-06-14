@@ -15,24 +15,26 @@
     };
   };
 
-  home = { config, osConfig, ... }: lib.mkIf osConfig.layers.layer-70.agent.opencode.enable {
-    programs.opencode = {
-      enable = true;
-      enableMcpIntegration = true;
-      web.enable = true;
+  home =
+    { config, osConfig, ... }:
+    lib.mkIf osConfig.layers.layer-70.agent.opencode.enable {
+      programs.opencode = {
+        enable = true;
+        enableMcpIntegration = true;
+        web.enable = true;
 
-      agents = ./opencode/agents;
-      tools = ./opencode/tools;
-      skills = ./opencode/skills;
-      commands = ./opencode/commands;
-      context = ./opencode/rules.md;
+        agents = ./opencode/agents;
+        tools = ./opencode/tools;
+        skills = ./opencode/skills;
+        commands = ./opencode/commands;
+        context = ./opencode/rules.md;
 
-      tui.theme = lib.mkForce "noctalia";
+        tui.theme = lib.mkForce "noctalia";
+      };
+
+      xdg.configFile."opencode/themes/noctalia.json".source =
+        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
+
+      home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop;
     };
-
-    xdg.configFile."opencode/themes/noctalia.json".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
-
-    home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop;
-  };
 }

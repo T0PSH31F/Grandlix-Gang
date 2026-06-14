@@ -237,7 +237,7 @@ in
           until ${pkgs.postgresql_16}/bin/pg_isready -q; do
             sleep 1
           done
-          
+
           echo "Creating extensions in vectordb..."
           ${pkgs.postgresql_16}/bin/psql -d vectordb -c "CREATE EXTENSION IF NOT EXISTS vector;"
           ${pkgs.postgresql_16}/bin/psql -d vectordb -c "CREATE EXTENSION IF NOT EXISTS lantern;"
@@ -390,22 +390,44 @@ in
     );
 
     # Ensure data is persisted
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
-        { directory = "/var/lib/ollama"; user = "ollama"; group = "ollama"; mode = "0750"; }
-        { directory = "/var/lib/qdrant"; user = "qdrant"; group = "qdrant"; mode = "0750"; }
-        { directory = "/var/lib/localai"; user = "root"; group = "root"; mode = "0750"; }
-        { directory = "/var/lib/nextjs-ollama-llm-ui"; user = "nextjs-ollama-llm-ui"; group = "nextjs-ollama-llm-ui"; mode = "0750"; }
-      ];
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = "/var/lib/ollama";
+              user = "ollama";
+              group = "ollama";
+              mode = "0750";
+            }
+            {
+              directory = "/var/lib/qdrant";
+              user = "qdrant";
+              group = "qdrant";
+              mode = "0750";
+            }
+            {
+              directory = "/var/lib/localai";
+              user = "root";
+              group = "root";
+              mode = "0750";
+            }
+            {
+              directory = "/var/lib/nextjs-ollama-llm-ui";
+              user = "nextjs-ollama-llm-ui";
+              group = "nextjs-ollama-llm-ui";
+              mode = "0750";
+            }
+          ];
 
-      users.t0psh31f = {
-        directories = [
-          ".ollama"
-          ".config/cherry-studio"
-          ".config/lmstudio"
-        ];
-      };
-    };
+          users.t0psh31f = {
+            directories = [
+              ".ollama"
+              ".config/cherry-studio"
+              ".config/lmstudio"
+            ];
+          };
+        };
 
     # Direct bind mount for ChromaDB to satisfy systemd's StateDirectory requirements
     fileSystems."/var/lib/chromadb" =
@@ -420,42 +442,45 @@ in
           ];
         };
 
-    environment.systemPackages = with pkgs; [
-      # Frameworks
-      # crewai # Framework for orchestrating autonomous AI agents
-      fabric-ai # AI-powered workflow framework
-      go-hass-agent # Home Assistant agent in Go
-      #task-master-ai # Task automation agent
+    environment.systemPackages =
+      with pkgs;
+      [
+        # Frameworks
+        # crewai # Framework for orchestrating autonomous AI agents
+        fabric-ai # AI-powered workflow framework
+        go-hass-agent # Home Assistant agent in Go
+        #task-master-ai # Task automation agent
 
-      # Inference
-      #gpt4all # Run LLMs locally on consumer hardware
-      # lmstudio # GUI for running local LLMs (Handled by conditional below)
-      # jan (Handled by conditional below)
-      qdrant # Vector database for AI applications
-      ramalama # Tool for managing AI models
+        # Inference
+        #gpt4all # Run LLMs locally on consumer hardware
+        # lmstudio # GUI for running local LLMs (Handled by conditional below)
+        # jan (Handled by conditional below)
+        qdrant # Vector database for AI applications
+        ramalama # Tool for managing AI models
 
-      # Interfaces
-      bluemail # Email client with AI integration
-      # cherry-studio # Desktop LLM client (Handled by conditional below)
-      librechat # Open-source AI chat interface
-      nextjs-ollama-llm-ui # Web UI for Ollama
-      # sillytavern # Advanced LLM interface for roleplay
-      # windsurf # Agentic IDE
+        # Interfaces
+        bluemail # Email client with AI integration
+        # cherry-studio # Desktop LLM client (Handled by conditional below)
+        librechat # Open-source AI chat interface
+        nextjs-ollama-llm-ui # Web UI for Ollama
+        # sillytavern # Advanced LLM interface for roleplay
+        # windsurf # Agentic IDE
 
-      # CLI & TUI
-      # aider-chat-full # CLI for AI pair programming (Handled by conditional below)
-      # crush (Provided by llm-agents.nix)
-      # krillinai # AI agent tool
-      skills
-      beads
-      gemini-cli
-      python314Packages.pydantic-graph
+        # CLI & TUI
+        # aider-chat-full # CLI for AI pair programming (Handled by conditional below)
+        # crush (Provided by llm-agents.nix)
+        # krillinai # AI agent tool
+        skills
+        beads
+        gemini-cli
+        python314Packages.pydantic-graph
 
-      # TTS & STT
-      # -  # Real-time conversational AI
-      # piper-tts # Local neural text-to-speech engine
-      # whisper-ctranslate2 # High-performance speech-to-text
-    ] ++ lib.optional cfg.lmstudio.enable pkgs.lmstudio
+        # TTS & STT
+        # -  # Real-time conversational AI
+        # piper-tts # Local neural text-to-speech engine
+        # whisper-ctranslate2 # High-performance speech-to-text
+      ]
+      ++ lib.optional cfg.lmstudio.enable pkgs.lmstudio
       ++ lib.optional cfg.jan.enable pkgs.jan
       ++ lib.optional cfg.cherry-studio.enable pkgs.cherry-studio
       ++ lib.optional cfg.aider.enable pkgs.aider-chat;

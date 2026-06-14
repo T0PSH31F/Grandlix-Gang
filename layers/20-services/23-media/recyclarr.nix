@@ -19,7 +19,7 @@ in
     # But it does provide a systemd timer `services.recyclarr.enable` if available.
     # We will just enable the package so the user can initialize it and run it manually
     # or set up the native module if it exists.
-    
+
     environment.systemPackages = [ pkgs.recyclarr ];
 
     # Attempt to enable the native service if present in the current nixpkgs tree
@@ -30,15 +30,17 @@ in
           tv = {
             base_url = "http://localhost:8989";
             # Uses NixOS's genJqSecretsReplacement for secret injection
-            api_key = { _secret = "/var/lib/recyclarr/sonarr_api_key"; };
-            
+            api_key = {
+              _secret = "/var/lib/recyclarr/sonarr_api_key";
+            };
+
             # Rock-solid TRaSH Guides setup for Sonarr (WEB-1080p focus)
             include = [
               { template = "sonarr-quality-definition-series"; }
               { template = "sonarr-v4-quality-profile-web-1080p"; }
               { template = "sonarr-v4-custom-formats-web-1080p"; }
             ];
-            
+
             # Optional: Overrides and granular Media Management settings
             media_management = {
               episode_naming = "{Series TitleYear} - S{season:00}E{episode:00} - {Episode Title} [{Custom_Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[MediaInfo VideoBitDepth]bit}{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}][{MediaGroup}]";
@@ -49,15 +51,17 @@ in
         radarr = {
           movies = {
             base_url = "http://localhost:7878";
-            api_key = { _secret = "/var/lib/recyclarr/radarr_api_key"; };
-            
+            api_key = {
+              _secret = "/var/lib/recyclarr/radarr_api_key";
+            };
+
             # Rock-solid TRaSH Guides setup for Radarr (HD/Bluray/WEB 1080p focus)
             include = [
               { template = "radarr-quality-definition-movie"; }
               { template = "radarr-quality-profile-hd-bluray-web"; }
               { template = "radarr-custom-formats-hd-bluray-web"; }
             ];
-            
+
             media_management = {
               movie_naming = "{Movie Title} ({Release Year}) {imdb-{ImdbId}}/{Movie Title} ({Release Year}) {imdb-{ImdbId}} - [{Custom_Formats }{Quality Full}]{[MediaInfo VideoDynamicRangeType]}{[MediaInfo VideoBitDepth]bit}{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaGroup}";
             };

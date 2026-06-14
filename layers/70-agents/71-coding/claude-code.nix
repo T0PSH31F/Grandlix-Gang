@@ -18,6 +18,8 @@
       };
     };
 
-    home.packages = lib.optional (pkgs ? vscode-extension-anthropic-claude-code) pkgs.vscode-extension-anthropic-claude-code;
+    home.packages = lib.optional (
+      pkgs ? vscode-extension-anthropic-claude-code
+    ) pkgs.vscode-extension-anthropic-claude-code;
   };
 }

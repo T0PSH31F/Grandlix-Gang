@@ -46,161 +46,172 @@ in
   };
 
   # Home Manager level config
-  home = { config, ... }:
-  {
-    imports = lib.optionals cfg.enable [
-      ./scripts.nix
-      ./monitors.nix
-      ./animations.nix
-      ./keybinds.nix
-      ./rules.nix
-      ./uwsm.nix
-    ];
-
-    config = lib.mkIf cfg.enable {
-      home.packages = with pkgs; [
-      awww
-      cliphist
-      grim
-      wl-freeze
-      hyprkeys
-      hyprland-autoname-workspaces
-      hyprland-qt-support
-      hyprlax
-      hyprlang
-      hyprls
-      hyprmon
-      hyprpolkitagent
-      hyprpwcenter
-      hyprsysteminfo
-      hyprviz
-      libnotify
-      playerctl
-      pyprland
-      rofi
-      slurp
-      swappy
-      swayimg
-      swaynotificationcenter
-      wev
-      wl-clipboard
-      xdg-user-dirs
-      xdg-utils
-    ];
-
-    wayland.windowManager.hyprland = {
-      enable = true;
-      configType = "hyprlang";
-      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      portalPackage =
-        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-      systemd.enable = true;
-      plugins = [
-        # Temporarily disabled due to ABI mismatch with recent Hyprland commits (renderHWCursorBuffer)
-        # inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
+  home =
+    { config, ... }:
+    {
+      imports = lib.optionals cfg.enable [
+        ./scripts.nix
+        ./monitors.nix
+        ./animations.nix
+        ./keybinds.nix
+        ./rules.nix
+        ./uwsm.nix
       ];
 
-      settings = {
-        source = [
-          "${config.home.homeDirectory}/.config/hypr/noctalia/noctalia-colors.conf"
-          "${config.home.homeDirectory}/.config/hypr/monitors.conf"
+      config = lib.mkIf cfg.enable {
+        home.packages = with pkgs; [
+          awww
+          cliphist
+          grim
+          wl-freeze
+          hyprkeys
+          hyprland-autoname-workspaces
+          hyprland-qt-support
+          hyprlax
+          hyprlang
+          hyprls
+          hyprmon
+          hyprpolkitagent
+          hyprpwcenter
+          hyprsysteminfo
+          hyprviz
+          libnotify
+          playerctl
+          pyprland
+          rofi
+          slurp
+          swappy
+          swayimg
+          swaynotificationcenter
+          wev
+          wl-clipboard
+          xdg-user-dirs
+          xdg-utils
         ];
 
-        "$primary" = "0xfff28fad";
-        "$secondary" = "0xff575268";
-        "$surfaceContainer" = "1f202e";
+        wayland.windowManager.hyprland = {
+          enable = true;
+          configType = "hyprlang";
+          package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+          portalPackage =
+            inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+          systemd.enable = true;
+          plugins = [
+            # Temporarily disabled due to ABI mismatch with recent Hyprland commits (renderHWCursorBuffer)
+            # inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
+          ];
 
-        plugin = {
-          "dynamic-cursors" = {
-            enabled = true;
-            mode = "rotate";
-            threshold = 2;
-            tilt = { limit = 3000; };
-            stretch = { limit = 3000; function = "quadratic"; };
-            shake = { enabled = false; effects = false; ipc = true; };
+          settings = {
+            source = [
+              "${config.home.homeDirectory}/.config/hypr/noctalia/noctalia-colors.conf"
+              "${config.home.homeDirectory}/.config/hypr/monitors.conf"
+            ];
+
+            "$primary" = "0xfff28fad";
+            "$secondary" = "0xff575268";
+            "$surfaceContainer" = "1f202e";
+
+            plugin = {
+              "dynamic-cursors" = {
+                enabled = true;
+                mode = "rotate";
+                threshold = 2;
+                tilt = {
+                  limit = 3000;
+                };
+                stretch = {
+                  limit = 3000;
+                  function = "quadratic";
+                };
+                shake = {
+                  enabled = false;
+                  effects = false;
+                  ipc = true;
+                };
+              };
+            };
+
+            decoration = {
+              screen_shader = "${config.home.homeDirectory}/.config/hypr/vibrancy.frag";
+            };
+
+            exec-once = [
+              "pypr & disown"
+              "hypr-sfx & disown"
+              "udiskie & disown"
+              "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/layers/00-cyberia/02-assets/SFX/login-sound.mp3 & disown"
+            ];
+
+            exec-shutdown = [
+              "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/layers/00-cyberia/02-assets/SFX/shutdown-sound.mp3"
+            ];
+
+            general = {
+              border_size = 4;
+              "col.active_border" = lib.mkForce "$primary";
+              "col.inactive_border" = lib.mkForce "0xff$surfaceContainer";
+              resize_on_border = true;
+              layout = "dwindle";
+            };
+
+            input = {
+              kb_options = "caps:escape";
+            };
+            cursor = {
+              no_hardware_cursors = cfg.isNvidia; # Only disable for NVIDIA
+            };
+
+            # NVIDIA stability fixes (no-op on Intel/AMD)
+            # render = lib.mkIf cfg.isNvidia {
+            #   direct_scanout = false;   # Prevent buffer format mismatches on NVIDIA multi-monitor
+            # };
           };
         };
 
-        decoration = {
-          screen_shader = "${config.home.homeDirectory}/.config/hypr/vibrancy.frag";
+        xdg.configFile."hypr/vibrancy.frag".source = ../../../layers/00-cyberia/02-assets/vibrancy.frag;
+        xdg.configFile."hypr/hyprland.conf".force = true;
+        xdg.configFile."hypr/pyprland.toml".text = ''
+          [pyprland]
+          plugins = ["scratchpads"]
+
+          [scratchpads.term]
+          animation = "fromTop"
+          command = "ghostty --class=ghostty-dropdown"
+          class = "ghostty-dropdown"
+          size = "100% 50%"
+          lazy = true
+
+          [scratchpads.gedit]
+          animation = "fromRight"
+          command = "gedit"
+          class = "gedit"
+          size = "75% 60%"
+          position = "center"
+          lazy = true
+
+          [scratchpads.nwglook]
+          animation = "fromBottom"
+          command = "nwg-look"
+          class = "nwg-look"
+          size = "60% 60%"
+          position = "center"
+          lazy = true
+        '';
+
+        systemd.user.services.hyprland-init-files = {
+          Unit = {
+            Description = "Ensure Hyprland optional configuration files exist";
+            Before = [ "graphical-session-pre.target" ];
+            WantedBy = [ "graphical-session-pre.target" ];
+          };
+          Service = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr/noctalia && touch %h/.config/hypr/noctalia/noctalia-colors.conf %h/.config/hypr/monitors.conf'";
+          };
         };
 
-        exec-once = [
-          "pypr & disown"
-          "hypr-sfx & disown"
-          "udiskie & disown"
-          "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/layers/00-cyberia/02-assets/SFX/login-sound.mp3 & disown"
-        ];
-
-        exec-shutdown = [
-          "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/layers/00-cyberia/02-assets/SFX/shutdown-sound.mp3"
-        ];
-
-        general = {
-          border_size = 4;
-          "col.active_border" = lib.mkForce "$primary";
-          "col.inactive_border" = lib.mkForce "0xff$surfaceContainer";
-          resize_on_border = true;
-          layout = "dwindle";
-        };
-
-        input = { kb_options = "caps:escape"; };
-        cursor = {
-          no_hardware_cursors = cfg.isNvidia;  # Only disable for NVIDIA
-        };
-
-        # NVIDIA stability fixes (no-op on Intel/AMD)
-        # render = lib.mkIf cfg.isNvidia {
-        #   direct_scanout = false;   # Prevent buffer format mismatches on NVIDIA multi-monitor
-        # };
+        xdg.enable = true;
       };
     };
-
-    xdg.configFile."hypr/vibrancy.frag".source = ../../../layers/00-cyberia/02-assets/vibrancy.frag;
-    xdg.configFile."hypr/hyprland.conf".force = true;
-    xdg.configFile."hypr/pyprland.toml".text = ''
-      [pyprland]
-      plugins = ["scratchpads"]
-
-      [scratchpads.term]
-      animation = "fromTop"
-      command = "ghostty --class=ghostty-dropdown"
-      class = "ghostty-dropdown"
-      size = "100% 50%"
-      lazy = true
-
-      [scratchpads.gedit]
-      animation = "fromRight"
-      command = "gedit"
-      class = "gedit"
-      size = "75% 60%"
-      position = "center"
-      lazy = true
-
-      [scratchpads.nwglook]
-      animation = "fromBottom"
-      command = "nwg-look"
-      class = "nwg-look"
-      size = "60% 60%"
-      position = "center"
-      lazy = true
-    '';
-
-
-    systemd.user.services.hyprland-init-files = {
-      Unit = {
-        Description = "Ensure Hyprland optional configuration files exist";
-        Before = [ "graphical-session-pre.target" ];
-        WantedBy = [ "graphical-session-pre.target" ];
-      };
-      Service = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr/noctalia && touch %h/.config/hypr/noctalia/noctalia-colors.conf %h/.config/hypr/monitors.conf'";
-      };
-    };
-    
-    xdg.enable = true;
-    };
-  };
 }

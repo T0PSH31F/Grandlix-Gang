@@ -1,4 +1,10 @@
-{ pkgs, lib, config, ... }: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
   options.layers.layer-40.desktop.nemo = {
     enable = lib.mkOption {
       type = lib.types.bool;

@@ -79,7 +79,10 @@ in
   options.programs.vivid.matugen = {
     enable = mkEnableOption "Matugen integration for vivid";
     outputColorMode = mkOption {
-      type = types.enum [ "8-bit" "24-bit" ];
+      type = types.enum [
+        "8-bit"
+        "24-bit"
+      ];
       default = "24-bit";
       description = "Color mode for terminal output";
     };
@@ -94,7 +97,9 @@ in
     home.packages = [ pkgs.vivid ];
     xdg.configFile = mkMerge [
       { "matugen/templates/vivid.yml".text = vividThemeTemplate; }
-      (mkIf (cfg.matugen.customTheme != null) { "vivid/themes/custom.yml".source = cfg.matugen.customTheme; })
+      (mkIf (cfg.matugen.customTheme != null) {
+        "vivid/themes/custom.yml".source = cfg.matugen.customTheme;
+      })
     ];
 
     programs.bash = mkIf config.programs.bash.enable {

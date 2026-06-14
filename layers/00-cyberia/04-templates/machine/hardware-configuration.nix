@@ -11,8 +11,9 @@
   pkgs,
   modulesPath,
   ...
-}: {
-  imports = [];
+}:
+{
+  imports = [ ];
 
   # This is a placeholder. Replace with actual hardware configuration!
   # Key things to configure:

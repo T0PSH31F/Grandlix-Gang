@@ -57,9 +57,11 @@
   home-manager.users.t0psh31f =
     { config, lib, ... }:
     {
-      _module.args.lib = lib.extend (final: prev: {
-        hm = inputs.home-manager.lib.hm;
-      });
+      _module.args.lib = lib.extend (
+        final: prev: {
+          hm = inputs.home-manager.lib.hm;
+        }
+      );
 
       imports = [
         ../../80-lib/81-helpers/hm-bridge.nix
@@ -95,59 +97,167 @@
       };
 
       # External Services Secrets
-      sops.secrets.server_root_password = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.spacedrive_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.openclaw_gateway_token = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.gemini_api_key_lovelain = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.gemini_api_key_we77 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.openrouter_api_key_1 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.openrouter_api_key_2 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.openrouter_api_key_3 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.groq_api_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.reka_api_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.cerebras_api_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.ai21_api_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.cohere_api_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.hf_token = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.jules_api_key_ll = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.v0_api_key_we77 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.github_models_api = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.helius_api_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.helius_rpc_url = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.solsniper_x_api_consumer_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.solsniper_x_api_secret_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.solsniper_x_api_bearer_token = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.solsniper_x_api_client_id = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.solsniper_x_api_client_secret = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.supabase_password = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.supabase_api_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.lovelain_api_key_ext = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; key = "lovelain_api_key"; };
-      sops.secrets.neon_postgres_api = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.cloudflare_workers_api_we77 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.cloudflare_workers_api_lovelain = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.cloudflare_workers_api_lovelain_full = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.cloudflare_access_id = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.scaleway_gh_access_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.scaleway_gh_secret_key = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.scaleway_gh_org_id = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.scaleway_gh_project_id = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.render_api_we77 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.apify_api_we77 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.google_stitch_api_we77 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.tinybird_api_gh = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.tinybird_mcp_gh = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.nexsos_api = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.hostinger_api_token_ext = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; key = "hostinger_api_token"; };
-      sops.secrets.qdrant_api = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.google_oauth_lovelain_client_id = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.google_oauth_lovelain_client_secret = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.opencode_token = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.grafana_pass = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.beszel_lovelain_pass = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.maxkb_pass = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.browser_use_api = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.context7_api_we77 = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
-      sops.secrets.tg_botfather_http = { sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml; };
+      sops.secrets.server_root_password = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.spacedrive_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.openclaw_gateway_token = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.gemini_api_key_lovelain = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.gemini_api_key_we77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.openrouter_api_key_1 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.openrouter_api_key_2 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.openrouter_api_key_3 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.groq_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.reka_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.cerebras_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.ai21_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.cohere_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.hf_token = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.jules_api_key_ll = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.v0_api_key_we77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.github_models_api = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.helius_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.helius_rpc_url = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.solsniper_x_api_consumer_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.solsniper_x_api_secret_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.solsniper_x_api_bearer_token = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.solsniper_x_api_client_id = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.solsniper_x_api_client_secret = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.supabase_password = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.supabase_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.lovelain_api_key_ext = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+        key = "lovelain_api_key";
+      };
+      sops.secrets.neon_postgres_api = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.cloudflare_workers_api_we77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.cloudflare_workers_api_lovelain = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.cloudflare_workers_api_lovelain_full = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.cloudflare_access_id = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.scaleway_gh_access_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.scaleway_gh_secret_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.scaleway_gh_org_id = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.scaleway_gh_project_id = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.render_api_we77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.apify_api_we77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.google_stitch_api_we77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.tinybird_api_gh = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.tinybird_mcp_gh = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.nexsos_api = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.hostinger_api_token_ext = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+        key = "hostinger_api_token";
+      };
+      sops.secrets.qdrant_api = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.google_oauth_lovelain_client_id = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.google_oauth_lovelain_client_secret = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.opencode_token = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.grafana_pass = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.beszel_lovelain_pass = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.maxkb_pass = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.browser_use_api = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.context7_api_we77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.tg_botfather_http = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
       # TODO: Add rclone_config key to external_services.yaml before enabling
       # sops.secrets.rclone_config = {
       #   sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;

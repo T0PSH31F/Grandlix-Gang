@@ -18,18 +18,17 @@
   networking.hostName = "z0r0";
   system.stateVersion = "25.05";
 
-
   # Use GRUB for better reliability with this specific hardware/impermanence setup
-  boot.loader = { 
+  boot.loader = {
     systemd-boot.enable = lib.mkForce true;
     efi.canTouchEfiVariables = true;
-  # grub = {
-  #  enable = true;
-  #  device = "nodev";
-  #  efiSupport = true;
-  #  useOSProber = true;
+    # grub = {
+    #  enable = true;
+    #  device = "nodev";
+    #  efiSupport = true;
+    #  useOSProber = true;
   };
-  
+
   # ----------------------------------------------------------------------------
   # AVAILABLE PROFILES / TAGS
   # ----------------------------------------------------------------------------

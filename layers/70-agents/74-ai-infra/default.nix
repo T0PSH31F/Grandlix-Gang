@@ -8,15 +8,17 @@ let
   cfg = config.layers.layer-70.agent.ai-agent-stack;
 
   # Python agent dependencies wrapper:
-  agentDeps = pkgs.python3.withPackages (ps: with ps; [
-    pip
-    requests
-    httpx
-    pyyaml
-    click
-    pydantic
-    rich
-  ]);
+  agentDeps = pkgs.python3.withPackages (
+    ps: with ps; [
+      pip
+      requests
+      httpx
+      pyyaml
+      click
+      pydantic
+      rich
+    ]
+  );
 
   # Mock bin wrappers for pip-based CLI tools to be installed manually or handled via pipx inside the shell
   # This provides the raw environment needed for zeroclaw, openclaw, hermes, vectorcode
@@ -50,7 +52,7 @@ in
       brain-service.enable = true;
       voice.enable = true;
     };
-    
+
     services.infrastructure.langfuse.enable = true;
 
     # 2. Add System Packages & Tools

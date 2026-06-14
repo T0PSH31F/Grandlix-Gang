@@ -24,7 +24,10 @@ in
   options.layers.layer-10.system.peripherals = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "workstation" clanTags || builtins.elem "laptop" clanTags || builtins.elem "desktop" clanTags;
+      default =
+        builtins.elem "workstation" clanTags
+        || builtins.elem "laptop" clanTags
+        || builtins.elem "desktop" clanTags;
       description = "Master enable toggle for all physical hardware peripherals";
     };
 
@@ -78,8 +81,11 @@ in
     hardware.xone.enable = lib.mkIf cfg.controllers.enable (lib.mkDefault true);
     hardware.xpadneo.enable = lib.mkIf cfg.controllers.enable (lib.mkDefault true);
 
-    services.udev.packages = lib.mkIf cfg.controllers.enable (with pkgs; [
-      game-devices-udev-rules
-    ]);
+    services.udev.packages = lib.mkIf cfg.controllers.enable (
+      with pkgs;
+      [
+        game-devices-udev-rules
+      ]
+    );
   };
 }

@@ -71,11 +71,14 @@ in
       description = "AdGuard Home Daemon User";
       home = "/var/lib/AdGuardHome";
     };
-    users.groups.adguardhome = {};
+    users.groups.adguardhome = { };
 
     # Fix StateDirectory conflict with impermanence by using static user
     systemd.services.adguardhome = {
-      after = [ "network-online.target" "persist.mount" ];
+      after = [
+        "network-online.target"
+        "persist.mount"
+      ];
       wants = [ "network-online.target" ];
       environment.STATE_DIRECTORY = "/var/lib/AdGuardHome";
       serviceConfig = {

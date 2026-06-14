@@ -95,14 +95,15 @@ with lib;
       "d /var/lib/bazarr 0750 ${config.layers.layer-20.services.config.media-stack.user} ${config.layers.layer-20.services.config.media-stack.group} -"
     ];
 
-
-
     # ============================================================================
     # JELLYFIN - Media Server
     # ============================================================================
     services.jellyfin =
       mkIf
-        (config.layers.layer-20.services.config.media-stack.enable && config.layers.layer-20.services.config.media-stack.enableJellyfin)
+        (
+          config.layers.layer-20.services.config.media-stack.enable
+          && config.layers.layer-20.services.config.media-stack.enableJellyfin
+        )
         {
           enable = true;
           user = config.layers.layer-20.services.config.media-stack.user;

@@ -12,7 +12,9 @@ in
   options.layers.layer-60.gui.browsers.firefox = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" (osConfig.machine.tags or [ ]) || builtins.elem "workstation" (osConfig.machine.tags or [ ]);
+      default =
+        builtins.elem "desktop" (osConfig.machine.tags or [ ])
+        || builtins.elem "workstation" (osConfig.machine.tags or [ ]);
       description = "Enable Firefox browser";
     };
   };
