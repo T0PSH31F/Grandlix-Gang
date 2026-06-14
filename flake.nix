@@ -129,7 +129,7 @@
       inputs.flake-utils.follows = "flake-utils";
     };
     hermes-workspace = {
-      url = "github:outsourc-e/hermes-workspace";
+      url = "path:/tmp/hermes-workspace";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-cachyos-kernel = {
