@@ -127,15 +127,6 @@
     nginx = {
       defaultHTTPListenPort = 8084;
       virtualHosts = {
-        "element.lovelain.duckdns.org" = {
-          listen = lib.mkForce [
-            {
-              addr = "127.0.0.1";
-              port = 8443;
-              ssl = true;
-            }
-          ];
-        };
         "nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
           {
             addr = "127.0.0.1";
