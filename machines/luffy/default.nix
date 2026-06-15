@@ -333,6 +333,26 @@
           }
         '';
       };
+      # Public Matrix homeserver on duckdns domain
+      virtualHosts."matrix.lovelain.duckdns.org" = {
+        extraConfig = ''
+          reverse_proxy https://127.0.0.1:8443 {
+            transport http {
+              tls_insecure_skip_verify
+            }
+          }
+        '';
+      };
+      # Public Element Web client on duckdns domain
+      virtualHosts."element.lovelain.duckdns.org" = {
+        extraConfig = ''
+          reverse_proxy https://127.0.0.1:8443 {
+            transport http {
+              tls_insecure_skip_verify
+            }
+          }
+        '';
+      };
     };
   };
 
