@@ -409,13 +409,10 @@
   security.acme = {
     acceptTerms = true;
     defaults.email = lib.mkForce "admin@lovelain.duckdns.org";
+    # Cert only on the wildcard - Caddy handles the public vhosts
+    # ACME extraDomainNames would create nginx vhosts on port 443 conflicting with Caddy
     certs."lovelain.duckdns.org" = {
       domain = "*.lovelain.duckdns.org";
-      extraDomainNames = [
-        "lovelain.duckdns.org"
-        "t0psh31f.duckdns.org"
-        "nixfp.duckdns.org"
-      ];
       dnsProvider = "duckdns";
       environmentFile = config.sops.templates."duckdns-env".path;
     };
