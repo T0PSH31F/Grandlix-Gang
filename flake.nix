@@ -128,10 +128,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
-    hermes-workspace = {
-      url = "path:/tmp/hermes-workspace";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel/release";
     };
@@ -162,7 +158,6 @@
       wakatime-lsp,
       antigravity,
       nix-cachyos-kernel,
-      hermes-workspace,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -192,7 +187,6 @@
               config.allowUnfree = true;
               overlays = [
                 (import ./layers/80-lib/82-overlays/custom-packages.nix)
-                inputs.hermes-workspace.overlays.default
               ];
             };
         };
@@ -234,7 +228,6 @@
         #       config.allowUnfree = true;
         #       overlays = [
         #         (import ./layers/80-lib/82-overlays/custom-packages.nix)
-                # inputs.hermes-workspace.overlays.default
         #       ];
         #     };
         #     extraSpecialArgs = { inherit inputs; };
@@ -295,3 +288,4 @@
       }
     );
 }
+
