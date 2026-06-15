@@ -192,6 +192,7 @@
               config.allowUnfree = true;
               overlays = [
                 (import ./layers/80-lib/82-overlays/custom-packages.nix)
+                inputs.hermes-workspace.overlays.default
               ];
             };
         };
@@ -233,6 +234,7 @@
         #       config.allowUnfree = true;
         #       overlays = [
         #         (import ./layers/80-lib/82-overlays/custom-packages.nix)
+                inputs.hermes-workspace.overlays.default
         #       ];
         #     };
         #     extraSpecialArgs = { inherit inputs; };
