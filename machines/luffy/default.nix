@@ -142,12 +142,14 @@
             port = 8084;
           }
         ];
-        "element.local" = {
+        # Unified vhost: Caddy reverse-proxies matrix/element to https://127.0.0.1:8443
+        # Route by Host: matrix.local → matrix-synapse:8008, element.local → element-web
+        "matrix.local" = {
           enableACME = lib.mkForce false;
           forceSSL = lib.mkForce false;
           onlySSL = lib.mkForce true;
-          sslCertificate = "/var/lib/acme/element.local/fullchain.pem";
-          sslCertificateKey = "/var/lib/acme/element.local/key.pem";
+          sslCertificate = "/var/lib/acme/matrix.local/fullchain.pem";
+          sslCertificateKey = "/var/lib/acme/matrix.local/key.pem";
           listen = lib.mkForce [
             {
               addr = "127.0.0.1";
@@ -155,13 +157,6 @@
               ssl = true;
             }
           ];
-        };
-        "matrix.local" = {
-          enableACME = lib.mkForce false;
-          forceSSL = lib.mkForce false;
-          onlySSL = lib.mkForce true;
-          sslCertificate = "/var/lib/acme/matrix.local/fullchain.pem";
-          sslCertificateKey = "/var/lib/acme/matrix.local/key.pem";
           locations."/" = {
             proxyPass = "http://127.0.0.1:8008";
             proxyWebsockets = true;
@@ -172,13 +167,22 @@
               proxy_read_timeout 600s;
             '';
           };
+        };
+        # Reuse the same vhost slot for element.local by adding serverName aliases
+        "element.local" = {
+          enableACME = lib.mkForce false;
+          forceSSL = lib.mkForce false;
+          onlySSL = lib.mkForce true;
+          sslCertificate = "/var/lib/acme/element.local/fullchain.pem";
+          sslCertificateKey = "/var/lib/acme/element.local/key.pem";
           listen = lib.mkForce [
             {
-              addr = "0.0.0.0";
-              port = 8443;
+              addr = "127.0.0.1";
+              port = 8444;
               ssl = true;
             }
           ];
+          root = lib.mkForce "/var/www/element";
         };
         "searx.local".listen = lib.mkForce [
           {
