@@ -127,10 +127,7 @@
     nginx = {
       defaultHTTPListenPort = 8084;
       virtualHosts = {
-        "element.lovelain.duckdns.org" = lib.mkForce {
-          enableACME = lib.mkForce false;
-          forceSSL = lib.mkForce false;
-          onlySSL = lib.mkForce true;
+        "element.lovelain.duckdns.org" = {
           listen = lib.mkForce [
             {
               addr = "127.0.0.1";
