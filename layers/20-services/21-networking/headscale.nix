@@ -29,6 +29,11 @@ in
           };
         };
         server_url = "http://localhost:${toString cfg.port}";
+        # Permissive ACL - allow all our nodes full mesh
+        policy = {
+          mode = "file";
+          path = "/var/lib/headscale/acl/hujson";
+        };
       };
     };
 
