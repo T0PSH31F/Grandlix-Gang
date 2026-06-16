@@ -340,6 +340,17 @@
       # Public Matrix homeserver on duckdns domain
       virtualHosts."matrix.lovelain.duckdns.org" = {
         extraConfig = ''
+          # Serve well-known discovery documents for phone clients
+          @wellknownClient path /.well-known/matrix/client
+          handle @wellknownClient {
+            header Content-Type application/json
+            respond `{"m.homeserver":{"base_url":"https://matrix.lovelain.duckdns.org"},"m.identity_server":{"base_url":"https://vector.im"}}` 200
+          }
+          @wellknownServer path /.well-known/matrix/server
+          handle @wellknownServer {
+            header Content-Type application/json
+            respond `{"m.server":"matrix.lovelain.duckdns.org:443"}` 200
+          }
           reverse_proxy https://127.0.0.1:8443 {
             transport http {
               tls_insecure_skip_verify
@@ -386,6 +397,11 @@
       8443 # Nginx SSL proxy for Matrix/Element (bypass Caddy TLS issues)
       8087 # Nginx HTTP proxy for Matrix (no SSL, for hermes gateway)
     ];
+  };
+
+  # Force Ollama to use CPU (CUDA buffer allocation fails on this hardware)
+  systemd.services.ollama.environment = {
+    OLLAMA_NUM_GPU = "0";
   };
 
   home-manager = {
