@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
@@ -215,7 +216,7 @@
       qdrant.enable = false; # Commented out/disabled to unblock rebuild
       ollama = {
         enable = true;
-        acceleration = "cuda";
+        acceleration = null;
       };
       chromadb.enable = true;
       open-webui.enable = true;
@@ -399,10 +400,9 @@
     ];
   };
 
-  # Force Ollama to use CPU (CUDA buffer allocation fails on this hardware)
-  systemd.services.ollama.environment = {
-    OLLAMA_NUM_GPU = "0";
-  };
+  services.ollama.package = lib.mkForce pkgs.ollama;
+
+
 
   home-manager = {
     useGlobalPkgs = true;
