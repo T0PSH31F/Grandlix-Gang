@@ -47,6 +47,7 @@ in
       jan.enable = mkDefault true;
       cherry-studio.enable = mkDefault true;
       aider.enable = mkDefault true;
+      context-forge.enable = mkDefault false; # opt-in, not enabled by default
     };
   };
 }

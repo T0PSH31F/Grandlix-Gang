@@ -15,7 +15,8 @@
     ./jan.nix                   # Jan AI desktop app
     ./cherry-studio.nix         # Cherry Studio desktop app
     ./aider.nix                 # Aider AI pair programming
-    ./brain-service.nix         # FastAPI + LlamaIndex + PGVector RAG
+    ./context-forge.nix          # ContextForge MCP gateway
+    ./brain-service.nix          # FastAPI + LlamaIndex + PGVector RAG
     ./llm-agents.nix            # LLM coding agent packages
     ./sillytavern.nix           # SillyTavern AI chat frontend
     ./voice.nix                 # Whisper STT + Piper TTS
