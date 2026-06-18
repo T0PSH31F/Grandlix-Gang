@@ -52,8 +52,12 @@ in
       ];
       environment = {
         PORT = toString cfg.port;
+        HOSTNAME = "127.0.0.1";
         NODE_ENV = "production";
+        NEXTAUTH_URL = "http://127.0.0.1:${toString cfg.port}";
         NEXT_PUBLIC_SIGN_UP_DISABLED = "false";
+        NEXT_PUBLIC_LANGFUSE_CLOUD_EDITION = "local";
+        TELEMETRY_ENABLED = "false";
         DATABASE_URL = cfg.databaseUrl;
       };
       volumes = [

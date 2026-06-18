@@ -27,6 +27,9 @@ in
       environment = {
         MODE = "json-rpc";
       };
+      extraOptions = [
+        "--network=host" # Avoid aardvark-dns port 53 conflict with AdGuard
+      ];
     };
 
     # Ensure data directory exists with correct permissions for the container user

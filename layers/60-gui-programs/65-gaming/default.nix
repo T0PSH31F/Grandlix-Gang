@@ -129,6 +129,7 @@ in
     mkIf osConfig.layers.layer-60.gui.gaming.enable {
       home.packages = with pkgs; [
         cartridges
+        dwarf-fortress
         prismlauncher
         umu-launcher
         steam-run-free

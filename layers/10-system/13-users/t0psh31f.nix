@@ -258,6 +258,63 @@
       sops.secrets.tg_botfather_http = {
         sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
       };
+
+      # ── Hermes Agent API Keys ──────────────────────────────────
+      sops.secrets.discord_bot_token = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.discord_allowed_users = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.github_token = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.opencode_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.nous_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.ollama_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.anthropic_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.browserbase_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.browserbase_project_id = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.exa_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.parallel_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.tavily_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.firecrawl_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.fal_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.honcho_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.nvidia_api_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.langfuse_public_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.langfuse_secret_key = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+
       # TODO: Add rclone_config key to external_services.yaml before enabling
       # sops.secrets.rclone_config = {
       #   sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;

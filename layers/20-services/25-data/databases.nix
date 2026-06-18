@@ -1,23 +1,65 @@
 # flake-parts/services/infrastructure/databases.nix
-# Centralized persistence for common databases.
-# Uses global config.services.<db>.enable to automatically detect if a database
-# is required by ANY enabled service (e.g. Matrix, Nextcloud, Home Assistant),
-# even if it's enabled implicitly by those modules.
+# Persistence for common databases.
+# Auto-detects if a database is enabled by ANY service and persists
+# its data directory. Explicit flags allow manual override.
 { config, lib, ... }:
 with lib;
 {
+  options.services.databases = {
+    postgresql.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Persist PostgreSQL data. Auto-detected from services.postgresql.enable by default.";
+    };
+    mysql.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Persist MySQL data. Auto-detected from services.mysql.enable by default.";
+    };
+    redis.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Persist Redis data. Auto-detected from services.redis.servers by default.";
+    };
+    mongodb.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Persist MongoDB data. Auto-detected from services.mongodb.enable by default.";
+    };
+    influxdb.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Persist InfluxDB data. Auto-detected from services.influxdb.enable by default.";
+    };
+    victoriametrics.enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Persist VictoriaMetrics data. Auto-detected from services.victoriametrics.enable by default.";
+    };
+  };
+
   config = mkIf config.layers.layer-10.system.config.impermanence.enable {
+    # Auto-detect enabled databases — mkDefault allows explicit override
+    services.databases = {
+      postgresql.enable = mkDefault (config.services.postgresql.enable or false);
+      mysql.enable = mkDefault (config.services.mysql.enable or false);
+      redis.enable = mkDefault ((config.services.redis.servers or { }) != { });
+      mongodb.enable = mkDefault (config.services.mongodb.enable or false);
+      influxdb.enable = mkDefault (config.services.influxdb.enable or false);
+      victoriametrics.enable = mkDefault (config.services.victoriametrics.enable or false);
+    };
+
     environment.persistence."/persist" = {
       directories =
-        (optional (config.services.postgresql.enable or false) "/var/lib/postgresql")
-        ++ (optional (config.services.mysql.enable or false) "/var/lib/mysql")
-        ++ (optional (config.services.redis.servers != { }) "/var/lib/redis")
+        (optional config.services.databases.postgresql.enable "/var/lib/postgresql")
+        ++ (optional config.services.databases.mysql.enable "/var/lib/mysql")
+        ++ (optional config.services.databases.redis.enable "/var/lib/redis")
         ++ (optional (lib.hasAttr "nextcloud" (
           config.services.redis.servers or { }
         )) "/var/lib/redis-nextcloud")
-        ++ (optional (config.services.mongodb.enable or false) "/var/lib/mongodb")
-        ++ (optional (config.services.influxdb.enable or false) "/var/lib/influxdb")
-        ++ (optional (config.services.victoriametrics.enable or false) "/var/lib/victoriametrics");
+        ++ (optional config.services.databases.mongodb.enable "/var/lib/mongodb")
+        ++ (optional config.services.databases.influxdb.enable "/var/lib/influxdb")
+        ++ (optional config.services.databases.victoriametrics.enable "/var/lib/victoriametrics");
     };
   };
 }

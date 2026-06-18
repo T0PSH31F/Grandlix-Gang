@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -15,31 +14,22 @@ in
 
     deluge = {
       enable = mkEnableOption "Deluge torrent client";
-      port = mkOption {
-        type = types.port;
-        default = 8112;
-      };
+      port = mkOption { type = types.port; default = 8112; };
     };
 
     transmission = {
       enable = mkEnableOption "Transmission torrent client";
-      port = mkOption {
-        type = types.port;
-        default = 9091;
-      };
+      port = mkOption { type = types.port; default = 9091; };
     };
 
     aria2 = {
       enable = mkEnableOption "Aria2 download client";
-      port = mkOption {
-        type = types.port;
-        default = 6800;
-      };
+      port = mkOption { type = types.port; default = 6800; };
     };
   };
 
   config = mkIf cfg.enable {
-    clan.core.vars.generators.deluge = {
+    clan.core.vars.generators.deluge = mkIf cfg.deluge.enable {
       files."authFile" = {
         secret = true;
         owner = mediaCfg.user;
@@ -51,14 +41,11 @@ in
       '';
     };
 
-    # ============================================================================
-    # DELUGE - Torrent Client
-    # ============================================================================
+    # Deluge
     services.deluge = mkIf cfg.deluge.enable {
       enable = true;
       web.enable = true;
       web.port = cfg.deluge.port;
-
       declarative = true;
       authFile = config.clan.core.vars.generators.deluge.files."authFile".path;
       config = {
@@ -67,33 +54,25 @@ in
         max_active_seeding = 10;
         max_active_limit = 15;
         random_port = false;
-        listen_ports = [
-          6881
-          6889
-        ];
+        listen_ports = [ 6881 6889 ];
         enc_prefer_rc4 = true;
         enc_level = 1;
       };
-
       user = mediaCfg.user;
       group = mediaCfg.group;
     };
 
     systemd.services.deluged = mkIf cfg.deluge.enable {
-      serviceConfig = {
-        ExecStartPre = [
-          "+${pkgs.writeShellScript "deluged-perms" ''
-            mkdir -p /var/lib/deluge/.config/deluge
-            chown -R ${mediaCfg.user}:${mediaCfg.group} /var/lib/deluge
-            chmod -R u+rwX,g+rX,o= /var/lib/deluge
-          ''}"
-        ];
-      };
+      serviceConfig.ExecStartPre = [
+        "+${pkgs.writeShellScript "deluged-perms" ''
+          mkdir -p /var/lib/deluge/.config/deluge
+          chown -R ${mediaCfg.user}:${mediaCfg.group} /var/lib/deluge
+          chmod -R u+rwX,g+rX,o= /var/lib/deluge
+        ''}"
+      ];
     };
 
-    # ============================================================================
-    # TRANSMISSION - Torrent Client
-    # ============================================================================
+    # Transmission
     services.transmission = mkIf cfg.transmission.enable {
       enable = true;
       package = pkgs.transmission_4;
@@ -107,46 +86,11 @@ in
       };
     };
 
-    # ============================================================================
-    # ARIA2 - Download Client (Preference)
-    # ============================================================================
+    # Aria2
     environment.systemPackages = mkIf cfg.aria2.enable [
       pkgs.aria2
       pkgs.python3Packages.aria2p
-      # pkgs.ariang # Disabled due to upstream npm build failure
     ];
-
-    # Simple static web UI for Aria2
-    # systemd.services.ariang = mkIf cfg.aria2.enable {
-    #   description = "AriaNg Web UI";
-    #   after = [ "network.target" ];
-    #   wantedBy = [ "multi-user.target" ];
-    #   serviceConfig = {
-    #     ExecStart = "${pkgs.python3}/bin/python3 -m http.server 6801 --directory ${pkgs.ariang}/share/ariang";
-    #     DynamicUser = true;
-    #     Restart = "always";
-    #   };
-    # };
-
-    clan.core.vars.generators.aria2 = {
-      files."rpc_secret" = {
-        secret = true;
-        owner = mediaCfg.user;
-        group = mediaCfg.group;
-      };
-      prompts."rpc_secret" = {
-        type = "hidden";
-        description = "Aria2 RPC Secret Token";
-      };
-      script = ''
-        if [ -f "$prompts/rpc_secret" ]; then
-          cat "$prompts/rpc_secret" > "$out/rpc_secret"
-        else
-          # Generate a secure random token if no prompt is provided
-          head -c 32 /dev/urandom | base64 | tr -d '\n' > "$out/rpc_secret"
-        fi
-      '';
-    };
 
     services.aria2 = mkIf cfg.aria2.enable {
       enable = true;
@@ -174,7 +118,26 @@ in
       };
     };
 
-    # Directory structures
+    clan.core.vars.generators.aria2 = mkIf cfg.aria2.enable {
+      files."rpc_secret" = {
+        secret = true;
+        owner = mediaCfg.user;
+        group = mediaCfg.group;
+      };
+      prompts."rpc_secret" = {
+        type = "hidden";
+        description = "Aria2 RPC Secret Token";
+      };
+      script = ''
+        if [ -f "$prompts/rpc_secret" ]; then
+          cat "$prompts/rpc_secret" > "$out/rpc_secret"
+        else
+          head -c 32 /dev/urandom | base64 | tr -d '\n' > "$out/rpc_secret"
+        fi
+      '';
+    };
+
+    # Directories
     systemd.tmpfiles.rules =
       (optional cfg.transmission.enable "d /var/lib/transmission 0750 ${mediaCfg.user} ${mediaCfg.group} -")
       ++ (optionals cfg.aria2.enable [
@@ -187,10 +150,7 @@ in
     networking.firewall.allowedTCPPorts =
       (optional cfg.deluge.enable cfg.deluge.port)
       ++ (optional cfg.transmission.enable cfg.transmission.port)
-      ++ (optionals cfg.aria2.enable [
-        cfg.aria2.port
-        6801
-      ]);
+      ++ (optionals cfg.aria2.enable [ cfg.aria2.port 6801 ]);
 
     # Persistence
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {

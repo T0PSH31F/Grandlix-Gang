@@ -12,34 +12,27 @@ in
 {
   options.layers.layer-20.services.config.usenet = {
     enable = mkEnableOption "Usenet clients (NZBGet, SABnzbd, NZBHydra2, Pan)";
+
     nzbget = {
       enable = mkEnableOption "NZBGet usenet client";
-      port = mkOption {
-        type = types.port;
-        default = 6789;
-      };
+      port = mkOption { type = types.port; default = 6789; };
     };
+
     sabnzbd = {
       enable = mkEnableOption "SABnzbd usenet client";
-      port = mkOption {
-        type = types.port;
-        default = 8081;
-      }; # Using 8081 to avoid conflict with WebUI
+      port = mkOption { type = types.port; default = 8081; };
     };
+
     nzbhydra2 = {
       enable = mkEnableOption "NZBHydra2 indexer";
-      port = mkOption {
-        type = types.port;
-        default = 5076;
-      };
+      port = mkOption { type = types.port; default = 5076; };
     };
+
     pan.enable = mkEnableOption "Pan GUI newsreader";
   };
 
   config = mkIf cfg.enable {
-    # ============================================================================
     # SABnzbd
-    # ============================================================================
     services.sabnzbd = mkIf cfg.sabnzbd.enable {
       enable = true;
       configFile = null;
@@ -47,23 +40,18 @@ in
       group = mediaCfg.group;
     };
 
-    # Automatically set the port to 8081 if enabled to avoid 8080 collision
     systemd.services.sabnzbd = mkIf cfg.sabnzbd.enable {
       serviceConfig.ExecStart = mkForce "${pkgs.sabnzbd}/bin/sabnzbd -f /var/lib/sabnzbd/sabnzbd.ini -s 0.0.0.0:${toString cfg.sabnzbd.port}";
     };
 
-    # ============================================================================
-    # NZBGET
-    # ============================================================================
+    # NZBGet
     services.nzbget = mkIf cfg.nzbget.enable {
       enable = true;
       user = mediaCfg.user;
       group = mediaCfg.group;
     };
 
-    # ============================================================================
-    # NZBHYDRA2
-    # ============================================================================
+    # NZBHydra2
     systemd.services.nzbhydra2 = mkIf cfg.nzbhydra2.enable {
       description = "NZBHydra2";
       after = [ "network.target" ];
@@ -77,21 +65,22 @@ in
       };
     };
 
-    # ============================================================================
-    # PAN GUI
-    # ============================================================================
-    environment.systemPackages = (optional cfg.pan.enable pkgs.pan);
+    # Pan GUI
+    environment.systemPackages = optional cfg.pan.enable pkgs.pan;
 
+    # Directories
     systemd.tmpfiles.rules =
       (optional cfg.sabnzbd.enable "d /var/lib/sabnzbd 0750 ${mediaCfg.user} ${mediaCfg.group} -")
       ++ (optional cfg.nzbget.enable "d /var/lib/nzbget 0750 ${mediaCfg.user} ${mediaCfg.group} -")
       ++ (optional cfg.nzbhydra2.enable "d /var/lib/nzbhydra2 0750 ${mediaCfg.user} ${mediaCfg.group} -");
 
+    # Firewall
     networking.firewall.allowedTCPPorts =
       (optional cfg.nzbget.enable cfg.nzbget.port)
       ++ (optional cfg.sabnzbd.enable cfg.sabnzbd.port)
       ++ (optional cfg.nzbhydra2.enable cfg.nzbhydra2.port);
 
+    # Persistence
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories =
         (optional cfg.nzbget.enable {

@@ -1,0 +1,36 @@
+{
+  config,
+  lib,
+  ...
+}:
+with lib;
+let
+  cfg = config.services.ai-services.open-webui;
+in
+{
+  options.services.ai-services.open-webui = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Enable Open WebUI for LLM interfaces";
+    };
+
+    port = mkOption {
+      type = types.int;
+      default = 8082;
+      description = "Open WebUI port";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    services.open-webui = {
+      enable = true;
+      port = cfg.port;
+      openFirewall = true;
+      environment = {
+        OLLAMA_API_BASE_URL = "http://localhost:11434";
+        WEBUI_AUTH = "false";
+      };
+    };
+  };
+}

@@ -95,6 +95,11 @@
     infrastructure.langfuse.enable = true;
   };
 
+  layers.layer-20.services.communication.signal-cli-daemon = {
+    enable = true;
+    port = 8080; # matches hermes SIGNAL_HTTP_URL
+  };
+
   systemd.services.rclone-gdrive-mount.enable = false;
 
   clan.core.postgresql.enable = true;

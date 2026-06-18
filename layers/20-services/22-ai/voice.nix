@@ -4,6 +4,7 @@
   pkgs,
   ...
 }:
+with lib;
 let
   cfg = config.services.ai-services.voice;
 in
@@ -31,27 +32,23 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # 1. System packages for raw binaries in PATH
     environment.systemPackages = with pkgs; [
       piper-tts
       whisper-cpp
     ];
 
-    # 2. Whisper.cpp HTTP Server Service
+    # Whisper.cpp HTTP Server
     systemd.services.whisper-server = {
       description = "Local STT Server using whisper.cpp";
       wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
-
       serviceConfig = {
-        # Using a dummy wrapper script; in production, you would pull the exact ggml-base.en.bin model
         ExecStart = "${pkgs.whisper-cpp}/bin/whisper-server -m /var/lib/whisper/ggml-base.en.bin --port ${toString cfg.sttPort}";
         Restart = "on-failure";
         DynamicUser = true;
-        StateDirectory = "whisper"; # /var/lib/whisper
+        StateDirectory = "whisper";
       };
-
       preStart = ''
         mkdir -p /var/lib/whisper
         if [ ! -f /var/lib/whisper/ggml-base.en.bin ]; then
@@ -70,20 +67,13 @@ in
       '';
     };
 
-    # 3. XTTSv2 / OpenVoice Docker deployment
     virtualisation.oci-containers.containers.xttsv2 = lib.mkIf cfg.useXTTSv2 {
       image = "ghcr.io/coqui-ai/xtts-streaming-server:latest";
       ports = [ "${toString cfg.ttsPort}:8020" ];
-      volumes = [
-        "xttsv2-models:/models"
-      ];
-      environment = {
-        # Configure model variables if required by the image
-        MODEL_PATH = "/models";
-      };
+      volumes = [ "xttsv2-models:/models" ];
+      environment = { MODEL_PATH = "/models"; };
     };
 
-    # 4. Open Firewall
     networking.firewall.allowedTCPPorts = [ cfg.sttPort ] ++ (lib.optional cfg.useXTTSv2 cfg.ttsPort);
   };
 }

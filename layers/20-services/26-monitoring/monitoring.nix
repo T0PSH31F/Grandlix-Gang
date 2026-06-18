@@ -36,20 +36,21 @@ with lib;
 
   config = mkIf config.layers.layer-20.services.config.monitoring.enable {
     clan.core.vars.generators.grafana = {
-      files."admin-password" = {
-        secret = true;
-        owner = "grafana";
-        group = "grafana";
-      };
       files."secret-key" = {
         secret = true;
         owner = "grafana";
         group = "grafana";
       };
       script = ''
-        ${pkgs.openssl}/bin/openssl rand -base64 18 | tr -d '\n' > "$out/admin-password"
         ${pkgs.openssl}/bin/openssl rand -hex 24 | tr -d '\n' > "$out/secret-key"
       '';
+    };
+
+    # Grafana admin password from sops
+    sops.secrets.grafana_admin_password = {
+      sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      owner = "grafana";
+      group = "grafana";
     };
 
     # ============================================================================
@@ -58,75 +59,110 @@ with lib;
     services.prometheus = {
       enable = true;
       port = config.layers.layer-20.services.config.monitoring.prometheus.port;
-
-      # Retention (default 15 days)
       retentionTime = "30d";
 
-      # Exporters for system metrics
       exporters = {
         node = {
           enable = true;
           port = 9100;
           enabledCollectors = [
-            "systemd"
-            "cpu"
-            "diskstats"
-            "filesystem"
-            "loadavg"
-            "meminfo"
-            "netdev"
-            "processes"
+            "systemd" "cpu" "diskstats" "filesystem"
+            "loadavg" "meminfo" "netdev" "processes"
           ];
+        };
+
+        blackbox = {
+          enable = true;
+          configFile = pkgs.writeText "blackbox.yml" (builtins.toJSON {
+            modules.http_2xx = {
+              prober = "http";
+              http.valid_status_codes = [200];
+            };
+          });
         };
       };
 
-      # Scrape configurations
       scrapeConfigs = [
-        # Prometheus itself
         {
           job_name = "prometheus";
-          static_configs = [
-            {
-              targets = [
-                "localhost:${toString config.layers.layer-20.services.config.monitoring.prometheus.port}"
-              ];
-            }
-          ];
+          static_configs = [{
+            targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.prometheus.port}" ];
+          }];
         }
-
-        # Node exporter (system metrics)
         {
           job_name = "node";
-          static_configs = [
-            {
-              targets = [ "localhost:9100" ];
-            }
-          ];
+          static_configs = [{ targets = [ "localhost:9100" ]; }];
         }
-
-        # Loki
         {
           job_name = "loki";
-          static_configs = [
-            {
-              targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.loki.port}" ];
-            }
-          ];
+          static_configs = [{
+            targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.loki.port}" ];
+          }];
         }
-
-        # Grafana
         {
           job_name = "grafana";
-          static_configs = [
-            {
-              targets = [
-                "localhost:${toString config.layers.layer-20.services.config.monitoring.grafana.port}"
-              ];
-            }
+          static_configs = [{
+            targets = [ "localhost:${toString config.layers.layer-20.services.config.monitoring.grafana.port}" ];
+          }];
+        }
+        # Hermes API health
+        {
+          job_name = "blackbox-hermes";
+          metrics_path = "/probe";
+          params.module = [ "http_2xx" ];
+          static_configs = [{
+            targets = [
+              "http://127.0.0.1:8642/health"
+              "http://127.0.0.1:8010/health"
+            ];
+          }];
+          relabel_configs = [
+            { source_labels = [ "__address__" ]; target_label = "__param_target"; }
+            { source_labels = [ "__param_target" ]; target_label = "instance"; }
+            { replacement = "127.0.0.1:9115"; target_label = "__address__"; }
           ];
         }
       ];
     };
+
+    # ============================================================================
+    # ALLOY - Log Shipper (journald → Loki) — Promtail successor
+    # ============================================================================
+    services.alloy = {
+      enable = true;
+      configPath = "/etc/alloy";
+    };
+
+    environment.etc."alloy/config.alloy".text = ''
+      logging {
+        level = "warn"
+      }
+
+      loki.source.journal "hermes"  {
+        max_age = "12h"
+        forward_to = [loki.write.default.receiver]
+        labels = {
+          job     = "systemd-journal"
+          host    = "${config.networking.hostName}"
+        }
+        relabel_rules {
+          rule {
+            source_labels = ["__journal__systemd_unit"]
+            target_label  = "unit"
+          }
+          rule {
+            source_labels = ["__journal__hostname"]
+            target_label  = "hostname"
+          }
+        }
+      }
+
+      loki.write "default" {
+        endpoint {
+          url = "http://127.0.0.1:${toString config.layers.layer-20.services.config.monitoring.loki.port}/loki/api/v1/push"
+        }
+      }
+    '';
 
     # ============================================================================
     # LOKI - Log Aggregation
@@ -136,23 +172,16 @@ with lib;
 
       configuration = {
         server.http_listen_port = config.layers.layer-20.services.config.monitoring.loki.port;
-
         auth_enabled = false;
 
         common = {
           ring = {
-            instance_interface_names = [
-              "lo"
-              "wlp0s20f3"
-              "tailscale0"
-            ];
+            instance_interface_names = [ "lo" "wlp0s20f3" "tailscale0" ];
             kvstore.store = "inmemory";
           };
         };
 
-        memberlist = {
-          bind_addr = [ "127.0.0.1" ];
-        };
+        memberlist.bind_addr = [ "127.0.0.1" ];
 
         ingester = {
           lifecycler = {
@@ -168,20 +197,13 @@ with lib;
           chunk_retain_period = "30s";
         };
 
-        schema_config = {
-          configs = [
-            {
-              from = "2024-01-01";
-              store = "tsdb";
-              object_store = "filesystem";
-              schema = "v13";
-              index = {
-                prefix = "index_";
-                period = "24h";
-              };
-            }
-          ];
-        };
+        schema_config.configs = [{
+          from = "2024-01-01";
+          store = "tsdb";
+          object_store = "filesystem";
+          schema = "v13";
+          index = { prefix = "index_"; period = "24h"; };
+        }];
 
         storage_config = {
           tsdb_shipper = {
@@ -225,9 +247,29 @@ with lib;
           root_url = "http://%(domain)s:%(http_port)s/";
         };
         security = {
-          admin_password = "$__file{${config.clan.core.vars.generators.grafana.files."admin-password".path}}";
+          admin_password = "$__file{${config.sops.secrets.grafana_admin_password.path}}";
           secret_key = "$__file{${config.clan.core.vars.generators.grafana.files."secret-key".path}}";
         };
+      };
+      provision.datasources = {
+        settings.apiVersion = 1;
+        settings.datasources = [
+          {
+            name = "Prometheus";
+            type = "prometheus";
+            uid = "prometheus";
+            access = "proxy";
+            url = "http://127.0.0.1:${toString config.layers.layer-20.services.config.monitoring.prometheus.port}";
+            isDefault = true;
+          }
+          {
+            name = "Loki";
+            type = "loki";
+            uid = "loki";
+            access = "proxy";
+            url = "http://127.0.0.1:${toString config.layers.layer-20.services.config.monitoring.loki.port}";
+          }
+        ];
       };
     };
 

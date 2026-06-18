@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -10,480 +9,44 @@ let
 in
 {
   options.services.ai-services = {
-    enable = mkEnableOption "AI-related services";
+    enable = mkEnableOption "AI-related services (master switch for all sub-services)";
 
-    postgresql = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable PostgreSQL with pgvector and lantern extensions";
-      };
-
-      port = mkOption {
-        type = types.int;
-        default = 5432;
-        description = "PostgreSQL port";
-      };
-    };
-
-    open-webui = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable Open WebUI for LLM interfaces";
-      };
-
-      port = mkOption {
-        type = types.int;
-        default = 8082;
-        description = "Open WebUI port";
-      };
-    };
-
-    qdrant = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable Qdrant vector database";
-      };
-
-      port = mkOption {
-        type = types.int;
-        default = 6333;
-        description = "Qdrant port";
-      };
-    };
-
-    localai = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable LocalAI service";
-      };
-
-      port = mkOption {
-        type = types.int;
-        default = 8081;
-        description = "LocalAI port";
-      };
-    };
-
-    chromadb = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable ChromaDB vector database";
-      };
-
-      port = mkOption {
-        type = types.int;
-        default = 8001;
-        description = "ChromaDB port";
-      };
-    };
-
-    # ============================================================================
-    # SILLYTAVERN - AI Chat Frontend
-    # ============================================================================
+    # Retained for backward compatibility — the actual SillyTavern service
+    # is at `services.sillytavern` or `services.sillytavern-app`.
+    # This option was defined in the old monolithic ai-services.nix but
+    # never wired to any service config; it exists here solely so existing
+    # machine configs that reference `services.ai-services.sillytavern.enable`
+    # do not break during the refactoring.
     sillytavern = {
       enable = mkOption {
         type = types.bool;
         default = false;
-        description = "Enable SillyTavern AI chat frontend";
+        description = "Stub — see services.sillytavern for the actual service";
       };
-
       port = mkOption {
         type = types.int;
         default = 8000;
-        description = "SillyTavern port";
       };
-
       dataDir = mkOption {
         type = types.str;
         default = "/var/lib/sillytavern";
-        description = "Data directory for SillyTavern";
-      };
-    };
-
-    # ============================================================================
-    # OLLAMA - Local LLM Server
-    # ============================================================================
-    ollama = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable Ollama local LLM server";
-      };
-
-      acceleration = mkOption {
-        type = types.nullOr (
-          types.enum [
-            "cuda"
-            "rocm"
-            false
-          ]
-        );
-        default = null;
-        description = "GPU acceleration (cuda, rocm, or false)";
-      };
-
-      models = mkOption {
-        type = types.listOf types.str;
-        default = [ ];
-        description = "Models to preload";
-        example = [
-          "llama3.2"
-          "codellama"
-        ];
-      };
-    };
-
-    # ============================================================================
-    # LM STUDIO - Local LLM GUI (user-space, just package)
-    # ============================================================================
-    lmstudio = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Install LM Studio desktop application";
-      };
-    };
-
-    # ============================================================================
-    # JAN - Open-source ChatGPT Alternative
-    # ============================================================================
-    jan = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Install Jan AI desktop application";
-      };
-    };
-
-    # ============================================================================
-    # CHERRY STUDIO - Desktop LLM Client
-    # ============================================================================
-    cherry-studio = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Install Cherry Studio desktop LLM client";
-      };
-    };
-
-    # ============================================================================
-    # AIDER - AI Pair Programming CLI
-    # ============================================================================
-    aider = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Install Aider AI pair programming tool";
       };
     };
   };
 
-  config = mkIf config.services.ai-services.enable {
-    # PostgreSQL with pgvector and lantern
-    services.postgresql = mkIf config.services.ai-services.postgresql.enable {
-      enable = true;
-      package = pkgs.postgresql_16;
-      settings.port = config.services.ai-services.postgresql.port;
-
-      # Enable extensions
-      enableTCPIP = true;
-
-      extensions = with pkgs.postgresql_16.pkgs; [
-        pgvector
-        lantern
-      ];
-
-      settings = {
-        shared_preload_libraries = "vector";
-        max_connections = 100;
-        shared_buffers = "256MB";
-      };
-
-      authentication = pkgs.lib.mkOverride 10 ''
-        # TYPE  DATABASE        USER            ADDRESS                 METHOD
-        local   all             all                                     trust
-        host    all             all             127.0.0.1/32            md5
-        host    all             all             ::1/128                 md5
-      '';
-
-      ensureDatabases = [
-        "ai"
-        "vectordb"
-      ];
-      ensureUsers = [
-        {
-          name = "ai";
-          ensureDBOwnership = true;
-        }
-      ];
+  config = mkIf cfg.enable {
+    services.ai-services = {
+      postgresql.enable = mkDefault true;
+      open-webui.enable = mkDefault true;
+      qdrant.enable = mkDefault true;
+      chromadb.enable = mkDefault true;
+      localai.enable = mkDefault true;
+      ollama.enable = mkDefault true;
+      ollama-ui.enable = mkDefault true;
+      lmstudio.enable = mkDefault true;
+      jan.enable = mkDefault true;
+      cherry-studio.enable = mkDefault true;
+      aider.enable = mkDefault true;
     };
-
-    systemd.services.postgresql-extensions = mkIf config.services.ai-services.postgresql.enable {
-      description = "Ensure Postgres extensions for vectordb";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "postgresql.service" ];
-      requires = [ "postgresql.service" ];
-      serviceConfig = {
-        User = "postgres";
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = pkgs.writeShellScript "setup-pg-extensions" ''
-          # Wait for PostgreSQL to be ready
-          until ${pkgs.postgresql_16}/bin/pg_isready -q; do
-            sleep 1
-          done
-
-          echo "Creating extensions in vectordb..."
-          ${pkgs.postgresql_16}/bin/psql -d vectordb -c "CREATE EXTENSION IF NOT EXISTS vector;"
-          ${pkgs.postgresql_16}/bin/psql -d vectordb -c "CREATE EXTENSION IF NOT EXISTS lantern;"
-        '';
-      };
-    };
-
-    # Open WebUI - native NixOS service
-    services.open-webui = mkIf config.services.ai-services.open-webui.enable {
-      enable = true;
-      port = config.services.ai-services.open-webui.port;
-      openFirewall = true;
-      environment = {
-        OLLAMA_API_BASE_URL = "http://localhost:11434";
-        WEBUI_AUTH = "false"; # Disable auth for local use
-      };
-    };
-
-    # Qdrant vector database - native NixOS service
-    services.qdrant = mkIf config.services.ai-services.qdrant.enable {
-      enable = true;
-      settings = {
-        service = {
-          http_port = config.services.ai-services.qdrant.port;
-          grpc_port = 6334;
-        };
-        storage = {
-          storage_path = "/var/lib/qdrant/storage";
-        };
-      };
-    };
-
-    # Fix StateDirectory conflict with impermanence
-    systemd.services.qdrant = mkIf config.services.ai-services.qdrant.enable {
-      serviceConfig = {
-        ReadWritePaths = [ "/var/lib/qdrant" ];
-      };
-    };
-
-    # ChromaDB vector database - native NixOS service
-    services.chromadb = mkIf config.services.ai-services.chromadb.enable {
-      enable = true;
-      port = config.services.ai-services.chromadb.port;
-      openFirewall = true;
-    };
-
-    # ChromaDB Service Customization
-    systemd.services.chromadb = mkIf config.services.ai-services.chromadb.enable {
-      serviceConfig.DynamicUser = lib.mkForce false;
-      serviceConfig.User = "chromadb";
-      serviceConfig.Group = "chromadb";
-      serviceConfig.StateDirectory = lib.mkForce [ ];
-      serviceConfig.ReadWritePaths = [ "/var/lib/chromadb" ];
-    };
-
-    # Create static user for ChromaDB
-    users.users.chromadb = mkIf config.services.ai-services.chromadb.enable {
-      group = "chromadb";
-      isSystemUser = true;
-      description = "ChromaDB Service User";
-      home = "/var/lib/chromadb";
-      createHome = true;
-    };
-    users.groups.chromadb = mkIf config.services.ai-services.chromadb.enable { };
-
-    # LocalAI
-    virtualisation.oci-containers.containers.local-ai =
-      mkIf config.services.ai-services.localai.enable
-        {
-          image = "quay.io/go-skynet/local-ai:latest";
-          ports = [ "${toString config.services.ai-services.localai.port}:8080" ];
-          volumes = [
-            "local-ai-models:/models"
-          ];
-          environment = {
-            THREADS = "4";
-            CONTEXT_SIZE = "512";
-          };
-        };
-
-    # ============================================================================
-    # OLLAMA - Native Local LLM Server
-    # ============================================================================
-    services.ollama = mkIf cfg.ollama.enable {
-      enable = true;
-      package = pkgs.ollama-vulkan;
-      # acceleration = cfg.ollama.acceleration; # package handles acceleration
-      loadModels = cfg.ollama.models;
-    };
-
-    # Ollama Service Customization (only when enabled)
-    systemd.services.ollama = mkIf cfg.ollama.enable {
-      serviceConfig.DynamicUser = lib.mkForce false;
-      serviceConfig.User = "ollama";
-      serviceConfig.Group = "ollama";
-      serviceConfig.ProtectHome = lib.mkForce false;
-      serviceConfig.StateDirectory = lib.mkForce [ ];
-      serviceConfig.ReadWritePaths = [ "/var/lib/ollama" ];
-    };
-
-    # Create static user for Ollama (only when enabled)
-    users.users.ollama = mkIf cfg.ollama.enable {
-      group = "ollama";
-      isSystemUser = true;
-      description = "Ollama Service User";
-      home = "/var/lib/ollama";
-      createHome = true;
-    };
-    users.groups.ollama = mkIf cfg.ollama.enable { };
-
-    # Enable docker/podman only for LocalAI (still needs container)
-    virtualisation.podman.enable = mkIf cfg.localai.enable true;
-    virtualisation.oci-containers.backend = mkIf cfg.localai.enable "podman";
-
-    users.users.nextjs-ollama-llm-ui = {
-      group = "nextjs-ollama-llm-ui";
-      isSystemUser = true;
-      description = "NextJS Ollama LLM UI Service User";
-      home = "/var/lib/nextjs-ollama-llm-ui";
-      createHome = true;
-    };
-    users.groups.nextjs-ollama-llm-ui = { };
-
-    # NextJS Ollama LLM UI
-    systemd.services.nextjs-ollama-llm-ui = {
-      description = "NextJS Ollama LLM UI";
-      wantedBy = [ "multi-user.target" ];
-      after = [
-        "network.target"
-        "ollama.service"
-      ];
-      serviceConfig = {
-        ExecStart = "${pkgs.nextjs-ollama-llm-ui}/bin/nextjs-ollama-llm-ui";
-        User = "nextjs-ollama-llm-ui";
-        Group = "nextjs-ollama-llm-ui";
-        WorkingDirectory = "/var/lib/nextjs-ollama-llm-ui";
-        Environment = [
-          "PORT=3004"
-          "OLLAMA_URL=http://localhost:11434"
-        ];
-      };
-    };
-
-    # Firewall rules (mostly handled by openFirewall options now)
-    networking.firewall.allowedTCPPorts = mkIf cfg.enable (
-      (optional cfg.postgresql.enable cfg.postgresql.port)
-      ++ (optional cfg.localai.enable cfg.localai.port)
-      ++ (optional cfg.ollama.enable 11434)
-      ++ [ 3004 ] # NextJS UI
-    );
-
-    # Ensure data is persisted
-    environment.persistence."/persist" =
-      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
-        {
-          directories = [
-            {
-              directory = "/var/lib/ollama";
-              user = "ollama";
-              group = "ollama";
-              mode = "0750";
-            }
-            {
-              directory = "/var/lib/qdrant";
-              user = "qdrant";
-              group = "qdrant";
-              mode = "0750";
-            }
-            {
-              directory = "/var/lib/localai";
-              user = "root";
-              group = "root";
-              mode = "0750";
-            }
-            {
-              directory = "/var/lib/nextjs-ollama-llm-ui";
-              user = "nextjs-ollama-llm-ui";
-              group = "nextjs-ollama-llm-ui";
-              mode = "0750";
-            }
-          ];
-
-          users.t0psh31f = {
-            directories = [
-              ".ollama"
-              ".config/cherry-studio"
-              ".config/lmstudio"
-            ];
-          };
-        };
-
-    # Direct bind mount for ChromaDB to satisfy systemd's StateDirectory requirements
-    fileSystems."/var/lib/chromadb" =
-      mkIf ((config.layers.layer-10.system.config.impermanence.enable or false) && cfg.chromadb.enable)
-        {
-          device = "/persist/var/lib/chromadb";
-          fsType = "none";
-          options = [
-            "bind"
-            "X-fstrim.notrim"
-            "neededForBoot"
-          ];
-        };
-
-    environment.systemPackages =
-      with pkgs;
-      [
-        # Frameworks
-        # crewai # Framework for orchestrating autonomous AI agents
-        fabric-ai # AI-powered workflow framework
-        go-hass-agent # Home Assistant agent in Go
-        #task-master-ai # Task automation agent
-
-        # Inference
-        #gpt4all # Run LLMs locally on consumer hardware
-        # lmstudio # GUI for running local LLMs (Handled by conditional below)
-        # jan (Handled by conditional below)
-        qdrant # Vector database for AI applications
-        ramalama # Tool for managing AI models
-
-        # Interfaces
-        bluemail # Email client with AI integration
-        # cherry-studio # Desktop LLM client (Handled by conditional below)
-        librechat # Open-source AI chat interface
-        nextjs-ollama-llm-ui # Web UI for Ollama
-        # sillytavern # Advanced LLM interface for roleplay
-        # windsurf # Agentic IDE
-
-        # CLI & TUI
-        # aider-chat-full # CLI for AI pair programming (Handled by conditional below)
-        # crush (Provided by llm-agents.nix)
-        # krillinai # AI agent tool
-        skills
-        beads
-        gemini-cli
-        python314Packages.pydantic-graph
-
-        # TTS & STT
-        # -  # Real-time conversational AI
-        # piper-tts # Local neural text-to-speech engine
-        # whisper-ctranslate2 # High-performance speech-to-text
-      ]
-      ++ lib.optional cfg.lmstudio.enable pkgs.lmstudio
-      ++ lib.optional cfg.jan.enable pkgs.jan
-      ++ lib.optional cfg.cherry-studio.enable pkgs.cherry-studio
-      ++ lib.optional cfg.aider.enable pkgs.aider-chat;
-
   };
 }
