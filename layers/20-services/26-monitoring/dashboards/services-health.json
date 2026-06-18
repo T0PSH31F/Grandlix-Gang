@@ -1,0 +1,74 @@
+{
+  "title": "Services Health",
+  "uid": "services-health",
+  "tags": ["infra", "services"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "Prometheus Targets",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "up",
+          "format": "table",
+          "legendFormat": "",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ]
+    },
+    {
+      "title": "Loki Ingestion Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(loki_ingester_chunk_entries_per_bucket{le=\"+Inf\"}[5m]))",
+          "legendFormat": "Entries/s",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        },
+        {
+          "expr": "sum(rate(loki_distributor_bytes_received_total[5m]))",
+          "legendFormat": "Bytes/s",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ]
+    },
+    {
+      "title": "Service Blackbox Probes",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "probe_success{target=\"http://127.0.0.1:8642/health\"}",
+          "legendFormat": "Hermes",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ]
+    },
+    {
+      "title": "Grafana HTTP Requests",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "expr": "rate(grafana_http_request_duration_seconds_count[5m])",
+          "legendFormat": "Requests/s",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ]
+    },
+    {
+      "title": "Prometheus Scrape Duration",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "targets": [
+        {
+          "expr": "rate(prometheus_target_interval_length_seconds_count[5m])",
+          "legendFormat": "{{interval}}",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ]
+    }
+  ]
+}

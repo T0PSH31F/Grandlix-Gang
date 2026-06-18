@@ -1,0 +1,65 @@
+{
+  "title": "Logs Explorer",
+  "uid": "logs-explorer",
+  "tags": ["logs", "observability"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "Live Log Stream",
+      "type": "logs",
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "{job=\"systemd-journal\"} |= ``",
+          "datasource": { "type": "loki", "uid": "loki" }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "prettifyLogs": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      }
+    },
+    {
+      "title": "Log Volume by Unit",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "expr": "topk(10, sum by(unit) (count_over_time({job=\"systemd-journal\"} [$__range])))",
+          "legendFormat": "{{unit}}",
+          "datasource": { "type": "loki", "uid": "loki" }
+        }
+      ]
+    },
+    {
+      "title": "Logs Over Time",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "targets": [
+        {
+          "expr": "count_over_time({job=\"systemd-journal\"} [$__rate_interval])",
+          "legendFormat": "Logs/s",
+          "datasource": { "type": "loki", "uid": "loki" }
+        }
+      ]
+    },
+    {
+      "title": "Errors by Unit",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 20 },
+      "targets": [
+        {
+          "expr": "topk(20, sum by(unit) (count_over_time({job=\"systemd-journal\"} |= `error` [$__range])))",
+          "legendFormat": "",
+          "datasource": { "type": "loki", "uid": "loki" },
+          "format": "table"
+        }
+      ]
+    }
+  ]
+}

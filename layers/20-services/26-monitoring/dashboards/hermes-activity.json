@@ -1,0 +1,130 @@
+{
+  "title": "Hermes Agent Activity",
+  "uid": "hermes-activity",
+  "tags": ["hermes", "agent", "observability"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "title": "Hermes API Health",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "probe_success{target=\"http://127.0.0.1:8642/health\"}",
+          "legendFormat": "Hermes API",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "red", "value": null },
+            { "color": "green", "value": 1 }
+          ]},
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Brain Service Health",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "targets": [
+        {
+          "expr": "probe_success{target=\"http://127.0.0.1:8010/health\"}",
+          "legendFormat": "Brain Service",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": { "steps": [
+            { "color": "red", "value": null },
+            { "color": "green", "value": 1 }
+          ]},
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Langfuse Trace Count",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "targets": [
+        {
+          "expr": "count(probe_success{job=\"blackbox-hermes\"})",
+          "legendFormat": "Langfuse",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "blue" }
+        }
+      }
+    },
+    {
+      "title": "Langfuse Traces",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "count(probe_success)",
+          "legendFormat": "Traces",
+          "datasource": { "type": "prometheus", "uid": "prometheus" }
+        }
+      ],
+      "description": "View traces directly at http://127.0.0.1:3005",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "purple" }
+        }
+      }
+    },
+    {
+      "title": "Hermes Gateway Logs",
+      "type": "logs",
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 14 },
+      "targets": [
+        {
+          "expr": "{syslog_identifier=\"hermes\"} |= ``",
+          "legendFormat": "",
+          "datasource": { "type": "loki", "uid": "loki" }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": false,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogs": true,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      }
+    },
+    {
+      "title": "Hermes Error Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "targets": [
+        {
+          "expr": "count_over_time({syslog_identifier=\"hermes\"} |= `error` [$__rate_interval])",
+          "legendFormat": "Errors",
+          "datasource": { "type": "loki", "uid": "loki" }
+        },
+        {
+          "expr": "count_over_time({syslog_identifier=\"hermes\"} [$__rate_interval])",
+          "legendFormat": "All logs",
+          "datasource": { "type": "loki", "uid": "loki" }
+        }
+      ]
+    }
+  ]
+}

@@ -178,8 +178,26 @@ with lib;
           ring = {
             instance_interface_names = [ "lo" "wlp0s20f3" "tailscale0" ];
             kvstore.store = "inmemory";
-          };
-        };
+      };
+      provision.dashboards = {
+        settings.apiVersion = 1;
+        providers = [
+          {
+            name = "hermes-dashboards";
+            orgId = 1;
+            folder = "";
+            type = "file";
+            disableDeletion = false;
+            updateIntervalSeconds = 30;
+            allowUiUpdates = true;
+            options.path = pkgs.symlinkJoin {
+              name = "grafana-dashboards";
+              paths = [ ./dashboards ];
+            };
+          }
+        ];
+      };
+    };
 
         memberlist.bind_addr = [ "127.0.0.1" ];
 
