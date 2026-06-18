@@ -49,7 +49,7 @@ in
           gst_all_1.gst-plugins-base
           gst_all_1.gst-plugins-good
         ];
-        programs.noctalia = {
+        programs.noctalia-shell = {
           enable = true;
           package = cfg.package;
         };
