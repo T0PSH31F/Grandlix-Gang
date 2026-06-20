@@ -162,16 +162,13 @@ with lib;
           job     = "systemd-journal",
           host    = "${config.networking.hostName}",
         }
-        relabel_rules {
-          rule {
-            source_labels = ["__journal__systemd_unit"]
-            target_label  = "unit"
-          }
-          rule {
-            source_labels = ["__journal__hostname"]
-            target_label  = "hostname"
-          }
-        }
+        relabel_rules = [{
+          source_labels = ["__journal__systemd_unit"],
+          target_label  = "unit",
+        }, {
+          source_labels = ["__journal__hostname"],
+          target_label  = "hostname",
+        }]
       }
       loki.write "default" {
         endpoint {

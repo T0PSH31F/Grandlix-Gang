@@ -72,6 +72,7 @@
       domain = "grafana.lovelain.duckdns.org";
       grafana.port = 3001; # avoids homepage on 3000
       prometheus.port = 9090;
+      homepage-dashboard.port = 3007; # avoids clash with open-webui on 8082
     };
     adguard = {
       enable = false; # Commented out/disabled to unblock rebuild
