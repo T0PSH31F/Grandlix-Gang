@@ -159,8 +159,8 @@ with lib;
         max_age = "12h"
         forward_to = [loki.write.default.receiver]
         labels = {
-          job     = "systemd-journal"
-          host    = "${config.networking.hostName}"
+          job     = "systemd-journal",
+          host    = "${config.networking.hostName}",
         }
         relabel_rules {
           rule {
