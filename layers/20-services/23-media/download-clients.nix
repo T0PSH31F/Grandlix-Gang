@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -14,17 +15,34 @@ in
 
     deluge = {
       enable = mkEnableOption "Deluge torrent client";
-      port = mkOption { type = types.port; default = 8112; };
+      port = mkOption {
+        type = types.port;
+        default = 8112;
+      };
     };
 
     transmission = {
       enable = mkEnableOption "Transmission torrent client";
-      port = mkOption { type = types.port; default = 9091; };
+      port = mkOption {
+        type = types.port;
+        default = 9091;
+      };
     };
 
     aria2 = {
       enable = mkEnableOption "Aria2 download client";
-      port = mkOption { type = types.port; default = 6800; };
+      port = mkOption {
+        type = types.port;
+        default = 6800;
+      };
+    };
+
+    qbittorrent = {
+      enable = mkEnableOption "qBittorrent torrent client";
+      port = mkOption {
+        type = types.port;
+        default = 8080;
+      };
     };
   };
 
@@ -54,7 +72,10 @@ in
         max_active_seeding = 10;
         max_active_limit = 15;
         random_port = false;
-        listen_ports = [ 6881 6889 ];
+        listen_ports = [
+          6881
+          6889
+        ];
         enc_prefer_rc4 = true;
         enc_level = 1;
       };
@@ -118,6 +139,28 @@ in
       };
     };
 
+    # qBittorrent
+    services.qbittorrent = mkIf cfg.qbittorrent.enable {
+      enable = true;
+      user = mediaCfg.user;
+      group = mediaCfg.group;
+      webuiPort = cfg.qbittorrent.port;
+      openFirewall = true;
+      serverConfig = {
+        Preferences = {
+          WebUI.UseUPnP = false;
+          Downloads.SavePath = "${mediaCfg.downloadsDir}/qbittorrent";
+          Downloads.TempPath = "${mediaCfg.downloadsDir}/qbittorrent/tmp";
+          Downloads.TempPathEnabled = true;
+          Connection.PortRangeMin = 56881;
+        };
+      };
+    };
+
+    systemd.services.qbittorrent = mkIf cfg.qbittorrent.enable {
+      serviceConfig.ReadWritePaths = [ mediaCfg.downloadsDir ];
+    };
+
     clan.core.vars.generators.aria2 = mkIf cfg.aria2.enable {
       files."rpc_secret" = {
         secret = true;
@@ -144,13 +187,21 @@ in
         "d ${mediaCfg.downloadsDir}/aria2 0755 ${mediaCfg.user} ${mediaCfg.group} -"
         "d /var/lib/aria2 0750 ${mediaCfg.user} ${mediaCfg.group} -"
         "f /var/lib/aria2/session.gz 0644 ${mediaCfg.user} ${mediaCfg.group} -"
+      ])
+      ++ (optionals cfg.qbittorrent.enable [
+        "d ${mediaCfg.downloadsDir}/qbittorrent 0755 ${mediaCfg.user} ${mediaCfg.group} -"
+        "d ${mediaCfg.downloadsDir}/qbittorrent/tmp 0755 ${mediaCfg.user} ${mediaCfg.group} -"
       ]);
 
     # Firewall
     networking.firewall.allowedTCPPorts =
       (optional cfg.deluge.enable cfg.deluge.port)
       ++ (optional cfg.transmission.enable cfg.transmission.port)
-      ++ (optionals cfg.aria2.enable [ cfg.aria2.port 6801 ]);
+      ++ (optionals cfg.aria2.enable [
+        cfg.aria2.port
+        6801
+      ])
+      ++ (optional cfg.qbittorrent.enable cfg.qbittorrent.port);
 
     # Persistence
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
@@ -162,7 +213,15 @@ in
           mode = "0750";
         })
         ++ (optional cfg.transmission.enable "/var/lib/transmission")
-        ++ (optional cfg.aria2.enable "/var/lib/aria2");
+        ++ (optional cfg.aria2.enable "/var/lib/aria2")
+        ++ (optionals cfg.qbittorrent.enable [
+          {
+            directory = "/var/lib/qBittorrent";
+            user = mediaCfg.user;
+            group = mediaCfg.group;
+            mode = "0750";
+          }
+        ]);
     };
   };
 }

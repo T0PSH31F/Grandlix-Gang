@@ -80,16 +80,14 @@ in
         "persist.mount"
       ];
       wants = [ "network-online.target" ];
-      environment.STATE_DIRECTORY = "/var/lib/AdGuardHome";
       serviceConfig = {
         DynamicUser = lib.mkForce false;
-        User = "adguardhome";
-        Group = "adguardhome";
-        StateDirectory = lib.mkForce [ ];
-        ReadWritePaths = [ "/var/lib/AdGuardHome" ];
+        User = lib.mkForce "adguardhome";
+        Group = lib.mkForce "adguardhome";
+        ReadWritePaths = lib.mkForce [ "/var/lib/AdGuardHome" ];
         Restart = lib.mkForce "always";
         RestartSec = lib.mkForce "10s";
-        StartLimitIntervalSec = 0;
+        StartLimitIntervalSec = lib.mkForce 0;
       };
     };
 

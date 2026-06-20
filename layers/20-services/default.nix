@@ -10,7 +10,6 @@
     ./25-data/filebrowser.nix
     ./25-data/harmonia.nix
     ./25-data/langfuse.nix
-    ./25-data/nextcloud.nix
     ./25-data/vaultwarden.nix
 
     ./26-monitoring/glances.nix

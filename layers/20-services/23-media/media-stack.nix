@@ -40,10 +40,11 @@ with lib;
   };
 
   config = mkIf config.layers.layer-20.services.config.media-stack.enable {
-    # Enable download clients subsystem and default to aria2
+    # Enable download clients subsystem and default to aria2 + qBittorrent
     layers.layer-20.services.config.download-clients = {
       enable = mkDefault true;
       aria2.enable = mkDefault true;
+      qbittorrent.enable = mkDefault true;
     };
 
     layers.layer-20.services.config.usenet = {
@@ -61,7 +62,10 @@ with lib;
       group = config.layers.layer-20.services.config.media-stack.group;
       home = config.layers.layer-20.services.config.media-stack.dataDir;
       createHome = true;
-      extraGroups = [ "video" "render" ];
+      extraGroups = [
+        "video"
+        "render"
+      ];
     };
     users.groups.${config.layers.layer-20.services.config.media-stack.group} = { };
 

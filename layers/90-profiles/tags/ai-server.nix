@@ -11,7 +11,7 @@
 
   services = {
     llm-agents.enable = lib.mkDefault true;
-    sillytavern.enable = lib.mkDefault true;
+    sillytavern-app.enable = lib.mkDefault true;
     wyoming-services.enable = lib.mkDefault true;
     ai-services = {
       enable = lib.mkDefault true;

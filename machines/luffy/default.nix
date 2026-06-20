@@ -95,7 +95,7 @@
   # ============================================================================
   services = {
     # Disable SillyTavern Tag Default to completely disable it
-    sillytavern.enable = lib.mkForce false;
+    sillytavern-app.enable = lib.mkForce false;
 
     # Headscale Server
     headscale-server.enable = true;
@@ -119,21 +119,9 @@
     };
 
     # Enable Native Services from flake-parts
-    nextcloud-server = {
-      enable = true;
-      hostName = "nextcloud.lovelain.duckdns.org";
-    };
-
-    # Prevent Nginx from conflicting with Caddy's 80/443 binding and Open-WebUI's 8080 binding
     nginx = {
       defaultHTTPListenPort = 8084;
       virtualHosts = {
-        "nextcloud.lovelain.duckdns.org".listen = lib.mkForce [
-          {
-            addr = "127.0.0.1";
-            port = 8084;
-          }
-        ];
         # Unified vhost: Caddy reverse-proxies matrix/element to https://127.0.0.1:8443
         # Route by Host: matrix.local → matrix-synapse:8008, element.local → element-web
         "matrix.local" = {
@@ -279,9 +267,6 @@
           @maxkb host maxkb.lovelain.duckdns.org
           handle @maxkb { reverse_proxy localhost:32784 }
 
-          @nextcloud host nextcloud.lovelain.duckdns.org
-          handle @nextcloud { reverse_proxy localhost:8084 }
-
 
           @spacedrive host spacedrive.lovelain.duckdns.org
           handle @spacedrive { reverse_proxy localhost:32768 }
@@ -401,8 +386,6 @@
   };
 
   services.ollama.package = lib.mkForce pkgs.ollama;
-
-
 
   home-manager = {
     useGlobalPkgs = true;

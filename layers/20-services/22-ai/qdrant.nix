@@ -37,18 +37,31 @@ in
     };
 
     systemd.services.qdrant.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = "qdrant";
+      Group = "qdrant";
+      StateDirectory = lib.mkForce "qdrant";
       ReadWritePaths = [ "/var/lib/qdrant" ];
     };
 
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
         {
-          directory = "/var/lib/qdrant";
-          user = "qdrant";
-          group = "qdrant";
-          mode = "0750";
-        }
-      ];
+          directories = [
+            {
+              directory = "/var/lib/qdrant";
+              user = "qdrant";
+              group = "qdrant";
+              mode = "0750";
+            }
+          ];
+        };
+
+    users.users.qdrant = {
+      isSystemUser = true;
+      group = "qdrant";
+      description = "Qdrant Vector Database Daemon";
     };
+    users.groups.qdrant = { };
   };
 }
