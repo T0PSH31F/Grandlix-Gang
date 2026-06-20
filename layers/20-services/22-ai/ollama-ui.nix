@@ -54,15 +54,17 @@ in
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
 
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
         {
-          directory = "/var/lib/nextjs-ollama-llm-ui";
-          user = "nextjs-ollama-llm-ui";
-          group = "nextjs-ollama-llm-ui";
-          mode = "0750";
-        }
-      ];
-    };
+          directories = [
+            {
+              directory = "/var/lib/nextjs-ollama-llm-ui";
+              user = "nextjs-ollama-llm-ui";
+              group = "nextjs-ollama-llm-ui";
+              mode = "0750";
+            }
+          ];
+        };
   };
 }

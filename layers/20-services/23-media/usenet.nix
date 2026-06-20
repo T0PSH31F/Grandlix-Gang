@@ -15,17 +15,26 @@ in
 
     nzbget = {
       enable = mkEnableOption "NZBGet usenet client";
-      port = mkOption { type = types.port; default = 6789; };
+      port = mkOption {
+        type = types.port;
+        default = 6789;
+      };
     };
 
     sabnzbd = {
       enable = mkEnableOption "SABnzbd usenet client";
-      port = mkOption { type = types.port; default = 8081; };
+      port = mkOption {
+        type = types.port;
+        default = 8081;
+      };
     };
 
     nzbhydra2 = {
       enable = mkEnableOption "NZBHydra2 indexer";
-      port = mkOption { type = types.port; default = 5076; };
+      port = mkOption {
+        type = types.port;
+        default = 5076;
+      };
     };
 
     pan.enable = mkEnableOption "Pan GUI newsreader";

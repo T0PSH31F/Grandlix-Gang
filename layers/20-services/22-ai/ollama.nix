@@ -66,18 +66,20 @@ in
 
     networking.firewall.allowedTCPPorts = [ 11434 ];
 
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
         {
-          directory = "/var/lib/ollama";
-          user = "ollama";
-          group = "ollama";
-          mode = "0750";
-        }
-      ];
-      users.t0psh31f = {
-        directories = [ ".ollama" ];
-      };
-    };
+          directories = [
+            {
+              directory = "/var/lib/ollama";
+              user = "ollama";
+              group = "ollama";
+              mode = "0750";
+            }
+          ];
+          users.t0psh31f = {
+            directories = [ ".ollama" ];
+          };
+        };
   };
 }

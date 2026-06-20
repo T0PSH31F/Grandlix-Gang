@@ -44,23 +44,23 @@ in
   inventory = {
     machines = machinesInventory;
     instances = {
-      wireguard = {
-        module = {
-          name = "wireguard";
-          input = "clan-core";
-        };
-        roles = {
-          controller.machines.luffy = {
-            settings = {
-              endpoint = "nixfp.duckdns.org";
-              port = 51820;
-            };
-          };
-          peer.machines = {
-            z0r0 = { };
-          };
-        };
-      };
+      # wireguard = {
+      #   module = {
+      #     name = "wireguard";
+      #     input = "clan-core";
+      #   };
+      #   roles = {
+      #     controller.machines.luffy = {
+      #       settings = {
+      #         endpoint = "nixfp.duckdns.org";
+      #         port = 51820;
+      #       };
+      #     };
+      #     peer.machines = {
+      #       z0r0 = { };
+      #     };
+      #   };
+      # };
 
       wifi = {
         module = {

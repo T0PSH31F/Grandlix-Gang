@@ -65,6 +65,10 @@ in
       openwakeword.enable = cfg.openwakeword.enable;
     };
 
-    networking.firewall.allowedTCPPorts = [ 10200 10300 10400 ];
+    networking.firewall.allowedTCPPorts = [
+      10200
+      10300
+      10400
+    ];
   };
 }

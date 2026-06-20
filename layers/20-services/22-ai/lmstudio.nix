@@ -20,10 +20,12 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ pkgs.lmstudio ];
 
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      users.t0psh31f = {
-        directories = [ ".config/lmstudio" ];
-      };
-    };
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          users.t0psh31f = {
+            directories = [ ".config/lmstudio" ];
+          };
+        };
   };
 }

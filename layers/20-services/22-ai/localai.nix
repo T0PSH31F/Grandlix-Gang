@@ -41,15 +41,17 @@ in
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
 
-    environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-      directories = [
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
         {
-          directory = "/var/lib/localai";
-          user = "root";
-          group = "root";
-          mode = "0750";
-        }
-      ];
-    };
+          directories = [
+            {
+              directory = "/var/lib/localai";
+              user = "root";
+              group = "root";
+              mode = "0750";
+            }
+          ];
+        };
   };
 }

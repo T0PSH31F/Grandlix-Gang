@@ -71,7 +71,9 @@ in
       image = "ghcr.io/coqui-ai/xtts-streaming-server:latest";
       ports = [ "${toString cfg.ttsPort}:8020" ];
       volumes = [ "xttsv2-models:/models" ];
-      environment = { MODEL_PATH = "/models"; };
+      environment = {
+        MODEL_PATH = "/models";
+      };
     };
 
     networking.firewall.allowedTCPPorts = [ cfg.sttPort ] ++ (lib.optional cfg.useXTTSv2 cfg.ttsPort);
