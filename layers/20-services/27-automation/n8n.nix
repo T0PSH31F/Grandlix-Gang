@@ -99,6 +99,7 @@ in
         User = "n8n";
         Group = "n8n";
         StateDirectory = lib.mkForce [ ];
+        ReadWritePaths = [ cfg.dataDir ];
         # Robustness
         Restart = lib.mkForce "always";
         RestartSec = lib.mkForce "10s";
