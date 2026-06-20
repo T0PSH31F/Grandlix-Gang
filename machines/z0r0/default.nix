@@ -112,10 +112,10 @@
     age.keyFile = "/persist/home/t0psh31f/.config/sops/age/keys.txt";
   };
 
-  # Matrix homeserver (luffy) + nix cache reachable via Tailscale
+  # Matrix homeserver (luffy) + nix cache reachable via LAN
   networking.extraHosts = ''
     192.168.1.54 matrix.local element.local
-    100.72.46.75 luffy.d luffy-1
+    192.168.1.54 luffy.d luffy-1
   '';
 
   # ============================================================================
