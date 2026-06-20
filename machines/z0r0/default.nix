@@ -66,7 +66,13 @@
     };
 
     layer-20.services.config = {
-      adguard.enable = true;
+      adguard = {
+        enable = true;
+        bindHosts = [
+          "127.0.0.1"
+          "192.168.1.38"
+        ];
+      };
     };
 
     layer-30.theming.themes.greeter = {

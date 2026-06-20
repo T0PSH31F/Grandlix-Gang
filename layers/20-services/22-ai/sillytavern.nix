@@ -35,6 +35,11 @@ with lib;
           listen = true; # Listen on all interfaces
         };
 
+        # Ensure the extensions directory exists before BindPaths tries to mount it
+        systemd.tmpfiles.rules = [
+          "d ${config.services.sillytavern-app.dataDir}/extensions 0755 sillytavern sillytavern -"
+        ];
+
         # Firewall
         networking.firewall.allowedTCPPorts = [ config.services.sillytavern-app.port ];
 
