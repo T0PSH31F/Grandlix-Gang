@@ -157,11 +157,23 @@ with lib;
       }
       loki.source.journal "hermes"  {
         max_age = "12h"
-        forward_to = [loki.write.default.receiver]
+        forward_to = [loki.relabel.journal.receiver]
         labels = {
           job     = "systemd-journal",
           host    = "${config.networking.hostName}",
         }
+      }
+      loki.relabel "journal" {
+        forward_to = [loki.write.default.receiver]
+        rule {
+          source_labels = ["__journal__systemd_unit"]
+          target_label  = "unit"
+        }
+        rule {
+          source_labels = ["__journal__hostname"]
+          target_label  = "hostname"
+        }
+      }
         relabel_rules = [{
           source_labels = ["__journal__systemd_unit"],
           target_label  = "unit",
