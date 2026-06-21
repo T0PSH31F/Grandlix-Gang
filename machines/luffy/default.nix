@@ -74,7 +74,8 @@
       prometheus.port = 9090;
     };
     homepage-dashboard = {
-      port = 3007; # avoids clash with open-webui on 8082
+      port = 3007;
+      lovable.enable = true;
     };
     adguard = {
       enable = false; # Commented out/disabled to unblock rebuild
@@ -239,7 +240,7 @@
         extraConfig = ''
           encode zstd gzip
           header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-          reverse_proxy localhost:3006
+          reverse_proxy localhost:3007
         '';
       };
       virtualHosts."*.lovelain.duckdns.org" = {

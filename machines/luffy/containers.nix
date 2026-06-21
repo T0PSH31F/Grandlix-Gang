@@ -53,26 +53,15 @@
       volumes = [ "/var/lib/beszel:/beszel_data" ];
     };
 
-    homepage-dashboard = {
-      image = "ghcr.io/gethomepage/homepage@sha256:d8d784e5090111b6e4c56dfd90e272d2953a2094e87349f647165df0fa6c4401";
-      # Limit network exposure to localhost since public access is proxied securely via Caddy
-      ports = [ "127.0.0.1:3006:3000" ];
-      volumes = [
-        "/var/lib/homepage:/app/config"
-        # SECURITY NOTE: Exposing the host's Podman/Docker socket allows container escaping.
-        # Homepage only uses this for the optional container status widget.
-        # Since it is not actively required/used in our configurations, we disable it.
-        # If needed in the future, prefer using a secure API proxy (e.g. docker-socket-proxy)
-        # to restrict socket queries to read-only container status endpoints.
-        # "/run/podman/podman.sock:/var/run/docker.sock:ro"
-      ];
-    };
+    # Removed: homepage-dashboard
+    # Replaced by the declarative NixOS native service at port 3007.
+    # Caddy now reverse-proxies lovelain.duckdns.org → localhost:3007.
   };
 
   systemd.tmpfiles.rules = [
     "d /var/lib/maxkb 0755 root root -"
     "d /var/lib/spacedrive 0755 root root -"
     "d /var/lib/beszel 0755 root root -"
-    "d /var/lib/homepage 0755 root root -"
+    # "d /var/lib/homepage 0755 root root -"  # obsolete — replaced by NixOS native service
   ];
 }

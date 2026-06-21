@@ -174,14 +174,6 @@ with lib;
           target_label  = "hostname"
         }
       }
-        relabel_rules = [{
-          source_labels = ["__journal__systemd_unit"],
-          target_label  = "unit",
-        }, {
-          source_labels = ["__journal__hostname"],
-          target_label  = "hostname",
-        }]
-      }
       loki.write "default" {
         endpoint {
           url = "http://127.0.0.1:${toString config.layers.layer-20.services.config.monitoring.loki.port}/loki/api/v1/push"
