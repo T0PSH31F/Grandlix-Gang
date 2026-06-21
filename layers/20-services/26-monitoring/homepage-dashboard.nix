@@ -27,6 +27,7 @@ let
     brainService = 8010;
     llamaCpp = 8081;
     signalCli = 8080;
+    hermesWorkspace = 3000;
 
     # luffy — media
     jellyfin = 8096;
@@ -143,6 +144,7 @@ let
       (lSrv "MaxKB" "maxkb" "maxkb.png" "Knowledge Base")
       (lSrv "Sim Studio" "simStudio" "simstudio.png" "Agent Builder")
       (lSrv "Jan" "jan" "jan.png" "Local AI Desktop")
+      (zSrv "Hermes Workspace" "hermesWorkspace" "hermes.png" "Agent Command Center")
       (zSrv "SillyTavern" "sillytavern" "sillytavern.png" "AI Character Chat")
       (zSrv "llama.cpp" "llamaCpp" "llama.png" "Inference Server")
       (zSrv "Langfuse" "langfuse" "langfuse.png" "LLM Observability")

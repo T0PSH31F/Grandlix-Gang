@@ -325,6 +325,7 @@ in
         IMAGE_TOOLS_DEBUG=false
         API_SERVER_ENABLED=true
         API_SERVER_KEY=${config.sops.placeholder.opencode_token}
+        HERMES_API_TOKEN=${config.sops.placeholder.opencode_token}
 
         # ── Matrix ───────────────────────────────────────────────────
         MATRIX_HOMESERVER=http://192.168.1.54:8087

@@ -7,5 +7,6 @@ in
 {
   imports = [
     (mkDendriticModule "hermes" ./hermes.nix)
+    (mkDendriticModule "hermes-workspace" ./workspace.nix)
   ];
 }
