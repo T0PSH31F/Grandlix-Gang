@@ -26,6 +26,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Fresh AI packages channel — update independently with `nix flake update nixpkgs-ai`
+    nixpkgs-ai.url = "github:NixOS/nixpkgs/3e41b24abd260e8f71dbe2f5737d24122f972158";
+
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -128,8 +132,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel/release";
+    };
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Utility inputs defined at top-level to allow follows
@@ -158,6 +171,9 @@
       wakatime-lsp,
       antigravity,
       nix-cachyos-kernel,
+      hermes-agent,
+      nixpkgs-ai,
+      nixvim,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -166,6 +182,23 @@
         inputs,
         ...
       }:
+      let
+        # Reusable overlay: swap selected packages to the AI channel
+        aiPkgOverlay = final: prev: {
+          hermes-agent = inputs.hermes-agent.packages.${final.system}.default;
+          opencode = (import inputs.nixpkgs-ai {
+            inherit (final) system;
+            config.allowUnfree = true;
+          }).opencode;
+          opencode-desktop = (import inputs.nixpkgs-ai {
+            inherit (final) system;
+            config.allowUnfree = true;
+          }).opencode-desktop;
+          # Add more AI packages here — e.g.:
+          # ollama = (import inputs.nixpkgs-ai { inherit (final) system; }).ollama;
+          # python3 = (import inputs.nixpkgs-ai { inherit (final) system; }).python3;
+        };
+      in
       {
         imports = [
           clan-core.flakeModules.default
@@ -187,6 +220,7 @@
               config.allowUnfree = true;
               overlays = [
                 (import ./layers/80-lib/82-overlays/custom-packages.nix)
+                aiPkgOverlay
               ];
             };
         };
@@ -258,6 +292,7 @@
               localSystem = system;
               config.allowUnfree = true;
               overlays = [
+                aiPkgOverlay
               ];
             };
             packages.iso =

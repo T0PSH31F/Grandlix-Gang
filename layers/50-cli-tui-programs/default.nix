@@ -9,6 +9,7 @@ in
   imports = [
     # Multi-class modules (wrapped)
     (mkDendriticModule "fallbacks" ./52-editors/fallbacks.nix)
+    (mkDendriticModule "nixvim" ./52-editors/nixvim)
     (mkDendriticModule "helix" ./52-editors/helix.nix)
     (mkDendriticModule "gedit" ./52-editors/gedit.nix)
     (mkDendriticModule "alternatives" ./56-file-managers/alternatives.nix)

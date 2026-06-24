@@ -6,6 +6,23 @@ let
   cfg = config.layers.layer-20.services.config.homepage-dashboard;
   hostName = config.networking.hostName or "unknown";
 
+  # Custom CSS for gradient effects — works on both machines
+  gradientCSS = ''
+    .greeting-text {
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: bold;
+    }
+    .datetime-widget [class*="text-xl"] {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  '';
+
   # ---------------------------------------------------------------------------
   # Address constants — LAN IPs for cross-machine access
   # ---------------------------------------------------------------------------
@@ -61,6 +78,7 @@ let
     searxng = 8888;
     filebrowser = 8085;
     spacedrive = 32768;
+    karakeep = 3007;
 
     # luffy — comms
     matrixSynapse = 8008;
@@ -171,11 +189,6 @@ let
         username = "admin";
         password = "admin";
       })
-      # Caddy reverse proxy stats — admin API on port 2019, no key needed
-      (lSrvW "Caddy" "caddyAdmin" "caddy.png" "Reverse Proxy" {
-        type = "caddy";
-        url = "http://${hostOf "luffy"}:${toString ports.caddyAdmin}";
-      })
     ];
 
     "AI / Agents" = [
@@ -185,7 +198,6 @@ let
       (lSrv "Qdrant" "qdrant" "mdi-database-search" "Vector Search Engine")
       (lSrv "PostgreSQL" "postgres" "si-postgresql" "PG + pgvector + lantern")
       (lSrv "MaxKB" "maxkb" "mdi-book-search" "Knowledge Base")
-      (lSrv "Sim Studio" "simStudio" "mdi-tune-variant" "Agent Builder")
       (lSrv "Jan" "jan" "mdi-desktop-tower-monitor" "Local AI Desktop")
       (zSrv "Hermes Workspace" "hermesWorkspace" "mdi-robot-outline" "Agent Command Center")
       (zSrv "Hermes Dashboard" "hermesDashboard" "mdi-chart-timeline-variant" "Agent Metrics & Sessions")
@@ -206,11 +218,11 @@ let
       (lSrv "SearXNG" "searxng" "searxng.png" "Meta Search Engine")
       (lSrv "FileBrowser" "filebrowser" "filebrowser.png" "Web File Manager")
       (lSrv "Spacedrive" "spacedrive" "si-spacedrive" "Virtual File System")
-      (lSrvW "Kavita" "kavita" "kavita.png" "Comic / Manga Reader" {
-        type = "kavita";
-        url = "http://${hostOf "luffy"}:${toString ports.kavita}";
-        username = "admin";
-        password = "admin";
+      (lSrv "Karakeep" "karakeep" "mdi-bookmark-multiple" "Bookmark Manager")
+      # Caddy reverse proxy stats — admin API on port 2019, no key needed
+      (lSrvW "Caddy" "caddyAdmin" "caddy.png" "Reverse Proxy" {
+        type = "caddy";
+        url = "http://${hostOf "luffy"}:${toString ports.caddyAdmin}";
       })
     ];
 
@@ -261,6 +273,12 @@ let
       })
       (lSrv "Aria2" "aria2" "aria2.png" "Download Manager")
       (lSrv "Calibre-Web" "calibreWeb" "calibre-web.png" "E-Book Library")
+      (lSrvW "Kavita" "kavita" "kavita.png" "Comic / Manga Reader" {
+        type = "kavita";
+        url = "http://${hostOf "luffy"}:${toString ports.kavita}";
+        username = "admin";
+        password = "admin";
+      })
       (lSrvW "Your Spotify" "yourSpotify" "spotify.png" "Spotify Analytics" {
         type = "yourspotify";
         url = "http://${hostOf "luffy"}:${toString ports.yourSpotify}";
@@ -392,7 +410,7 @@ in
           # Clean icon style for mdi/si prefixed icons
           iconStyle = "theme";
           # Consistent card heights
-          useEqualHeights = true;
+          useEqualHeights = false;
           # Disable update check for faster load and privacy
           disableUpdateCheck = true;
           # Quick launch — search services by typing
@@ -401,9 +419,32 @@ in
             hideInternetSearch = false;
             showSearchSuggestions = true;
           };
+          bookmarks = [
+            {
+              Bookmarks = [
+                { "search.nixos.org" = { href = "https://search.nixos.org"; }; }
+                { "docs.clan.lol" = { href = "https://docs.clan.lol"; }; }
+                { "GitHub" = { href = "https://github.com"; }; }
+                { "YouTube" = { href = "https://youtube.com"; }; }
+                { "Agentaflow" = { href = "https://agentaflow.space"; }; }
+                { "wco.tv" = { href = "https://wco.tv"; }; }
+                { "Searchix" = { href = "https://searchix.ovh"; }; }
+                { "EverythingMoe" = { href = "https://everythingmoe.com"; }; }
+                { "TorrentSeeker" = { href = "https://torrentseeker.com"; }; }
+                { "AI Studio" = { href = "https://aistudio.google.com"; }; }
+              ];
+            }
+          ];
         };
 
         widgets = [
+          # ── Title — NFP (gradient styled via customCSS) ──
+          {
+            greeting = {
+              text_size = "4xl";
+              text = "NFP";
+            };
+          }
           # ── Search 1 — Perplexity (research-grade) ──
           {
             search = {
@@ -420,6 +461,14 @@ in
               customSearch = "http://${luffy}:${toString ports.searxng}/search?q=%s";
               target = "_blank";
               showSearchSuggestions = true;
+            };
+          }
+          # ── Weather — OpenWeather (set HOMEPAGE_OPENWEATHER_KEY) ──
+          {
+            weather = {
+              provider = "openweather";
+              apiKey = "\${HOMEPAGE_OPENWEATHER_KEY}";
+              units = "metric";
             };
           }
           # ── Local system resources (expanded) ──
@@ -445,10 +494,10 @@ in
               expanded = true;
             };
           }
-          # ── Date / time — attractive styling ──
+          # ── Date / time — gradient styled via customCSS ──
           {
             datetime = {
-              text_size = "3xl";
+              text_size = "xl";
               format = {
                 dateStyle = "full";
                 timeStyle = "medium";
@@ -460,10 +509,12 @@ in
         ];
 
         services = mapAttrsToList toGroupAttrs groups;
+
+        customCSS = gradientCSS;
       }
 
       (mkIf cfg.lovable.enable {
-        customCSS = builtins.readFile cfg.lovable.cssPath;
+        customCSS = gradientCSS + builtins.readFile cfg.lovable.cssPath;
         customJS = builtins.readFile cfg.lovable.jsPath;
       })
     ];

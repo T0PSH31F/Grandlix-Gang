@@ -6,21 +6,23 @@
 }:
 let
   cfg = config.layers.layer-76.hermes-workspace;
+  hermesState = "${config.services.hermes-agent.stateDir}/.hermes";
+  webuiPython = pkgs.python3.withPackages (ps: [ ps.pyyaml ps.cryptography ]);
 in
 {
   options.layers.layer-76.hermes-workspace = {
-    enable = lib.mkEnableOption "Hermes Workspace — web UI for Hermes Agent";
+    enable = lib.mkEnableOption "Hermes WebUI (nesquena/hermes-webui)";
 
     workspaceDir = lib.mkOption {
       type = lib.types.str;
       default = "/home/t0psh31f/.hermes/hermes-workspace";
-      description = "Path to the cloned hermes-workspace repository.";
+      description = "Path to the cloned hermes-webui repository.";
     };
 
     port = lib.mkOption {
       type = lib.types.port;
       default = 3000;
-      description = "Port for the workspace web UI.";
+      description = "Port for the web UI.";
     };
 
     host = lib.mkOption {
@@ -28,33 +30,20 @@ in
       default = "0.0.0.0";
       description = "Bind address (0.0.0.0 for LAN access).";
     };
-
-    hermesApiUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://127.0.0.1:8642";
-      description = "Hermes Agent gateway URL.";
-    };
-
-    hermesDashboardUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://127.0.0.1:9119";
-      description = "Hermes Agent dashboard URL.";
-    };
   };
 
   config = lib.mkIf cfg.enable {
     systemd.services.hermes-workspace = {
-      description = "Hermes Workspace Web Server";
+      description = "Hermes WebUI — nesquena/hermes-webui";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
+      after = [ "network.target" "hermes-agent.service" ];
 
       environment = {
-        NODE_ENV = "production";
-        PORT = toString cfg.port;
-        HOST = cfg.host;
-        HERMES_API_URL = cfg.hermesApiUrl;
-        HERMES_DASHBOARD_URL = cfg.hermesDashboardUrl;
-        HERMES_ALLOW_INSECURE_REMOTE = "1";
+        HERMES_WEBUI_PORT = toString cfg.port;
+        HERMES_WEBUI_HOST = cfg.host;
+        HERMES_WEBUI_AGENT_DIR = config.services.hermes-agent.stateDir;
+        HERMES_WEBUI_PYTHON = "${webuiPython}/bin/python";
+        HERMES_HOME = hermesState;
       };
 
       serviceConfig = {
@@ -62,8 +51,8 @@ in
         User = "t0psh31f";
         Group = "users";
         WorkingDirectory = cfg.workspaceDir;
-        ExecStart = "${pkgs.nodejs}/bin/node server-entry.js";
-        EnvironmentFile = "/home/t0psh31f/.hermes/.env";
+        ExecStart = "${webuiPython}/bin/python ${cfg.workspaceDir}/server.py";
+        EnvironmentFile = "${hermesState}/.env";
         Restart = "on-failure";
         RestartSec = "5s";
       };

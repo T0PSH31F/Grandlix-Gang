@@ -46,8 +46,15 @@ in
         };
         opener.edit = [
           {
-            run = ''${pkgs.helix}/bin/hx "$@"'';
+            run = ''${pkgs.neovim}/bin/nvim "$@"'';
             block = true;
+          }
+        ];
+        keymap.manager.prepend_keymap = [
+          {
+            on = [ "e" ];
+            run = "open";
+            desc = "Open with Neovim";
           }
         ];
       };
@@ -55,7 +62,7 @@ in
         {
           on = [ "e" ];
           run = "open";
-          desc = "Open with Helix";
+          desc = "Open with Neovim";
         }
         {
           on = [ "<C-s>" ];

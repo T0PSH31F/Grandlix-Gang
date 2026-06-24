@@ -117,6 +117,7 @@
   virtualisation.oci-containers.containers.langfuse.environment.HOSTNAME = lib.mkForce "0.0.0.0";
 
   layers.layer-76.hermes-workspace.enable = true;
+  layers.layer-76.hermes-dashboard.enable = true;
 
   layers.layer-20.services.communication.signal-cli-daemon = {
     enable = true;

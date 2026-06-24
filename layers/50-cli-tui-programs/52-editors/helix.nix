@@ -12,7 +12,7 @@ in
   home = lib.mkIf cfg.enable {
     programs.helix = {
       enable = true;
-      defaultEditor = true;
+      defaultEditor = false;
       settings = {
         theme = lib.mkIf cfg.theming.enable "matugen";
         editor = {
