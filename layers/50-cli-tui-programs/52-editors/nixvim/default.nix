@@ -47,7 +47,7 @@ in
 
   home = lib.mkIf cfg.enable {
       imports = [
-        inputs.nixvim.homeManagerModules.nixvim
+        inputs.nixvim.homeModules.nixvim
       ];
 
       home.sessionVariables = {
@@ -58,8 +58,11 @@ in
       programs.nixvim = {
         enable = true;
         defaultEditor = true;
-        vimAlias = true;
-        viAlias = true;
+        vimAlias = false;
+        viAlias = false;
+
+        nixpkgs.source = lib.mkForce inputs.nixpkgs;
+        version.enableNixpkgsReleaseCheck = false;
 
         # ── Core Options ────────────────────────────────────────────
         # Mouse-free foundation:
