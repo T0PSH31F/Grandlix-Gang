@@ -16,6 +16,7 @@ in
     services.glances = {
       enable = true;
       openFirewall = true;
+      web = true;
       extraArgs = [
         "--bind"
         "0.0.0.0"
