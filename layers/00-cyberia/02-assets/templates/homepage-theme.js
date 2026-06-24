@@ -1,10 +1,10 @@
-/* Homepage Dashboard Lovable Theme — Background + Host Badge Injection */
+/* Homepage Dashboard Lovable Theme — Background + Host Badge + Search Labels + Status Dots */
 
 (function () {
   console.log('Initializing Lovable Theme Effects...');
 
   // ==================================================================
-  // 1. BACKGROUND
+  // 1. BACKGROUND  —  CSS gradient (no remote image fetch for fast load)
   // ==================================================================
   const bgContainer = document.createElement('div');
   bgContainer.id = 'lovable-background';
@@ -30,8 +30,8 @@
   fog2.style.background = 'radial-gradient(ellipse at center, hsl(280,100%,50%), transparent)';
   bgContainer.appendChild(fog2);
 
-  // Particles
-  const particleCount = 40;
+  // Particles — reduced count for performance
+  const particleCount = 20;
   for (let i = 0; i < particleCount; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
@@ -65,9 +65,6 @@
   // ==================================================================
   // 2. HOST BADGE INJECTION
   // ==================================================================
-  // Walks all text nodes inside service descriptions and wraps @host tags
-  // in <span class="host-badge host-badge--{host}"> so the CSS can style
-  // them as neon pills.
   function injectHostBadges(root) {
     const walker = document.createTreeWalker(
       root,
@@ -88,7 +85,6 @@
 
     for (const { node, text, host } of nodesToReplace) {
       const frag = document.createDocumentFragment();
-      // Split on @host (case-insensitive)
       const parts = text.split(new RegExp('@' + host, 'i'));
       for (let i = 0; i < parts.length; i++) {
         frag.appendChild(document.createTextNode(parts[i]));
@@ -103,15 +99,142 @@
     }
   }
 
-  // Run on initial load and after any dynamic DOM mutation.
-  injectHostBadges(document.body);
+  // ==================================================================
+  // 3. SEARCH BAR LABELS  —  inject banner labels above each search bar
+  // ==================================================================
+  function injectSearchLabels() {
+    // Find all search-related elements
+    const searchWidgets = document.querySelectorAll('.search-bar');
+    const seen = new Set();
 
-  // Watch for new cards added dynamically (Homepage lazy-loads groups).
-  const observer = new MutationObserver(() => injectHostBadges(document.body));
+    searchWidgets.forEach((el) => {
+      const container = el.closest('.widget') || el.parentElement;
+      if (!container || seen.has(container)) return;
+      seen.add(container);
+
+      // Check if label already exists
+      if (container.querySelector('.search-banner-label')) return;
+
+      // Determine which search bar this is
+      const input = el.querySelector('input');
+      if (!input) return;
+
+      const form = input.closest('form');
+      const action = form ? form.getAttribute('action') || '' : '';
+      const placeholder = input.getAttribute('placeholder') || '';
+
+      let labelText = 'Search';
+      let labelClass = 'search-banner-label';
+
+      if (action.includes('perplexity') || placeholder.toLowerCase().includes('perplex')) {
+        labelText = '\u25C6 Perplexity Search';
+        labelClass += ' search-banner-label--perplexity';
+      } else if (action.includes('searx') || action.includes('8888') || placeholder.toLowerCase().includes('searx')) {
+        labelText = '\u25C6 SearXNG Meta Search';
+        labelClass += ' search-banner-label--searxng';
+      } else {
+        labelText = '\u25C6 Search';
+      }
+
+      const label = document.createElement('div');
+      label.className = labelClass;
+      label.textContent = labelText;
+
+      container.insertBefore(label, container.firstChild);
+    });
+  }
+
+  // ==================================================================
+  // 4. STATUS DOT ENHANCEMENT  —  add glow and pulse to status dots
+  // ==================================================================
+  function enhanceStatusDots() {
+    // Find all status dots (homepage uses various class patterns)
+    const dots = document.querySelectorAll('[class*="dot"], .status-indicator, [class*="status"]');
+    dots.forEach(dot => {
+      // Skip if already processed
+      if (dot.dataset.lovableEnhanced) return;
+      dot.dataset.lovableEnhanced = 'true';
+
+      // Check for green/up or red/down styling
+      const style = window.getComputedStyle(dot);
+      const bg = style.backgroundColor || '';
+
+      if (bg.includes('rgb(16, 185, 129)') || bg.includes('emerald') || bg.includes('green')) {
+        dot.style.animation = 'status-pulse-up 2s ease-in-out infinite';
+        dot.style.boxShadow = '0 0 6px var(--status-up)';
+      } else if (bg.includes('rgb(244, 63, 94)') || bg.includes('rose') || bg.includes('red')) {
+        dot.style.animation = 'status-pulse-down 1.5s ease-in-out infinite';
+        dot.style.boxShadow = '0 0 6px var(--status-down)';
+      }
+    });
+  }
+
+  // ==================================================================
+  // 5. CARD STATUS BORDER  —  colored left border based on up/down
+  // ==================================================================
+  function enhanceCardStatus() {
+    const cards = document.querySelectorAll('.service-card, .services-group .service');
+    cards.forEach(card => {
+      if (card.dataset.lovableCard) return;
+      card.dataset.lovableCard = 'true';
+
+      // Look for status indicators within the card
+      const statusEl = card.querySelector('[class*="dot"], [class*="status"], .bg-emerald, .bg-rose');
+      if (!statusEl) return;
+
+      const style = window.getComputedStyle(statusEl);
+      const bg = style.backgroundColor || '';
+
+      if (bg.includes('rgb(16, 185, 129)') || bg.includes('emerald') || bg.includes('green')) {
+        card.style.borderLeft = '3px solid var(--status-up)';
+      } else if (bg.includes('rgb(244, 63, 94)') || bg.includes('rose') || bg.includes('red')) {
+        card.style.borderLeft = '3px solid var(--status-down)';
+        card.style.boxShadow = '0 0 12px hsla(0, 84%, 60%, 0.15)';
+      }
+    });
+  }
+
+  // ==================================================================
+  // 6. GROUP HEADER ENHANCEMENT
+  // ==================================================================
+  function enhanceGroupHeaders() {
+    const groups = document.querySelectorAll('.services-group');
+    groups.forEach((group, idx) => {
+      const header = group.querySelector('.group-title, h2');
+      if (!header) return;
+      if (header.dataset.lovableHeader) return;
+      header.dataset.lovableHeader = 'true';
+
+      header.style.borderLeft = '3px solid';
+      header.style.paddingLeft = '0.75rem';
+    });
+  }
+
+  // ==================================================================
+  // RUN ALL ENHANCEMENTS  —  debounced for performance
+  // ==================================================================
+  let enhancementTimer = null;
+
+  function runAllEnhancements() {
+    injectHostBadges(document.body);
+    injectSearchLabels();
+    enhanceGroupHeaders();
+    enhanceStatusDots();
+    enhanceCardStatus();
+  }
+
+  // Run on initial load
+  runAllEnhancements();
+
+  // Watch for new cards added dynamically — debounced for performance
+  const observer = new MutationObserver(() => {
+    if (enhancementTimer) clearTimeout(enhancementTimer);
+    enhancementTimer = setTimeout(runAllEnhancements, 100);
+  });
   observer.observe(document.body, { childList: true, subtree: true });
 
   // ==================================================================
-  // 3. FONT REDUNDANCY
+  // 7. FONT REDUNDANCY
   // ==================================================================
   const fontLink = document.createElement('link');
   fontLink.href =

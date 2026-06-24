@@ -90,8 +90,6 @@ in
       };
       initContent = ''
         any-nix-shell zsh --info-right | source /dev/stdin
-        bindkey -v
-        export KEYTIMEOUT=1
         bindkey '^Y' autosuggest-accept
         bindkey '^E' autosuggest-clear
         if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then

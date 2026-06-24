@@ -16,13 +16,15 @@
       roles.server = {
         tags.all = { }; # All machines are SSH servers
         settings = {
+          certificate.enable = false;
           authorizedKeys = {
-            "mykey" =
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFDNnynMbFWatSFdANzbJ8iiEKL7+9ZpDaMLrWRQjyH user@host";
+            "grandlix-key" =
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang";
             "luffy" =
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDg4e32XqA2CyYsHyl+urGN1Soiz00DLgc+dkDw/uFCw luffy@agentaflow.com";
+            "deploy-key" =
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHmFwvzW1t3Bs5kvXDIBx9FyVpiusL+rGPaazuPV62wK deploy-key@nfp";
           };
-          certificate.searchDomains = [ "grandlix.local" ];
         };
       };
       roles.client = {

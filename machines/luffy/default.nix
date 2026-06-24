@@ -204,7 +204,7 @@
 
     ai-services = {
       enable = true;
-      qdrant.enable = false; # Commented out/disabled to unblock rebuild
+      qdrant.enable = false; # Disabled — only wanted the homepage-dashboard widget entry
       ollama = {
         enable = true;
         acceleration = null;
@@ -220,7 +220,7 @@
 
     # Moved from Nami
     n8n-server.enable = true;
-    komga-server.enable = true;
+    komga-server.enable = lib.mkForce false; # Removed — redundant with Kavita
     mautrix-bridges = {
       enable = true;
       homeserverUrl = "http://localhost:8008";
@@ -228,6 +228,12 @@
       whatsapp.enable = true;
       signal.enable = true;
     };
+
+    # Bind SearXNG to LAN so dashboard search works from z0r0
+    searx.settings.server.bind_address = lib.mkForce "0.0.0.0";
+
+    # Glances — re-enabled for homepage-dashboard cross-machine system stats
+    glances-server.enable = lib.mkForce true;
 
     # Caddy Reverse Proxy
     caddy = {
@@ -290,7 +296,7 @@
           handle @chat { reverse_proxy localhost:3004 }
 
           @beszel host beszel.lovelain.duckdns.org
-          handle @beszel { reverse_proxy localhost:32772 }
+          # handle @beszel { reverse_proxy localhost:32772 }  # removed — beszel dropped
 
           @adguard host adguard.lovelain.duckdns.org
           handle @adguard { reverse_proxy localhost:3002 }
@@ -302,7 +308,7 @@
           handle @n8n { reverse_proxy localhost:5678 }
 
           @komga host komga.lovelain.duckdns.org
-          handle @komga { reverse_proxy localhost:25600 }
+          # handle @komga { reverse_proxy localhost:25600 }  # removed — komga dropped
 
           @spotify host spotify.lovelain.duckdns.org
           handle @spotify { reverse_proxy localhost:3457 }
@@ -382,9 +388,12 @@
       80
       443
       22
+      2019 # Caddy admin API for homepage widget
+      61208 # Glances for homepage cross-machine stats
       8008 # Matrix Synapse direct access for hermes gateway
       8443 # Nginx SSL proxy for Matrix/Element (bypass Caddy TLS issues)
       8087 # Nginx HTTP proxy for Matrix (no SSL, for hermes gateway)
+      8888 # SearXNG — cross-machine dashboard search
     ];
   };
 

@@ -47,12 +47,6 @@
       };
     };
 
-    beszel-hub = {
-      image = "henrygd/beszel@sha256:a849ad80814b6a1a3be665304dcace5d4854b3bed7bde4dd1227e8ce1b82d477";
-      ports = [ "32772:8090" ];
-      volumes = [ "/var/lib/beszel:/beszel_data" ];
-    };
-
     # Removed: homepage-dashboard
     # Replaced by the declarative NixOS native service at port 3007.
     # Caddy now reverse-proxies lovelain.duckdns.org → localhost:3007.
@@ -61,7 +55,7 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/maxkb 0755 root root -"
     "d /var/lib/spacedrive 0755 root root -"
-    "d /var/lib/beszel 0755 root root -"
+    # "d /var/lib/beszel 0755 root root -"  # removed — beszel dropped
     # "d /var/lib/homepage 0755 root root -"  # obsolete — replaced by NixOS native service
   ];
 }

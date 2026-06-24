@@ -34,18 +34,23 @@
   --chopper-pink: hsl(300 100% 50%);
 
   /* Group accent colors (One Piece crew themed) */
-  --group-obs: hsl(190 100% 50%);      /* Robin / teal */
-  --group-ai: hsl(280 100% 50%);       /* Vegapunk / purple */
-  --group-infra: hsl(220 100% 60%);    /* Franky / blue */
-  --group-comms: hsl(110 100% 54%);    /* Zoro / green */
-  --group-media: hsl(340 100% 50%);    /* Luffy / red */
-  --group-auto: hsl(35 100% 50%);      /* Nami / orange */
+  --group-obs: hsl(190 100% 50%);
+  --group-ai: hsl(280 100% 50%);
+  --group-infra: hsl(220 100% 60%);
+  --group-comms: hsl(110 100% 54%);
+  --group-media: hsl(340 100% 50%);
+  --group-auto: hsl(35 100% 50%);
 
   /* Host badge colors */
   --badge-z0r0-bg: hsla(110, 100%, 54%, 0.15);
   --badge-z0r0-fg: hsl(110 100% 54%);
   --badge-luffy-bg: hsla(340, 100%, 50%, 0.15);
   --badge-luffy-fg: hsl(340 100% 50%);
+
+  /* Status colors */
+  --status-up: hsl(110 100% 54%);
+  --status-down: hsl(0 84% 60%);
+  --status-pending: hsl(35 100% 50%);
 }
 
 body {
@@ -110,6 +115,94 @@ h1, h2, h3, h4, h5, h6, .title {
 }
 
 /* ============================================================
+   STATUS DOTS  —  visual up/down indicators
+   ============================================================ */
+.status-dot, .MuiSnackbar-root .dot, [class*="dot"] {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  transition: all 0.3s ease;
+}
+
+/* Green dot for UP services */
+.service-card:has([class*="dot"][style*="green"]),
+.service-card:has(.bg-emerald) {
+  border-left: 3px solid var(--status-up) !important;
+}
+
+/* Red dot/border for DOWN services */
+.service-card:has([class*="dot"][style*="red"]),
+.service-card:has(.bg-rose),
+.service-card:has(.bg-red) {
+  border-left: 3px solid var(--status-down) !important;
+  box-shadow: 0 0 12px hsla(0, 84%, 60%, 0.15) !important;
+}
+
+/* Animate the status dot */
+@keyframes status-pulse-up {
+  0%, 100% { box-shadow: 0 0 4px var(--status-up); }
+  50% { box-shadow: 0 0 10px var(--status-up); }
+}
+
+@keyframes status-pulse-down {
+  0%, 100% { box-shadow: 0 0 4px var(--status-down); }
+  50% { box-shadow: 0 0 10px var(--status-down); }
+}
+
+/* ============================================================
+   SECTION SEPARATORS  —  boxes and lines around groups
+   ============================================================ */
+.services-group {
+  border: 1px solid hsla(260, 30%, 20%, 0.6);
+  border-radius: 1rem;
+  padding: 1.5rem 1rem 1rem 1rem;
+  margin-bottom: 2rem;
+  position: relative;
+  background: hsla(240, 50%, 8%, 0.3);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 30px hsla(240, 50%, 5%, 0.3);
+  animation: group-fade-in 0.6s ease-out backwards;
+}
+
+.services-group:nth-of-type(1) { animation-delay: 0.1s; }
+.services-group:nth-of-type(2) { animation-delay: 0.2s; }
+.services-group:nth-of-type(3) { animation-delay: 0.3s; }
+.services-group:nth-of-type(4) { animation-delay: 0.4s; }
+.services-group:nth-of-type(5) { animation-delay: 0.5s; }
+.services-group:nth-of-type(6) { animation-delay: 0.6s; }
+
+@keyframes group-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section accent line at top of each group */
+.services-group::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  border-radius: 999px;
+  opacity: 0.6;
+}
+
+.services-group:nth-of-type(1)::before { background: var(--group-obs); box-shadow: 0 0 10px var(--group-obs); }
+.services-group:nth-of-type(2)::before { background: var(--group-ai); box-shadow: 0 0 10px var(--group-ai); }
+.services-group:nth-of-type(3)::before { background: var(--group-infra); box-shadow: 0 0 10px var(--group-infra); }
+.services-group:nth-of-type(4)::before { background: var(--group-comms); box-shadow: 0 0 10px var(--group-comms); }
+.services-group:nth-of-type(5)::before { background: var(--group-media); box-shadow: 0 0 10px var(--group-media); }
+.services-group:nth-of-type(6)::before { background: var(--group-auto); box-shadow: 0 0 10px var(--group-auto); }
+
+/* ============================================================
    GROUP TITLES  —  One Piece crew colors by position
    ============================================================ */
 .services-group:nth-of-type(1) .group-title,
@@ -144,7 +237,7 @@ h1, h2, h3, h4, h5, h6, .title {
 }
 
 /* ============================================================
-   HOST BADGES  —  injected by custom JS as <span class="host-badge">
+   HOST BADGES
    ============================================================ */
 .host-badge {
   display: inline-block;
@@ -182,9 +275,63 @@ h1, h2, h3, h4, h5, h6, .title {
   filter: drop-shadow(0 0 4px hsla(0, 84%, 60%, 0.5));
 }
 
+.status-indicator[status="up"] {
+  filter: drop-shadow(0 0 4px hsla(110, 100%, 54%, 0.3));
+  animation: pulse-green 3s ease-in-out infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { filter: drop-shadow(0 0 4px hsla(110, 100%, 54%, 0.3)); }
+  50% { filter: drop-shadow(0 0 8px hsla(110, 100%, 54%, 0.5)); }
+}
+
 /* ============================================================
-   SEARCH BARS  —  pill shape, distinct styling
+   SEARCH BARS  —  perpendicular (stacked) with banner labels
    ============================================================ */
+
+/* Container for all widgets — stack search bars vertically */
+.widgets-list {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0.75rem !important;
+}
+
+/* Each search bar wrapper gets a banner label injected by JS */
+.search-banner-label {
+  display: block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0 0.15rem 0.25rem;
+  margin-bottom: 0.15rem;
+  border-left: 3px solid var(--accent);
+  padding-left: 0.5rem;
+  animation: label-slide-in 0.4s ease-out backwards;
+}
+
+.search-banner-label--perplexity {
+  color: hsl(190, 100%, 60%);
+  border-left-color: hsl(190, 100%, 50%);
+}
+
+.search-banner-label--searxng {
+  color: hsl(280, 100%, 60%);
+  border-left-color: hsl(280, 100%, 50%);
+}
+
+@keyframes label-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .search-bar,
 input[type="text"],
 input[type="search"] {
@@ -194,6 +341,7 @@ input[type="search"] {
   font-family: 'Space Grotesk', sans-serif;
   border-radius: 9999px;
   padding: 0.75rem 1.5rem;
+  width: 100% !important;
 }
 
 .search-bar:focus-within,
@@ -212,6 +360,53 @@ header {
 }
 
 /* ============================================================
+   RESOURCE & DATETIME WIDGETS  —  enhanced styling
+   ============================================================ */
+.resource-widget,
+.datetime-widget,
+.glances-widget {
+  background: hsla(240, 50%, 10%, 0.6) !important;
+  border: 1px solid hsla(260, 30%, 25%, 0.5) !important;
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+  padding: 0.75rem;
+}
+
+/* Datetime — make it stand out */
+.datetime-widget {
+  text-align: center;
+  border-left: 3px solid var(--accent) !important;
+  padding: 1rem !important;
+}
+
+.datetime-widget .text-3xl,
+.datetime-widget [class*="text-xl"] {
+  font-family: 'Orbitron', sans-serif !important;
+  letter-spacing: 0.08em !important;
+  background: linear-gradient(135deg, var(--accent), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Resource widget labels */
+.resource-widget [class*="label"],
+.glances-widget [class*="label"] {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--muted-foreground) !important;
+}
+
+/* Resource bars */
+.resource-widget [class*="bar"],
+.glances-widget [class*="bar"] {
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+/* ============================================================
    ANIMATIONS
    ============================================================ */
 @keyframes float {
@@ -224,8 +419,14 @@ header {
   50% { opacity: 0.8; }
 }
 
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* ============================================================
-   BACKGROUND EFFECTS  —  created by JS
+   BACKGROUND EFFECTS  —  CSS gradient (no remote image for fast load)
    ============================================================ */
 #lovable-background {
   position: fixed;

@@ -70,8 +70,14 @@
         enable = true;
         bindHosts = [
           "127.0.0.1"
-          "192.168.1.40"
+          "192.168.1.39"
         ];
+      };
+      monitoring = {
+        enable = true;
+        grafana.port = 3008;
+        prometheus.port = 9090;
+        loki.port = 3100;
       };
     };
 
@@ -95,12 +101,20 @@
   # ============================================================================
 
   services = {
+    # Fix PAM interaction with publickey-hostbound SSH extension
+    openssh.settings.UsePAM = lib.mkForce false;
     ai-services.lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
     llm-agents.enable = true;
-    llama-cpp-server.enable = true;
+    llama-cpp-server = {
+      enable = true;
+      host = "0.0.0.0"; # Bind to all interfaces for cross-machine dashboard access
+    };
     n8n-server.enable = false;
     infrastructure.langfuse.enable = true;
   };
+
+  # Make Langfuse accessible from LAN for cross-machine dashboard monitoring
+  virtualisation.oci-containers.containers.langfuse.environment.HOSTNAME = lib.mkForce "0.0.0.0";
 
   layers.layer-76.hermes-workspace.enable = true;
 
@@ -108,6 +122,25 @@
     enable = true;
     port = 8080; # matches hermes SIGNAL_HTTP_URL
   };
+
+  # Open firewall ports for cross-machine dashboard monitoring (luffy → z0r0)
+  networking.firewall.allowedTCPPorts = [
+    3000 # Hermes Workspace
+    9119 # Hermes Dashboard
+    8010 # Brain Service
+    8080 # Signal CLI
+    3002 # AdGuard Home (web)
+    3005 # Langfuse
+    8000 # SillyTavern
+    8081 # llama.cpp
+    9090 # Prometheus
+    3100 # Loki
+    3008 # Grafana
+    61208 # Glances for homepage cross-machine stats
+  ];
+
+  # Enable Glances for cross-machine dashboard system stats
+  services.glances-server.enable = true;
 
   systemd.services.rclone-gdrive-mount.enable = false;
 

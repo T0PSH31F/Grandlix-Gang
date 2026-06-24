@@ -28,7 +28,7 @@ let
         "media"
         "intel-9th-gen"
       ];
-      deploy.targetHost = "root@192.168.1.54";
+      deploy.targetHost = "root@100.72.46.75";
     };
 
   };
@@ -120,13 +120,7 @@ in
         };
       };
 
-      sshd = {
-        module = {
-          name = "sshd";
-          input = "clan-core";
-        };
-        roles.server.tags.all = { };
-      };
+
     };
   };
 

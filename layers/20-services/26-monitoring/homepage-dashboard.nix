@@ -5,17 +5,17 @@ with lib;
 let
   cfg = config.layers.layer-20.services.config.homepage-dashboard;
   hostName = config.networking.hostName or "unknown";
-  isLuffy = hostName == "luffy";
 
   # ---------------------------------------------------------------------------
-  # Address constants
+  # Address constants — LAN IPs for cross-machine access
   # ---------------------------------------------------------------------------
-  z0r0 = "192.168.1.40";
-  luffy = "127.0.0.1";
+  z0r0 = "192.168.1.39";
+  luffy = "192.168.1.54";
 
-  # Almost all z0r0 ports come from their module defaults.  luffy ports are
-  # serviceable via the local Nix config, but hardcoding keeps things simple
-  # for a two-machine dashboard.
+  # The "other" machine — for glances remote stats widget
+  remoteMachine = if hostName == "z0r0" then "luffy" else "z0r0";
+  remoteIP = if hostName == "z0r0" then luffy else z0r0;
+
   ports = {
     # z0r0
     prometheus = 9090;
@@ -28,6 +28,8 @@ let
     llamaCpp = 8081;
     signalCli = 8080;
     hermesWorkspace = 3000;
+    hermesDashboard = 9119;
+    glances = 61208;
 
     # luffy — media
     jellyfin = 8096;
@@ -39,7 +41,6 @@ let
     bazarr = 6767;
     qbittorrent = 8080;
     aria2 = 6800;
-    komga = 25600;
     calibreWeb = 8083;
     yourSpotify = 3457;
     kavita = 5000;
@@ -51,6 +52,8 @@ let
     jan = 3008;
     maxkb = 32784;
     simStudio = 32790;
+    qdrant = 6333;
+    postgres = 5432;
 
     # luffy — infra
     vaultwarden = 8222;
@@ -72,15 +75,18 @@ let
     skyvernUi = 32776;
     skyvernApi = 32779;
 
-    # luffy — monitoring
-    beszel = 32772;
-    glances = 61208;
+    # luffy — reverse proxy
+    caddyAdmin = 2019;
   };
 
-  # ---------------------------------------------------------------------------
-  # Helpers  —  resolve the correct address based on the service's home machine
-  # ---------------------------------------------------------------------------
-  hostOf = machine: if machine == "z0r0" then z0r0 else luffy;
+  hostOf =
+    machine:
+    if machine == hostName then
+      "127.0.0.1"
+    else if machine == "z0r0" then
+      z0r0
+    else
+      luffy;
 
   mkService =
     name:
@@ -94,7 +100,7 @@ let
       siteMonitor ? null,
     }:
     let
-      host = if isLuffy then hostOf machine else "127.0.0.1";
+      host = hostOf machine;
       href = "http://${host}:${toString port}";
     in
     {
@@ -106,7 +112,6 @@ let
       // optionalAttrs (widget != null) { inherit widget; };
     };
 
-  # Convenience wrappers
   zSrv =
     n: p: ic: desc:
     mkService n {
@@ -124,40 +129,89 @@ let
       description = "${desc} @luffy";
     };
 
+  zSrvW =
+    n: p: ic: desc: widget:
+    mkService n {
+      machine = "z0r0";
+      port = ports.${p};
+      icon = ic;
+      description = "${desc} @z0r0";
+      inherit widget;
+    };
+  lSrvW =
+    n: p: ic: desc: widget:
+    mkService n {
+      machine = "luffy";
+      port = ports.${p};
+      icon = ic;
+      description = "${desc} @luffy";
+      inherit widget;
+    };
+
   # ---------------------------------------------------------------------------
-  # Service groups
+  # Service groups  —  Observability at top, then AI, Infra, Comms, Media, Auto
+  # Icons: use si- (Simple Icons), mdi- (Material Design), or dashboard-icons names
   # ---------------------------------------------------------------------------
   groups = {
     Observability = [
-      (zSrv "Prometheus" "prometheus" "prometheus.png" "Metrics Collection")
+      (zSrvW "Prometheus" "prometheus" "prometheus.png" "Metrics Collection" {
+        type = "prometheus";
+        url = "http://${hostOf "z0r0"}:${toString ports.prometheus}";
+      })
       (zSrv "Loki" "loki" "loki.png" "Log Aggregation")
-      (zSrv "Grafana" "grafana" "grafana.png" "Dashboards & Visualization")
-      (zSrv "AdGuard Home" "adguard" "adguard-home.png" "DNS Filtering")
-      (lSrv "Beszel" "beszel" "beszel.png" "Lightweight Monitoring")
-      (lSrv "Glances" "glances" "glances.png" "System Overview")
+      (zSrvW "Grafana" "grafana" "grafana.png" "Dashboards & Visualization" {
+        type = "grafana";
+        url = "http://${hostOf "z0r0"}:${toString ports.grafana}";
+        username = "admin";
+        password = "admin";
+      })
+      (zSrvW "AdGuard Home" "adguard" "adguard-home.png" "DNS Filtering" {
+        type = "adguard";
+        url = "http://${hostOf "z0r0"}:${toString ports.adguard}";
+        username = "admin";
+        password = "admin";
+      })
+      # Caddy reverse proxy stats — admin API on port 2019, no key needed
+      (lSrvW "Caddy" "caddyAdmin" "caddy.png" "Reverse Proxy" {
+        type = "caddy";
+        url = "http://${hostOf "luffy"}:${toString ports.caddyAdmin}";
+      })
     ];
 
     "AI / Agents" = [
       (lSrv "Ollama" "ollama" "ollama.png" "LLM Inference Server")
       (lSrv "Open WebUI" "openWebui" "open-webui.png" "Chat Frontend")
-      (lSrv "ChromaDB" "chromadb" "chromadb.png" "Vector Database")
-      (lSrv "MaxKB" "maxkb" "maxkb.png" "Knowledge Base")
-      (lSrv "Sim Studio" "simStudio" "simstudio.png" "Agent Builder")
-      (lSrv "Jan" "jan" "jan.png" "Local AI Desktop")
-      (zSrv "Hermes Workspace" "hermesWorkspace" "hermes.png" "Agent Command Center")
+      (lSrv "ChromaDB" "chromadb" "si-chromadb" "Vector Database")
+      (lSrv "Qdrant" "qdrant" "mdi-database-search" "Vector Search Engine")
+      (lSrv "PostgreSQL" "postgres" "si-postgresql" "PG + pgvector + lantern")
+      (lSrv "MaxKB" "maxkb" "mdi-book-search" "Knowledge Base")
+      (lSrv "Sim Studio" "simStudio" "mdi-tune-variant" "Agent Builder")
+      (lSrv "Jan" "jan" "mdi-desktop-tower-monitor" "Local AI Desktop")
+      (zSrv "Hermes Workspace" "hermesWorkspace" "mdi-robot-outline" "Agent Command Center")
+      (zSrv "Hermes Dashboard" "hermesDashboard" "mdi-chart-timeline-variant" "Agent Metrics & Sessions")
       (zSrv "SillyTavern" "sillytavern" "sillytavern.png" "AI Character Chat")
-      (zSrv "llama.cpp" "llamaCpp" "llama.png" "Inference Server")
-      (zSrv "Langfuse" "langfuse" "langfuse.png" "LLM Observability")
-      (zSrv "Brain Service" "brainService" "brain.png" "AI Brain Layer")
+      (zSrv "llama.cpp" "llamaCpp" "mdi-brain" "Inference Server")
+      (zSrv "Langfuse" "langfuse" "mdi-chart-line-variant" "LLM Observability")
+      (zSrv "Brain Service" "brainService" "mdi-brain" "AI Brain Layer")
     ];
 
     Infrastructure = [
       (lSrv "Vaultwarden" "vaultwarden" "vaultwarden.png" "Password Manager")
-      (lSrv "Headscale" "headscale" "headscale.png" "Tailscale Control Server")
+      (lSrvW "Headscale" "headscale" "headscale.png" "Tailscale Control Server" {
+        type = "headscale";
+        url = "http://${hostOf "luffy"}:${toString ports.headscale}";
+        nodeId = "\${HOMEPAGE_HEADSCALE_NODE_ID}";
+        key = "\${HOMEPAGE_HEADSCALE_KEY}";
+      })
       (lSrv "SearXNG" "searxng" "searxng.png" "Meta Search Engine")
       (lSrv "FileBrowser" "filebrowser" "filebrowser.png" "Web File Manager")
-      (lSrv "Spacedrive" "spacedrive" "spacedrive.png" "Virtual File System")
-      (lSrv "Kavita" "kavita" "kavita.png" "Comic / Manga Reader")
+      (lSrv "Spacedrive" "spacedrive" "si-spacedrive" "Virtual File System")
+      (lSrvW "Kavita" "kavita" "kavita.png" "Comic / Manga Reader" {
+        type = "kavita";
+        url = "http://${hostOf "luffy"}:${toString ports.kavita}";
+        username = "admin";
+        password = "admin";
+      })
     ];
 
     Communications = [
@@ -165,30 +219,73 @@ let
       (lSrv "Element Web" "elementWeb" "element.png" "Matrix Client")
       (lSrv "Mautrix WhatsApp" "mautrixWhatsapp" "whatsapp.png" "WhatsApp Bridge")
       (lSrv "Mautrix Signal" "mautrixSignal" "signal.png" "Signal Bridge")
-      (zSrv "Signal CLI" "signalCli" "signal-cli.png" "Signal Daemon")
+      (zSrv "Signal CLI" "signalCli" "si-signal" "Signal Daemon")
     ];
 
     Media = [
-      (lSrv "Jellyfin" "jellyfin" "jellyfin.png" "Media Server")
-      (lSrv "Sonarr" "sonarr" "sonarr.png" "TV Series Management")
-      (lSrv "Radarr" "radarr" "radarr.png" "Movie Management")
+      (lSrvW "Jellyfin" "jellyfin" "jellyfin.png" "Media Server" {
+        type = "jellyfin";
+        url = "http://${hostOf "luffy"}:${toString ports.jellyfin}";
+        key = "\${HOMEPAGE_JELLYFIN_KEY}";
+        enableBlocks = true;
+        enableNowPlaying = true;
+        enableUser = true;
+      })
+      (lSrvW "Sonarr" "sonarr" "sonarr.png" "TV Series Management" {
+        type = "sonarr";
+        url = "http://${hostOf "luffy"}:${toString ports.sonarr}";
+        key = "\${HOMEPAGE_SONARR_KEY}";
+        enableQueue = true;
+      })
+      (lSrvW "Radarr" "radarr" "radarr.png" "Movie Management" {
+        type = "radarr";
+        url = "http://${hostOf "luffy"}:${toString ports.radarr}";
+        key = "\${HOMEPAGE_RADARR_KEY}";
+        enableQueue = true;
+      })
       (lSrv "Lidarr" "lidarr" "lidarr.png" "Music Management")
       (lSrv "Readarr" "readarr" "readarr.png" "Book Management")
-      (lSrv "Prowlarr" "prowlarr" "prowlarr.png" "Indexer Manager")
+      (lSrvW "Prowlarr" "prowlarr" "prowlarr.png" "Indexer Manager" {
+        type = "prowlarr";
+        url = "http://${hostOf "luffy"}:${toString ports.prowlarr}";
+        key = "\${HOMEPAGE_PROWLARR_KEY}";
+      })
       (lSrv "Bazarr" "bazarr" "bazarr.png" "Subtitle Management")
-      (lSrv "qBittorrent" "qbittorrent" "qbittorrent.png" "Torrent Client")
+      (lSrvW "qBittorrent" "qbittorrent" "qbittorrent.png" "Torrent Client" {
+        type = "qbittorrent";
+        url = "http://${hostOf "luffy"}:${toString ports.qbittorrent}";
+        username = "admin";
+        password = "adminadmin";
+        enableLeechProgress = true;
+        enableLeechSize = true;
+      })
       (lSrv "Aria2" "aria2" "aria2.png" "Download Manager")
-      (lSrv "Komga" "komga" "komga.png" "Comic / Manga Server")
       (lSrv "Calibre-Web" "calibreWeb" "calibre-web.png" "E-Book Library")
-      (lSrv "Your Spotify" "yourSpotify" "spotify.png" "Spotify Analytics")
+      (lSrvW "Your Spotify" "yourSpotify" "spotify.png" "Spotify Analytics" {
+        type = "yourspotify";
+        url = "http://${hostOf "luffy"}:${toString ports.yourSpotify}";
+        key = "\${HOMEPAGE_SPOTIFY_KEY}";
+        interval = "month";
+      })
     ];
 
     Automation = [
       (lSrv "n8n" "n8n" "n8n.png" "Workflow Automation")
-      (lSrv "Home Assistant" "homeAssistant" "home-assistant.png" "Home Automation")
-      (lSrv "Crawl4AI" "crawl4ai" "crawl4ai.png" "Web Scraper API")
-      (lSrv "Skyvern UI" "skyvernUi" "skyvern.png" "Browser Automation UI")
-      (lSrv "Skyvern API" "skyvernApi" "skyvern-api.png" "Automation API")
+      (lSrvW "Home Assistant" "homeAssistant" "home-assistant.png" "Home Automation" {
+        type = "homeassistant";
+        url = "http://${hostOf "luffy"}:${toString ports.homeAssistant}";
+        key = "\${HOMEPAGE_HASS_KEY}";
+        custom = [
+          { state = "sensor.temperature"; }
+          {
+            state = "sun.sun";
+            label = "sun";
+          }
+        ];
+      })
+      (lSrv "Crawl4AI" "crawl4ai" "mdi-spider-web" "Web Scraper API")
+      (lSrv "Skyvern UI" "skyvernUi" "mdi-weather-lightning" "Browser Automation UI")
+      (lSrv "Skyvern API" "skyvernApi" "mdi-api" "Automation API")
     ];
   };
 
@@ -216,6 +313,20 @@ in
         description = "Path to Lovable JS effects";
       };
     };
+    # Environment file for widget API keys — create with:
+    #   HOMEPAGE_JELLYFIN_KEY=...
+    #   HOMEPAGE_SONARR_KEY=...
+    #   HOMEPAGE_RADARR_KEY=...
+    #   HOMEPAGE_PROWLARR_KEY=...
+    #   HOMEPAGE_HASS_KEY=...
+    #   HOMEPAGE_HEADSCALE_KEY=...
+    #   HOMEPAGE_HEADSCALE_NODE_ID=...
+    #   HOMEPAGE_SPOTIFY_KEY=...
+    environmentFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "Path to env file with widget API keys (HOMEPAGE_*_KEY)";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -223,56 +334,77 @@ in
       {
         enable = true;
         listenPort = cfg.port;
+        environmentFiles = optional (cfg.environmentFile != null) cfg.environmentFile;
 
         settings = {
           title = "Nix Flake Pirates";
           favicon = "https://raw.githubusercontent.com/gethomepage/homepage/main/public/homepage.png";
           theme = "dark";
           color = "slate";
+          # Use CSS gradient background instead of remote image for faster load
           background = {
-            image = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2672&auto=format&fit=crop";
-            opacity = 0.2;
+            opacity = 0;
           };
           layout = {
             Observability = {
               style = "row";
-              columns = 4;
+              columns = 5;
               icon = "mdi-chart-line";
+              header = true;
             };
             "AI / Agents" = {
               style = "row";
-              columns = 4;
+              columns = 5;
               icon = "mdi-robot";
+              header = true;
             };
             Infrastructure = {
               style = "row";
               columns = 4;
               icon = "mdi-server";
+              header = true;
             };
             Communications = {
               style = "row";
               columns = 3;
               icon = "mdi-chat";
+              header = true;
             };
             Media = {
               style = "row";
               columns = 4;
               icon = "mdi-multimedia";
+              header = true;
             };
             Automation = {
               style = "row";
               columns = 4;
               icon = "mdi-autorenew";
+              header = true;
             };
           };
-          headerStyle = "boxed";
+          headerStyle = "boxedWidgets";
           cardBlur = "sm";
           hideVersion = true;
           language = "en-GB";
+          # Visual up/down status indicators for all services
+          statusStyle = "dot";
+          # Clean icon style for mdi/si prefixed icons
+          iconStyle = "theme";
+          # Consistent card heights
+          useEqualHeights = true;
+          # Disable update check for faster load and privacy
+          disableUpdateCheck = true;
+          # Quick launch — search services by typing
+          quicklaunch = {
+            searchDescriptions = true;
+            hideInternetSearch = false;
+            showSearchSuggestions = true;
+          };
         };
 
         widgets = [
-          # Search 1 — Perplexity (research-grade)
+          # ── Search 1 — Perplexity (research-grade) ──
           {
             search = {
               provider = "custom";
@@ -281,33 +413,48 @@ in
               showSearchSuggestions = false;
             };
           }
-          # Search 2 — SearXNG (privacy-first meta search)
+          # ── Search 2 — SearXNG (privacy-first meta search) ──
           {
             search = {
               provider = "custom";
-              customSearch = "http://192.168.1.54:${toString ports.searxng}/search?q=%s";
+              customSearch = "http://${luffy}:${toString ports.searxng}/search?q=%s";
               target = "_blank";
               showSearchSuggestions = true;
             };
           }
-          # System resources
+          # ── Local system resources (expanded) ──
           {
             resources = {
+              label = "${hostName} System";
               cpu = true;
               memory = true;
               disk = "/";
               uptime = true;
+              expanded = true;
             };
           }
-          # Date / time
+          # ── Remote machine stats via Glances ──
+          {
+            glances = {
+              label = "${remoteMachine} System";
+              url = "http://${remoteIP}:${toString ports.glances}";
+              cpu = true;
+              mem = true;
+              disk = "/";
+              uptime = true;
+              expanded = true;
+            };
+          }
+          # ── Date / time — attractive styling ──
           {
             datetime = {
-              text_size = "xl";
+              text_size = "3xl";
               format = {
-                dateStyle = "long";
-                timeStyle = "short";
+                dateStyle = "full";
+                timeStyle = "medium";
                 hour12 = false;
               };
+              locale = "en-GB";
             };
           }
         ];
@@ -322,7 +469,10 @@ in
     ];
 
     # Firewall
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
+    networking.firewall.allowedTCPPorts = [
+      cfg.port
+      ports.glances
+    ];
 
     # User / Group
     users.users.homepage-dashboard = {
