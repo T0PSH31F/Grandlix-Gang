@@ -42,6 +42,12 @@ in
       which-key = lib.mkEnableOption "Which-key keybinding help" // {
         default = true;
       };
+      opencode = lib.mkEnableOption "OpenCode AI assistant (Claude Code)" // {
+        default = true;
+      };
+      ollama = lib.mkEnableOption "Ollama local LLM integration" // {
+        default = true;
+      };
     };
   };
 
@@ -642,6 +648,29 @@ in
 
         # Zellij-nav — seamless Zellij/Neovim pane movement
         plugins.zellij-nav.enable = true;
+
+        # Snacks — QoL collection (required by opencode)
+        plugins.snacks = lib.mkIf cfg.plugins.opencode {
+          enable = true;
+          settings.input.enabled = true;
+        };
+
+        # OpenCode — Claude Code AI assistant in-editor
+        plugins.opencode = lib.mkIf cfg.plugins.opencode {
+          enable = true;
+          settings = {
+            auto_reload = true;
+          };
+        };
+
+        # Ollama — local LLM integration
+        plugins.ollama = lib.mkIf cfg.plugins.ollama {
+          enable = true;
+          settings = {
+            model = "llama3.2";
+            url = "http://127.0.0.1:11434";
+          };
+        };
 
         # ── Noctalia Theme Integration ───────────────────────────
         #
