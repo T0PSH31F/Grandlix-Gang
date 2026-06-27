@@ -39,6 +39,10 @@ in
       settings = cfg.settings;
     };
 
+    # llama-swap needs access to /proc/meminfo for system stats,
+    # but the NixOS default ProcSubset=pid hides it. Override to "all".
+    systemd.services.llama-swap.serviceConfig.ProcSubset = lib.mkForce "all";
+
     # 2. Firewall
     networking.firewall.allowedTCPPorts = [ cfg.port ];
   };

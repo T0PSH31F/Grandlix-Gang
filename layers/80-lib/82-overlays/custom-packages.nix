@@ -77,6 +77,47 @@ final: prev: {
     touch "$out/share/fonts/noto/.keep"
   '';
 
+  camofox-browser = final.buildNpmPackage {
+    pname = "camofox-browser";
+    version = "1.11.2";
+    src = final.fetchurl {
+      url = "https://registry.npmjs.org/@askjo/camofox-browser/-/camofox-browser-1.11.2.tgz";
+      sha256 = "sha256-+JJDDt+kKs0BhtCCspMNy8rTzMAQZLVa+L9HuDbpk4c=";
+    };
+    sourceRoot = "package";
+    nativeBuildInputs = [ final.nodejs_22 ];
+    buildInputs = [ final.linuxHeaders ];
+
+    npmDeps = final.fetchNpmDeps {
+      src = final.runCommand "camofox-browser-deps-src" { } ''
+        mkdir -p $out
+        cp ${./camofox-browser-lock.json} $out/package-lock.json
+      '';
+      hash = "sha256-bfKlCo9J6E+CToHmOBOE2D1MOu4SmHDcg3JYj7DB+Mc=";
+    };
+
+    postPatch = ''
+      cp ${./camofox-browser-lock.json} package-lock.json
+    '';
+
+    dontNpmBuild = true;
+
+    installPhase = ''
+      mkdir -p $out/lib/node_modules/@askjo/camofox-browser
+      cp -r . $out/lib/node_modules/@askjo/camofox-browser/
+      chmod -R +w $out/lib/node_modules/@askjo/camofox-browser
+      mkdir -p $out/bin
+      cat > $out/bin/camofox-server << WRAPPER
+#!${final.runtimeShell}
+export NODE_PATH=$out/lib/node_modules/@askjo/camofox-browser/node_modules
+export CAMOFOX_DATA_DIR="''${CAMOFOX_DATA_DIR:-\$HOME/.camofox}"
+exec ${final.nodejs_22}/bin/node $out/lib/node_modules/@askjo/camofox-browser/server.js "\$@"
+WRAPPER
+      chmod +x $out/bin/camofox-server
+    '';
+    meta.mainProgram = "camofox-server";
+  };
+
   # Fix for browserify build failure: npm: command not found
   # browserify = prev.nodePackages.browserify.overrideAttrs (old: {
   #   nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [

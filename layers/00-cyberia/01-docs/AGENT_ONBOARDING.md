@@ -173,10 +173,17 @@ NFP/
 ├── tools/
 │   ├── mount-nfp.sh       # helper to mount system from live USB
 │   └── fix-persist-permissions.sh
-├── .agents/rules/         # agent rules (clan-architecture, organization)
-├── docs/                  # ← this file lives here
-├── RECOVERY_NOTE.md       # recovery history
-└── deploy-from-live.md    # deployment guide
+├── .agents/rules/           # agent rules (clan-architecture, organization)
+├── layers/00-cyberia/01-docs/
+│   ├── AGENT_ONBOARDING.md  # ← this file
+│   ├── yazelix_guide.md     # nixvim/editor guide
+│   ├── hermes-agent.md      # Hermes AI agent docs
+│   ├── deployment.md        # deployment methods
+│   ├── features.md          # feature overview
+│   ├── deploy-from-live.md  # deployment from live USB
+│   ├── RECOVERY_NOTE.md     # recovery history
+│   └── progress.md          # session progress log
+└── README.md              # project readme
 ```
 
 ### How machines are built:

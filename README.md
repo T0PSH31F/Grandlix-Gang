@@ -152,8 +152,16 @@ Updates are handled via a self-hosted GitHub Actions runner:
 
 To manually trigger a deployment locally:
 ```bash
-clan machines update luffy
+clan machines update <machine>
 ```
+
+### Documentation
+All documentation is in `layers/00-cyberia/01-docs/`:
+- **[yazelix_guide.md](layers/00-cyberia/01-docs/yazelix_guide.md)** — editor setup & keybinds
+- **[hermes-agent.md](layers/00-cyberia/01-docs/hermes-agent.md)** — AI agent features
+- **[deployment.md](layers/00-cyberia/01-docs/deployment.md)** — deployment methods
+- **[features.md](layers/00-cyberia/01-docs/features.md)** — feature overview
+- **[AGENT_ONBOARDING.md](layers/00-cyberia/01-docs/AGENT_ONBOARDING.md)** — system architecture for agents
 
 ### 3. Unlock the Treasure (Secrets)
 

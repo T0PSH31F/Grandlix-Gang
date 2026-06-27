@@ -48,6 +48,9 @@ in
       ollama = lib.mkEnableOption "Ollama local LLM integration" // {
         default = true;
       };
+      multicursors = lib.mkEnableOption "Multicursors.nvim — VS Code-style multi-cursor editing" // {
+        default = true;
+      };
     };
   };
 
@@ -261,6 +264,27 @@ in
             key = "<leader>xd";
             action = "<cmd>Trouble document_diagnostics<CR>";
             options.desc = "Document diagnostics";
+          }
+
+          # Multi-cursor — start mode on current word or visual selection
+          {
+            mode = [ "n" "v" "i" ];
+            key = "<leader>m";
+            action = "<cmd>MCstart<CR>";
+            options.desc = "Start multi-cursor";
+          }
+          # Ctrl+Shift+Up/Down also start multi-cursor mode
+          {
+            mode = [ "n" "v" "i" ];
+            key = "<C-S-Up>";
+            action = "<cmd>MCstart<CR>";
+            options.desc = "Start multi-cursor";
+          }
+          {
+            mode = [ "n" "v" "i" ];
+            key = "<C-S-Down>";
+            action = "<cmd>MCstart<CR>";
+            options.desc = "Start multi-cursor";
           }
 
           # Yazi — toggle file manager in-editor
@@ -648,6 +672,72 @@ in
 
         # Zellij-nav — seamless Zellij/Neovim pane movement
         plugins.zellij-nav.enable = true;
+
+        # Multicursors — VS Code-style multi-cursor editing
+        # Within multicursor mode (both normal and insert):
+        #   Ctrl+Shift+Up/Down    → add cursor above/below
+        #   Ctrl+Shift+Left/Right → skip/subtract current cursor
+        #   j/k  → add cursor below/above (defaults, also work)
+        #   q    → skip current selection (default)
+        #   ,    → keep only the main cursor (default)
+        plugins.multicursors = lib.mkIf cfg.plugins.multicursors {
+          enable = true;
+          settings = {
+            normal_keys = {
+              "<C-S-Up>" = {
+                # method.__raw is a raw Lua function, not a nix value
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").add_cursor_above() end
+                '';
+                opts = { desc = "Add cursor above"; };
+              };
+              "<C-S-Down>" = {
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").add_cursor_below() end
+                '';
+                opts = { desc = "Add cursor below"; };
+              };
+              "<C-S-Left>" = {
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").skip() end
+                '';
+                opts = { desc = "Skip/subtract cursor"; };
+              };
+              "<C-S-Right>" = {
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").skip() end
+                '';
+                opts = { desc = "Skip/subtract cursor"; };
+              };
+            };
+            insert_keys = {
+              "<C-S-Up>" = {
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").add_cursor_above() end
+                '';
+                opts = { desc = "Add cursor above"; };
+              };
+              "<C-S-Down>" = {
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").add_cursor_below() end
+                '';
+                opts = { desc = "Add cursor below"; };
+              };
+              "<C-S-Left>" = {
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").skip() end
+                '';
+                opts = { desc = "Skip/subtract cursor"; };
+              };
+              "<C-S-Right>" = {
+                method.__raw = ''
+                  function() require("multicursors.normal_mode").skip() end
+                '';
+                opts = { desc = "Skip/subtract cursor"; };
+              };
+            };
+          };
+        };
 
         # Snacks — QoL collection (required by opencode)
         plugins.snacks = lib.mkIf cfg.plugins.opencode {

@@ -4,7 +4,45 @@
   pkgs,
   ...
 }:
+let
+  elementConf = {
+    default_server_config = {
+      "${"m.homeserver"}" = {
+        base_url = "https://matrix.lovelain.duckdns.org";
+        server_name = "lovelain.duckdns.org";
+      };
+    };
+    disable_custom_urls = false;
+    disable_guests = true;
+    disable_login_language_selector = false;
+    disable_3pid_login = false;
+    force_verification = false;
+    brand = "NFP Element";
+    integrations_ui_url = "";
+    integrations_rest_url = "";
+    integrations_widgets_urls = [ ];
+    default_widget_container_height = 280;
+    default_country_code = "US";
+    show_labs_settings = false;
+    features = { };
+    default_federate = true;
+    default_theme = "dark";
+    setting_defaults.breadcrumbs = true;
+    jitsi.preferred_domain = "meet.element.io";
+    element_call = {
+      url = "https://call.element.io";
+      brand = "Element Call";
+    };
+  };
+  elementWebPkg = pkgs.runCommand "element-web-custom" { } ''
+    cp -a ${pkgs.element-web} $out
+    chmod +w $out/config.json
+    cp ${builtins.toFile "config.json" (builtins.toJSON elementConf)} $out/config.json
+  '';
+in
 {
+  # ============================================================================
+  # 00 - CORE IMPORTS
   # ============================================================================
   # 00 - CORE IMPORTS
   # ============================================================================
@@ -122,11 +160,12 @@
     };
 
     # Enable Native Services from flake-parts
+    # Matrix homeserver nginx vhost (Caddy reverse-proxies to this)
+    # Deprecated: Caddy now proxies directly to Synapse on 8008 and serves Element Web
+    # nginx config kept in case it's needed by other services
     nginx = {
       defaultHTTPListenPort = 8084;
       virtualHosts = {
-        # Unified vhost: Caddy reverse-proxies matrix/element to https://127.0.0.1:8443
-        # Route by Host: matrix.local → matrix-synapse:8008, element.local → element-web
         "matrix.local" = {
           enableACME = lib.mkForce false;
           forceSSL = lib.mkForce false;
@@ -151,7 +190,6 @@
             '';
           };
         };
-        # Reuse the same vhost slot for element.local by adding serverName aliases
         "element.local" = {
           enableACME = lib.mkForce false;
           forceSSL = lib.mkForce false;
@@ -165,7 +203,7 @@
               ssl = true;
             }
           ];
-          root = lib.mkForce "/var/www/element";
+          root = elementWebPkg;
         };
         "searx.local".listen = lib.mkForce [
           {
@@ -273,10 +311,6 @@
           @simstudiort host simstudiort.lovelain.duckdns.org
           handle @simstudiort { reverse_proxy localhost:32789 }
 
-          @maxkb host maxkb.lovelain.duckdns.org
-          handle @maxkb { reverse_proxy localhost:32784 }
-
-
           @spacedrive host spacedrive.lovelain.duckdns.org
           handle @spacedrive { reverse_proxy localhost:32768 }
 
@@ -316,19 +350,32 @@
       };
       virtualHosts."element.local" = {
         extraConfig = ''
-          reverse_proxy https://127.0.0.1:8443 {
-            transport http {
-              tls_insecure_skip_verify
-            }
+          root * ${elementWebPkg}
+          file_server
+          @noext not path *.html *.js *.css *.png *.svg *.ico *.json *.webp
+          handle @noext {
+            try_files {path} /index.html
+            file_server
+          }
+        '';
+      };
+      virtualHosts."element.lovelain.duckdns.org" = {
+        extraConfig = ''
+          root * ${elementWebPkg}
+          file_server
+          @noext not path *.html *.js *.css *.png *.svg *.ico *.json *.webp
+          handle @noext {
+            try_files {path} /index.html
+            file_server
           }
         '';
       };
       virtualHosts."matrix.local" = {
         extraConfig = ''
-          reverse_proxy https://127.0.0.1:8443 {
-            transport http {
-              tls_insecure_skip_verify
-            }
+          reverse_proxy http://127.0.0.1:8008 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
           }
         '';
       };
@@ -339,27 +386,17 @@
           @wellknownClient path /.well-known/matrix/client
           handle @wellknownClient {
             header Content-Type application/json
-            respond `{"m.homeserver":{"base_url":"https://matrix.lovelain.duckdns.org"},"m.identity_server":{"base_url":"https://vector.im"}}` 200
+            respond `{"m.homeserver":{"base_url":"https://matrix.lovelain.duckdns.org"}}` 200
           }
           @wellknownServer path /.well-known/matrix/server
           handle @wellknownServer {
             header Content-Type application/json
             respond `{"m.server":"matrix.lovelain.duckdns.org:443"}` 200
           }
-          reverse_proxy https://127.0.0.1:8443 {
-            transport http {
-              tls_insecure_skip_verify
-            }
-          }
-        '';
-      };
-      # Public Element Web client on duckdns domain
-      virtualHosts."element.lovelain.duckdns.org" = {
-        extraConfig = ''
-          reverse_proxy https://127.0.0.1:8443 {
-            transport http {
-              tls_insecure_skip_verify
-            }
+          reverse_proxy http://127.0.0.1:8008 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
           }
         '';
       };
@@ -432,4 +469,46 @@
       environmentFile = config.sops.templates."duckdns-env".path;
     };
   };
+
+  # ── Matrix Synapse SMTP (email verification, password resets) ─────────
+  sops.secrets.smtp_pass = {
+    sopsFile = ../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+  };
+
+  sops.templates."synapse-email-config" = {
+    content = ''
+      email:
+        smtp_host: smtp.gmail.com
+        smtp_port: 587
+        smtp_user: wrighterik77@gmail.com
+        smtp_pass: ${config.sops.placeholder.smtp_pass}
+        require_transport_security: true
+        enable_tls: true
+        force_tls: true
+        notif_from: "Matrix <wrighterik77@gmail.com>"
+        app_name: "NFP Matrix"
+    '';
+    # Synapse runs as matrix-synapse user, needs read access
+    mode = "0644";
+    owner = "matrix-synapse";
+  };
+
+  services.matrix-synapse.extraConfigFiles = [
+    config.sops.templates."synapse-email-config".path
+  ];
+
+  # Bind Synapse HTTP listener to 0.0.0.0 so z0r0's hermes can reach it via Tailscale
+  services.matrix-synapse.settings.listeners = [
+    {
+      port = 8008;
+      bind_addresses = [ "0.0.0.0" ];
+      type = "http";
+      tls = false;
+      x_forwarded = true;
+      resources = [
+        { names = [ "client" ]; compress = true; }
+        { names = [ "federation" ]; compress = false; }
+      ];
+    }
+  ];
 }

@@ -1,5 +1,5 @@
 # flake-parts/features/nixos/packages/base.nix
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
   environment.systemPackages = with pkgs; [
     # Archive tools
@@ -38,10 +38,14 @@
     parted
 
     # Document & Image utilities
+    calibre
     imagemagick
     img2pdf
     poppler-utils
     qpdf
+    python3Packages.weasyprint
+    texlive.combined.scheme-small
+    wkhtmltopdf
 
     # Isolation
     bubblewrap
@@ -57,6 +61,9 @@
     age
     gnupg
     sops
+
+    # Fleet management
+    inputs.clan-core.packages.${pkgs.stdenv.hostPlatform.system}.clan-cli
   ];
 
   programs.starship.enable = true;

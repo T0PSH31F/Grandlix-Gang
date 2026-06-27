@@ -3,8 +3,8 @@
   imports = [
     ../../20-services
     ../../70-agents
-    ../../75-mcp
-    ../../76-hermes-agent
+    ../../70-agents/75-mcp
+    ../../70-agents/76-hermes-agent
   ];
 
   layers.layer-70.agent = {

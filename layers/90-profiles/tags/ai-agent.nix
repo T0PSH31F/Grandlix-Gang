@@ -4,8 +4,8 @@
   # Does NOT enable LLM backends (that's ai-server)
   imports = [
     ../../70-agents
-    ../../75-mcp
-    ../../76-hermes-agent
+    ../../70-agents/75-mcp
+    ../../70-agents/76-hermes-agent
   ];
 
   layers.layer-70.agent = {

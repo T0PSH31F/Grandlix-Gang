@@ -24,10 +24,11 @@ let
   '';
 
   # ---------------------------------------------------------------------------
-  # Address constants — LAN IPs for cross-machine access
+  # Address constants — Tailscale IPs for cross-machine access
+  # (LAN IPs don't work: luffy on Ethernet can't initiate to z0r0 on WiFi)
   # ---------------------------------------------------------------------------
-  z0r0 = "192.168.1.39";
-  luffy = "192.168.1.54";
+  z0r0 = "100.87.170.11";
+  luffy = "100.72.46.75";
 
   # The "other" machine — for glances remote stats widget
   remoteMachine = if hostName == "z0r0" then "luffy" else "z0r0";
@@ -409,8 +410,8 @@ in
           statusStyle = "dot";
           # Clean icon style for mdi/si prefixed icons
           iconStyle = "theme";
-          # Consistent card heights
-          useEqualHeights = false;
+          # Consistent card heights — prevents widgets from ballooning
+          useEqualHeights = true;
           # Disable update check for faster load and privacy
           disableUpdateCheck = true;
           # Quick launch — search services by typing

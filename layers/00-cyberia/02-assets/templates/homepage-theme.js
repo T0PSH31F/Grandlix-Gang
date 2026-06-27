@@ -103,37 +103,32 @@
   // 3. SEARCH BAR LABELS  —  inject banner labels above each search bar
   // ==================================================================
   function injectSearchLabels() {
-    // Find all search-related elements
-    const searchWidgets = document.querySelectorAll('.search-bar');
+    // Homepage 1.13.1 renders search widgets as <div class="widget">
+    // containing an <input> — find them by looking for input[type="text"]
+    // inside a widget wrapper.
     const seen = new Set();
 
-    searchWidgets.forEach((el) => {
-      const container = el.closest('.widget') || el.parentElement;
-      if (!container || seen.has(container)) return;
-      seen.add(container);
-
-      // Check if label already exists
+    document.querySelectorAll('.widget').forEach((container) => {
+      if (seen.has(container)) return;
       if (container.querySelector('.search-banner-label')) return;
 
-      // Determine which search bar this is
-      const input = el.querySelector('input');
+      const input = container.querySelector('input[type="text"], input[type="search"]');
       if (!input) return;
 
-      const form = input.closest('form');
-      const action = form ? form.getAttribute('action') || '' : '';
-      const placeholder = input.getAttribute('placeholder') || '';
-
-      let labelText = 'Search';
+      // Try to get the search URL from the closest form action, or the input placeholder
+      let labelText = '\u25C6 Search';
       let labelClass = 'search-banner-label';
 
-      if (action.includes('perplexity') || placeholder.toLowerCase().includes('perplex')) {
+      const form = input.closest('form');
+      const action = form ? (form.getAttribute('action') || '') : '';
+      const placeholder = (input.getAttribute('placeholder') || '').toLowerCase();
+
+      if (action.includes('perplexity') || placeholder.includes('perplex')) {
         labelText = '\u25C6 Perplexity Search';
         labelClass += ' search-banner-label--perplexity';
-      } else if (action.includes('searx') || action.includes('8888') || placeholder.toLowerCase().includes('searx')) {
+      } else if (action.includes('searx') || action.includes('8888') || placeholder.includes('searx')) {
         labelText = '\u25C6 SearXNG Meta Search';
         labelClass += ' search-banner-label--searxng';
-      } else {
-        labelText = '\u25C6 Search';
       }
 
       const label = document.createElement('div');
@@ -141,6 +136,7 @@
       label.textContent = labelText;
 
       container.insertBefore(label, container.firstChild);
+      seen.add(container);
     });
   }
 

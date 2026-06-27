@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -107,7 +108,9 @@
     llm-agents.enable = true;
     llama-cpp-server = {
       enable = true;
-      host = "0.0.0.0"; # Bind to all interfaces for cross-machine dashboard access
+      host = "0.0.0.0";
+      model = "/var/lib/llama-cpp/Llama3.3-8B-Instruct-Thinking-Heretic-Uncensored-Claude-4.5-Opus-High-Reasoning.i1-IQ4_XS.gguf";
+      extraFlags = [ "-ngl" "99" "--ctx-size" "8192" "--parallel" "2" "--no-warmup" ];
     };
     n8n-server.enable = false;
     infrastructure.langfuse.enable = true;
@@ -122,6 +125,12 @@
   layers.layer-20.services.communication.signal-cli-daemon = {
     enable = true;
     port = 8080; # matches hermes SIGNAL_HTTP_URL
+  };
+
+  layers.layer-20.services.communication.camofox-browser = {
+    enable = true;
+    port = 9377;
+    apiKey = config.sops.placeholder.camofox_api_key;
   };
 
   # Open firewall ports for cross-machine dashboard monitoring (luffy → z0r0)
@@ -154,10 +163,10 @@
     age.keyFile = "/persist/home/t0psh31f/.config/sops/age/keys.txt";
   };
 
-  # Matrix homeserver (luffy) + nix cache reachable via LAN
+  # Matrix homeserver (luffy) + nix cache reachable via Tailscale
   networking.extraHosts = ''
-    192.168.1.54 matrix.local element.local
-    192.168.1.54 luffy.d luffy-1
+    100.72.46.75 matrix.local element.local
+    100.72.46.75 luffy.d luffy-1
   '';
 
   # ============================================================================

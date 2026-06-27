@@ -28,13 +28,6 @@
       ports = [ "32790:3000" ];
     };
 
-    maxkb = {
-      image = "1panel/maxkb@sha256:42aad1e002f28c6dd865b6f299297e44029477c1a7a6280c6427e5128b64b5fe";
-      ports = [ "32784:8080" ];
-      # Shared Postgres handled natively, but keeping data volume intact for other settings
-      volumes = [ "/var/lib/maxkb:/var/lib/postgresql/data" ];
-    };
-
     spacedrive = {
       image = "ghcr.io/spacedriveapp/spacedrive/server@sha256:fd3bc896f3a5b8e429e008cedde361d6b9468c48d8c81996fdb1d99e90e0837b";
       ports = [
@@ -53,7 +46,6 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d /var/lib/maxkb 0755 root root -"
     "d /var/lib/spacedrive 0755 root root -"
     # "d /var/lib/beszel 0755 root root -"  # removed — beszel dropped
     # "d /var/lib/homepage 0755 root root -"  # obsolete — replaced by NixOS native service

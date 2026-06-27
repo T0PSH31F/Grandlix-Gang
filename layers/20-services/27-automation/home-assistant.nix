@@ -42,8 +42,15 @@ with lib;
         "spotify"
         "bluetooth"
         "zeroconf"
+        "network"
         "ssdp"
         "usb"
+      ];
+
+      # Extra python packages for optional integrations
+      extraPackages = ps: with ps; [
+        gtts
+        aiohue
       ];
 
       config = {

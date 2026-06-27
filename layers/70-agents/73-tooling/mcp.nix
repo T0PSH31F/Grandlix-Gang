@@ -1,4 +1,4 @@
-# Deprecated — moved to layers/75-mcp/server-catalog.nix
+# Deprecated — moved to layers/70-agents/75-mcp/server-catalog.nix
 # This file exists as a backward-compatibility alias.
 # All new config should use layers.layer-75.mcp.* options.
 
@@ -9,7 +9,7 @@
   ...
 }:
 {
-  imports = [ ../../75-mcp ];
+  imports = [ ../75-mcp ];
 
   options.layers.layer-70.agent.mcp = {
     enable = lib.mkEnableOption "Model Context Protocol (MCP) servers [DEPRECATED: use layers.layer-75.mcp.enable]";

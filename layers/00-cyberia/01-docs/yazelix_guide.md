@@ -1,40 +1,136 @@
-# Yazelix Integration Documentation
+# NixVim + Yazelix Integration
 
-**Yazelix** is a powerful terminal workflow that integrates **Ya**zi, **Zel**lij, and He**lix**. 
+> **Yazelix** is the terminal workflow integrating **Ya**zi, **Zel**lij, and Ni**x**vim.
+> Helix is retained as a fallback (`defaultEditor = false`).
 
-In your configuration, this integration is part of the `cli-environment` and provides a synchronized experience across these tools.
-
-## How to Start
-
-To launch the Yazelix environment, simply run the following command in your terminal:
+## Quick Start
 
 ```bash
-yazelix [directory_or_file]
+# Launch zellij with compact layout → nvim
+yazelix
+
+# Or launch specific zellij layout profiles:
+z-dev    # nvim + lazygit split + yazi tab
+z-git    # lazygit only
+z-server # htop + journalctl
 ```
 
-This alias executes a custom shell function that:
-1.  Launches **Zellij** (multiplexer) with the `compact` layout.
-2.  If Zellij is not available, it defaults to opening **Helix** (`hx`) directly.
+## NixVim Editor (Primary)
 
-## Key Features & Bindings
+### Core Navigation
 
-### 1. Helix + Yazi Integration
-Inside **Helix**, you can invoke the **Yazi** file manager at any time to navigate your project or open new files.
+| Key | Action |
+|-----|--------|
+| `h/j/k/l` | Move cursor |
+| `Ctrl+h/j/k/l` | Navigate windows |
+| `H` / `L` | Line start / end |
+| `s` | Flash jump to any visible character |
+| `S` | Flash jump to treesitter node |
 
-*   **`Space + e`**: Opens Yazi as a file manager/picker.
-*   **`Ctrl + y`**: An alternative Yazi integration that manages temporary files for selection and redraws the terminal UI properly.
+### File Management
 
-### 2. Navigation in Zellij
-When running inside Zellij (via the `yazelix` command), you can use standard pane navigation:
+| Key | Action |
+|-----|--------|
+| `<leader>e` | Toggle Neo-tree sidebar |
+| `<leader>y` | Toggle Yazi file manager in-editor |
+| `<leader>ff` | Telescope find files |
+| `<leader>fg` | Telescope live grep |
+| `<leader>fb` | Telescope buffers |
+| `<leader>fr` | Telescope recent files |
 
-*   **`Alt + h/j/k/l`**: Move focus between panes (Left, Down, Up, Right).
-*   **`Ctrl + q`**: Quit the Zellij session.
+### Git
 
-## Configuration Details
+| Key | Action |
+|-----|--------|
+| `<leader>gg` | Open LazyGit |
+| `]t` / `[t` | Next/previous TODO comment |
 
-The integration is managed by two main components in your flake:
-1.  **[yazelix-style.nix](file:///home/t0psh31f/Clan/NFP/flake-parts/features/home/cli/integrations/yazelix-style.nix)**: Defines the shell functions and basic Helix-Yazi bindings.
-2.  **[zellij.nix](file:///home/t0psh31f/Clan/NFP/flake-parts/features/home/cli/multiplexers/zellij.nix)**: Configures the terminal multiplexer to support the workflow.
+### Diagnostics
 
-> [!NOTE]
-> The full upstream `yazelix` module is currently disabled in your user profile to avoid compatibility issues, but this "style" integration provides the core workflow you need.
+| Key | Action |
+|-----|--------|
+| `<leader>xx` | Toggle Trouble diagnostics |
+| `<leader>xw` | Workspace diagnostics |
+| `<leader>xd` | Document diagnostics |
+| `gd` | Go to definition |
+| `gr` | Find references |
+| `K` | Hover documentation |
+| `<leader>ca` | Code action |
+| `<leader>rn` | Rename symbol |
+| `[d` / `]d` | Previous/next diagnostic |
+
+### Multi-Cursor
+
+| Key | Action |
+|-----|--------|
+| `<leader>m` | Start multi-cursor mode |
+| `Ctrl+Shift+Up/Down` | Add cursor above/below |
+| `Ctrl+Shift+Left/Right` | Skip/subtract cursor |
+| `j/k` (in MC mode) | Add cursor below/above |
+
+### AI Assistants
+
+| Key | Action |
+|-----|--------|
+| `<leader>o` | OpenCode (Claude Code) |
+| `:Ollama <prompt>` | Local LLM via Ollama |
+
+### Editing
+
+| Key | Action |
+|-----|--------|
+| `<leader>F` | Format buffer |
+| `gc` | Toggle comment |
+| `ys` / `cs` / `ds` | Surround add/change/delete |
+| `J` / `K` (visual) | Move line down/up |
+| `<C-e>` | Hide completion menu |
+| `<C-Space>` | Force show completion |
+
+### Effects
+
+| Key | Action |
+|-----|--------|
+| `Ctrl+d/u` | Smooth scroll half-page |
+| `gg` / `G` | Smooth scroll to top/bottom |
+| `j/k` | Smooth scroll line-by-line |
+| `Ctrl+y/e` | Smooth scroll without moving cursor |
+
+Cursor has a trailing smear effect when moving quickly.
+
+## Zellij Layouts
+
+| Command | Layout | Panes |
+|---------|--------|-------|
+| `z-dev` | dev | nvim (left, 60%) + lazygit (right, 40%), yazi tab |
+| `z-git` | git | lazygit fullscreen |
+| `z-server` | server | htop (top) + journalctl -f (bottom) |
+| `yazelix` | compact | nvim fullscreen |
+
+### Zellij Keybindings
+
+| Key | Action |
+|-----|--------|
+| `Alt+h/j/k/l` | Navigate panes |
+| `Ctrl+q` | Quit session |
+| `Ctrl+s` | Toggle pane resize mode |
+| `Ctrl+d/u` | Scroll half-page up/down |
+| `Ctrl+t` | Open new tab |
+| `Ctrl+w` | Close current pane/tab |
+| `Shift+Left/Right` | Switch tabs |
+
+## Yazi File Manager
+
+Yazi can be opened both in-editor (`<leader>y`) and standalone.
+Files opened from Yazi open in Neovim.
+
+## Theme
+
+Noctalia Material You theme (wallpaper-generated colors) with tokyo-night
+fallback. Applied system-wide: Hyprland, GTK, Neovim, Zellij, Yazi.
+
+## Configuration
+
+- **NixVim**: `layers/50-cli-tui-programs/52-editors/nixvim/default.nix`
+- **Zellij**: `layers/50-cli-tui-programs/54-multiplexers/zellij.nix`
+- **Yazi**: `layers/50-cli-tui-programs/56-file-managers/yazi.nix`
+- **Yazelix**: `layers/50-cli-tui-programs/59-integrations/yazelix-style.nix`

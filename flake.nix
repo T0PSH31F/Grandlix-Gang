@@ -28,7 +28,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Fresh AI packages channel — update independently with `nix flake update nixpkgs-ai`
-    nixpkgs-ai.url = "github:NixOS/nixpkgs/3e41b24abd260e8f71dbe2f5737d24122f972158";
+    nixpkgs-ai.url = "github:NixOS/nixpkgs/3163c3df76a15b3475f0946e681d75c2dfdc8abd";
 
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
@@ -195,7 +195,7 @@
             config.allowUnfree = true;
           }).opencode-desktop;
           # Add more AI packages here — e.g.:
-          # ollama = (import inputs.nixpkgs-ai { inherit (final) system; }).ollama;
+          ollama = (import inputs.nixpkgs-ai { inherit (final) system; config.allowUnfree = true; }).ollama;
           # python3 = (import inputs.nixpkgs-ai { inherit (final) system; }).python3;
         };
       in
@@ -221,6 +221,7 @@
               overlays = [
                 (import ./layers/80-lib/82-overlays/custom-packages.nix)
                 aiPkgOverlay
+
               ];
             };
         };

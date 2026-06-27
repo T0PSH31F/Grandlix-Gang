@@ -23,8 +23,8 @@ in
 
     host = lib.mkOption {
       type = lib.types.str;
-      default = "0.0.0.0";
-      description = "Bind address (0.0.0.0 for LAN access).";
+      default = "127.0.0.1";
+      description = "Bind address (127.0.0.1 for local-only, 0.0.0.0 for LAN).";
     };
   };
 

@@ -17,7 +17,7 @@ in
     (mkDendriticModule "agent-audio" ./72-voice/asr-tts/agent-audio.nix)
     ./packages-ai.nix
     ./74-ai-infra
-    ../../layers/75-mcp
-    ../../layers/76-hermes-agent
+    ./75-mcp
+    ./76-hermes-agent
   ];
 }
