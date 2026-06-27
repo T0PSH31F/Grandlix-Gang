@@ -77,6 +77,48 @@ final: prev: {
     touch "$out/share/fonts/noto/.keep"
   '';
 
+  # Camoufox anti-detection browser binary (Firefox fork)
+  camoufox-bin = final.stdenv.mkDerivation {
+    pname = "camoufox-bin";
+    version = "150.0.2-alpha.26";
+
+    src = final.fetchurl {
+      url = "https://github.com/daijro/camoufox/releases/download/v150.0.2-beta.25/camoufox-150.0.2-alpha.26-lin.x86_64.zip";
+      sha256 = "02si1xkqh2sb99c58b7p151m76ii3x2kdvzy2qvh4h9c1j5vjimi";
+    };
+
+    nativeBuildInputs = [ final.autoPatchelfHook final.unzip ];
+
+    buildInputs = with final; [
+      stdenv.cc.cc.lib gtk3 glib pango cairo atk gdk-pixbuf
+      libX11 libXcomposite libXdamage libXext libXfixes libXrandr
+      libXrender libXcursor libXi libxcb alsa-lib freetype fontconfig
+      dbus libpulseaudio nss nspr sqlite expat zlib bzip2 harfbuzz
+      pcre wayland libglvnd libxkbcommon at-spi2-atk at-spi2-core
+      libXtst mesa libdrm libpng libjpeg_turbo
+    ];
+
+    sourceRoot = ".";
+
+    unpackPhase = ''
+      mkdir -p dst
+      cd dst
+      unzip $src
+    '';
+
+    installPhase = ''
+      mkdir -p $out/lib/camoufox $out/bin
+      cp -r * $out/lib/camoufox/
+      chmod -R +w $out/lib/camoufox
+      ln -s $out/lib/camoufox/camoufox-bin $out/bin/
+      cat > $out/lib/camoufox/version.json << 'VERSION_EOF'
+{"version": "150.0.2", "release": "alpha.26"}
+VERSION_EOF
+    '';
+
+    meta.mainProgram = "camoufox-bin";
+  };
+
   camofox-browser = final.buildNpmPackage {
     pname = "camofox-browser";
     version = "1.11.2";

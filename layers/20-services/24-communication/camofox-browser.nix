@@ -8,6 +8,7 @@ with lib;
 let
   cfg = config.layers.layer-20.services.communication.camofox-browser;
   camofoxPkg = pkgs.camofox-browser;
+  camoufoxBin = pkgs.camoufox-bin;
 in
 {
   options.layers.layer-20.services.communication.camofox-browser = {
@@ -35,7 +36,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ camofoxPkg ];
+    environment.systemPackages = [ camofoxPkg camoufoxBin ];
 
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0755 camofox camofox -"
@@ -70,6 +71,7 @@ in
           "BROWSER_IDLE_TIMEOUT_MS=300000"
           "MAX_SESSIONS=50"
           "CAMOFOX_CRASH_REPORT_ENABLED=false"
+          "CAMOUFOX_EXECUTABLE=${camoufoxBin}/bin/camoufox-bin"
         ] ++ lib.optional (cfg.apiKey != "") "CAMOFOX_API_KEY=${cfg.apiKey}";
       };
     };

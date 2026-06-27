@@ -27,8 +27,7 @@ let
             plugin location="zellij:status-bar"
           }
         }
-        tabs {
-          tab name="dev" {
+        tab name="dev" {
             pane split_direction="vertical" {
               pane size="70%" {
                 command "nvim"
@@ -48,7 +47,65 @@ let
               command "yazi"
             }
           }
+      }
+    '';
+    # Git-focused layout: lazygit main pane + shell
+    git = ''
+      layout {
+        default_tab_template {
+          pane size="1" {
+            plugin location="zellij:tab-bar"
+          }
+          pane {
+            children
+          }
+          pane size="2" {
+            plugin location="zellij:status-bar"
+          }
         }
+          tab name="git" {
+            pane {
+              command "lazygit"
+            }
+          }
+          tab name="shell" {
+            pane {
+              command "zsh"
+            }
+          }
+      }
+    '';
+    # Server/monitoring layout: htop + logs + shell
+    server = ''
+      layout {
+        default_tab_template {
+          pane size="1" {
+            plugin location="zellij:tab-bar"
+          }
+          pane {
+            children
+          }
+          pane size="2" {
+            plugin location="zellij:status-bar"
+          }
+        }
+          tab name="monitor" {
+            pane split_direction="vertical" {
+              pane size="50%" {
+                command "htop"
+              }
+              pane size="50%" {
+                command "journalctl" {
+                  args "-f"
+                }
+              }
+            }
+          }
+          tab name="shell" {
+            pane {
+              command "zsh"
+            }
+          }
       }
     '';
 
