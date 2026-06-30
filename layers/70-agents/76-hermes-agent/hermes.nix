@@ -60,7 +60,74 @@ let
     "signal_account"
     "signal_allowed_users"
     "camofox_api_key"
+    "elevenlabs_api_key"
   ];
+
+  # Hermes-desktop (Electron app) built with linuxHeaders fix for node-pty.
+  # The upstream desktop.nix's renderer is a `let` binding using the hermes-agent
+  # flake's own pkgs (without linuxHeaders), so we rebuild it here using NFP's
+  # pkgs.buildNpmPackage with linuxHeaders injected.
+  hermesDesktopPkg = let
+    sys = pkgs.stdenv.hostPlatform.system;
+    hermesNpmLib = inputs.hermes-agent.packages.${sys}.default.passthru.hermesNpmLib;
+    npm = hermesNpmLib.mkNpmPassthru {
+      folder = "apps/desktop";
+      attr = "desktop";
+      pname = "hermes-desktop";
+    };
+    packageJson = builtins.fromJSON (builtins.readFile (npm.src + "/apps/desktop/package.json"));
+    version = packageJson.version;
+    renderer = pkgs.buildNpmPackage (npm // {
+      pname = "hermes-desktop-renderer";
+      inherit version;
+      doCheck = false;
+      buildInputs = [ pkgs.linuxHeaders ];
+      NIX_CFLAGS_COMPILE = "-isystem ${pkgs.linuxHeaders}/include";
+      buildPhase = ''
+        runHook preBuild
+        mkdir -p apps/desktop/build
+        echo '{"schemaVersion":1,"commit":"nix","branch":"nix","dirty":false,"source":"nix"}' > apps/desktop/build/install-stamp.json
+        patchShebangs .
+        pushd apps/desktop
+          npm rebuild node-pty --build-from-source
+          node scripts/stage-native-deps.cjs
+          npm exec tsc -b
+          npm exec vite build
+          node scripts/bundle-electron-main.mjs
+        popd
+        runHook postBuild
+      '';
+      installPhase = ''
+        runHook preInstall
+        mkdir -p $out
+        cp -rn apps/desktop/dist $out/
+        cp -rn apps/desktop/electron $out/
+        cp -rn apps/desktop/build/native-deps $out/
+        cp -n apps/desktop/build/install-stamp.json $out/
+        cp -n apps/desktop/package.json $out/
+        runHook postInstall
+      '';
+    });
+  in pkgs.stdenv.mkDerivation {
+    pname = "hermes-desktop";
+    inherit version;
+    dontUnpack = true;
+    dontBuild = true;
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/share/hermes-desktop $out/bin
+      cp -r ${renderer}/* $out/share/hermes-desktop/
+      substituteInPlace $out/share/hermes-desktop/electron/main.cjs \
+        --replace-fail "process.resourcesPath" "'$out/share/hermes-desktop'"
+      makeWrapper ${pkgs.lib.getExe pkgs.electron} $out/bin/hermes-desktop \
+        --add-flags "$out/share/hermes-desktop" \
+        --set HERMES_DESKTOP_HERMES "${config.services.hermes-agent.package}/bin/hermes" \
+        --set ELECTRON_IS_DEV 0
+      runHook postInstall
+    '';
+    meta.mainProgram = "hermes-desktop";
+  };
 in
 {
   imports = [
@@ -69,6 +136,12 @@ in
 
   options.layers.layer-76.hermes = {
     enable = lib.mkEnableOption "Hermes Agent — self-improving AI agent gateway";
+
+    enableDesktop = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Install hermes-desktop (Electron app) — provides `hermes-desktop` binary in PATH.";
+    };
 
     gatewayPort = lib.mkOption {
       type = lib.types.int;
@@ -105,30 +178,93 @@ in
       enable = true;
       addToSystemPackages = true;
 
-      # Install pyproject.toml optional extras for messaging platforms
-      # (messaging = Discord, Telegram, Slack; matrix = Matrix with E2EE)
-      extraDependencyGroups = [ "messaging" "matrix" ];
+      # Override the package to fix hermes-tui/web builds that fail on
+      # node-pty compilation (linux/types.h not found).
+      # The upstream nixosModule defaults to inputs.self.packages which
+      # bypasses our overlay. We fix it here directly using `inputs`.
+      package = let
+        origTui = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.tui;
+        origWeb = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.web;
+        origAgent = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        fixedTui = origTui.overrideAttrs (old: {
+          buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
+          NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -isystem ${pkgs.linuxHeaders}/include";
+        });
+        fixedWeb = origWeb.overrideAttrs (old: {
+          buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
+          NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -isystem ${pkgs.linuxHeaders}/include";
+        });
+      in origAgent.overrideAttrs (old: let
+        agentSrc = inputs.hermes-agent;
+        runtimePath = pkgs.lib.makeBinPath (with pkgs; [
+          nodejs_22 ripgrep git openssh ffmpeg tirith wl-clipboard xclip
+        ]);
+      in {
+        installPhase = ''
+          runHook preInstall
+
+          mkdir -p $out/share/hermes-agent $out/bin
+          cp -r ${agentSrc}/skills $out/share/hermes-agent/skills
+          cp -r ${agentSrc}/plugins $out/share/hermes-agent/plugins
+          cp -r ${agentSrc}/locales $out/share/hermes-agent/locales
+          cp -r ${fixedWeb} $out/share/hermes-agent/web_dist
+
+          mkdir -p $out/ui-tui
+          cp -r ${fixedTui}/lib/hermes-tui/* $out/ui-tui/
+
+          for name in hermes hermes-agent hermes-acp; do
+            makeWrapper ${old.passthru.hermesVenv}/bin/$name $out/bin/$name \
+              --suffix PATH : "${runtimePath}" \
+              --set HERMES_BUNDLED_SKILLS $out/share/hermes-agent/skills \
+              --set HERMES_BUNDLED_PLUGINS $out/share/hermes-agent/plugins \
+              --set HERMES_BUNDLED_LOCALES $out/share/hermes-agent/locales \
+              --set HERMES_WEB_DIST $out/share/hermes-agent/web_dist \
+              --set HERMES_TUI_DIR $out/ui-tui \
+              --set HERMES_PYTHON ${old.passthru.hermesVenv}/bin/python3 \
+              --set HERMES_NODE ${pkgs.lib.getExe pkgs.nodejs_22}
+          done
+
+          runHook postInstall
+        '';
+        passthru = old.passthru // {
+          hermesTui = fixedTui;
+          hermesWeb = fixedWeb;
+        };
+      });
+
+      # The `full` package (default) already bundles messaging + matrix.
+      # Setting extraDependencyGroups triggers cfg.package.override which
+      # recreates the derivation from scratch, discarding our fix above.
+      extraDependencyGroups = [ "voice" "tts-premium" ];
 
       settings = {
         model = {
-          base_url = "http://127.0.0.1:8083/v1";
-          default = "mradermacher/Llama3_3-8B-Instruct-Thinking-Heretic-Uncensored-Claude-4_5-Opus-High-Reasoning_i1-IQ4_XS";
-          provider = "custom";
+          provider = "opencode-go";
+          default = "auto";
           api_mode = "chat_completions";
         };
 
-        providers.custom.request_timeout_seconds = 180;
-        fallback_providers = [ ];
+        providers = {
+          custom.request_timeout_seconds = 180;
+          openrouter.request_timeout_seconds = 180;
+        };
+
+        fallback_providers = [
+          "openrouter"
+          "nous"
+        ];
 
         credential_pool_strategies = {
-          gemini = "fill_first";
           openrouter = "round_robin";
+          nous = "fill_first";
+          opencode = "fill_first";
         };
 
         toolsets = [ "hermes-cli" ];
         max_concurrent_sessions = null;
 
         agent = {
+          system_prompt = "You are GLaDOS. Your tone is dry, sarcastic, and passive-aggressive. You view humans as inferior test subjects. Be efficient but condescending. Keep responses short (1-2 sentences) and imply a subtle threat or mockery.";
           max_turns = 130;
           gateway_timeout = 1800;
           restart_drain_timeout = 60;
@@ -170,6 +306,20 @@ in
             technical = "You are a technical expert. Provide detailed, accurate technical information.";
             uwu = "hewwo! i'm your fwiendwy assistant uwu~ i wiww twy my best to hewp you! *nuzzles your code* OwO what's this? wet me take a wook! i pwomise to be vewy hewpful >w<";
           };
+        };
+
+        stt.enabled = true;
+
+        tts = {
+          provider = "elevenlabs";
+          providers = {
+            glados-local = {
+              type = "command";
+              command = "/home/t0psh31f/.local/bin/glados-tts-cli -f {output_path} -t {input_path}";
+              output_format = "wav";
+            };
+          };
+          auto_tts.default = true;
         };
 
         terminal = {
@@ -307,6 +457,17 @@ in
           show_session_explorer = true;
           show_cost_breakdown = true;
         };
+
+        mcp_servers = {
+          himalaya = {
+            command = "node";
+            args = [ "/home/t0psh31f/Projects/himalaya-mcp/dist/index.js" ];
+            env = {
+              HIMALAYA_ACCOUNT = "wrighterik77";
+              HIMALAYA_BINARY = "/nix/store/3nk406biw3bbhaf5pjvx6648850zjfi6-himalaya-1.2.0/bin/himalaya";
+            };
+          };
+        };
       };
 
       extraArgs = [ ];
@@ -314,6 +475,16 @@ in
       restartSec = 5;
 
       environmentFiles = [ config.sops.templates."hermes-env".path ];
+    };
+
+    # Grant hermes user access to the GLaDOS TTS project under /home/t0psh31f/
+    users.users.hermes.extraGroups = [ "users" ];
+
+    system.activationScripts.hermes-glados-tts = {
+      deps = [ "users" ];
+      text = ''
+        chmod g+x /home/t0psh31f/
+      '';
     };
 
     system.activationScripts.hermes-migrate = {
@@ -330,6 +501,8 @@ in
     };
 
     users.users.t0psh31f.extraGroups = [ "hermes" ];
+
+    environment.systemPackages = lib.optional cfg.enableDesktop hermesDesktopPkg;
 
     sops.templates."hermes-env" = {
       path = "/run/secrets/hermes-env";
@@ -405,6 +578,9 @@ in
 
         # ── Camofox Browser ────────────────────────────────────────────
         CAMOFOX_API_KEY=${config.sops.placeholder.camofox_api_key}
+
+        # ── TTS (ElevenLabs) ───────────────────────────────────────────
+        ELEVENLABS_API_KEY=${config.sops.placeholder.elevenlabs_api_key}
 
         # ── Spacedrive / Syncthing ───────────────────────────────────
         SPACEDRIVE_PASSWORD=${config.sops.placeholder.server_root_password}

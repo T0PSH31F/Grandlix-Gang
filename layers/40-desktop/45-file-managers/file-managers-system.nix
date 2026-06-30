@@ -35,7 +35,7 @@
     fff
     librum
     superfile
-    spacedrive
+    # spacedrive — refused to evaluate in this nixpkgs rev
     # Dolphin File Manager (KDE)
     kdePackages.dolphin
     kdePackages.dolphin-plugins

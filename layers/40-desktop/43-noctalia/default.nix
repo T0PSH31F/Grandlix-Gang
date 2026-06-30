@@ -81,6 +81,30 @@ in
           };
         };
 
+        # Workaround for quickshell's unbounded qslog growth in /run/user/1000/quickshell
+        systemd.user.services.quickshell-log-cleanup = {
+          Unit = {
+            Description = "Clean up quickshell detailed logs";
+          };
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.bash}/bin/bash -c 'find \${XDG_RUNTIME_DIR:-/run/user/1000}/quickshell/by-id -name \"log.qslog\" -mmin +60 -delete 2>/dev/null; find \${XDG_RUNTIME_DIR:-/run/user/1000}/quickshell/by-id -name \"log.qslog\" -size +50M -exec truncate -s 50M {} + 2>/dev/null; true'";
+          };
+        };
+
+        systemd.user.timers.quickshell-log-cleanup = {
+          Unit = {
+            Description = "Periodic quickshell log cleanup";
+          };
+          Timer = {
+            OnBootSec = "10min";
+            OnUnitActiveSec = "1h";
+          };
+          Install = {
+            WantedBy = [ "timers.target" ];
+          };
+        };
+
         home.file = {
           ".face".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
           ".face.icon".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;

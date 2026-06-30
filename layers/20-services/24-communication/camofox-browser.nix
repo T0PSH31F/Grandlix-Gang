@@ -8,7 +8,7 @@ with lib;
 let
   cfg = config.layers.layer-20.services.communication.camofox-browser;
   camofoxPkg = pkgs.camofox-browser;
-  camoufoxBin = pkgs.camoufox-bin;
+  camoufoxBin = pkgs.camoufox;  # Source-built from camoufox-nix flake overlay
 in
 {
   options.layers.layer-20.services.communication.camofox-browser = {
@@ -36,7 +36,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ camofoxPkg camoufoxBin ];
+    environment.systemPackages = [ camofoxPkg camoufoxBin pkgs.xorg.xvfb ];
+    environment.variables.CAMOUFOX_EXECUTABLE = lib.getExe camoufoxBin;
 
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0755 camofox camofox -"
@@ -54,6 +55,7 @@ in
       description = "Camofox anti-detection browser server";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.xorg.xvfb ];
       serviceConfig = {
         Type = "simple";
         User = "camofox";
@@ -71,7 +73,7 @@ in
           "BROWSER_IDLE_TIMEOUT_MS=300000"
           "MAX_SESSIONS=50"
           "CAMOFOX_CRASH_REPORT_ENABLED=false"
-          "CAMOUFOX_EXECUTABLE=${camoufoxBin}/bin/camoufox-bin"
+          "CAMOUFOX_EXECUTABLE=${lib.getExe camoufoxBin}"
         ] ++ lib.optional (cfg.apiKey != "") "CAMOFOX_API_KEY=${cfg.apiKey}";
       };
     };

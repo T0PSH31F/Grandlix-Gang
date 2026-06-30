@@ -26,6 +26,7 @@ in
     (mkDendriticModule "matugen" ./58-theming/matugen.nix)
     (mkDendriticModule "fzf" ./53-tools/fzf.nix)
     (mkDendriticModule "git" ./53-tools/git.nix)
+    (mkDendriticModule "himalaya" ./53-tools/himalaya.nix)
     (mkDendriticModule "gpg" ./53-tools/gpg.nix)
     (mkDendriticModule "modern-utils" ./53-tools/modern-utils.nix)
     (mkDendriticModule "nix-tools" ./53-tools/nix-tools.nix)

@@ -8,7 +8,7 @@
 let
   cfg = config.layers.layer-76.hermes-dashboard;
   hermesState = "${config.services.hermes-agent.stateDir}/.hermes";
-  hermesPkg = inputs.hermes-agent.packages.${pkgs.system}.default;
+  hermesPkg = config.services.hermes-agent.package;
   hermesBin = "${hermesPkg}/bin/hermes";
 in
 {

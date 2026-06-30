@@ -175,6 +175,7 @@ with lib;
           libxcb
           libxshmfence
           zlib
+          wayland  # Required by oh-my-opencode-slim companion (Wayland GUI overlay)
         ];
       };
       nixbit = {

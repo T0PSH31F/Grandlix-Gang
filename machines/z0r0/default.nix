@@ -119,6 +119,7 @@
   # Make Langfuse accessible from LAN for cross-machine dashboard monitoring
   virtualisation.oci-containers.containers.langfuse.environment.HOSTNAME = lib.mkForce "0.0.0.0";
 
+  layers.layer-76.hermes.enableDesktop = true;
   layers.layer-76.hermes-workspace.enable = true;
   layers.layer-76.hermes-dashboard.enable = true;
 
@@ -221,7 +222,7 @@
 
   # Provide a safe-gc convenience script so the user doesn't reach for
   # the dangerous `nix-store --gc` out of habit.
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
     (pkgs.writeShellScriptBin "nix-safe-gc" ''
       echo "Running safe garbage collection (deleting generations older than ''${1:-14d})..."
       ${pkgs.nix}/bin/nix-collect-garbage --delete-older-than "''${1:-14d}"

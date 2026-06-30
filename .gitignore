@@ -18,3 +18,7 @@ inventory.json
 .hermes/plans/*
 .env
 *.env
+system_packages.txt
+/scratch
+
+

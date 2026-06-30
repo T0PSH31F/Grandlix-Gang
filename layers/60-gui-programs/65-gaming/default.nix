@@ -39,7 +39,7 @@ in
 
   nixos = mkIf config.layers.layer-60.gui.gaming.enable {
     programs.steam = mkIf config.layers.layer-60.gui.gaming.enableSteam {
-      enable = true;
+      enable = false;  # Disabled due to FHS env build issues (libmount.so.1)
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
       gamescopeSession.enable = true;
@@ -69,6 +69,7 @@ in
         goverlay
         mangohud
         vintagestory
+        wineWow64Packages.stable
       ]
       ++ (lib.optionals config.layers.layer-60.gui.gaming.enableEmulators [
         (retroarch.withCores (
@@ -132,22 +133,21 @@ in
         dwarf-fortress
         prismlauncher
         umu-launcher
-        steam-run-free
+      #  steam-run-free
         nero-umu
         protonplus
         protontricks
         steam-rom-manager
       ];
 
-      programs.lutris = {
-        enable = mkDefault true;
+programs.lutris = {
+        enable = false;  # Disabled — lutris 0.5.22 build broken (libmount.so.1 missing from glib); re-enable after nixpkgs update
         extraPackages = with pkgs; [
           mangohud
           winetricks
           gamescope
           gamemode
           umu-launcher
-          steam-run
         ];
       };
     };

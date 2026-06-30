@@ -77,49 +77,14 @@ final: prev: {
     touch "$out/share/fonts/noto/.keep"
   '';
 
-  # Camoufox anti-detection browser binary (Firefox fork)
-  camoufox-bin = final.stdenv.mkDerivation {
-    pname = "camoufox-bin";
-    version = "150.0.2-alpha.26";
-
-    src = final.fetchurl {
-      url = "https://github.com/daijro/camoufox/releases/download/v150.0.2-beta.25/camoufox-150.0.2-alpha.26-lin.x86_64.zip";
-      sha256 = "02si1xkqh2sb99c58b7p151m76ii3x2kdvzy2qvh4h9c1j5vjimi";
-    };
-
-    nativeBuildInputs = [ final.autoPatchelfHook final.unzip ];
-
-    buildInputs = with final; [
-      stdenv.cc.cc.lib gtk3 glib pango cairo atk gdk-pixbuf
-      libX11 libXcomposite libXdamage libXext libXfixes libXrandr
-      libXrender libXcursor libXi libxcb alsa-lib freetype fontconfig
-      dbus libpulseaudio nss nspr sqlite expat zlib bzip2 harfbuzz
-      pcre wayland libglvnd libxkbcommon at-spi2-atk at-spi2-core
-      libXtst mesa libdrm libpng libjpeg_turbo
-    ];
-
-    sourceRoot = ".";
-
-    unpackPhase = ''
-      mkdir -p dst
-      cd dst
-      unzip $src
-    '';
-
-    installPhase = ''
-      mkdir -p $out/lib/camoufox $out/bin
-      cp -r * $out/lib/camoufox/
-      chmod -R +w $out/lib/camoufox
-      ln -s $out/lib/camoufox/camoufox-bin $out/bin/
-      cat > $out/lib/camoufox/version.json << 'VERSION_EOF'
-{"version": "150.0.2", "release": "alpha.26"}
-VERSION_EOF
-    '';
-
-    meta.mainProgram = "camoufox-bin";
-  };
-
-  camofox-browser = final.buildNpmPackage {
+  # Camoufox browser binary is now provided by camoufox-nix flake overlay
+  # (source-built from Firefox, avoids prebuilt binary SIGSEGV on NixOS)
+  # camofox-browser (Node.js CDP wrapper) is still packaged here from @askjo v1.11.2
+  camofox-browser = let
+    camofoxLock = ./camofox-browser-lock.json;
+    nodejs = final.nodejs_22;
+  in final.buildNpmPackage {
+    inherit nodejs;
     pname = "camofox-browser";
     version = "1.11.2";
     src = final.fetchurl {
@@ -127,33 +92,38 @@ VERSION_EOF
       sha256 = "sha256-+JJDDt+kKs0BhtCCspMNy8rTzMAQZLVa+L9HuDbpk4c=";
     };
     sourceRoot = "package";
-    nativeBuildInputs = [ final.nodejs_22 ];
+    nativeBuildInputs = [ nodejs final.python3 final.gcc final.makeWrapper final.linuxHeaders ];
     buildInputs = [ final.linuxHeaders ];
 
     npmDeps = final.fetchNpmDeps {
       src = final.runCommand "camofox-browser-deps-src" { } ''
         mkdir -p $out
-        cp ${./camofox-browser-lock.json} $out/package-lock.json
+        cp ${camofoxLock} $out/package-lock.json
       '';
       hash = "sha256-bfKlCo9J6E+CToHmOBOE2D1MOu4SmHDcg3JYj7DB+Mc=";
     };
 
     postPatch = ''
-      cp ${./camofox-browser-lock.json} package-lock.json
+      cp ${camofoxLock} package-lock.json
     '';
 
     dontNpmBuild = true;
+    NODE_ENV = "production";
 
     installPhase = ''
+      pushd node_modules/better-sqlite3
+      rm -rf build/Release/better_sqlite3.node build/Release/obj build/Release/obj.target build/Release/.deps
+      ${nodejs}/bin/node ${nodejs}/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js rebuild --release
+      popd
+
       mkdir -p $out/lib/node_modules/@askjo/camofox-browser
       cp -r . $out/lib/node_modules/@askjo/camofox-browser/
-      chmod -R +w $out/lib/node_modules/@askjo/camofox-browser
       mkdir -p $out/bin
       cat > $out/bin/camofox-server << WRAPPER
 #!${final.runtimeShell}
 export NODE_PATH=$out/lib/node_modules/@askjo/camofox-browser/node_modules
 export CAMOFOX_DATA_DIR="''${CAMOFOX_DATA_DIR:-\$HOME/.camofox}"
-exec ${final.nodejs_22}/bin/node $out/lib/node_modules/@askjo/camofox-browser/server.js "\$@"
+exec ${nodejs}/bin/node $out/lib/node_modules/@askjo/camofox-browser/server.js "\$@"
 WRAPPER
       chmod +x $out/bin/camofox-server
     '';

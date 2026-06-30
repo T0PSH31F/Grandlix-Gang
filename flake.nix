@@ -28,7 +28,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Fresh AI packages channel — update independently with `nix flake update nixpkgs-ai`
-    nixpkgs-ai.url = "github:NixOS/nixpkgs/3163c3df76a15b3475f0946e681d75c2dfdc8abd";
+    nixpkgs-ai.url = "github:NixOS/nixpkgs/89570f24e97e614aa34aa9ab1c927b6578a43775";
 
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
@@ -145,6 +145,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Camoufox anti-detection browser — source-built to avoid prebuilt binary SIGSEGV
+    camoufox-nix = {
+      url = "github:maximoffua/camoufox-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
+    };
+
     # Utility inputs defined at top-level to allow follows
     systems.url = "github:nix-systems/default";
     flake-utils = {
@@ -184,8 +192,12 @@
       }:
       let
         # Reusable overlay: swap selected packages to the AI channel
+        # Note: system pkgsForSystem uses inputs.nixpkgs (nixos-unstable) below,
+        # overlaid with aiPkgOverlay which swaps select packages from the
+        # nixpkgs-ai input for fresher AI-tool versions.
         aiPkgOverlay = final: prev: {
-          hermes-agent = inputs.hermes-agent.packages.${final.system}.default;
+          # nixpkgs-ai provides bleeding-edge AI packages not yet in nixos-unstable.
+          # To update: `nix flake update nixpkgs-ai` in this directory.
           opencode = (import inputs.nixpkgs-ai {
             inherit (final) system;
             config.allowUnfree = true;
@@ -194,9 +206,7 @@
             inherit (final) system;
             config.allowUnfree = true;
           }).opencode-desktop;
-          # Add more AI packages here — e.g.:
           ollama = (import inputs.nixpkgs-ai { inherit (final) system; config.allowUnfree = true; }).ollama;
-          # python3 = (import inputs.nixpkgs-ai { inherit (final) system; }).python3;
         };
       in
       {
@@ -219,6 +229,7 @@
               localSystem = system;
               config.allowUnfree = true;
               overlays = [
+                inputs.camoufox-nix.overlays.default
                 (import ./layers/80-lib/82-overlays/custom-packages.nix)
                 aiPkgOverlay
 

@@ -20,6 +20,7 @@ in
       nextjs-ollama-llm-ui
       skills
       beads
+      openshell
       # beadwork  # uncomment after `nix flake update nixpkgs` (needs commit 891eaa7+)
       gemini-cli
       python314Packages.pydantic-graph

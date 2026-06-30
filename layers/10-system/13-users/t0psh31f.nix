@@ -259,6 +259,14 @@
         sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
       };
 
+      # ── Gmail App Passwords (for himalaya email client) ───────
+      sops.secrets.gmail_app_password_wrighterik77 = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+      sops.secrets.gmail_app_password_lovelainautomations = {
+        sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+      };
+
       # ── Hermes Agent API Keys ──────────────────────────────────
       sops.secrets.discord_bot_token = {
         sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
@@ -382,7 +390,7 @@
       home.packages = with pkgs; [
         nextcloud-client
         nextcloud-talk-desktop
-        spacedrive
+        # spacedrive — refused to evaluate in this nixpkgs rev
       ];
 
       # Envoluntary configuration

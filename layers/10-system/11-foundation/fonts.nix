@@ -25,7 +25,7 @@
       # zpix-pixel-font # CJK pixel font
       pixel-code
       creep
-      ark-pixel-font
+      # ark-pixel-font  # Slow to build, large CJK font — uncomment if needed
       departure-mono
 
       # ── Sans-serif / UI fonts ──

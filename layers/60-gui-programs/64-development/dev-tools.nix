@@ -25,7 +25,7 @@ in
     lib.mkIf osConfig.layers.layer-60.gui.dev-tools.enable {
       home.packages = with pkgs; [
         # Editor tooling
-        haxor-news
+        # haxor-news — removed from nixpkgs as unmaintained
         # CLIs
         httpie
         curlie
