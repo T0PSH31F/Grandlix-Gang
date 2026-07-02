@@ -40,7 +40,7 @@ in
         "$mod, A, exec, $ipc launcher toggle"
         "$mod, Space, exec, vicinae toggle"
         "$mod, X, exec, $ipc controlCenter toggle"
-        "$mod, slash, exec, hypr-keybind-cheatsheet"
+        "$mod, slash, exec, cheatsheet"
 
         # Scratchpads (Pyprland)
         # Ghostty Dropdown (Alt+T or Alt+Enter)

@@ -116,6 +116,19 @@ in
     xdg.configFile."rofi/config.rasi" = {
       text = ''
         /* Rofi base config — import Noctalia-generated Material You colors */
+
+        * {
+            // Fallback dark neon palette (used if rofi-colors.rasi missing)
+            bg:    #0f0f1a;
+            bg-alt:#1a1a2e;
+            fg:    #e0e0ff;
+            fg-alt:#a0a0c0;
+            accent:#00d4ff;
+            selected: #ff6ec7;
+            on-selected: #0f0f1a;
+            glow: #aa00ff;
+        }
+
         @import "~/.config/noctalia/templates/rofi-colors.rasi"
 
         configuration {
@@ -124,47 +137,64 @@ in
           icon-theme: "Papirus-Dark";
           display-drun: "Launch";
           drun-display-format: "{name}";
-          font: "JetBrainsMono Nerd Font 12";
+          font: "JetBrainsMono Nerd Font 14";
         }
 
         window {
-          width: 40%;
+          width: 45%;
           border: 2px;
           border-color: @accent;
-          border-radius: 12px;
+          border-radius: 16px;
           background-color: @bg;
+          /* Subtle neon glow via box-shadow (client-side decoration) */
+          // drop-shadow: 0 0 24px rgba(0, 212, 255, 0.15);
         }
 
         mainbox {
           background-color: transparent;
+          padding: 8px;
         }
 
         inputbar {
           background-color: @bg-alt;
           text-color: @fg;
-          border-radius: 8px;
-          padding: 10px;
+          border-radius: 10px;
+          padding: 14px;
           margin: 10px;
+          border: 1px;
+          border-color: @accent;
         }
 
         listview {
           background-color: transparent;
           columns: 1;
           lines: 8;
-          spacing: 4px;
+          spacing: 6px;
           padding: 10px;
         }
 
         element {
           background-color: transparent;
           text-color: @fg-alt;
-          padding: 8px;
-          border-radius: 6px;
+          padding: 12px;
+          border-radius: 8px;
         }
 
         element selected {
           background-color: @selected;
           text-color: @on-selected;
+          /* Neon glow on selected item */
+          border: 1px;
+          border-color: @glow;
+        }
+
+        element-icon {
+          size: 0.8em;
+        }
+
+        element-text {
+          font: "JetBrainsMono Nerd Font 14";
+          vertical-align: 0.5;
         }
       '';
       force = true;
@@ -173,19 +203,19 @@ in
     # ── Zellij ─────────────────────────────────────────────────────────
     # Our custom user-template generates zellij-colors.kdl
     xdg.configFile."zellij/config.kdl" = {
-      text = ''
-        // Zellij base config — load Matugen theme
-        theme "matugen"
+        text = ''
+          // Zellij base config — load Matugen theme
+          theme "matugen"
 
-        // Source the generated color definitions
-        // Zellij reads themes from config dir automatically
+          // Source the generated color definitions
+          // Zellij reads themes from config dir automatically
 
-        pane_frames false
-        default_layout "default"
-        simplified_ui true
-        copy_on_select true
-      '';
-      force = true;
+          pane_frames true
+          default_layout "default"
+          simplified_ui true
+          copy_on_select false
+        '';
+        force = true;
     };
 
     # Zellij Layout -> Master (Left terminal, Right 2x SSH windows)

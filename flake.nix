@@ -28,7 +28,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Fresh AI packages channel — update independently with `nix flake update nixpkgs-ai`
-    nixpkgs-ai.url = "github:NixOS/nixpkgs/89570f24e97e614aa34aa9ab1c927b6578a43775";
+    nixpkgs-ai.url = "github:NixOS/nixpkgs/9c4c05a947a91dc14625265fab505fb695e93218";
 
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
@@ -304,6 +304,8 @@
               localSystem = system;
               config.allowUnfree = true;
               overlays = [
+                inputs.camoufox-nix.overlays.default
+                (import ./layers/80-lib/82-overlays/custom-packages.nix)
                 aiPkgOverlay
               ];
             };

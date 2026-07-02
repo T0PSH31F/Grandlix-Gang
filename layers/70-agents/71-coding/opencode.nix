@@ -45,7 +45,7 @@
               HIMALAYA_BINARY = "/etc/profiles/per-user/t0psh31f/bin/himalaya";
             };
           };
-          plugin = [ "oh-my-opencode-slim" ];
+          plugin = [ "oh-my-openagent@latest" ];
           agent = {
             explore.disable = true;
             general.disable = true;
@@ -57,8 +57,8 @@
       xdg.configFile."opencode/themes/noctalia.json".source =
         config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
 
-      xdg.configFile."opencode/oh-my-opencode-slim.json".source =
-        ./opencode/oh-my-opencode-slim.json;
+      xdg.configFile."opencode/oh-my-openagent.json".source =
+        ./opencode/oh-my-openagent.json;
 
       home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop;
     };

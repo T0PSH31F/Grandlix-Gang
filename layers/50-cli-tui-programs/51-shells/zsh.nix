@@ -41,9 +41,14 @@ let
       }
       ''
         mkdir -p $out
-        chafa --size=35x16 ${currentAsset.image} > $out/motd.txt
-        echo -ne "\033[16A" >> $out/motd.txt
-        figlet -c -f isometric2 ${currentAsset.label} | lolcat -f | while IFS= read -r line; do
+        # Render image as crisp ASCII art
+        # Render image as crisp ASCII art (fg-only avoids color-noise on dark terminals)
+        chafa --symbols=block+border+space --fg-only --size=34x20 ${currentAsset.image} > $out/motd.txt
+        # Move cursor back up to overlay figlet label beside the image
+        echo -ne "\033[20A" >> $out/motd.txt
+        # Left-justified figlet (no -c) so offset isn't doubled from figlet centering
+        figlet -f isometric2 ${currentAsset.label} | lolcat -f | while IFS= read -r line; do
+          # Offset: image is 34 cols wide, give 2-col gap → text at col 36
           echo -ne "\033[36C" >> $out/motd.txt
           echo "$line" >> $out/motd.txt
         done

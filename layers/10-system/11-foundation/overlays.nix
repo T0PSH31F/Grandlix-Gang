@@ -7,6 +7,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }:
 
@@ -18,10 +19,14 @@ let
   # Load overlays from the modular structure
   customOverlay = import ../../80-lib/82-overlays/custom-packages.nix;
   desktopOverlay = import ../../80-lib/82-overlays/desktop-packages.nix;
+
+  # Camoufox anti-detection browser (source-built Firefox fork)
+  camoufoxOverlay = inputs.camoufox-nix.overlays.default;
 in
 {
   # Custom package fixes always applied
   nixpkgs.overlays = [
+    camoufoxOverlay
     customOverlay
   ]
   ++ lib.optionals (hasTag "desktop") [

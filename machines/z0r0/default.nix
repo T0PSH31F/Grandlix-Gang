@@ -62,6 +62,7 @@
       peripherals.openrgb.enable = true;
       peripherals.razer.enable = lib.mkForce false; # Disabled: openrazer driver incompatible with linux 7.0.10
       mobile.android.enable = true;
+      mobile.ios.enable = true;
       config.impermanence.enable = true;
       virtualization.enable = true;
     };
@@ -129,7 +130,7 @@
   };
 
   layers.layer-20.services.communication.camofox-browser = {
-    enable = true;
+    enable = false;
     port = 9377;
     apiKey = config.sops.placeholder.camofox_api_key;
   };
