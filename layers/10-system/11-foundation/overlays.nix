@@ -22,12 +22,30 @@ let
 
   # Camoufox anti-detection browser (source-built Firefox fork)
   camoufoxOverlay = inputs.camoufox-nix.overlays.default;
+
+  # AI package overlay — swaps opencode/open code-desktop/ollama to bleeding-edge
+  # from the nixpkgs-ai flake input (updated independently from nixos-unstable).
+  aiPkgOverlay = final: prev: {
+    opencode = (import inputs.nixpkgs-ai {
+      inherit (final) system;
+      config.allowUnfree = true;
+    }).opencode;
+    opencode-desktop = (import inputs.nixpkgs-ai {
+      inherit (final) system;
+      config.allowUnfree = true;
+    }).opencode-desktop;
+    ollama = (import inputs.nixpkgs-ai {
+      inherit (final) system;
+      config.allowUnfree = true;
+    }).ollama;
+  };
 in
 {
   # Custom package fixes always applied
   nixpkgs.overlays = [
     camoufoxOverlay
     customOverlay
+    aiPkgOverlay
   ]
   ++ lib.optionals (hasTag "desktop") [
     themeOverlay
