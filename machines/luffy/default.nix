@@ -93,7 +93,7 @@ in
 
   layers.layer-20.services.communication.rustdesk = {
     enable = true;
-    client.enable = false;
+    client.enable = true;
     server.enable = true;
   };
 

@@ -138,7 +138,7 @@
   layers.layer-20.services.communication.rustdesk = {
     enable = true;
     client.enable = true;
-    server.enable = false;
+    server.enable = true;
   };
 
   # Open firewall ports for cross-machine dashboard monitoring (luffy → z0r0)
