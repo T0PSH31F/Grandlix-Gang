@@ -103,7 +103,7 @@ final: prev: {
 
     src = final.fetchzip {
       url = "https://github.com/daijro/camoufox/releases/download/v135.0.1-beta.24/camoufox-135.0.1-beta.24-lin.x86_64.zip";
-      hash = "sha256-YeHsRW4CFyCvOKXMXfdWYSFjPLW4K3LyTjgbomdqiIg=";
+      hash = "sha256-k5t12L5q0RG8Zun0SAjGthYQXUcf+xVHvk9Mknr97QY=";
       stripRoot = false;
     };
 
