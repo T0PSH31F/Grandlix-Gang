@@ -130,7 +130,7 @@
   };
 
   layers.layer-20.services.communication.camofox-browser = {
-    enable = true;
+    enable = false;
     port = 9377;
     apiKey = config.sops.placeholder.camofox_api_key;
   };
