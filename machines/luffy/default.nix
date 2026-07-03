@@ -91,6 +91,12 @@ in
   };
   layers.layer-20.services.config.your-spotify.enable = true;
 
+  layers.layer-20.services.communication.rustdesk = {
+    enable = true;
+    client.enable = false;
+    server.enable = true;
+  };
+
   # Switch to SDDM for stability and better NVIDIA support
   layers.layer-30.theming.themes.greeter = {
     sddm.enable = false;
