@@ -5,6 +5,7 @@
     ./camofox-browser.nix
     ./karakeep.nix
     ./mautrix.nix
+    ./rustdesk.nix
     ./your-spotify.nix
     ./signal-cli-daemon.nix
   ];

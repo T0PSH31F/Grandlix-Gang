@@ -135,6 +135,12 @@
     apiKey = config.sops.placeholder.camofox_api_key;
   };
 
+  layers.layer-20.services.communication.rustdesk = {
+    enable = true;
+    client.enable = true;
+    server.enable = false;
+  };
+
   # Open firewall ports for cross-machine dashboard monitoring (luffy → z0r0)
   networking.firewall.allowedTCPPorts = [
     3000 # Hermes Workspace
