@@ -37,6 +37,9 @@ with lib;
         "/etc/NetworkManager/system-connections"
         "/var/lib/NetworkManager"
 
+        # Tailscale VPN identity (prevents new node key/IP on reboot)
+        "/var/lib/tailscale"
+
         # SSH host keys
         "/etc/ssh"
       ];
