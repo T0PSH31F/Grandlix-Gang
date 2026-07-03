@@ -77,8 +77,61 @@ final: prev: {
     touch "$out/share/fonts/noto/.keep"
   '';
 
-  # Camoufox browser binary is now provided by camoufox-nix flake overlay
-  # (source-built from Firefox, avoids prebuilt binary SIGSEGV on NixOS)
+  # Camoufox prebuilt binary from GitHub releases (v135.0.1-beta.24)
+  # Replaces the source-build from camoufox-nix which fails on newer nixpkgs
+  # (Firefox 146 source requires linux-headers in include path; build times ~hours)
+  # Runtime deps: gtk3, x11, alsa-lib, libdrm, mesa, etc.
+  camoufox = let
+    version = "135.0.1-beta.24";
+    runtimeLibs = with final; [
+      gtk3
+      xorg.libxcb
+      xorg.libX11
+      alsa-lib
+      libdrm
+      mesa
+      nss
+      nspr
+      dbus
+      ffmpeg_7
+      libpulseaudio
+      stdenv.cc.cc.lib
+    ];
+  in final.stdenv.mkDerivation {
+    pname = "camoufox";
+    inherit version;
+
+    src = final.fetchzip {
+      url = "https://github.com/daijro/camoufox/releases/download/v135.0.1-beta.24/camoufox-135.0.1-beta.24-lin.x86_64.zip";
+      hash = "sha256-YeHsRW4CFyCvOKXMXfdWYSFjPLW4K3LyTjgbomdqiIg=";
+      stripRoot = false;
+    };
+
+    nativeBuildInputs = [ final.makeWrapper final.autoPatchelfHook ];
+    buildInputs = runtimeLibs;
+
+    dontBuild = true;
+
+    installPhase = ''
+      mkdir -p $out/lib $out/bin $out/share/camoufox
+
+      # Copy all files
+      cp -r . $out/share/camoufox/
+
+      # Find all .so files and symlink them to lib
+      find $out/share/camoufox -name "*.so" -exec ln -sf {} $out/lib/ \;
+
+      # Create wrapper for camoufox-bin
+      makeWrapper $out/share/camoufox/camoufox-bin $out/bin/camoufox-bin \
+        --prefix LD_LIBRARY_PATH : ${final.lib.makeLibraryPath runtimeLibs} \
+        --prefix LD_LIBRARY_PATH : $out/lib
+
+      # Also symlink camoufox → camoufox-bin
+      ln -sf $out/bin/camoufox-bin $out/bin/camoufox
+    '';
+
+    meta.mainProgram = "camoufox";
+  };
   # camofox-browser (Node.js CDP wrapper) is still packaged here from @askjo v1.11.2
   camofox-browser = let
     camofoxLock = ./camofox-browser-lock.json;

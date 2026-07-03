@@ -94,7 +94,6 @@ let
           node scripts/stage-native-deps.cjs
           npm exec tsc -b
           npm exec vite build
-          node scripts/bundle-electron-main.mjs
         popd
         runHook postBuild
       '';
