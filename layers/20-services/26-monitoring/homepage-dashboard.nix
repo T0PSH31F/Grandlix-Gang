@@ -86,6 +86,7 @@ let
     elementWeb = 8444;
     mautrixWhatsapp = 29317;
     mautrixSignal = 29318;
+    rustdeskSignal = 21116;
 
     # luffy — automation
     n8n = 5678;
@@ -233,6 +234,7 @@ let
       (lSrv "Mautrix WhatsApp" "mautrixWhatsapp" "whatsapp.png" "WhatsApp Bridge")
       (lSrv "Mautrix Signal" "mautrixSignal" "signal.png" "Signal Bridge")
       (zSrv "Signal CLI" "signalCli" "si-signal" "Signal Daemon")
+      (lSrv "RustDesk" "rustdeskSignal" "mdi-monitor-share" "Remote Desktop")
     ];
 
     Media = [

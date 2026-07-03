@@ -117,12 +117,16 @@ h1, h2, h3, h4, h5, h6, .title {
 /* ============================================================
    STATUS DOTS  —  visual up/down indicators
    ============================================================ */
-.status-dot, .MuiSnackbar-root .dot, [class*="dot"] {
+.status-dot, .MuiSnackbar-root .dot {
   width: 10px !important;
   height: 10px !important;
   border-radius: 50% !important;
   display: inline-block !important;
   transition: all 0.3s ease;
+  min-width: 10px !important;
+  min-height: 10px !important;
+  max-width: 10px !important;
+  max-height: 10px !important;
 }
 
 /* Green dot for UP services */
