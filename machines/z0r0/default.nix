@@ -91,6 +91,10 @@
     layer-40.desktop = {
       noctalia.backend = "hyprland";
     };
+
+    layer-70.agent.opencode = {
+      plugin = "oh-my-openagent";
+    };
   };
 
   # ============================================================================
