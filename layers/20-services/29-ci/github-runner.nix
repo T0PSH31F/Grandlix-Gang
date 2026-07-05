@@ -13,28 +13,23 @@ in
 
     url = lib.mkOption {
       type = lib.types.str;
-      default = "https://github.com/T0PSH31F/Grandlix-Gang";
-      description = "Repository or org URL to register runner against";
-    };
-
-    tokenFile = lib.mkOption {
-      type = lib.types.path;
-      default = config.sops.secrets."github-runner/token".path or "/run/secrets/github-runner/token";
-      description = "Path to file containing registration token";
+      default = "https://github.com/T0PSH31F/NFP";
+      description = "Repository URL to register runner against";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    # Provide the token via sops
-    sops.secrets."github-runner/token" = {
+    # Use existing GitHub PAT from SOPS (does not expire like registration tokens)
+    sops.secrets."github_token" = {
       owner = "github-runner";
       group = "github-runner";
-      sopsFile = ../../../00-cyberia/03-secrets/secrets.yaml;
+      sopsFile = ../../../00-cyberia/03-treasure/secrets/external_services.yaml;
     };
 
     services.github-runners.nfp-deployer = {
       enable = true;
-      inherit (cfg) url tokenFile;
+      inherit (cfg) url;
+      tokenFile = config.sops.secrets."github_token".path;
       extraPackages = with pkgs; [
         git
         nix

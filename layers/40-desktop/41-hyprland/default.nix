@@ -105,6 +105,7 @@ in
             source = [
               "${config.home.homeDirectory}/.config/hypr/noctalia/noctalia-colors.conf"
               "${config.home.homeDirectory}/.config/hypr/monitors.conf"
+              "${config.home.homeDirectory}/.cache/noctalia/HVE/overlay.conf"
             ];
 
             "$primary" = "0xfff28fad";
@@ -139,6 +140,7 @@ in
               "pypr & disown"
               "hypr-sfx & disown"
               "udiskie & disown"
+              "rclone mount gdrive: ~/GoogleDrive --daemon --vfs-cache-mode full --vfs-cache-max-age 72h & disown"
               "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/layers/00-cyberia/02-assets/SFX/login-sound.mp3 & disown"
             ];
 
@@ -159,6 +161,7 @@ in
             };
             cursor = {
               no_hardware_cursors = cfg.isNvidia; # Only disable for NVIDIA
+              size = 64;
             };
 
             # NVIDIA stability fixes (no-op on Intel/AMD)

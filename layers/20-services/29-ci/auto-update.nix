@@ -9,22 +9,21 @@ let
 in
 {
   options.layers.layer-20.services.config.ci.auto-update = {
-    enable = lib.mkEnableOption "Weekly auto-update timer";
+    enable = lib.mkEnableOption "Auto-update timers for flake inputs";
   };
 
   config = lib.mkIf cfg.enable {
+    # ── Weekly: update ALL flake inputs ──────────────────────────────
     systemd.services.nfp-auto-update = {
-      description = "Update NFP flake inputs and rebuild";
+      description = "Update all NFP flake inputs and push";
       serviceConfig = {
         Type = "oneshot";
         User = "root";
-        # Script needs to be written to securely run update, build, commit, and push
         ExecStart = "${pkgs.writeShellScript "nfp-auto-update" ''
           set -e
           cd /home/t0psh31f/Clan/NFP
           nix flake update
           git add flake.lock
-          # Only commit if there are changes
           if ! git diff --cached --quiet; then
             git commit -m "chore: auto-update flake inputs"
             git push origin main
@@ -37,6 +36,33 @@ in
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnCalendar = "weekly";
+        Persistent = true;
+      };
+    };
+
+    # ── Daily: update nixpkgs-ai only (faster AI package cadence) ───
+    systemd.services.nfp-update-ai = {
+      description = "Update nixpkgs-ai input and push";
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+        ExecStart = "${pkgs.writeShellScript "nfp-update-ai" ''
+          set -e
+          cd /home/t0psh31f/Clan/NFP
+          nix flake update nixpkgs-ai
+          git add flake.lock
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: auto-update nixpkgs-ai"
+            git push origin main
+          fi
+        ''}";
+      };
+    };
+
+    systemd.timers.nfp-update-ai = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "daily";
         Persistent = true;
       };
     };

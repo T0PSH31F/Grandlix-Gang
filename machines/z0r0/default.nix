@@ -68,6 +68,8 @@
     };
 
     layer-20.services.config = {
+      ci.auto-update.enable = true;
+      ci.github-runner.enable = true;
       adguard = {
         enable = true;
         bindHosts = [
@@ -85,7 +87,11 @@
 
     layer-30.theming.themes.greeter = {
       sddm.enable = false;
-      greetd.enable = true;
+      greetd.enable = false;
+      noctalia-greeter = {
+        enable = true;
+        session = "hyprland";
+      };
     };
 
     layer-40.desktop = {

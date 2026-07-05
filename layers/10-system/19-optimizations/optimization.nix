@@ -27,7 +27,7 @@
       "--prefer"
       "^(Web Content|chromium|firefox|electron)$"
       "--avoid"
-      "^(Hyprland|quickshell|sshd|systemd)$"
+      "^(Hyprland|noctalia|sshd|systemd)$"
     ];
   };
 

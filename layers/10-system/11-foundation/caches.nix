@@ -27,6 +27,8 @@
         "https://hyprland.cachix.org"
         "https://niri.cachix.org"
         "https://mic92.cachix.org"
+        "https://noctalia.cachix.org"
+        "https://cache.garnix.io"
       ];
 
       # Set the trusted public keys for the substituters above
@@ -39,6 +41,8 @@
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
         "mic92.cachix.org-1:2Vf2WbWuQDWg9s2ykt8ZzNt6gtB+oqjEUo3vAqVM0GA="
+        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+        "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       ];
 
       # Ensure these are trusted for non-root users (making sure extra-trusted-substituters are pulled in)
@@ -50,6 +54,7 @@
         "https://hyprland.cachix.org"
         "https://niri.cachix.org"
         "https://mic92.cachix.org"
+        "https://noctalia.cachix.org"
       ];
     };
   };

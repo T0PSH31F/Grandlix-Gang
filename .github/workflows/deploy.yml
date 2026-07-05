@@ -1,7 +1,10 @@
-name: Deploy NFP Fleet
+name: Validate & Deploy NFP Fleet
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -9,22 +12,28 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v26
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Check flake format
         run: nix fmt -- --check
       - name: Flake check
         run: nix flake check
-        
+
   deploy:
     needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: [self-hosted, nixos, deployer]
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy Luffy
-        run: clan machines update luffy
-      - name: Deploy Z0r0
-        run: clan machines update z0r0
+      - name: Deploy entire fleet
+        run: clan machines update

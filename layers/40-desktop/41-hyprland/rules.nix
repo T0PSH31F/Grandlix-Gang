@@ -88,19 +88,13 @@ in
           "blur 1, match:namespace notifications"
           "blur 1, match:namespace logout_dialog"
 
-          # Quickshell
-          "blur_popups 1, match:namespace quickshell:.*"
-          "blur 1, match:namespace quickshell:.*"
-          "blur 1, match:namespace quickshell:session"
-
           # Fast Launchers
           "no_anim 1, match:namespace gtk4-layer-shell"
 
-          # Noctalia Shell
-          "blur 1, match:namespace ^(noctalia)$"
-          "xray 1, match:namespace ^(noctalia)$"
-          "blur 1, match:namespace ^(noctalia-shell)$"
-          "xray 1, match:namespace ^(noctalia-shell)$"
+          # Noctalia Shell v5
+          "blur 1, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"
+          "blur_popups 1, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"
+          "no_anim 1, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"
         ];
       in
       if isLuffy then

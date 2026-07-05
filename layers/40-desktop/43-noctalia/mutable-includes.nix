@@ -201,22 +201,9 @@ in
     };
 
     # ── Zellij ─────────────────────────────────────────────────────────
-    # Our custom user-template generates zellij-colors.kdl
-    xdg.configFile."zellij/config.kdl" = {
-        text = ''
-          // Zellij base config — load Matugen theme
-          theme "matugen"
-
-          // Source the generated color definitions
-          // Zellij reads themes from config dir automatically
-
-          pane_frames true
-          default_layout "default"
-          simplified_ui true
-          copy_on_select false
-        '';
-        force = true;
-    };
+    # Zellij config is managed by layers/50-cli-tui-programs/54-multiplexers/zellij.nix
+    # Noctalia's built-in zellij template generates zellij-colors.kdl for theme colors.
+    # The main config.kdl is NOT overridden here — zellij.nix owns it.
 
     # Zellij Layout -> Master (Left terminal, Right 2x SSH windows)
     xdg.configFile."zellij/layouts/default.kdl" = {

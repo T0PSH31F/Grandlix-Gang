@@ -2,13 +2,14 @@
 
 > High-level summary of all major features managed by this flake.
 
-## Desktop — Noctalia Hyprland
+## Desktop — Noctalia v5 + Hyprland
 
-Material You theming from wallpaper (Matugen):
-- Dynamic GTK/QT/Terminal/Hyprland colors
+Material You theming from wallpaper via Noctalia v5 (native C++/OpenGL ES shell):
+- Dynamic GTK/QT/Terminal/Hyprland colors via Noctalia templates
 - Saber-like glowing borders, deep shadows
 - Vicinae launcher, Hyprspace workspace overview
 - Neovim inherits Noctalia colors at startup
+- **Docs**: https://docs.noctalia.dev/v5/
 
 ## Editor — NixVim (Replaces Helix)
 
