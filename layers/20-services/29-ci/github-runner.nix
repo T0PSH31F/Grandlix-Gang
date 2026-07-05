@@ -19,12 +19,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Use existing GitHub PAT from SOPS (does not expire like registration tokens)
-    sops.secrets."github_token" = {
-      owner = "github-runner";
-      group = "github-runner";
-      sopsFile = ../../../00-cyberia/03-treasure/secrets/external_services.yaml;
-    };
+    # github_token is already defined in hermes-agent SOPS config.
+    # Just reference the existing secret — no need to re-define it.
 
     services.github-runners.nfp-deployer = {
       enable = true;

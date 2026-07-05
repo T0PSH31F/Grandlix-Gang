@@ -11,7 +11,7 @@ let
   camoufoxBin = pkgs.camoufox;
 
   runtimePath = lib.makeBinPath ([
-    pkgs.xorg.xvfb
+    pkgs.xvfb
     pkgs.x11vnc
     pkgs.novnc
     pkgs.python3Packages.websockify
@@ -97,7 +97,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ camofoxPkg camoufoxBin pkgs.xorg.xvfb pkgs.x11vnc pkgs.novnc ];
+    environment.systemPackages = [ camofoxPkg camoufoxBin pkgs.xvfb pkgs.x11vnc pkgs.novnc ];
     environment.variables.CAMOUFOX_EXECUTABLE = lib.getExe camoufoxBin;
 
     systemd.tmpfiles.rules = [
@@ -122,7 +122,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       path = [
-        pkgs.xorg.xvfb
+        pkgs.xvfb
         pkgs.x11vnc
         pkgs.novnc
         pkgs.python3Packages.websockify

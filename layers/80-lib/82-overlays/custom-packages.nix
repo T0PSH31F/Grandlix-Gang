@@ -109,8 +109,8 @@ final: prev: {
     release = "150.0.2";
     runtimeLibs = with final; [
       gtk3
-      xorg.libxcb
-      xorg.libX11
+      libxcb
+      libx11
       libxkbcommon
       alsa-lib
       libdrm
