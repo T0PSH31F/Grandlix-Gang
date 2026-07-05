@@ -28,7 +28,16 @@
     };
 
     home.file.".config/gtk-3.0/bookmarks".text = ''
+      file:///home/t0psh31f/Downloads Downloads
+      file:///home/t0psh31f/Documents Documents
       file:///home/t0psh31f/GoogleDrive Google Drive
+      file:///home/t0psh31f/Agents Agents
+      file:///home/t0psh31f/Appimages Appimages
+      file:///home/t0psh31f/Clan Clan
+      file:///home/t0psh31f/Games Games
+      file:///home/t0psh31f/Projects Projects
+      file:///home/t0psh31f/.config .config
+      file:///home/t0psh31f/.hermes .hermes
     '';
   };
 }

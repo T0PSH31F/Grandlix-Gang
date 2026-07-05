@@ -14,7 +14,7 @@ in
       "$terminal" = "ghostty";
       "$fileManager" = "nemo-with-extensions";
       "$browser" = "brave";
-      "$ipc" = "noctalia-shell ipc call";
+      "$ipc" = "noctalia msg";
 
       bind = [
         # ── Core App Launchers ─────────────────────────────────────────
@@ -33,13 +33,13 @@ in
         "$mod CTRL, B, exec, uwsm app -- librewolf"
         "$mod SHIFT, B, exec, uwsm app -- mullvad-browser"
         "$mod ALT, B, exec, uwsm app -- dillo"
-        "$mod, comma, exec, $ipc settings toggle"
+        "$mod, comma, exec, $ipc settings-toggle"
         "$mod SHIFT, T, exec, uwsm app -- kitty"
         "$mod SHIFT, Return, exec, uwsm app -- warp-terminal"
 
-        "$mod, A, exec, $ipc launcher toggle"
+        "$mod, A, exec, $ipc panel-toggle launcher"
         "$mod, Space, exec, vicinae toggle"
-        "$mod, X, exec, $ipc controlCenter toggle"
+        "$mod, X, exec, $ipc panel-toggle control-center"
         "$mod, slash, exec, cheatsheet"
 
         # Scratchpads (Pyprland)
@@ -64,15 +64,15 @@ in
         "CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | swappy -f -"
 
         # ── Theme & Layout Management ──────────────────────────────────
-        "$mod SHIFT, P, exec, theme-switch --pick"
+        "$mod SHIFT, P, exec, noctalia-theme-toggle"
         # "$mod, Tab, hyprexpo:expo, toggle" # Temporarily disabled
-        "$mod, Tab, exec, $ipc plugin togglePanel overview"
+        "$mod, Tab, exec, $ipc window-switcher"
 
         # ── System / Session ───────────────────────────────────────────
         "$mod, Q, killactive,"
-        "$mod SHIFT, L, exec, $ipc lockScreen lock"
-        "CTRL ALT, Delete, exec, $ipc sessionMenu toggle"
-        "$mod SHIFT, N, exec, $ipc notifications toggleHistory"
+        "$mod SHIFT, L, exec, $ipc session lock"
+        "CTRL ALT, Delete, exec, $ipc panel-toggle session"
+        "$mod SHIFT, N, exec, $ipc notification-dnd-toggle"
         "$mod CTRL SHIFT, M, exec, hypr-sfx-toggle"
         "$mod, F, fullscreen, 1"
         "$mod ALT, F, fullscreen, 1"
@@ -181,14 +181,14 @@ in
         #"$mod CTRL SHIFT, Right, movewindow, mon:r"
 
         # ── Media Keys (Non-repeating fallback) ────────────────────────
-        ", XF86AudioPlay, exec, $ipc media playPause"
+        ", XF86AudioPlay, exec, $ipc media toggle"
         ", XF86AudioNext, exec, $ipc media next"
         ", XF86AudioPrev, exec, $ipc media previous"
         "ALT, 4, exec, $ipc media previous"
-        "ALT, 5, exec, $ipc media playPause"
+        "ALT, 5, exec, $ipc media toggle"
         "ALT, 6, exec, $ipc media next"
-        "ALT, 7, exec, $ipc volume decrease"
-        "ALT, 9, exec, $ipc volume increase"
+        "ALT, 7, exec, $ipc volume-down"
+        "ALT, 9, exec, $ipc volume-up"
       ];
 
       binde = [
@@ -204,11 +204,11 @@ in
 
       # Repeating Media Keys (Volume/Brightness)
       bindel = [
-        ", XF86AudioRaiseVolume, exec, $ipc volume increase"
-        ", XF86AudioLowerVolume, exec, $ipc volume decrease"
-        ", XF86AudioMute, exec, $ipc volume toggleMute"
-        ", XF86MonBrightnessUp, exec, $ipc brightness increase"
-        ", XF86MonBrightnessDown, exec, $ipc brightness decrease"
+        ", XF86AudioRaiseVolume, exec, $ipc volume-up"
+        ", XF86AudioLowerVolume, exec, $ipc volume-down"
+        ", XF86AudioMute, exec, $ipc volume-mute"
+        ", XF86MonBrightnessUp, exec, $ipc brightness-up"
+        ", XF86MonBrightnessDown, exec, $ipc brightness-down"
       ];
     };
   };

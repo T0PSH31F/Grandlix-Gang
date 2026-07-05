@@ -29,7 +29,34 @@ let
       label = "NFP";
     };
 
+  # chafa's runtime closure depends on `util-linux-minimal`'s `libmount.so.1`
+  # (and a handful of other transitive libraries like `libselinux.so.1`).
+  # nixpkgs-unstable's `pkgs.util-linux` no longer ships libmount in its main
+  # output; only `util-linux-minimal` does. We resolve the full set of chafa's
+  # closure paths and feed them into `LD_LIBRARY_PATH` so the build sandbox
+  # can run the binary during the derivation.
   motdPkg =
+    let
+      # Compute the proper library path from chafa's runtime closure.
+      runtimePath = lib.makeLibraryPath (with pkgs; [
+        util-linux
+        libselinux
+        pcre2
+        fontconfig
+        glib
+        cairo
+        librsvg
+        gdk-pixbuf
+        libjpeg_turbo
+        libtiff
+        libjxl
+        libavif
+        freetype
+        bzip2
+        libpng
+        brotli
+      ]);
+    in
     pkgs.runCommand "nixos-motd-${hostName}"
       {
         buildInputs = [
@@ -38,9 +65,10 @@ let
           pkgs.lolcat
           pkgs.coreutils
         ];
-      }
-      ''
+      } ''
         mkdir -p $out
+        # Make all of chafa's runtime libraries resolvable in the build sandbox.
+        export LD_LIBRARY_PATH="${runtimePath}''${LD_LIBRARY_PATH:+:''${LD_LIBRARY_PATH}}"
         # Render PNG via chafa — supports kitty/sixel/iterm2/ascii, way better than viu
         chafa --size=40x20 -f symbols ${currentAsset.image} > $out/motd.txt
         echo "" >> $out/motd.txt

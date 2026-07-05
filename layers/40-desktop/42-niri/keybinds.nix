@@ -17,7 +17,7 @@ in
         action = spawn "uwsm" "app" "--" "warp-terminal";
       };
       "Mod+D" = {
-        action = spawn "noctalia-shell" "ipc" "launcher";
+        action = spawn "noctalia" "msg" "panel-toggle" "launcher";
       };
       "Mod+Return" = {
         action = spawn "uwsm" "app" "--" "ghostty";
@@ -163,13 +163,13 @@ in
 
       # Noctalia IPC
       "Mod+X" = {
-        action = spawn "noctalia-shell" "ipc" "control-center";
+        action = spawn "noctalia" "msg" "panel-toggle" "control-center";
       };
       "Mod+Shift+E" = {
-        action = spawn "noctalia-shell" "ipc" "session-menu";
+        action = spawn "noctalia" "msg" "panel-toggle" "session";
       };
       "Mod+O" = {
-        action = spawn "noctalia-shell" "ipc" "overview";
+        action = spawn "noctalia" "msg" "window-switcher";
       };
       "Mod+Space" = {
         action = spawn "vicinae" "toggle";
@@ -214,36 +214,36 @@ in
 
       # Media
       "XF86AudioRaiseVolume" = {
-        action = spawn "noctalia-shell" "ipc" "volume" "+5";
+        action = spawn "noctalia" "msg" "volume-up";
       };
       "XF86AudioLowerVolume" = {
-        action = spawn "noctalia-shell" "ipc" "volume" "-5";
+        action = spawn "noctalia" "msg" "volume-down";
       };
       "XF86MonBrightnessUp" = {
-        action = spawn "noctalia-shell" "ipc" "brightness" "+5";
+        action = spawn "noctalia" "msg" "brightness-up";
       };
       "XF86MonBrightnessDown" = {
-        action = spawn "noctalia-shell" "ipc" "brightness" "-5";
+        action = spawn "noctalia" "msg" "brightness-down";
       };
 
       # Media Keys (Non-repeating fallback)
       "XF86AudioPlay" = {
-        action = spawn "noctalia-shell" "ipc" "media" "playPause";
+        action = spawn "noctalia" "msg" "media" "toggle";
       };
       "XF86AudioNext" = {
-        action = spawn "noctalia-shell" "ipc" "media" "next";
+        action = spawn "noctalia" "msg" "media" "next";
       };
       "XF86AudioPrev" = {
-        action = spawn "noctalia-shell" "ipc" "media" "previous";
+        action = spawn "noctalia" "msg" "media" "previous";
       };
       "Alt+4" = {
-        action = spawn "noctalia-shell" "ipc" "media" "previous";
+        action = spawn "noctalia" "msg" "media" "previous";
       };
       "Alt+5" = {
-        action = spawn "noctalia-shell" "ipc" "media" "playPause";
+        action = spawn "noctalia" "msg" "media" "toggle";
       };
       "Alt+6" = {
-        action = spawn "noctalia-shell" "ipc" "media" "next";
+        action = spawn "noctalia" "msg" "media" "next";
       };
     };
   };

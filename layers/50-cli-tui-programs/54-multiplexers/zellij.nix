@@ -124,10 +124,11 @@ let
   # A unified `cheatsheet` command shows a picker; individual ones exist too.
 
   cheatsheet_picker = pkgs.writeShellScriptBin "cheatsheet" ''
-    SELECTED=$(cat <<CHOICES | ${pkgs.rofi}/bin/rofi -dmenu -p "Cheatsheets" \
-      -theme-str 'window {width: 35%; height: 65%;}' \
-      -theme-str 'listview {columns: 1;}' \
-      -theme-str 'element-text {font: "monospace 12";}'
+    while true; do
+      SELECTED=$(cat <<CHOICES | ${pkgs.rofi}/bin/rofi -dmenu -p "Cheatsheets" \
+        -theme-str 'window {width: 35%; height: 65%;}' \
+        -theme-str 'listview {columns: 1;}' \
+        -theme-str 'element-text {font: "monospace 12";}'
     ⚡ Zellij
     📝 Neovim
     ✦ Helix
@@ -140,20 +141,22 @@ let
     🚀 CLI Power Tools
     🖥️ Hyprland
     CHOICES
-    )
-    case "$SELECTED" in
-      "⚡ Zellij")            exec zellij-cheatsheet ;;
-      "📝 Neovim")            exec nvim-cheatsheet ;;
-      "✦ Helix")             exec helix-cheatsheet ;;
-      "📂 Yazi")             exec yazi-cheatsheet ;;
-      "🐚 Zsh / Ghostty")    exec zsh-cheatsheet ;;
-      "🔍 Fzf / TV / Ripgrep") exec fzf-cheatsheet ;;
-      "🔧 Grep / Sed / Awk") exec grep-sed-awk-cheatsheet ;;
-      "🐳 Docker / Podman")  exec docker-cheatsheet ;;
-      "💻 VMs / MicroVMs")   exec vm-cheatsheet ;;
-      "🚀 CLI Power Tools")  exec cli-power-cheatsheet ;;
-      "🖥️ Hyprland")         exec hypr-keybind-cheatsheet ;;
-    esac
+      )
+      [ -z "$SELECTED" ] && break
+      case "$SELECTED" in
+        "⚡ Zellij")            zellij-cheatsheet ;;
+        "📝 Neovim")            nvim-cheatsheet ;;
+        "✦ Helix")             helix-cheatsheet ;;
+        "📂 Yazi")             yazi-cheatsheet ;;
+        "🐚 Zsh / Ghostty")    zsh-cheatsheet ;;
+        "🔍 Fzf / TV / Ripgrep") fzf-cheatsheet ;;
+        "🔧 Grep / Sed / Awk") grep-sed-awk-cheatsheet ;;
+        "🐳 Docker / Podman")  docker-cheatsheet ;;
+        "💻 VMs / MicroVMs")   vm-cheatsheet ;;
+        "🚀 CLI Power Tools")  cli-power-cheatsheet ;;
+        "🖥️ Hyprland")         hypr-keybind-cheatsheet ;;
+      esac
+    done
   '';
 
   zellij_cheatsheet = pkgs.writeShellScriptBin "zellij-cheatsheet" ''

@@ -11,6 +11,7 @@
       "https://hyprland.cachix.org"
       "https://niri.cachix.org"
       "https://cache.garnix.io"
+      "https://noctalia.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -21,6 +22,7 @@
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
   };
 
@@ -78,11 +80,15 @@
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
     };
+    # Noctalia v5 desktop shell (native C++/OpenGL ES, replaces v4 Quickshell)
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "github:noctalia-dev/noctalia/cachix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.noctalia-qs.inputs.treefmt-nix.follows = "clan-core/treefmt-nix";
-      inputs.noctalia-qs.inputs.systems.follows = "systems";
+    };
+    # Noctalia greeter (login manager) — standalone greetd greeter
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";

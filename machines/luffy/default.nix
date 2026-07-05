@@ -97,10 +97,14 @@ in
     server.enable = true;
   };
 
-  # Switch to SDDM for stability and better NVIDIA support
+  # Noctalia Greeter (native Wayland login)
   layers.layer-30.theming.themes.greeter = {
     sddm.enable = false;
-    greetd.enable = true;
+    greetd.enable = false;
+    noctalia-greeter = {
+      enable = true;
+      session = "hyprland";
+    };
   };
 
   # xserver not needed with cage greeter

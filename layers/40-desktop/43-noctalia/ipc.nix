@@ -3,6 +3,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -10,7 +11,6 @@ let
 in
 {
   config = lib.mkIf (cfg.enable && cfg.backend == "hyprland") {
-    # IPC helpers (wrap common calls)
     home.packages = [
       cfg.package
       (pkgs.writeShellApplication {
@@ -18,20 +18,28 @@ in
         runtimeInputs = [ cfg.package ];
         text = ''
           cmd="$1"; shift
-          noctalia-shell ipc "$cmd" "$@"
+          noctalia msg "$cmd" "$@"
         '';
       })
       (pkgs.writeShellScriptBin "noctalia-restart" ''
-        systemctl --user restart noctalia-shell
+        systemctl --user restart noctalia
+      '')
+      (pkgs.writeShellScriptBin "noctalia-wallpaper-set" ''
+        noctalia msg wallpaper-set "$@"
+      '')
+      (pkgs.writeShellScriptBin "noctalia-theme-toggle" ''
+        noctalia msg theme-mode-toggle
+      '')
+      (pkgs.writeShellScriptBin "noctalia-templates-apply" ''
+        noctalia msg templates-apply
+      '')
+      (pkgs.writeShellScriptBin "noctalia-color-scheme" ''
+        noctalia msg color-scheme-set "$@"
       '')
     ];
 
-    # Env vars for Noctalia IPC discovery/integration
     wayland.windowManager.hyprland.settings.env = [
-      "NOCTALIA_SOCKET,~/.cache/noctalia/noctalia.sock" # If socket-based
+      "NOCTALIA_SOCKET,~/.cache/noctalia/noctalia.sock"
     ];
-
-    # Startup order: Ensure Noctalia starts directly via exec-once in hyprland/default.nix
-    # (Moved to hyprland/default.nix to avoid double-launch or systemd timing issues)
   };
 }

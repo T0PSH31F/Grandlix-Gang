@@ -22,6 +22,8 @@ in
     environment.systemPackages = with pkgs; [
       libimobiledevice # Communicate with iOS devices
       libirecovery
+      libusbmuxd
+      usbmuxd2
       ipad_charge
       ifuse # Mount iOS filesystems
       ideviceinstaller # Manage apps

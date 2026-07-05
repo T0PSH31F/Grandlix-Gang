@@ -65,14 +65,23 @@
         };
       };
 
-      xdg.configFile."opencode/themes/noctalia.json".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
-
-      xdg.configFile."opencode/oh-my-openagent.json".source =
-        lib.mkIf (pluginName == "oh-my-openagent") ./opencode/oh-my-openagent.json;
-
-      xdg.configFile."opencode/oh-my-opencode-slim.json".source =
-        lib.mkIf (pluginName == "oh-my-opencode-slim") ./opencode/oh-my-opencode-slim.json;
+      # Use lib.mkMerge so only the active plugin's xdg.configFile is declared.
+      # Setting `.source = lib.mkIf cond path` directly evaluates to `false` when
+      # the condition is unmet, which Nix rejects for `source` (must be a path
+      # or null). mkMerge-ing per-plugin attrsets makes the option only present
+      # on the active branch.
+      xdg.configFile = lib.mkMerge [
+        {
+          "opencode/themes/noctalia.json".source =
+            config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
+        }
+        (lib.mkIf (pluginName == "oh-my-openagent") {
+          "opencode/oh-my-openagent.json".source = ./opencode/oh-my-openagent.json;
+        })
+        (lib.mkIf (pluginName == "oh-my-opencode-slim") {
+          "opencode/oh-my-opencode-slim.json".source = ./opencode/oh-my-opencode-slim.json;
+        })
+      ];
 
       home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop;
     };

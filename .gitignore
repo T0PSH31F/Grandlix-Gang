@@ -22,3 +22,5 @@ system_packages.txt
 /scratch
 
 
+.omo/
+session-state.json

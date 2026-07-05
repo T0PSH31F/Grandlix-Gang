@@ -40,6 +40,7 @@ graph TB
 | `hermes-agent` | 8085 (MCP) | Core agent gateway, tool orchestration |
 | `hermes-dashboard` | 9119 | Web admin panel with session explorer |
 | `hermes-workspace` | 3000 | Workspace web UI |
+| `jo-camofox-browser` | 9377 | Anti-detection Firefox (jo-inc fork) — per-userId sessions, VNC at `:6080`, persistence, OpenAPI at `/docs` |
 
 ## Features
 

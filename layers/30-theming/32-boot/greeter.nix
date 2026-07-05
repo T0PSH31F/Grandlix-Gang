@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
@@ -9,6 +10,10 @@ let
   cfg = config.layers.layer-30.theming.themes.greeter;
 in
 {
+  imports = [
+    inputs.noctalia-greeter.nixosModules.default
+  ];
+
   options.layers.layer-30.theming.themes.greeter = {
     sddm = {
       enable = mkEnableOption "SDDM with Astronaut theme";
@@ -21,6 +26,14 @@ in
         description = "Path to the background image for ReGreet";
       };
     };
+    noctalia-greeter = {
+      enable = mkEnableOption "Noctalia Greeter (native Wayland login)";
+      session = mkOption {
+        type = types.str;
+        default = "hyprland";
+        description = "Default session to launch (hyprland, niri, etc.)";
+      };
+    };
   };
 
   config = mkMerge [
@@ -28,7 +41,15 @@ in
       assertions = [
         {
           assertion = !(cfg.sddm.enable && cfg.greetd.enable);
-          message = "SDDM and Greetd cannot be enabled at the same time in the greeter configuration.";
+          message = "SDDM and Greetd cannot be enabled at the same time.";
+        }
+        {
+          assertion = !(cfg.sddm.enable && cfg.noctalia-greeter.enable);
+          message = "SDDM and Noctalia Greeter cannot be enabled at the same time.";
+        }
+        {
+          assertion = !(cfg.greetd.enable && cfg.noctalia-greeter.enable);
+          message = "ReGreet and Noctalia Greeter cannot be enabled at the same time.";
         }
       ];
     }
@@ -77,6 +98,43 @@ in
           };
         };
       };
+    })
+
+    # Noctalia Greeter Implementation
+    (mkIf cfg.noctalia-greeter.enable {
+      users.users.greeter = {
+        isSystemUser = true;
+        group = "greeter";
+      };
+      users.groups.greeter = {};
+
+      services.greetd.settings.default_session.user = "greeter";
+
+      programs.noctalia-greeter = {
+        enable = true;
+        package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.linuxHeaders ];
+          buildInputs = (old.buildInputs or []) ++ [ pkgs.linuxHeaders ];
+        });
+        greeter-args = "--session ${cfg.noctalia-greeter.session}";
+        settings = {
+          cursor = {
+            theme = "Bibata-Modern-Ice";
+            size = 24;
+            path = "${pkgs.bibata-cursors}/share/icons";
+          };
+          keyboard = {
+            layout = "us";
+          };
+          appearance = {
+            password_style = "random";
+          };
+        };
+      };
+
+      environment.systemPackages = [
+        pkgs.bibata-cursors
+      ];
     })
   ];
 }

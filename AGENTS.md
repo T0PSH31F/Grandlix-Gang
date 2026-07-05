@@ -135,7 +135,7 @@ NFP/
 | Issue | Status | Workaround |
 |-------|--------|------------|
 | `util-linux-2.42` broken symlink references | Active | GC roots added at boot; use `nix-safe-gc` only |
-| `camoufox-bin` SIGSEGV in `libgkcodecs.so` | Active | Overlay has `makeWrapper` + `LD_LIBRARY_PATH` fix; needs forced rebuild |
+| Camoufox v135 `libgkcodecs.so` SIGSEGV on glibc ≥ 2.42 | **Resolved** (2026-07-03) | Bumped prebuilt to v150.0.2-beta.25 in `layers/80-lib/82-overlays/custom-packages.nix`; also patches the missing-`await` and `isMobile` CDP bugs in the bundled camofox-browser 1.11.2 / playwright-core 1.61.1 |
 | Lutris 0.5.22 build failure (`libmount.so.1`) | Active | Disabled temporarily; re-enable after nixpkgs update |
 | Steam build failure (`libmount.so.1`) | Active | Disabled temporarily; same root cause as Lutris |
 | openrazer incompatible with linux 7.0.10 | Active | Disabled: `peripherals.razer.enable = lib.mkForce false` |
@@ -159,7 +159,7 @@ The util-linux broken-reference bug will delete boot-critical paths. Use `nix-sa
 - Runtime config: `~/.hermes/config.yaml`
 - Gateway: `127.0.0.1:8085` (MCP protocol)
 - Dashboard: `127.0.0.1:9119` (REST API, no auth)
-- Browser: `127.0.0.1:9377` (Camofox CDP — currently broken, see known issues)
+- Browser: `127.0.0.1:9377` (jo-camofox-browser — jo-inc fork with VNC at `:6080`, per-userId session isolation, persistence plugin). Overlay: `camoufox-nix`. Service: `layers/20-services/24-communication/camofox-browser.nix`. Prebuilt camoufox v150 in `layers/80-lib/82-overlays/custom-packages.nix`.
 - Signal: `127.0.0.1:8080`
 - Personalities: 20 available, GLaDOS is default
 - Voice: STT (Whisper local) + TTS (8 providers including GLaDOS local)
