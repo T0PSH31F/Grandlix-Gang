@@ -83,7 +83,9 @@
     # Noctalia v5 desktop shell (native C++/OpenGL ES, replaces v4 Quickshell)
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Do NOT use inputs.nixpkgs.follows — it changes the derivation hash
+      # and breaks the noctalia.cachix.org binary cache, forcing a full
+      # C++ compile (904 files). Let noctalia use its own pinned nixpkgs.
     };
     # Noctalia greeter (login manager) — standalone greetd greeter
     noctalia-greeter = {
