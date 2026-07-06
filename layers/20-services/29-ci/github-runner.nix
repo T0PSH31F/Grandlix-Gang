@@ -19,8 +19,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # github_token is already defined in hermes-agent SOPS config.
-    # Just reference the existing secret — no need to re-define it.
+    sops.secrets."github_token" = {
+      sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+    };
 
     services.github-runners.nfp-deployer = {
       enable = true;
