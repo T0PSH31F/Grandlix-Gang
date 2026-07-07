@@ -161,7 +161,7 @@ in
             };
             cursor = {
               no_hardware_cursors = cfg.isNvidia; # Only disable for NVIDIA
-              size = 64;
+              # Cursor size is set via XCURSOR_SIZE / HYPRCURSOR_SIZE env vars in uwsm.nix
             };
 
             # NVIDIA stability fixes (no-op on Intel/AMD)
