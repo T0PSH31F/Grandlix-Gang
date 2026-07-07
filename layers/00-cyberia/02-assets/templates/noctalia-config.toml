@@ -23,13 +23,13 @@ show_capsule = true
 show_outline = true
 
     [bar.default]
-    background_opacity = 0.81999998167157173
+    background_opacity = 0.57999998703598976
     border = "primary"
     border_width = 2.0
     capsule = true
     capsule_border = "primary"
     capsule_opacity = 0.0
-    center = [ "media" ]
+    center = [ "media", "cat" ]
     color = "primary"
     contact_shadow = true
     end = [
@@ -357,9 +357,6 @@ ui_scale = 1.1000000089406967
     [shell.animation]
     speed = 0.7500000111758709
 
-    [shell.greeter_sync]
-    auto_sync = true
-
     [shell.launcher]
     app_grid = true
     categories = true
@@ -387,7 +384,7 @@ gpu_poll_seconds = 60
 [theme]
 community_palette = "Creamy Forest"
 mode = "dark"
-source = "community"
+source = "wallpaper"
 wallpaper_scheme = "m3-content"
 
     [theme.templates]
@@ -440,10 +437,10 @@ transition_on_startup = true
     order = "random"
 
     [wallpaper.default]
-    path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"
+    path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"
 
     [wallpaper.last]
-    path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"
+    path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"
 
     [wallpaper.monitor.DP-1]
     directory = "$HOME/.background/4k Background"
@@ -455,10 +452,10 @@ transition_on_startup = true
     directory = "$HOME/.background/4k Background"
 
     [wallpaper.monitors.DP-2]
-    path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"
+    path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"
 
     [wallpaper.monitors.eDP-1]
-    path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"
+    path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"
 
 [weather]
 unit = "imperial"
@@ -478,6 +475,20 @@ enabled = false
 [widget.brightness]
 enabled = false
 show_label = false
+
+[widget.cat]
+audio_spectrum = true
+capsule = true
+capsule_border = "primary"
+capsule_fill = "on_primary"
+capsule_foreground = "secondary"
+capsule_opacity = 0.92000000000000004
+color = "primary"
+icon_color = "on_primary"
+rave_mode = true
+scale = 1.4000000000000001
+tappy_mode = true
+type = "noctalia/bongocat:cat"
 
 [widget.clipboard]
 capsule = true

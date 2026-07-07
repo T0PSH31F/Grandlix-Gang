@@ -102,7 +102,7 @@ in
             # ── Theme ────────────────────────────────────────────────
             theme = {
               mode = "dark";
-              source = "community";
+              source = "wallpaper";
               wallpaper_scheme = "m3-content";
               community_palette = "Creamy Forest";
             };
@@ -158,10 +158,10 @@ in
               order = "random";
             };
             wallpaper.default = {
-              path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg";
+              path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg";
             };
             wallpaper.last = {
-              path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg";
+              path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg";
             };
             wallpaper.monitor = {
               "eDP-1" = { directory = "$HOME/.background/4k Background"; };
@@ -169,8 +169,8 @@ in
               "HDMI-A-1" = { directory = "$HOME/.background/4k Background"; };
             };
             wallpaper.monitors = {
-              "eDP-1" = { path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"; };
-              "DP-2" = { path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"; };
+              "eDP-1" = { path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"; };
+              "DP-2" = { path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"; };
             };
 
             # ── Backdrop ─────────────────────────────────────────────
@@ -203,13 +203,13 @@ in
               right_click_action = "control_center";
             };
             bar.default = {
-              background_opacity = 0.82;
+              background_opacity = 0.58;
               border = "primary";
               border_width = 2.0;
               capsule = true;
               capsule_border = "primary";
               capsule_opacity = 0.0;
-              center = [ "media" ];
+              center = [ "media" "cat" ];
               color = "primary";
               contact_shadow = true;
               end = [
@@ -556,6 +556,20 @@ in
             widget.brightness = {
               enabled = false;
               show_label = false;
+            };
+            widget.cat = {
+              audio_spectrum = true;
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "secondary";
+              capsule_opacity = 0.92;
+              color = "primary";
+              icon_color = "on_primary";
+              rave_mode = true;
+              scale = 1.4;
+              tappy_mode = true;
+              type = "noctalia/bongocat:cat";
             };
             widget.clipboard = {
               capsule = true;
