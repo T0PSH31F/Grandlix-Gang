@@ -140,6 +140,8 @@ let
     💻 VMs / MicroVMs
     🚀 CLI Power Tools
     🖥️ Hyprland
+    🤖 OpenCode
+    🧠 Hermes Agent
     CHOICES
       )
       [ -z "$SELECTED" ] && break
@@ -155,6 +157,8 @@ let
         "💻 VMs / MicroVMs")   vm-cheatsheet ;;
         "🚀 CLI Power Tools")  cli-power-cheatsheet ;;
         "🖥️ Hyprland")         hypr-keybind-cheatsheet ;;
+        "🤖 OpenCode")          opencode-cheatsheet ;;
+        "🧠 Hermes Agent")      hermes-cheatsheet ;;
       esac
     done
   '';
@@ -737,6 +741,121 @@ docker run --rm -it archlinux  Ephemeral Arch
       -theme-str 'element-text {font: "monospace 8";}'
   '';
 
+  opencode_cheatsheet = pkgs.writeShellScriptBin "opencode-cheatsheet" ''
+    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "OpenCode" -theme-str 'window {width: 45%;}' -theme-str 'element-text {font: "monospace 11";}'
+🤖 OPENCODE — AI Coding Agent
+─────────────────────────────────────────
+BASIC USAGE
+  opencode run 'prompt'           One-shot task (no pty needed)
+  opencode                        Launch interactive TUI
+  opencode -c                     Continue last session
+  opencode -s <id>               Resume specific session
+  opencode pr 42                 Review PR #42
+
+ONE-SHOT EXAMPLES
+  opencode run 'Add retry logic to API calls'
+  opencode run 'Fix failing tests' --thinking
+  opencode run 'Refactor auth' --model anthropic/claude-sonnet-4
+  opencode run 'Review security' -f config.yaml -f .env.example
+
+INTERACTIVE TUI KEYBINDS
+  Enter                          Submit message
+  Tab                            Switch agents (build/plan)
+  Ctrl+P                         Command palette
+  Ctrl+X L                       Switch session
+  Ctrl+X M                       Switch model
+  Ctrl+X N                       New session
+  Ctrl+C                         Exit (NOT /exit!)
+
+FLAGS
+  --thinking                     Show model reasoning
+  --variant high|minimal         Reasoning effort
+  --model provider/model         Force specific model
+  --format json                  Machine-readable output
+  --file / -f                    Attach context files
+  --title name                   Name the session
+  --agent build|plan             Choose agent
+
+OUR SETUP (NFP)
+  Plugin: oh-my-openagent (z0r0)
+  Config: layers/70-agents/71-coding/opencode.nix
+  MCP servers: context-mode, github, himalaya, mcp-nixos
+
+TIPS
+  Use opencode run for automation — no pty needed
+  Interactive sessions need pty=true in terminal tool
+  /exit opens agent selector — use Ctrl+C to quit
+  Check costs: opencode stats --days 7
+CHEATSHEET_EOF
+  '';
+
+  hermes_cheatsheet = pkgs.writeShellScriptBin "hermes-cheatsheet" ''
+    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "Hermes Agent" -theme-str 'window {width: 50%;}' -theme-str 'element-text {font: "monospace 11";}'
+🧠 HERMES AGENT — Autonomous AI Worker
+─────────────────────────────────────────
+BASIC USAGE
+  hermes                         Launch TUI
+  hermes setup                   First-time setup
+  hermes config                  Show current config
+  hermes version                 Check version
+
+GATEWAY (always running)
+  http://127.0.0.1:8085          MCP gateway
+  http://127.0.0.1:9119          Dashboard (REST API)
+
+PERSONALITY AND VOICE
+  Default: GLaDOS (dry, sarcastic)
+  TTS: glados-local (ONNX model)
+  STT: Whisper (local)
+  20 personalities available
+
+TOOLS AVAILABLE (from gateway)
+  browser_*                      Camofox browser control
+  terminal                       Shell commands
+  file ops (read/write/patch)    File manipulation
+  web_search / web_extract       Internet research
+  image_generate                 FAL image generation
+  text_to_speech                 GLaDOS TTS
+  himalaya (MCP)                 Email (IMAP/SMTP)
+  send_message                   Telegram/Discord/Signal
+  delegate_task                  Spawn subagents
+  cronjob                        Scheduled tasks
+  memory                         Persistent memory
+  skill_manage/view              Skill CRUD
+  todo                           Task lists
+  session_search                 Past session recall
+
+CREDENTIALS (via authsome)
+  authsome run -- curl <url>     Auto-inject credentials
+  14 connections: GitHub, Google (9), Cloudflare, Stripe
+  Daemon: http://127.0.0.1:7998
+
+BROWSER (Camofox)
+  http://127.0.0.1:9377          Browser server
+  http://127.0.0.1:6080          VNC (manual start)
+  Sessions persist via cookies
+  Cookie import: POST /sessions/hermes/cookies
+
+CONFIG LOCATIONS
+  ~/.hermes/config.yaml          Local CLI config
+  layers/70-agents/76-hermes-agent/hermes.nix  NixOS module
+  ~/.hermes/skills/              Custom skills
+  ~/.hermes/profiles/            Per-profile state
+
+OUR STACK (NFP)
+  z0r0: Laptop (i7-1260P, 16GB)
+  luffy: Server (i5-9th gen, down — ACPI)
+  Deploy: clan machines update z0r0
+  Secrets: SOPS + age keys at /persist/
+
+PROJECT: Streaming Liberation
+  ~/Streaming_Liberation/        Book + modules
+  ~/Projects/autonovel/          NousResearch pipeline
+  GitHub: T0PSH31F/streaming-liberation
+  Live: t0psh31f.github.io/streaming-liberation
+CHEATSHEET_EOF
+  '';
+
 in
 {
   home = lib.mkIf (cfg.enable && cfg.yazelixIntegration.enable) {
@@ -858,6 +977,8 @@ in
       docker_cheatsheet
       vm_cheatsheet
       cli_power_cheatsheet
+      opencode_cheatsheet
+      hermes_cheatsheet
     ];
   };
 }
