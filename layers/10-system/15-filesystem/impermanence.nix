@@ -100,6 +100,8 @@ with lib;
           ".hermes"
           ".kodi"
           ".var/app"
+          ".authsome"
+          "Streaming_Liberation"
         ];
 
         files = [
