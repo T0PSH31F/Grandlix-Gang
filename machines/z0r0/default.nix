@@ -115,6 +115,7 @@
   services = {
     # Fix PAM interaction with publickey-hostbound SSH extension
     openssh.settings.UsePAM = lib.mkForce false;
+    sillytavern-app.enable = lib.mkForce false; # Crash-looping, not needed on z0r0
     ai-services.lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
     llm-agents.enable = true;
     llama-cpp-server = {
