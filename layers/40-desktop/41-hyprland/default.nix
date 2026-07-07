@@ -150,8 +150,8 @@ in
 
             general = {
               border_size = 4;
-              "col.active_border" = lib.mkForce "$primary";
-              "col.inactive_border" = lib.mkForce "0xff$surfaceContainer";
+              # Border colors ($primary, $surface) are provided by noctalia's
+              # hyprtoolkit template and HVE overlay — do NOT override here.
               resize_on_border = true;
               layout = "dwindle";
             };
