@@ -311,7 +311,7 @@ in
         stt.enabled = true;
 
         tts = {
-          provider = "elevenlabs";
+          provider = "glados-local";
           providers = {
             glados-local = {
               type = "command";

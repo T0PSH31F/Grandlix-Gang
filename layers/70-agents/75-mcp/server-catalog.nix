@@ -80,6 +80,13 @@
             command = lib.getExe pkgs.ha-mcp;
             args = [ ];
           };
+          context-mode = {
+            command = "npx";
+            args = [
+              "-y"
+              "context-mode"
+            ];
+          };
         } config.layers.layer-75.mcp.servers;
       };
     };

@@ -815,7 +815,7 @@ in
               CloseTab = { };
             };
           };
-          selection = {
+          scroll = {
             # Copy selected text (alternative to auto-copy)
             "bind \"y\"" = {
               Copy = { };
