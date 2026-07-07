@@ -117,7 +117,18 @@ in
     };
     users.groups.camofox = {};
 
-    systemd.services.camofox-browser = {
+    systemd.services.camofox-browser = let
+      startScript = pkgs.writeShellScript "camofox-start" ''
+        # Load SOPS-managed secrets from systemd LoadCredential
+        if [ -f "''${CREDENTIALS_DIRECTORY:-}/camofox_api_key" ]; then
+          export CAMOFOX_API_KEY="$(cat "''${CREDENTIALS_DIRECTORY}/camofox_api_key")"
+        fi
+        if [ -f "''${CREDENTIALS_DIRECTORY:-}/camofox_access_key" ]; then
+          export CAMOFOX_ACCESS_KEY="$(cat "''${CREDENTIALS_DIRECTORY}/camofox_access_key")"
+        fi
+        exec ${camofoxPkg}/bin/jo-camofox-browser
+      '';
+    in {
       description = "Camofox anti-detection browser server (jo-inc fork)";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
@@ -137,7 +148,7 @@ in
         Type = "simple";
         User = "camofox";
         Group = "camofox";
-        ExecStart = "${camofoxPkg}/bin/jo-camofox-browser";
+        ExecStart = startScript;
         Restart = "on-failure";
         RestartSec = 5;
         StateDirectory = "camofox";
@@ -155,8 +166,12 @@ in
           "CAMOUFOX_EXECUTABLE=${lib.getExe camoufoxBin}"
           "ENABLE_VNC=1"
           "NOVNC_PORT=${toString cfg.vncPort}"
-        ] ++ lib.optional (cfg.apiKey != "") "CAMOFOX_API_KEY=${cfg.apiKey}"
-          ++ lib.optional (cfg.accessKey != "") "CAMOFOX_ACCESS_KEY=${cfg.accessKey}";
+        ];
+        LoadCredential = lib.optionals (cfg.apiKey != "") [
+          "camofox_api_key:${cfg.apiKey}"
+        ] ++ lib.optionals (cfg.accessKey != "") [
+          "camofox_access_key:${cfg.accessKey}"
+        ];
       };
     };
 
