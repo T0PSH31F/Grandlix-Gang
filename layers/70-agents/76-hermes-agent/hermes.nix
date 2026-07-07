@@ -362,7 +362,7 @@ in
           allow_private_urls = false;
           engine = "camofox";
           auto_local_for_private_urls = true;
-          cdp_url = "http://127.0.0.1:9377";
+          cdp_url = "";
           dialog_policy = "must_respond";
           dialog_timeout_s = 300;
           camofox = {
@@ -581,6 +581,7 @@ in
 
         # ── Camofox Browser ────────────────────────────────────────────
         CAMOFOX_API_KEY=${config.sops.placeholder.camofox_api_key}
+        CAMOFOX_URL=http://127.0.0.1:9377
 
         # ── TTS (ElevenLabs) ───────────────────────────────────────────
         ELEVENLABS_API_KEY=${config.sops.placeholder.elevenlabs_api_key}

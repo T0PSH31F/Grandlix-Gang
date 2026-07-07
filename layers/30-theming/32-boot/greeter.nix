@@ -114,7 +114,11 @@ in
         enable = true;
         package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
           nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.linuxHeaders ];
-          buildInputs = (old.buildInputs or []) ++ [ pkgs.linuxHeaders ];
+          buildInputs = (old.buildInputs or []) ++ [
+            pkgs.linuxHeaders
+            pkgs.util-linux.lib
+            (lib.getLib pkgs.libselinux)
+          ];
         });
         greeter-args = "--session ${cfg.noctalia-greeter.session}";
         settings = {

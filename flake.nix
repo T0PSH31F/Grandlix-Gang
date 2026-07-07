@@ -90,7 +90,9 @@
     # Noctalia greeter (login manager) — standalone greetd greeter
     noctalia-greeter = {
       url = "github:noctalia-dev/noctalia-greeter";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Do NOT use inputs.nixpkgs.follows — same cache-miss bug as noctalia:
+      # changes derivation hash, breaks noctalia.cachix.org binary cache.
+      # Let noctalia-greeter use its own pinned nixpkgs.
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";

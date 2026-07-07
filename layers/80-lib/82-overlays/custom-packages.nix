@@ -196,9 +196,14 @@ final: prev: {
   # });
 
   # Fix for noctalia-greeter build failure: missing linux/errno.h
+  # + libmount.so.1 / libselinux.so.1 link errors from glib-2.88
   noctalia-greeter = prev.noctalia-greeter.overrideAttrs (old: {
     nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ final.linuxHeaders ];
-    buildInputs = (old.buildInputs or []) ++ [ final.linuxHeaders ];
+    buildInputs = (old.buildInputs or []) ++ [
+      final.linuxHeaders
+      final.util-linux.lib
+      (final.lib.getLib final.libselinux)
+    ];
   });
 
   pythonPackagesExtensions = (prev.pythonPackagesExtensions or []) ++ [
