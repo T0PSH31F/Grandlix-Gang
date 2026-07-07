@@ -108,9 +108,9 @@ in
               "${config.home.homeDirectory}/.cache/noctalia/HVE/overlay.conf"
             ];
 
-            "$primary" = "0xfff28fad";
-            "$secondary" = "0xff575268";
-            "$surfaceContainer" = "1f202e";
+            # Color variables ($primary, $secondary, $surfaceContainer) are
+            # provided by noctalia's hyprtoolkit template via the source above.
+            # Do NOT hardcode them here — it breaks noctalia theme sync.
 
             plugin = {
               "dynamic-cursors" = {

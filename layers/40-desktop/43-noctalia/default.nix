@@ -59,24 +59,86 @@ in
           settings = {
             # ── Shell ────────────────────────────────────────────────
             shell = {
-              ui_scale = 1.0;
+              ui_scale = 1.1;
               corner_radius_scale = 1.0;
               font_family = "JetBrainsMono NF Medium";
               lang = "";
-              time_format = "";
+              time_format = "{:%H:%M:%S}";
               date_format = "";
               polkit_agent = true;
               password_style = "random";
               launch_apps_as_systemd_services = true;
-              telemetry_enabled = false;
+              telemetry_enabled = true;
               screen_time_enabled = true;
+              avatar_path = "/home/t0psh31f/Clan/NFP/layers/00-cyberia/02-assets/png-ico/Zoro.png";
+              external_ip_enabled = true;
+            };
+            shell.animation = {
+              speed = 0.75;
+            };
+            shell.greeter_sync = {
+              auto_sync = true;
+            };
+            shell.launcher = {
+              categories = true;
+              show_icons = true;
+              sort_by_usage = true;
+              session_search = true;
+              app_grid = true;
+              compact = true;
+            };
+            shell.panel = {
+              launcher_placement = "attached";
+              open_near_click_clipboard = true;
+              transparency_mode = "glass";
+            };
+            shell.screen_corners = {
+              enabled = true;
+            };
+            shell.screenshot = {
+              confirm_region = true;
             };
 
             # ── Theme ────────────────────────────────────────────────
             theme = {
               mode = "dark";
-              source = "wallpaper";
+              source = "community";
               wallpaper_scheme = "m3-content";
+              community_palette = "Creamy Forest";
+            };
+            theme.templates = {
+              builtin_ids = [
+                "btop"
+                "cava"
+                "gtk3"
+                "gtk4"
+                "ghostty"
+                "helix"
+                "hyprland"
+                "kcolorscheme"
+                "kitty"
+                "qt"
+                "starship"
+                "wezterm"
+              ];
+              community_ids = [
+                "pi-agent"
+                "spicetify"
+                "pywalfox"
+                "neovim"
+                "obsidian"
+                "vscode"
+                "zed"
+                "rofi"
+                "vicinae"
+                "discord"
+                "papirus-icons"
+                "telegram"
+                "yazi"
+                "zathura"
+                "snappy-switcher"
+                "hyprtoolkit"
+              ];
             };
 
             # ── Wallpaper ────────────────────────────────────────────
@@ -85,23 +147,45 @@ in
               fill_mode = "crop";
               fill_color = "surface";
               directory = "$HOME/.background/4k Background";
+              directory_dark = "$HOME/.background/4k Background";
               transition = [ "random" "honeycomb" ];
-              transition_duration = 10000;
+              transition_duration = 17600;
+              transition_on_startup = true;
             };
             wallpaper.automation = {
               enabled = true;
               interval_seconds = 900;
               order = "random";
             };
+            wallpaper.default = {
+              path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg";
+            };
+            wallpaper.last = {
+              path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg";
+            };
             wallpaper.monitor = {
               "eDP-1" = { directory = "$HOME/.background/4k Background"; };
               "DP-1" = { directory = "$HOME/.background/4k Background"; };
               "HDMI-A-1" = { directory = "$HOME/.background/4k Background"; };
             };
+            wallpaper.monitors = {
+              "eDP-1" = { path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"; };
+              "DP-2" = { path = "/home/t0psh31f/.background/4k Background/backiee-304101-landscape.jpg"; };
+            };
+
+            # ── Backdrop ─────────────────────────────────────────────
             backdrop = {
               enabled = true;
               blur_intensity = 0.4;
               tint_intensity = 0.6;
+            };
+
+            # ── Audio ────────────────────────────────────────────────
+            audio = {
+              enable_overdrive = true;
+              enable_sounds = true;
+              notification_sound = "/home/t0psh31f/Clan/NFP/layers/00-cyberia/02-assets/SFX/Navi(Extra)/446.wav";
+              volume_change_sound = "/home/t0psh31f/Clan/NFP/layers/00-cyberia/02-assets/SFX/volume-feedback.wav";
             };
 
             # ── Bar ──────────────────────────────────────────────────
@@ -117,6 +201,43 @@ in
               outer_corners = true;
               mouse_wheel_action = "workspace";
               right_click_action = "control_center";
+            };
+            bar.default = {
+              background_opacity = 0.82;
+              border = "primary";
+              border_width = 2.0;
+              capsule = true;
+              capsule_border = "primary";
+              capsule_opacity = 0.0;
+              center = [ "media" ];
+              color = "primary";
+              contact_shadow = true;
+              end = [
+                "tray"
+                "notifications"
+                "clipboard"
+                "network"
+                "bluetooth"
+                "volume"
+                "brightness"
+                "battery"
+                "clock"
+                "session"
+                "control-center"
+              ];
+              icon_color = "secondary";
+              margin_edge = 0;
+              margin_ends = 30;
+              padding = 13;
+              panel_overlap = 2;
+              radius_bottom_left = 25;
+              radius_bottom_right = 0;
+              radius_top_left = 26;
+              radius_top_right = 9;
+              scale = 1.15;
+              shadow = false;
+              thickness = 44;
+              widget_spacing = 3;
             };
             bar.left = [
               {
@@ -188,41 +309,170 @@ in
               }
             ];
 
-            # ── Dock ─────────────────────────────────────────────────
-            dock = {
-              enabled = true;
-              position = "bottom";
-              auto_hide = true;
-              active_monitor_only = true;
-              show_running = true;
-              magnification = true;
-              magnification_scale = 1.35;
+            # ── Brightness ────────────────────────────────────────────
+            brightness = {
+              sync_all_monitors = true;
             };
 
-            # ── Launcher (shell.launcher) ─────────────────────────────
-            shell.launcher = {
-              categories = true;
-              show_icons = true;
-              sort_by_usage = true;
-              session_search = true;
+            # ── Calendar ─────────────────────────────────────────────
+            calendar = {
+              enabled = true;
+              refresh_minutes = 240;
+            };
+            calendar.account.personal_google = {
+              color = "primary";
+              name = "WE77";
+              type = "google";
+            };
+            calendar.account.secondary_google = {
+              color = "secondary";
+              name = "LL";
+              type = "google";
             };
 
             # ── Control Center ────────────────────────────────────────
             control_center = {
-              shortcuts = {
-                left = [
-                  { id = "Network"; }
-                  { id = "Bluetooth"; }
-                  { id = "WallpaperSelector"; }
-                  { id = "NoctaliaPerformance"; }
-                ];
-                right = [
-                  { id = "Notifications"; }
-                  { id = "PowerProfile"; }
-                  { id = "KeepAwake"; }
-                  { id = "NightLight"; }
-                ];
-              };
+              sidebar = "full";
+              sidebar_section = "full";
+              width = 920;
+            };
+            control_center.shortcuts = [
+              { type = "wifi"; }
+              { type = "bluetooth"; }
+              { type = "nightlight"; }
+              { type = "keyboard_layout"; }
+              { type = "wallpaper"; }
+              { type = "power_profile"; }
+            ];
+
+            # ── Dock ─────────────────────────────────────────────────
+            dock = {
+              enabled = false;
+              position = "bottom";
+              auto_hide = false;
+              active_monitor_only = false;
+              show_running = true;
+              magnification = true;
+              magnification_scale = 1.35;
+              background_opacity = 0.81;
+              launcher_icon = "yin-yang-filled";
+              launcher_position = "start";
+              launcher_custom_image = "/home/t0psh31f/.icons/Anime/1P/one-piece-jolly-roger-icons-by-crountch/png/256x256/Zoro.png";
+              margin_edge = 2;
+              monitors = [ "eDP-1" "DP-2" ];
+              pinned = [ "Brave" ];
+              radius = 23;
+              reserve_space = false;
+              show_dots = true;
+            };
+
+            # ── Hot Corners ──────────────────────────────────────────
+            hot_corners = {
+              enabled = true;
+            };
+            hot_corners.top_left = {
+              action = "launcher";
+            };
+            hot_corners.top_right = {
+              action = "control_center";
+            };
+            hot_corners.bottom_left = {
+              action = "window_switcher";
+            };
+
+            # ── Idle ─────────────────────────────────────────────────
+            idle.behavior_order = [ "lock" "screen-off" "lock-and-suspend" ];
+            idle.behavior.lock = {
+              action = "lock";
+              enabled = false;
+              timeout = 600.0;
+            };
+            idle.behavior.screen-off = {
+              action = "screen_off";
+              enabled = true;
+              timeout = 660.0;
+            };
+            idle.behavior.lock-and-suspend = {
+              action = "lock_and_suspend";
+              enabled = false;
+              timeout = 900.0;
+            };
+
+            # ── Keybinds ─────────────────────────────────────────────
+            keybinds = {
+              cancel = [ "Escape" ];
+              up = [ "Up" "Alt+j" ];
+              down = [ "Down" "Alt+k" ];
+              left = [ "Left" "Alt+h" ];
+              right = [ "Right" "Alt+l" ];
+            };
+
+            # ── Location ──────────────────────────────────────────────
+            location = {
+              address = "Los Angeles, CA";
+              auto_locate = true;
+            };
+
+            # ── Lockscreen Widgets ────────────────────────────────────
+            lockscreen_widgets = {
+              enabled = true;
+              schema_version = 2;
+              widget_order = [ "lockscreen-login-box@DP-2" "lockscreen-login-box@eDP-1" ];
+            };
+            lockscreen_widgets.grid = {
+              cell_size = 16;
+              major_interval = 4;
+              visible = true;
+            };
+            lockscreen_widgets.widget."lockscreen-login-box@eDP-1" = {
+              box_height = 70.0;
+              box_width = 400.0;
+              cx = 800.0;
+              cy = 881.0;
+              output = "eDP-1";
+              rotation = 0.0;
+              type = "login_box";
+            };
+            lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings = {
+              background_color = "surface_variant";
+              background_opacity = 0.88;
+              background_radius = 12.0;
+              input_opacity = 1.0;
+              input_radius = 6.0;
+              show_caps_lock = true;
+              show_keyboard_layout = true;
+              show_login_button = true;
+              show_password_hint = true;
+            };
+            lockscreen_widgets.widget."lockscreen-login-box@DP-2" = {
+              box_height = 70.0;
+              box_width = 400.0;
+              cx = 960.0;
+              cy = 961.0;
+              output = "DP-2";
+              rotation = 0.0;
+              type = "login_box";
+            };
+            lockscreen_widgets.widget."lockscreen-login-box@DP-2".settings = {
+              background_color = "surface_variant";
+              background_opacity = 0.88;
+              background_radius = 12.0;
+              input_opacity = 1.0;
+              input_radius = 6.0;
+              show_caps_lock = true;
+              show_keyboard_layout = true;
+              show_login_button = true;
+              show_password_hint = true;
+            };
+
+            # ── Night Light ──────────────────────────────────────────
+            night_light = {
+              enabled = true;
+              auto_schedule = true;
+              night_temp = "4000";
+              day_temp = "6500";
+              manual_sunrise = "06:30";
+              manual_sunset = "18:30";
             };
 
             # ── Notifications ─────────────────────────────────────────
@@ -230,10 +480,41 @@ in
               enable_daemon = true;
               position = "top_right";
               layer = "overlay";
-              background_opacity = 1;
+              background_opacity = 0.94;
             };
 
-            # ── Session ───────────────────────────────────────────────
+            # ── OSD ──────────────────────────────────────────────────
+            osd = {
+              position = "bottom_center";
+              position_vertical = "center_right";
+              orientation = "horizontal";
+              scale = 1.0;
+              background_opacity = 0.97;
+            };
+
+            # ── Plugins ──────────────────────────────────────────────
+            plugins.enabled = [
+              "noctalia/bongocat"
+              "noctalia/screen_recorder"
+              "noctalia/notes"
+              "noctalia/wallhaven"
+            ];
+            plugins.source = [
+              {
+                name = "official";
+                kind = "git";
+                location = "https://github.com/noctalia-dev/official-plugins";
+                auto_update = true;
+              }
+              {
+                name = "community";
+                kind = "git";
+                location = "https://github.com/noctalia-dev/community-plugins";
+                auto_update = true;
+              }
+            ];
+
+            # ── Session ──────────────────────────────────────────────
             session_menu = {
               enable_countdown = true;
               countdown_duration = 10000;
@@ -244,43 +525,141 @@ in
               large_buttons_layout = "single-row";
             };
 
-            # ── Location ──────────────────────────────────────────────
-            location = {
-              address = "Los Angeles, CA";
+            # ── System Monitor ───────────────────────────────────────
+            system.monitor = {
+              gpu_poll_seconds = 60;
             };
 
-            # ── Night Light ───────────────────────────────────────────
-            night_light = {
+            # ── Weather ──────────────────────────────────────────────
+            weather = {
+              unit = "imperial";
+            };
+
+            # ── Battery Device ───────────────────────────────────────
+            battery.device."/org/freedesktop/UPower/devices/mouse_dev_4E_B6_4B_9A_28_22" = {
+              warning_threshold = 10;
+            };
+
+            # ── Widget Styling ───────────────────────────────────────
+            widget.battery = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "on_primary";
+              capsule_opacity = 0.92;
+              display_mode = "graphic";
+              scale = 1.1;
+            };
+            widget.bluetooth = {
+              enabled = false;
+            };
+            widget.brightness = {
+              enabled = false;
+              show_label = false;
+            };
+            widget.clipboard = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "on_primary";
+              capsule_opacity = 0.91;
+            };
+            widget.clock = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "on_primary";
+              capsule_opacity = 0.90;
+              format = "{:%H:%M:%S}";
+              scale = 1.1;
+            };
+            widget.control-center = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "secondary";
+              capsule_opacity = 0.91;
+              custom_image = "/home/t0psh31f/.icons/Anime/1P/one-piece-jolly-roger-icons-by-crountch/png/256x256/Luffys flag.png";
+            };
+            widget.launcher = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "secondary";
+              capsule_opacity = 0.89;
+              custom_image = "/home/t0psh31f/Pictures/png_ico/logo.png";
+              glyph = "brand-xbox";
+              scale = 1.25;
+            };
+            widget.media = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "secondary";
+              capsule_opacity = 0.93;
+              color = "primary";
+              hide_when_no_media = true;
+              icon_color = "primary";
+              max_length = 235;
+              min_length = 116;
+              title_scroll = "always";
+            };
+            widget.network = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "on_primary";
+              capsule_opacity = 0.90;
+              color = "primary";
               enabled = true;
-              auto_schedule = true;
-              night_temp = "4000";
-              day_temp = "6500";
-              manual_sunrise = "06:30";
-              manual_sunset = "18:30";
+              icon_color = "primary";
             };
-
-            # ── Audio ─────────────────────────────────────────────────
-            audio = {
+            widget.notifications = {
+              capsule = true;
+              hide_when_no_unread = true;
             };
-
-            # ── Brightness ────────────────────────────────────────────
-            brightness = {
+            widget.session = {
+              enabled = false;
             };
-
-            # ── OSD ───────────────────────────────────────────────────
-            osd = {
-              position = "bottom_center";
-              orientation = "horizontal";
-              scale = 1.0;
-              background_opacity = 0.97;
+            widget.tray = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "secondary";
+              capsule_opacity = 0.93;
+              color = "secondary";
+              drawer = true;
+              icon_color = "secondary";
             };
-
-            # ── Idle ──────────────────────────────────────────────────
-            idle = {
+            widget.volume = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "tertiary";
+              capsule_opacity = 0.86;
+              capsule_padding = 11;
+              scale = 1.1;
             };
-
-            # ── Hooks ─────────────────────────────────────────────────
-            hooks = {
+            widget.wallpaper = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "secondary";
+              capsule_opacity = 0.88;
+              color = "primary";
+              icon_color = "primary";
+            };
+            widget.workspaces = {
+              capsule = true;
+              capsule_border = "primary";
+              capsule_fill = "on_primary";
+              capsule_foreground = "secondary";
+              capsule_opacity = 0.90;
+              color = "primary";
+              display = "name";
+              empty_color = "tertiary";
+              icon_color = "primary";
+              labels_only_when_occupied = true;
             };
           };
         };
