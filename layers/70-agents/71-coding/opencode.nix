@@ -90,6 +90,7 @@
         })
       ];
 
-      home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop;
+      home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop
+        ++ [ pkgs.libcanberra-gtk3 ];  # canberra-gtk-play for warcraft-notifications audio
     };
 }
