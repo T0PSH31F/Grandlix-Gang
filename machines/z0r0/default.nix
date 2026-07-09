@@ -101,6 +101,9 @@
     layer-70.agent.opencode = {
       plugin = "oh-my-openagent";
     };
+
+    # supergraph — monorepo intelligence for AI coding agents
+    layer-70.agent.supergraph.enable = true;
   };
 
   # ============================================================================
@@ -118,6 +121,16 @@
     sillytavern-app.enable = lib.mkForce false; # Crash-looping, not needed on z0r0
     ai-services.lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
     llm-agents.enable = true;
+
+    # Brain Service — Personal Knowledge Base (PDF/EPUB/HTML/MD RAG for Hermes)
+    ai-services.brain-service = {
+      enable = true;
+      port = 8010;
+      mcpEnable = true;
+      booksDir = "/home/t0psh31f/Notes/PKB";
+      embedModel = "nomic-embed-text";
+      embedDim = 768;
+    };
     llama-cpp-server = {
       enable = true;
       host = "0.0.0.0";

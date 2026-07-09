@@ -8,128 +8,42 @@
 let
   cfg = config.services.ai-services.brain-service;
 
-  # Creating a Python environment with FastAPI and LlamaIndex
+  # Python environment with all dependencies
   pythonEnv = pkgs.python3.withPackages (
     ps: with ps; [
+      # Core API
       fastapi
       uvicorn
       pydantic
       sqlalchemy
       psycopg2
       pgvector
+
+      # LlamaIndex
       llama-index-core
       llama-index-vector-stores-postgres
-      llama-index-llms-openai # For OpenRouter compatibility
+      llama-index-embeddings-ollama
+      llama-index-llms-openai
+
+      # Document parsing
+      pymupdf  # PDF
+      ebooklib  # EPUB
+      beautifulsoup4  # HTML
+      markdown  # Markdown → HTML conversion
+      lxml  # Fast HTML parser
+      python-multipart  # File uploads
+
+      # File watching
+      watchdog
+
+      # MCP server
+      mcp
     ]
   );
 
-  # Brain Service Python Script
-  brainScript = pkgs.writeText "brain_server.py" ''
-    import os
-    import uvicorn
-    from fastapi import FastAPI, HTTPException
-    from pydantic import BaseModel
-    from typing import Optional, List, Dict, Any
+  # Brain Service Python Script — loaded from external file to avoid Nix heredoc indentation issues
+  brainScript = ./brain_server.py;
 
-    from llama_index.core import VectorStoreIndex, Document
-    from llama_index.vector_stores.postgres import PGVectorStore
-    from llama_index.core import StorageContext
-    from llama_index.llms.openai import OpenAI
-    from llama_index.core import Settings
-
-    app = FastAPI(title="Brain Service PKB", description="Local Knowledge Base API")
-
-    # Configuration
-    DB_NAME = os.getenv("DB_NAME", "vectordb")
-    DB_USER = os.getenv("DB_USER", "postgres")
-    DB_PASS = os.getenv("DB_PASS", "")
-    DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
-    DB_PORT = os.getenv("DB_PORT", "5432")
-    LLM_API_KEY = os.getenv("LLM_API_KEY", "dummy")
-    LLM_API_BASE = os.getenv("LLM_API_BASE", "https://openrouter.ai/api/v1")
-    LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-4o-mini")
-
-    # Init LlamaIndex Settings
-    Settings.llm = OpenAI(
-        api_key=LLM_API_KEY, 
-        api_base=LLM_API_BASE, 
-        model=LLM_MODEL
-    )
-
-    def get_index():
-        vector_store = PGVectorStore.from_params(
-            database=DB_NAME,
-            host=DB_HOST,
-            password=DB_PASS,
-            port=DB_PORT,
-            user=DB_USER,
-            table_name="pkb_documents",
-            embed_dim=1536
-        )
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        return VectorStoreIndex.from_vector_store(vector_store, storage_context=storage_context)
-
-    class RememberRequest(BaseModel):
-        text: str
-        source: Optional[str] = None
-        user: Optional[str] = None
-        project: Optional[str] = None
-        tags: Optional[List[str]] = None
-
-    class QueryRequest(BaseModel):
-        question: str
-        scope: Optional[str] = None
-        user: Optional[str] = None
-
-    @app.post("/remember")
-    async def remember(req: RememberRequest):
-        try:
-            metadata = {
-                "source": req.source or "unknown",
-                "user": req.user or "system",
-                "project": req.project or "general",
-                "tags": ",".join(req.tags) if req.tags else ""
-            }
-            doc = Document(text=req.text, metadata=metadata)
-            index = get_index()
-            index.insert(doc)
-            return {"status": "success", "message": "Information ingested into Brain."}
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
-
-    @app.post("/query")
-    async def query(req: QueryRequest):
-        try:
-            index = get_index()
-            # Basic query engine
-            # In LlamaIndex, we should use a retriever with filters for scope/user later.
-            query_engine = index.as_query_engine()
-            response = query_engine.query(req.question)
-            
-            sources = []
-            for node in response.source_nodes:
-                sources.append({
-                    "text": node.text,
-                    "score": node.score,
-                    "metadata": node.metadata
-                })
-                
-            return {
-                "answer": str(response),
-                "sources": sources
-            }
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
-
-    @app.get("/health")
-    async def health():
-        return {"status": "healthy"}
-
-    if __name__ == "__main__":
-        import os
-        port = int(os.getenv("PORT", "8010"))
-        uvicorn.run(app, host="0.0.0.0", port=port)
-  '';
 
 in
 {
@@ -139,25 +53,49 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 8010;
-      description = "Port to listen on";
+      description = "HTTP API port";
     };
 
     llmApiBase = lib.mkOption {
       type = lib.types.str;
       default = "https://openrouter.ai/api/v1";
-      description = "OpenAI compatible base URL (e.g. OpenRouter, LocalAI)";
+      description = "OpenAI compatible base URL";
     };
 
     llmModel = lib.mkOption {
       type = lib.types.str;
       default = "openai/gpt-4o-mini";
-      description = "Model to use for LLM Generation";
+      description = "LLM model for query answering";
+    };
+
+    embedModel = lib.mkOption {
+      type = lib.types.str;
+      default = "nomic-embed-text";
+      description = "Ollama embedding model";
+    };
+
+    embedDim = lib.mkOption {
+      type = lib.types.int;
+      default = 768;
+      description = "Embedding dimension (must match model)";
+    };
+
+    booksDir = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = "Directory to watch for new PDF/EPUB files";
+    };
+
+    mcpEnable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable MCP server for Hermes";
     };
 
     apiSecretFile = lib.mkOption {
       type = lib.types.path;
       default = config.clan.core.vars.generators.brain-service.files."env".path;
-      description = "Path to the environment file containing the LLM API key.";
+      description = "Path to the environment file with API keys.";
     };
   };
 
@@ -182,13 +120,16 @@ in
       '';
     };
 
+    # Create data directory
+    systemd.tmpfiles.rules = [
+      "d /var/lib/brain-service 0750 postgres postgres -"
+    ];
+
+    # Main API service
     systemd.services.brain-service = {
       description = "Brain Service PKB API";
       wantedBy = [ "multi-user.target" ];
-      after = [
-        "postgresql.service"
-        "postgresql-extensions.service"
-      ];
+      after = [ "postgresql.service" "postgresql-extensions.service" "ollama.service" ];
       requires = [ "postgresql.service" ];
 
       environment = {
@@ -198,15 +139,168 @@ in
         DB_PORT = "5432";
         LLM_API_BASE = cfg.llmApiBase;
         LLM_MODEL = cfg.llmModel;
+        OLLAMA_URL = "http://127.0.0.1:11434";
+        EMBED_MODEL = cfg.embedModel;
+        EMBED_DIM = toString cfg.embedDim;
         PORT = toString cfg.port;
+        BRAIN_MODE = "api";
+        MANIFEST_PATH = "/var/lib/brain-service/manifest.json";
+      } // lib.optionalAttrs (cfg.booksDir != null) {
+        BOOKS_DIR = cfg.booksDir;
       };
 
       serviceConfig = {
         ExecStart = "${pythonEnv}/bin/python ${brainScript}";
         Restart = "on-failure";
-        User = "postgres"; # Run as postgres to avoid local socket auth issues unless properly mapped
+        User = "postgres";
         EnvironmentFile = cfg.apiSecretFile;
       };
     };
+
+    # MCP server for Hermes (runs on-demand via stdin/stdout)
+    systemd.services.brain-mcp = lib.mkIf cfg.mcpEnable {
+      description = "Brain Service MCP Server";
+      # Triggered on-demand by Hermes, not at boot
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pythonEnv}/bin/python ${brainScript}";
+        User = "postgres";
+        EnvironmentFile = cfg.apiSecretFile;
+        Environment = [
+          "BRAIN_MODE=mcp"
+          "DB_NAME=vectordb"
+          "DB_USER=postgres"
+          "DB_HOST=127.0.0.1"
+          "DB_PORT=5432"
+          "OLLAMA_URL=http://127.0.0.1:11434"
+          "EMBED_MODEL=${cfg.embedModel}"
+          "EMBED_DIM=${toString cfg.embedDim}"
+          "MANIFEST_PATH=/var/lib/brain-service/manifest.json"
+        ];
+      };
+    };
+
+    # File watcher service (optional)
+    systemd.services.brain-watcher = lib.mkIf (cfg.booksDir != null) {
+      description = "Brain Service File Watcher";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "brain-service.service" ];
+      requires = [ "brain-service.service" ];
+
+      environment = {
+        BRAIN_MODE = "watcher";
+        DB_NAME = "vectordb";
+        DB_USER = "postgres";
+        DB_HOST = "127.0.0.1";
+        DB_PORT = "5432";
+        OLLAMA_URL = "http://127.0.0.1:11434";
+        EMBED_MODEL = cfg.embedModel;
+        EMBED_DIM = toString cfg.embedDim;
+        BOOKS_DIR = cfg.booksDir;
+        MANIFEST_PATH = "/var/lib/brain-service/manifest.json";
+      };
+
+      serviceConfig = {
+        ExecStart = "${pythonEnv}/bin/python ${brainScript}";
+        Restart = "on-failure";
+        User = "postgres";
+        EnvironmentFile = cfg.apiSecretFile;
+      };
+    };
+
+    # MCP wrapper package for Hermes integration
+    environment.systemPackages = lib.mkIf cfg.mcpEnable [
+      (pkgs.writeShellScriptBin "brain-mcp" ''
+        export BRAIN_MODE=mcp
+        export DB_NAME=vectordb
+        export DB_USER=postgres
+        export DB_HOST=127.0.0.1
+        export DB_PORT=5432
+        export OLLAMA_URL=http://127.0.0.1:11434
+        export EMBED_MODEL=${cfg.embedModel}
+        export EMBED_DIM=${toString cfg.embedDim}
+        export MANIFEST_PATH=/var/lib/brain-service/manifest.json
+
+        exec ${pythonEnv}/bin/python ${brainScript}
+      '')
+      # CLI tool for quick ingestion
+      (pkgs.writeShellScriptBin "brain-ingest" ''
+        if [ -z "$1" ]; then
+          echo "Usage: brain-ingest <file-or-directory>"
+          echo "  Supports: PDF, EPUB, HTML, MD, TXT"
+          exit 1
+        fi
+
+        if [ -d "$1" ]; then
+          curl -s -X POST "http://127.0.0.1:8010/ingest/directory?directory=$1" | jq .
+        else
+          curl -s -X POST "http://127.0.0.1:8010/ingest/path?path=$1" | jq .
+        fi
+      '')
+      # CLI tool for ingesting websites
+      (pkgs.writeShellScriptBin "insite" ''
+        if [ -z "$1" ]; then
+          echo "Usage: insite <url>"
+          echo "  Downloads a website and ingests it into your PKB"
+          echo ""
+          echo "Examples:"
+          echo "  insite docs.clan.lol"
+          echo "  insite https://nixos.wiki/wiki/NixOS_Wiki"
+          echo "  insite https://blog.example.com/article"
+          exit 1
+        fi
+
+        # Normalize URL
+        URL="$1"
+        if [[ ! "$URL" =~ ^https?:// ]]; then
+          URL="https://$URL"
+        fi
+
+        # Extract domain for folder name
+        DOMAIN=$(echo "$URL" | sed -E 's|https?://([^/]+).*|\1|' | sed 's|www\.||')
+        DEST="$HOME/Notes/PKB/websites/$DOMAIN"
+
+        echo "Downloading $URL → $DEST/"
+        mkdir -p "$DEST"
+
+        ${pkgs.wget}/bin/wget --mirror --convert-links --adjust-extension --page-requisites \
+          --no-parent --no-host-directories --directory-prefix="$DEST" \
+          --reject="*.css,*.js,*.png,*.jpg,*.jpeg,*.gif,*.svg,*.ico,*.woff,*.woff2,*.ttf,*.eot" \
+          --timeout=10 --tries=2 "$URL" 2>&1 | tail -5
+
+        echo ""
+        echo "Ingesting into Brain Service..."
+        RESULT=$(curl -s -X POST "http://127.0.0.1:8010/ingest/directory?directory=$DEST" 2>&1)
+        FILES=$(echo "$RESULT" | ${pkgs.jq}/bin/jq -r '.files // 0')
+        echo "Done! Ingested $FILES files from $DOMAIN"
+        echo "  Source: $DEST/"
+      '')
+
+      # CLI tool for querying
+      (pkgs.writeShellScriptBin "brain-query" ''
+        if [ -z "$1" ]; then
+          echo "Usage: brain-query <question>"
+          exit 1
+        fi
+
+        curl -s -X POST http://127.0.0.1:8010/query \
+          -H "Content-Type: application/json" \
+          -d "{\"question\": \"$1\"}" | jq .
+      '')
+    ];
+
+    # Impermanence
+    environment.persistence."/persist" =
+      lib.mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = "/var/lib/brain-service";
+              user = "postgres";
+              group = "postgres";
+              mode = "0750";
+            }
+          ];
+        };
   };
 }

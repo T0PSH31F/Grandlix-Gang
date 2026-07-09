@@ -467,6 +467,15 @@ in
               HIMALAYA_BINARY = "/nix/store/3nk406biw3bbhaf5pjvx6648850zjfi6-himalaya-1.2.0/bin/himalaya";
             };
           };
+
+          # Brain Service — Personal Knowledge Base (PDF/EPUB/HTML/MD RAG)
+          # Query ingested books and documents via LlamaIndex + PGVector + Ollama
+          # Exposes tools: brain_query, brain_remember, brain_ingest_book, brain_ingest_directory, brain_list_books
+          brain-service = {
+            command = "/run/current-system/sw/bin/brain-mcp";
+            args = [];
+            env = {};
+          };
         };
       };
 

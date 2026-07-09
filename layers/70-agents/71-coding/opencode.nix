@@ -56,7 +56,14 @@
               HIMALAYA_BINARY = "/etc/profiles/per-user/t0psh31f/bin/himalaya";
             };
           };
-          plugin = [ pluginLabel ];
+          plugin = [
+            pluginLabel
+            "@pantheon-ai/opencode-warcraft-notifications"
+          ];
+          warcraft-notifications = {
+            faction = "horde";
+            showDescriptionInToast = true;
+          };
           agent = {
             explore.disable = true;
             general.disable = true;

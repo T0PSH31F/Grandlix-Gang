@@ -214,4 +214,123 @@ final: prev: {
       });
     })
   ];
+
+  # ── lokb: Local Offline Knowledge Base ─────────────────────────────
+  # Rust-based knowledge base with MCP server, hybrid search, and
+  # support for 15+ formats (PDF, EPUB, ZIM, Telegram, etc.)
+  # https://github.com/meteora-pro/lokb
+  lokb = final.rustPlatform.buildRustPackage rec {
+    pname = "lokb";
+    version = "0.1.0-unstable-2026-04-22";
+
+    src = final.fetchFromGitHub {
+      owner = "meteora-pro";
+      repo = "lokb";
+      rev = "7f0c8ba068e083467dc8e520f54569b208dd2303";
+      hash = "sha256-ErF4xAMeWw9K6s7MK/MRZ91iGM8p+tr8smfUBE8vW6I=";
+    };
+
+    cargoLock = {
+      lockFile = src + "/Cargo.lock";
+      outputHashes = {
+        # Add any git dependency hashes here if needed
+      };
+    };
+
+    nativeBuildInputs = with final; [
+      pkg-config
+      rustPlatform.bindgenHook
+    ];
+
+    buildInputs = with final; [
+      openssl
+      sqlite
+      zlib
+      linuxHeaders
+    ] ++ final.lib.optionals final.stdenv.isLinux [
+      # For PDF rendering (poppler)
+      poppler
+      poppler_gi
+      cairo
+      glib
+    ];
+
+    # Patch lokb-cli to remove lokb-embed dependency (ONNX runtime version conflict).
+    # Full-text search (Tantivy) and knowledge graph work without embeddings.
+    # Semantic search can be added later via Ollama API.
+    postPatch = ''
+      substituteInPlace crates/lokb-cli/Cargo.toml \
+        --replace 'lokb-embed = { path = "../lokb-embed" }' '# lokb-embed disabled (ONNX runtime conflict)'
+      substituteInPlace crates/lokb-cli/src/main.rs \
+        --replace 'mod parallel_zim;' '# mod parallel_zim;' \
+        --replace 'Commands::Enrich' 'Commands::_Enrich' \
+        --replace 'Commands::Entity' 'Commands::_Entity' \
+        --replace 'Commands::Substring' 'Commands::_Substring' \
+        --replace 'Commands::BuildIndex' 'Commands::_BuildIndex'
+    '';
+
+    # Disable tests that need network or special setup
+    doCheck = false;
+
+    meta = with final.lib; {
+      description = "Local Offline Knowledge Base — 15 formats, hybrid search, MCP server";
+      homepage = "https://github.com/meteora-pro/lokb";
+      license = licenses.asl20;
+      maintainers = [ ];
+      mainProgram = "lokb";
+    };
+  };
+
+  # ── supergraph: Monorepo intelligence for AI agents ────────────────
+  # AST-based codebase indexing with MCP server, blast radius analysis,
+  # and token-efficient context generation for AI coding agents.
+  # https://github.com/bravenewxyz/supergraph
+  # Uses prebuilt binary from GitHub releases (linux-x64).
+  supergraph = let
+    version = "1.1.33";
+    src = final.fetchzip {
+      url = "https://github.com/bravenewxyz/supergraph/releases/download/v${version}/supergraph-linux-x64.tar.gz";
+      hash = "sha256-7WvIkd8mrEkeHBnsdSn3FQ/CYSLgcOG5d8RxoLKaQD4=";
+      stripRoot = false;
+    };
+  in final.stdenv.mkDerivation {
+    pname = "supergraph";
+    inherit version;
+
+    dontUnpack = true;
+    dontBuild = true;
+    dontConfigure = true;
+
+    nativeBuildInputs = with final; [
+      makeWrapper
+      autoPatchelfHook
+    ];
+
+    buildInputs = with final; [
+      stdenv.cc.cc.lib
+    ];
+
+    installPhase = ''
+      runHook preInstall
+
+      mkdir -p $out/bin $out/lib
+
+      # Copy binary
+      cp ${src}/supergraph $out/bin/supergraph
+      chmod +x $out/bin/supergraph
+
+      # Copy shared libs if present
+      cp -r ${src}/lib/* $out/lib/ 2>/dev/null || true
+
+      runHook postInstall
+    '';
+
+    meta = with final.lib; {
+      description = "Monorepo intelligence — structural analysis, deep audits, and interactive visualization for AI agents";
+      homepage = "https://github.com/bravenewxyz/supergraph";
+      license = licenses.mit;
+      maintainers = [ ];
+      mainProgram = "supergraph";
+    };
+  };
 }

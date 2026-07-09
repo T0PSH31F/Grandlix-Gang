@@ -112,6 +112,7 @@ with lib;
           libappindicator-gtk3
           libcaca
           libcanberra
+          libcanberra-gtk3  # canberra-gtk-play for warcraft-notifications plugin audio (force rebuild 2026-07-09)
           libcap
           libdbusmenu-gtk2
           libdrm

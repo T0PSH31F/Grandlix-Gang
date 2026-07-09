@@ -25,5 +25,6 @@
     ./litellm.nix # LiteLLM proxy
     ./llama-swap.nix # llama-swap router
     ./vllm.nix # vLLM inference server
+    ./lokb.nix # lokb knowledge base with MCP server
   ];
 }
