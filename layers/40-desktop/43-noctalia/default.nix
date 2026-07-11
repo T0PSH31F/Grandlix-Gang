@@ -695,8 +695,9 @@ in
             # This keeps borders, active/inactive colors, and the vibrancy
             # shader in sync without requiring a compositor restart.
             hooks = {
-              wallpaper_changed = "noctalia-hypr-reload";
-              colors_changed = "noctalia-hypr-reload && zellij-colors-sync";
+              enabled = true;
+              wallpaperChange = "noctalia-hypr-reload";
+              colorGeneration = "noctalia-hypr-reload && zellij-colors-sync";
             };
           };
         };
