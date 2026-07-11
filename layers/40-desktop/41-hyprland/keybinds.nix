@@ -64,7 +64,7 @@ in
         "CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | swappy -f -"
 
         # ── Theme & Layout Management ──────────────────────────────────
-        "$mod SHIFT, P, exec, noctalia-theme-toggle"
+        # "$mod SHIFT, P, exec, noctalia-theme-toggle"
         # "$mod, Tab, hyprexpo:expo, toggle" # Temporarily disabled
         "$mod, Tab, exec, $ipc window-switcher"
 
