@@ -177,6 +177,7 @@ with lib;
           libxshmfence
           zlib
           wayland  # Required by oh-my-opencode-slim companion (Wayland GUI overlay)
+          portaudio # Required by hermes-agent sounddevice Voice mode
         ];
       };
       nixbit = {

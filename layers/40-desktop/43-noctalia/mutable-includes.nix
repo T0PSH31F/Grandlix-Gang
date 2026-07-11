@@ -66,11 +66,11 @@ in
 
     # ── GTK 3 ──────────────────────────────────────────────────────────
     # Noctalia's built-in gtk template generates gtk colors to:
-    #   ~/.config/noctalia/templates/gtk3-colors.css
+    #   ~/.config/gtk-3.0/noctalia.css
     xdg.configFile."gtk-3.0/gtk.css" = {
       text = ''
         /* GTK3 base — import Noctalia-generated Material You colors */
-        @import url("file:///home/${config.home.username}/.config/noctalia/templates/gtk3-colors.css");
+        @import url("noctalia.css");
       '';
       force = true;
     };
@@ -79,7 +79,7 @@ in
     xdg.configFile."gtk-4.0/gtk.css" = {
       text = ''
         /* GTK4 base — import Noctalia-generated Material You colors */
-        @import url("file:///home/${config.home.username}/.config/noctalia/templates/gtk4-colors.css");
+        @import url("noctalia.css");
       '';
       force = true;
     };
@@ -129,7 +129,7 @@ in
             glow: #aa00ff;
         }
 
-        @import "~/.config/noctalia/templates/rofi-colors.rasi"
+        @import "noctalia.rasi"
 
         configuration {
           modi: "drun,run,window,ssh";
@@ -241,11 +241,11 @@ in
     # No include mechanism needed — Noctalia manages it
 
     # ── Helix ──────────────────────────────────────────────────────────
-    # Noctalia's built-in helix template generates to helix themes dir
+    # Noctalia's built-in helix template generates to helix themes dir (~/.config/helix/themes/noctalia.toml)
     # We just need to set the theme name in config.toml
     xdg.configFile."helix/config.toml" = {
       text = ''
-        theme = "matugen"
+        theme = "noctalia"
 
         [editor]
         line-number = "relative"

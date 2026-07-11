@@ -2,118 +2,376 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
 let
   cfg = config.layers.layer-50.cli;
 
+  zjstatusWasm = "${inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/zjstatus.wasm";
+
+  # ── Noctalia Color Sync Script ──────────────────────────────────────
+  # Reads noctalia colors and regenerates zjstatus layouts with the current palette.
+  zellij-colors-sync = pkgs.writeShellScriptBin "zellij-colors-sync" ''
+    COLORS_FILE="''${HOME}/.config/hypr/noctalia/noctalia-colors.conf"
+    LAYOUTS_DIR="''${HOME}/.config/zellij/layouts"
+    mkdir -p "$LAYOUTS_DIR"
+
+    # Fallback colors (Noctalia dark green default)
+    PRIMARY="00e468"
+    SECONDARY="84d990"
+    SURFACE="0d150d"
+    TERTIARY="51d5ff"
+    ERROR="ffb4ab"
+
+    # Parse noctalia colors if available
+    if [ -f "$COLORS_FILE" ]; then
+      PRIMARY=$(grep '^\$primary' "$COLORS_FILE" | sed 's/.*rgb(\([a-f0-9]*\)).*/\1/' || echo "$PRIMARY")
+      SECONDARY=$(grep '^\$secondary' "$COLORS_FILE" | sed 's/.*rgb(\([a-f0-9]*\)).*/\1/' || echo "$SECONDARY")
+      SURFACE=$(grep '^\$surface' "$COLORS_FILE" | sed 's/.*rgb(\([a-f0-9]*\)).*/\1/' || echo "$SURFACE")
+      TERTIARY=$(grep '^\$tertiary' "$COLORS_FILE" | sed 's/.*rgb(\([a-f0-9]*\)).*/\1/' || echo "$TERTIARY")
+      ERROR=$(grep '^\$error' "$COLORS_FILE" | sed 's/.*rgb(\([a-f0-9]*\)).*/\1/' || echo "$ERROR")
+    fi
+
+    ZJSTATUS_WASM="${zjstatusWasm}"
+
+    gen_bar() {
+      cat <<KDL
+        pane size=1 borderless=true {
+            plugin location="file:''${ZJSTATUS_WASM}" {
+              format_left   "{mode} #[fg=#9399b2,bold]{session}"
+              format_center "{tabs}"
+              format_right  "#[fg=#6c7086]{command_git_branch} #[fg=#9399b2,bold]{datetime}"
+              format_space  ""
+
+              border_enabled  "false"
+              hide_frame_for_single_pane "true"
+
+              mode_normal  "#[bg=#''${PRIMARY},fg=#''${SURFACE},bold] NORMAL "
+              mode_resize  "#[bg=#f9e2af,fg=#''${SURFACE},bold] RESIZE "
+              mode_scroll  "#[bg=#89b4fa,fg=#''${SURFACE},bold] SCROLL "
+              mode_session "#[bg=#cba6f7,fg=#''${SURFACE},bold] SESSION "
+              mode_tmux    "#[bg=#''${ERROR},fg=#''${SURFACE},bold] TMUX "
+
+              tab_normal   "#[fg=#6c7086] {name} "
+              tab_active   "#[fg=#''${PRIMARY},bold,italic] {name} "
+
+              command_git_branch_command     "git rev-parse --abbrev-ref HEAD 2>/dev/null"
+              command_git_branch_format      "#[fg=#''${SECONDARY}]  {stdout}"
+              command_git_branch_interval    "10"
+              command_git_branch_rendermode  "static"
+              command_git_branch_cwd         "{focused_pane_cwd}"
+
+              datetime        "#[fg=#6c7086]  {format} "
+              datetime_format "%a %d %b %H:%M"
+              datetime_timezone "America/Chicago"
+            }
+          }
+          children
+KDL
+    }
+
+    BAR=$(gen_bar)
+
+    # Generate each layout
+    cat > "$LAYOUTS_DIR/dev.kdl" <<KDL
+      layout {
+        default_tab_template {
+          ''${BAR}
+        }
+        tab name="dev" {
+          pane split_direction="vertical" {
+            pane size="70%" { command "nvim"; }
+            pane size="30%" { command "lazygit"; }
+          }
+        }
+        tab name="shell" { pane { command "zsh"; } }
+        tab name="files" { pane { command "yazi"; } }
+      }
+KDL
+
+    cat > "$LAYOUTS_DIR/git.kdl" <<KDL
+      layout {
+        default_tab_template {
+          ''${BAR}
+        }
+        tab name="git" { pane { command "lazygit"; } }
+        tab name="shell" { pane { command "zsh"; } }
+      }
+KDL
+
+    cat > "$LAYOUTS_DIR/server.kdl" <<KDL
+      layout {
+        default_tab_template {
+          ''${BAR}
+        }
+        tab name="monitor" {
+          pane split_direction="vertical" {
+            pane size="50%" { command "htop"; }
+            pane size="50%" { command "journalctl" { args "-f"; } }
+          }
+        }
+        tab name="shell" { pane { command "zsh"; } }
+      }
+KDL
+
+    cat > "$LAYOUTS_DIR/opencode.kdl" <<KDL
+      layout {
+        default_tab_template {
+          ''${BAR}
+        }
+        tab name="🤖 opencode" {
+          pane split_direction="vertical" {
+            pane size="70%" { command "opencode"; }
+            pane size="30%" { command "zsh"; }
+          }
+        }
+        tab name="git" { pane { command "lazygit"; } }
+        tab name="shell" { pane { command "zsh"; } }
+      }
+KDL
+
+    echo "zjstatus layouts synced with Noctalia colors (primary=#''${PRIMARY})"
+  '';
+
+  # ── zjstatus plugin reference ──────────────────────────────────────
+  zjstatusPlugin = ''plugin location="file:${zjstatusWasm}"'';
+
   # ── Layout Profiles ──────────────────────────────────────────────
   # KDL layout files installed to ~/.config/zellij/layouts/
   # Launch with: zellij --layout <name>
+  # Colors are synced with Noctalia via the zellij-colors systemd service.
 
   layouts = {
     # Default development layout: nvim + lazygit split, yazi tab
     dev = ''
       layout {
         default_tab_template {
-          pane size="1" {
-            plugin location="zellij:tab-bar"
+          pane size=1 borderless=true {
+            ${zjstatusPlugin} {
+              format_left   "{mode} #[fg=#9399b2,bold]{session}"
+              format_center "{tabs}"
+              format_right  "#[fg=#6c7086]{command_git_branch} #[fg=#9399b2,bold]{datetime}"
+              format_space  ""
+
+              border_enabled  "false"
+              hide_frame_for_single_pane "true"
+
+              mode_normal  "#[bg=#00e468,fg=#0d150d,bold] NORMAL "
+              mode_resize  "#[bg=#f9e2af,fg=#0d150d,bold] RESIZE "
+              mode_scroll  "#[bg=#89b4fa,fg=#0d150d,bold] SCROLL "
+              mode_session "#[bg=#cba6f7,fg=#0d150d,bold] SESSION "
+              mode_tmux    "#[bg=#f38ba8,fg=#0d150d,bold] TMUX "
+
+              tab_normal   "#[fg=#6c7086] {name} "
+              tab_active   "#[fg=#00e468,bold,italic] {name} "
+
+              command_git_branch_command     "git rev-parse --abbrev-ref HEAD 2>/dev/null"
+              command_git_branch_format      "#[fg=#84d990]  {stdout}"
+              command_git_branch_interval    "10"
+              command_git_branch_rendermode  "static"
+              command_git_branch_cwd         "{focused_pane_cwd}"
+
+              datetime        "#[fg=#6c7086]  {format} "
+              datetime_format "%a %d %b %H:%M"
+              datetime_timezone "America/Chicago"
+            }
           }
-          pane {
-            children
-          }
-          pane size="2" {
-            plugin location="zellij:status-bar"
-          }
+          children
         }
         tab name="dev" {
-            pane split_direction="vertical" {
-              pane size="70%" {
-                command "nvim"
-              }
-              pane size="30%" {
-                command "lazygit"
-              }
+          pane split_direction="vertical" {
+            pane size="70%" {
+              command "nvim"
+            }
+            pane size="30%" {
+              command "lazygit"
             }
           }
-          tab name="shell" {
-            pane {
-              command "zsh"
-            }
+        }
+        tab name="shell" {
+          pane {
+            command "zsh"
           }
-          tab name="files" {
-            pane {
-              command "yazi"
-            }
+        }
+        tab name="files" {
+          pane {
+            command "yazi"
           }
+        }
       }
     '';
+
     # Git-focused layout: lazygit main pane + shell
     git = ''
       layout {
         default_tab_template {
-          pane size="1" {
-            plugin location="zellij:tab-bar"
+          pane size=1 borderless=true {
+            ${zjstatusPlugin} {
+              format_left   "{mode} #[fg=#9399b2,bold]{session}"
+              format_center "{tabs}"
+              format_right  "#[fg=#6c7086]{command_git_branch} #[fg=#9399b2,bold]{datetime}"
+              format_space  ""
+
+              border_enabled  "false"
+              hide_frame_for_single_pane "true"
+
+              mode_normal  "#[bg=#00e468,fg=#0d150d,bold] NORMAL "
+              mode_resize  "#[bg=#f9e2af,fg=#0d150d,bold] RESIZE "
+              mode_scroll  "#[bg=#89b4fa,fg=#0d150d,bold] SCROLL "
+              mode_session "#[bg=#cba6f7,fg=#0d150d,bold] SESSION "
+              mode_tmux    "#[bg=#f38ba8,fg=#0d150d,bold] TMUX "
+
+              tab_normal   "#[fg=#6c7086] {name} "
+              tab_active   "#[fg=#00e468,bold,italic] {name} "
+
+              command_git_branch_command     "git rev-parse --abbrev-ref HEAD 2>/dev/null"
+              command_git_branch_format      "#[fg=#84d990]  {stdout}"
+              command_git_branch_interval    "10"
+              command_git_branch_rendermode  "static"
+              command_git_branch_cwd         "{focused_pane_cwd}"
+
+              datetime        "#[fg=#6c7086]  {format} "
+              datetime_format "%a %d %b %H:%M"
+              datetime_timezone "America/Chicago"
+            }
           }
+          children
+        }
+        tab name="git" {
           pane {
-            children
-          }
-          pane size="2" {
-            plugin location="zellij:status-bar"
+            command "lazygit"
           }
         }
-          tab name="git" {
-            pane {
-              command "lazygit"
-            }
+        tab name="shell" {
+          pane {
+            command "zsh"
           }
-          tab name="shell" {
-            pane {
-              command "zsh"
-            }
-          }
+        }
       }
     '';
+
     # Server/monitoring layout: htop + logs + shell
     server = ''
       layout {
         default_tab_template {
-          pane size="1" {
-            plugin location="zellij:tab-bar"
+          pane size=1 borderless=true {
+            ${zjstatusPlugin} {
+              format_left   "{mode} #[fg=#9399b2,bold]{session}"
+              format_center "{tabs}"
+              format_right  "#[fg=#6c7086]{command_git_branch} #[fg=#9399b2,bold]{datetime}"
+              format_space  ""
+
+              border_enabled  "false"
+              hide_frame_for_single_pane "true"
+
+              mode_normal  "#[bg=#00e468,fg=#0d150d,bold] NORMAL "
+              mode_resize  "#[bg=#f9e2af,fg=#0d150d,bold] RESIZE "
+              mode_scroll  "#[bg=#89b4fa,fg=#0d150d,bold] SCROLL "
+              mode_session "#[bg=#cba6f7,fg=#0d150d,bold] SESSION "
+              mode_tmux    "#[bg=#f38ba8,fg=#0d150d,bold] TMUX "
+
+              tab_normal   "#[fg=#6c7086] {name} "
+              tab_active   "#[fg=#00e468,bold,italic] {name} "
+
+              command_git_branch_command     "git rev-parse --abbrev-ref HEAD 2>/dev/null"
+              command_git_branch_format      "#[fg=#84d990]  {stdout}"
+              command_git_branch_interval    "10"
+              command_git_branch_rendermode  "static"
+              command_git_branch_cwd         "{focused_pane_cwd}"
+
+              datetime        "#[fg=#6c7086]  {format} "
+              datetime_format "%a %d %b %H:%M"
+              datetime_timezone "America/Chicago"
+            }
           }
-          pane {
-            children
-          }
-          pane size="2" {
-            plugin location="zellij:status-bar"
+          children
+        }
+        tab name="monitor" {
+          pane split_direction="vertical" {
+            pane size="50%" {
+              command "htop"
+            }
+            pane size="50%" {
+              command "journalctl" {
+                args "-f"
+              }
+            }
           }
         }
-          tab name="monitor" {
-            pane split_direction="vertical" {
-              pane size="50%" {
-                command "htop"
-              }
-              pane size="50%" {
-                command "journalctl" {
-                  args "-f"
-                }
-              }
-            }
+        tab name="shell" {
+          pane {
+            command "zsh"
           }
-          tab name="shell" {
-            pane {
-              command "zsh"
-            }
-          }
+        }
       }
     '';
 
-    # Single-pane compact (same as built-in compact, for fallback)
+    # Single-pane compact (no status bar for speed)
     compact = ''
       layout {
         pane {
           command "zsh"
+        }
+      }
+    '';
+
+    # OpenCode AI coding layout: opencode TUI + shell + lazygit
+    opencode = ''
+      layout {
+        default_tab_template {
+          pane size=1 borderless=true {
+            ${zjstatusPlugin} {
+              format_left   "{mode} #[fg=#9399b2,bold]{session}"
+              format_center "{tabs}"
+              format_right  "#[fg=#6c7086]{command_git_branch} #[fg=#9399b2,bold]{datetime}"
+              format_space  ""
+
+              border_enabled  "false"
+              hide_frame_for_single_pane "true"
+
+              mode_normal  "#[bg=#00e468,fg=#0d150d,bold] NORMAL "
+              mode_resize  "#[bg=#f9e2af,fg=#0d150d,bold] RESIZE "
+              mode_scroll  "#[bg=#89b4fa,fg=#0d150d,bold] SCROLL "
+              mode_session "#[bg=#cba6f7,fg=#0d150d,bold] SESSION "
+              mode_tmux    "#[bg=#f38ba8,fg=#0d150d,bold] TMUX "
+
+              tab_normal   "#[fg=#6c7086] {name} "
+              tab_active   "#[fg=#00e468,bold,italic] {name} "
+
+              command_git_branch_command     "git rev-parse --abbrev-ref HEAD 2>/dev/null"
+              command_git_branch_format      "#[fg=#84d990]  {stdout}"
+              command_git_branch_interval    "10"
+              command_git_branch_rendermode  "static"
+              command_git_branch_cwd         "{focused_pane_cwd}"
+
+              datetime        "#[fg=#6c7086]  {format} "
+              datetime_format "%a %d %b %H:%M"
+              datetime_timezone "America/Chicago"
+            }
+          }
+          children
+        }
+        tab name="🤖 opencode" {
+          pane split_direction="vertical" {
+            pane size="70%" {
+              command "opencode"
+            }
+            pane size="30%" {
+              command "zsh"
+            }
+          }
+        }
+        tab name="git" {
+          pane {
+            command "lazygit"
+          }
+        }
+        tab name="shell" {
+          pane {
+            command "zsh"
+          }
         }
       }
     '';
@@ -777,7 +1035,7 @@ FLAGS
   --agent build|plan             Choose agent
 
 OUR SETUP (NFP)
-  Plugin: oh-my-openagent (z0r0)
+  Plugin: oh-my-opencode-slim (z0r0)
   Config: layers/70-agents/71-coding/opencode.nix
   MCP servers: context-mode, github, himalaya, mcp-nixos
 
@@ -864,10 +1122,10 @@ in
       enableZshIntegration = false;
 
       settings = {
-        theme = lib.mkIf cfg.theming.enable "matugen";
+        theme = "catppuccin-mocha";
         pane_frames = true;
         default_layout = "dev";
-        simplified_ui = true;
+        simplified_ui = false;
 
         # ── Scroll & Cursor Fixes ───────────────────────────────
         # scrollback_buffer_size: number of lines kept in scrollback
@@ -962,9 +1220,23 @@ in
       z-dev()   { zellij --layout dev; }
       z-git()   { zellij --layout git; }
       z-server(){ zellij --layout server; }
+      z-oc()    { zellij --layout opencode; }
     '';
 
-    # Keybind cheatsheets for terminal programs
+    # Run color sync on login
+    systemd.user.services.zellij-colors = {
+      Unit = {
+        Description = "Sync zjstatus layouts with Noctalia colors";
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.bash}/bin/bash -c '/home/t0psh31f/.nix-profile/bin/zellij-colors-sync'";
+      };
+      Install = { WantedBy = [ "graphical-session.target" ]; };
+    };
+
+    # Keybind cheatsheets and tools
     home.packages = [
       cheatsheet_picker
       zellij_cheatsheet
@@ -979,6 +1251,7 @@ in
       cli_power_cheatsheet
       opencode_cheatsheet
       hermes_cheatsheet
+      zellij-colors-sync
     ];
   };
 }

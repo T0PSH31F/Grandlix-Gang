@@ -103,9 +103,11 @@ in
 
           settings = {
             source = [
-              "${config.home.homeDirectory}/.config/hypr/noctalia/noctalia-colors.conf"
+              "${config.home.homeDirectory}/.config/hypr/noctalia.conf"
+              "${config.home.homeDirectory}/.config/hypr/hyprtoolkit.conf"
               "${config.home.homeDirectory}/.config/hypr/monitors.conf"
               "${config.home.homeDirectory}/.cache/noctalia/HVE/overlay.conf"
+              "${config.home.homeDirectory}/.config/hypr/hyprviz.conf"
             ];
 
             # Color variables ($primary, $secondary, $surfaceContainer) are
@@ -210,7 +212,7 @@ in
           Service = {
             Type = "oneshot";
             RemainAfterExit = true;
-            ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr/noctalia && touch %h/.config/hypr/noctalia/noctalia-colors.conf %h/.config/hypr/monitors.conf'";
+            ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr && touch %h/.config/hypr/noctalia.conf %h/.config/hypr/hyprtoolkit.conf %h/.config/hypr/monitors.conf %h/.config/hypr/hyprviz.conf'";
           };
         };
 

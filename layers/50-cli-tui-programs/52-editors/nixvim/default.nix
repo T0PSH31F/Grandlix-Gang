@@ -568,9 +568,9 @@ in
         # Smear-cursor — cursor trailing/smear effect
         # Creates a visual "trail" after the cursor when moving fast.
         # Installed manually since nixvim has no built-in module for it.
-        extraPlugins = lib.mkIf cfg.plugins.smear-cursor [
-          pkgs.vimPlugins.smear-cursor-nvim
-        ];
+        extraPlugins = [
+          pkgs.vimPlugins.base16-nvim
+        ] ++ lib.optional cfg.plugins.smear-cursor pkgs.vimPlugins.smear-cursor-nvim;
 
         # Dressing — better vim.ui dialogs (telescope-style)
         plugins.dressing.enable = true;
@@ -780,21 +780,9 @@ in
           ''}
 
           -- Noctalia theme integration
-          local ok, colors = pcall(dofile, vim.fn.expand("~/.config/noctalia/templates/nvim-colors.lua"))
-          if ok and colors then
-            if colors.colorscheme then
-              vim.cmd("colorscheme " .. colors.colorscheme)
-            end
-            if colors.highlights then
-              for group, opts in pairs(colors.highlights) do
-                vim.api.nvim_set_hl(0, group, opts)
-              end
-            end
-            if colors.palette then
-              for name, color in pairs(colors.palette) do
-                vim.g["noctalia_" .. name] = color
-              end
-            end
+          local ok, matugen = pcall(require, "matugen")
+          if ok and matugen then
+            matugen.setup()
           else
             vim.cmd("colorscheme tokyo-night")
           end

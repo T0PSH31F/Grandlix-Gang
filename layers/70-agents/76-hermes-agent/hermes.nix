@@ -212,7 +212,22 @@ in
           mkdir -p $out/ui-tui
           cp -r ${fixedTui}/lib/hermes-tui/* $out/ui-tui/
 
-          for name in hermes hermes-agent hermes-acp; do
+          # Intercept `hermes desktop`/`hermes gui` — the Python CLI's cmd_gui
+          # hardcodes PROJECT_ROOT/apps/desktop which doesn't exist in the Nix
+          # package.  Delegate to the pre-built Electron binary instead.
+          cat > $out/bin/hermes <<'HERMES_WRAPPER'
+          #!${pkgs.runtimeShell}
+          case "''${1-}" in
+            desktop|gui)
+              shift
+              exec hermes-desktop "$@"
+              ;;
+          esac
+          exec ${old.passthru.hermesVenv}/bin/hermes "$@"
+          HERMES_WRAPPER
+          chmod +x $out/bin/hermes
+
+          for name in hermes-agent hermes-acp; do
             makeWrapper ${old.passthru.hermesVenv}/bin/$name $out/bin/$name \
               --suffix PATH : "${runtimePath}" \
               --set HERMES_BUNDLED_SKILLS $out/share/hermes-agent/skills \
@@ -223,6 +238,19 @@ in
               --set HERMES_PYTHON ${old.passthru.hermesVenv}/bin/python3 \
               --set HERMES_NODE ${pkgs.lib.getExe pkgs.nodejs_22}
           done
+
+          # Wrap the `hermes` script with the same env + PATH as the others,
+          # but via makeWrapper's --add-flags is not enough since we need the
+          # shell case above to run first.  Instead, source the env inline.
+          wrapProgram $out/bin/hermes \
+            --suffix PATH : "${runtimePath}" \
+            --set HERMES_BUNDLED_SKILLS $out/share/hermes-agent/skills \
+            --set HERMES_BUNDLED_PLUGINS $out/share/hermes-agent/plugins \
+            --set HERMES_BUNDLED_LOCALES $out/share/hermes-agent/locales \
+            --set HERMES_WEB_DIST $out/share/hermes-agent/web_dist \
+            --set HERMES_TUI_DIR $out/ui-tui \
+            --set HERMES_PYTHON ${old.passthru.hermesVenv}/bin/python3 \
+            --set HERMES_NODE ${pkgs.lib.getExe pkgs.nodejs_22}
 
           runHook postInstall
         '';
@@ -503,8 +531,12 @@ in
           echo "Migrating ~/.hermes → ${config.services.hermes-agent.stateDir}/.hermes ..."
           mkdir -p "${config.services.hermes-agent.stateDir}"
           cp -a /home/t0psh31f/.hermes "${config.services.hermes-agent.stateDir}/.hermes"
+        fi
+        # Always fix ownership — files may have been left owned by nobody/t0psh31f
+        # from migration or prior DynamicUser runs, causing PermissionError at runtime.
+        if [ -d "${config.services.hermes-agent.stateDir}" ]; then
           chown -R hermes:hermes "${config.services.hermes-agent.stateDir}"
-          chmod -R 750 "${config.services.hermes-agent.stateDir}"
+          chmod -R u+rwX,g+rwX "${config.services.hermes-agent.stateDir}"
         fi
       '';
     };

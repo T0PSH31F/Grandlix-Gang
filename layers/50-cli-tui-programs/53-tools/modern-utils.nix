@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  osConfig ? config,
   ...
 }:
 let
@@ -18,7 +19,12 @@ in
       jq.enable = true;
       btop = {
         enable = true;
-        settings.color_theme = lib.mkIf cfg.theming.enable "matugen";
+        settings.color_theme =
+          if osConfig.layers.layer-40.desktop.noctalia.enable or false
+          then "noctalia"
+          else if cfg.theming.enable
+          then "matugen"
+          else "default";
       };
       eza = {
         enable = true;

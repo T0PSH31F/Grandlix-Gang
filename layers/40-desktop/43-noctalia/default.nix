@@ -48,6 +48,19 @@ in
         home.packages = with pkgs; [
           gst_all_1.gst-plugins-base
           gst_all_1.gst-plugins-good
+
+          # Hook script — reloads compositor config when Noctalia changes wallpaper/colors
+          (pkgs.writeShellScriptBin "noctalia-hypr-reload" ''
+            set -euo pipefail
+
+            # Reload Hyprland config to pick up new colors from noctalia-colors.conf
+            hyprctl reload 2>/dev/null || true
+
+            # Force GPU shader recompile (toggle off then on)
+            hyprctl keyword decoration:screen_shader "" 2>/dev/null || true
+            sleep 0.3
+            hyprctl keyword decoration:screen_shader "$HOME/.config/hypr/vibrancy.frag" 2>/dev/null || true
+          '')
         ];
 
         programs.noctalia = {
@@ -175,7 +188,7 @@ in
 
             # ── Backdrop ─────────────────────────────────────────────
             backdrop = {
-              enabled = true;
+              enabled = false;  # Disabled: oversized blur regions behind notifications/dock/OSD
               blur_intensity = 0.4;
               tint_intensity = 0.6;
             };
@@ -674,6 +687,16 @@ in
               empty_color = "tertiary";
               icon_color = "primary";
               labels_only_when_occupied = true;
+            };
+
+            # ── Hooks ─────────────────────────────────────────────────
+            # Auto-reload Hyprland (and the GPU shader) whenever Noctalia
+            # changes the wallpaper or regenerates the color palette.
+            # This keeps borders, active/inactive colors, and the vibrancy
+            # shader in sync without requiring a compositor restart.
+            hooks = {
+              wallpaper_changed = "noctalia-hypr-reload";
+              colors_changed = "noctalia-hypr-reload && zellij-colors-sync";
             };
           };
         };

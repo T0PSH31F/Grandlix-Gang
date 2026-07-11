@@ -56,6 +56,12 @@ in
       description = "HTTP API port";
     };
 
+    host = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1";
+      description = "Host IP to bind the API server to (set to 127.0.0.1 for local access, 0.0.0.0 for LAN/public access)";
+    };
+
     llmApiBase = lib.mkOption {
       type = lib.types.str;
       default = "https://openrouter.ai/api/v1";
@@ -143,6 +149,7 @@ in
         EMBED_MODEL = cfg.embedModel;
         EMBED_DIM = toString cfg.embedDim;
         PORT = toString cfg.port;
+        HOST = cfg.host;
         BRAIN_MODE = "api";
         MANIFEST_PATH = "/var/lib/brain-service/manifest.json";
       } // lib.optionalAttrs (cfg.booksDir != null) {

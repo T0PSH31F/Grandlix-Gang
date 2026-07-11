@@ -32,6 +32,7 @@ with lib;
         # System directories
         "/var/lib/systemd"
         "/var/lib/nixos"
+        "/var/lib/hermes"          # Hermes agent session DB + state
 
         # Network configuration
         "/etc/NetworkManager/system-connections"
@@ -98,6 +99,11 @@ with lib;
           ".antigravity"
           ".gemini"
           ".hermes"
+          ".claude"           # Claude Code transcripts + skills
+          ".codex"            # Codex CLI state
+          ".zeroclaw"         # ZeroClaw logs + skills
+          ".openclaw"         # OpenClaw logs + skills
+          ".kilocode"         # KiloCode CLI state
           ".kodi"
           ".var/app"
           ".authsome"
@@ -129,6 +135,11 @@ with lib;
       # Noctalia state (moved from activationScripts)
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.local/share/noctalia 0700 t0psh31f users -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.cache/noctalia 0700 t0psh31f users -"
+
+      # Hermes agent state (session DB, workspaces, homedir)
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes 0750 hermes hermes -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes/.hermes 0750 hermes hermes -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes/workspace 0750 hermes hermes -"
     ];
 
     # Suppress sudo lecture on every boot

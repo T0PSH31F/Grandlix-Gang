@@ -98,10 +98,6 @@
       noctalia.backend = "hyprland";
     };
 
-    layer-70.agent.opencode = {
-      plugin = "oh-my-openagent";
-    };
-
     # supergraph — monorepo intelligence for AI coding agents
     layer-70.agent.supergraph.enable = true;
   };

@@ -1,11 +1,19 @@
 {
   config,
   lib,
+  osConfig ? config,
   ...
 }:
+let
+  hasDesktopTag = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
+in
 {
   options.layers.layer-60.gui.zathura = {
-    enable = lib.mkEnableOption "Zathura PDF viewer";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = hasDesktopTag;
+      description = "Enable Zathura PDF viewer";
+    };
   };
 
   home = lib.mkIf config.layers.layer-60.gui.zathura.enable {

@@ -141,7 +141,7 @@ in
       ];
 
 programs.lutris = {
-        enable = false;  # Disabled — lutris 0.5.22 build broken (libmount.so.1 missing from glib); re-enable after nixpkgs update
+        enable = false;  # Disabled: FHS env build failure (libmount.so.1) — re-enable after nixpkgs update
         extraPackages = with pkgs; [
           mangohud
           winetricks
