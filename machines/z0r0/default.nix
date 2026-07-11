@@ -72,10 +72,6 @@
       ci.github-runner.enable = true;
       adguard = {
         enable = true;
-        bindHosts = [
-          "127.0.0.1"
-          "192.168.1.39"
-        ];
       };
       monitoring = {
         enable = true;
