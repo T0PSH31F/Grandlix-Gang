@@ -107,7 +107,7 @@ in
               "${config.home.homeDirectory}/.config/hypr/hyprtoolkit.conf"
               "${config.home.homeDirectory}/.config/hypr/monitors.conf"
               "${config.home.homeDirectory}/.cache/noctalia/HVE/overlay.conf"
-              "${config.home.homeDirectory}/.config/hypr/hyprviz.conf"
+              "./hyprviz.conf"
             ];
 
             # Color variables ($primary, $secondary, $surfaceContainer) are
