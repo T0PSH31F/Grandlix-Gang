@@ -750,8 +750,7 @@ CHEATSHEET_EOF
 
 in
 {
-  config = lib.mkIf true {
-    home.packages = [
+  home.home.packages = [
     cheatsheet_picker
     zellij_cheatsheet
     nvim_cheatsheet
@@ -766,5 +765,4 @@ in
     opencode_cheatsheet
     hermes_cheatsheet
   ];
-  };
 }
