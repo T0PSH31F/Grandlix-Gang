@@ -56,6 +56,12 @@ in
       # Tiling
       "tile 1, match:class ^dev\\.warp\\.Warp$"
 
+      # OMOS Companion — floating overlay
+      "float 1, match:class ^(oh-my-opencode-slim-companion)$"
+      "size 120px 120px, match:class ^(oh-my-opencode-slim-companion)$"
+      "move 100%-140 100%-140, match:class ^(oh-my-opencode-slim-companion)$"
+      "pin 1, match:class ^(oh-my-opencode-slim-companion)$"
+
       # Picture-in-Picture
       "float 1, match:title ^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"
       "keep_aspect_ratio 1, match:title ^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$"

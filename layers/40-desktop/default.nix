@@ -13,5 +13,6 @@ in
     (mkDendriticModule "file-managers" ./45-file-managers/default.nix)
     (mkDendriticModule "terminals" ./46-terminal-emulators/default.nix)
     (mkDendriticModule "display" ./47-display/default.nix)
+    (mkDendriticModule "rofi-cheatsheets" ./48-rofi/cheatsheets.nix)
   ];
 }

@@ -35,27 +35,32 @@
         tui.theme = lib.mkForce "noctalia";
 
         settings = {
-          mcp.himalaya = {
-            command = [
-              "node"
-              "/home/t0psh31f/Projects/himalaya-mcp/dist/index.js"
-            ];
-            enabled = true;
-            type = "local";
-            env = {
-              HIMALAYA_ACCOUNT = "wrighterik77";
-              HIMALAYA_FOLDER = "INBOX";
-              HIMALAYA_BINARY = "/etc/profiles/per-user/t0psh31f/bin/himalaya";
+          mcp = {
+            himalaya = {
+              command = [
+                "node"
+                "/home/t0psh31f/Projects/himalaya-mcp/dist/index.js"
+              ];
+              enabled = true;
+              type = "local";
+              env = {
+                HIMALAYA_ACCOUNT = "wrighterik77";
+                HIMALAYA_FOLDER = "INBOX";
+                HIMALAYA_BINARY = "/etc/profiles/per-user/t0psh31f/bin/himalaya";
+              };
             };
+            # Disabled — consistently failing (100% error rate), not needed
+            browser-use.enabled = false;
+            file-manager.enabled = false;
+            ha-mcp.enabled = false;
+            mcp-registry.enabled = false;
+            sequential-thinking.enabled = false;
           };
           plugin = [
             pluginLabel
             "@pantheon-ai/opencode-warcraft-notifications"
           ];
-       #   warcraft-notifications = {
-       #     faction = "horde";
-       #     showDescriptionInToast = true;
-       #   };
+
           agent = {
             explore.disable = true;
             general.disable = true;
@@ -65,12 +70,21 @@
       };
 
       xdg.configFile = {
+        "opencode/plugin.json".text = builtins.toJSON {
+          "@pantheon-ai/opencode-warcraft-notifications" = {
+            faction = "horde";
+            showDescriptionInToast = true;
+          };
+        };
         "opencode/themes/noctalia.json".source =
           config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
         "opencode/oh-my-opencode-slim.json".source = ./opencode/oh-my-opencode-slim.json;
       };
 
       home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop
-        ++ [ pkgs.libcanberra-gtk3 ];  # canberra-gtk-play for warcraft-notifications audio
+        ++ [
+          pkgs.libcanberra-gtk3  # canberra-gtk-play for warcraft-notifications fallback
+          pkgs.alsa-utils        # aplay for warcraft-notifications wav playback
+        ];
     };
 }

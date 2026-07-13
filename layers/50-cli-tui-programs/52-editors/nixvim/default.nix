@@ -97,12 +97,13 @@ in
           updatetime = 300;
           timeoutlen = 500;
           mouse = "";
-          mapleader = " ";
           termguicolors = true;
           clipboard = {
             providers.wl-copy.enable = true;
           };
         };
+
+        globals.mapleader = " ";
 
         # ── Keymaps ─────────────────────────────────────────────────
         # h/j/k/l movement everywhere, never leave home row

@@ -100,8 +100,8 @@ in
 
     yazelixIntegration.enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
-      description = "Enable Helix + Yazi + Zellij integration";
+      default = false;
+      description = "Enable Helix + Yazi + Zellij integration (deprecated)";
     };
 
     modernTools.enable = lib.mkOption {

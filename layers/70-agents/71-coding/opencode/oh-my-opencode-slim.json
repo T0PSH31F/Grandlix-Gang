@@ -1,6 +1,19 @@
 {
   "$schema": "https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json",
   "preset": "opencode-go",
+  "multiplexer": {
+    "type": "zellij",
+    "zellij_pane_mode": "current-tab"
+  },
+  "companion": {
+    "enabled": true,
+    "position": "bottom-right",
+    "size": "medium",
+    "gifPack": "default",
+    "loopStyle": "classic",
+    "speed": 1,
+    "debug": false
+  },
   "presets": {
     "opencode-go": {
       "orchestrator": { "model": "opencode-go/glm-5.1", "skills": ["*"], "mcps": ["*", "!context7"] },
