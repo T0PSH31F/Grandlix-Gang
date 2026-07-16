@@ -488,7 +488,7 @@ in
           show_cost_breakdown = true;
         };
 
-        gateway.platforms.api_server.extra.host = "0.0.0.0";
+        platforms.api_server.extra.host = "0.0.0.0";
 
         mcp_servers = {
           himalaya = {
