@@ -308,6 +308,28 @@
         "type": "github"
       }
     },
+    "fenix_2": {
+      "inputs": {
+        "nixpkgs": [
+          "yazelix-screen",
+          "nixpkgs"
+        ],
+        "rust-analyzer-src": "rust-analyzer-src_2"
+      },
+      "locked": {
+        "lastModified": 1777969788,
+        "narHash": "sha256-8sr3w0KyQ0K7TEd8pYwYrxiDk0GZ4A7iIcl1lsxlzVM=",
+        "owner": "nix-community",
+        "repo": "fenix",
+        "rev": "3abc2d5559f4dc30c710ab152abcb4cb60b561ba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "fenix",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -1213,11 +1235,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1782959384,
-        "narHash": "sha256-l57y2CK9dTSChgb6Edg7kkXu5DA4rucVbNFoQHUBjmw=",
-        "rev": "65179426c83bb3f6bc14898b42ea1c6f01d374b0",
+        "lastModified": 1783522502,
+        "narHash": "sha256-nFgG4gPQueCgP8LidXsdI2lYPrSwTcmDl6afcVn7F/U=",
+        "rev": "0bb7ec54c8483066ec9d7720e780a5caa71f8612",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1026231.65179426c83b/nixexprs.tar.xz"
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1031299.0bb7ec54c848/nixexprs.tar.xz"
       },
       "original": {
         "type": "tarball",
@@ -1280,11 +1302,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1783214738,
-        "narHash": "sha256-tl/JcBwtzghRfFFWapdUHAxL6Zqt4OdBqsbfPTGGTlo=",
+        "lastModified": 1783916491,
+        "narHash": "sha256-UtF0HvGkASqNHi0M15TpGLEgsqq/F4WKSZUJz1wDz4s=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "79dcc65eee8652eb8ad262cccaca2fa8438af496",
+        "rev": "680663a65375c29b225d5605b33285c93ae62d90",
         "type": "github"
       },
       "original": {
@@ -1473,7 +1495,9 @@
         "vicinae": "vicinae",
         "vicinae-extensions": "vicinae-extensions",
         "wakatime-lsp": "wakatime-lsp",
+        "yazelix-cursors": "yazelix-cursors",
         "yazelix-hm": "yazelix-hm",
+        "yazelix-screen": "yazelix-screen",
         "zjstatus": "zjstatus_2"
       }
     },
@@ -1485,6 +1509,23 @@
         "owner": "rust-lang",
         "repo": "rust-analyzer",
         "rev": "09dc7aca674f53032f9d819f6fea01046e3d473f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-lang",
+        "ref": "nightly",
+        "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "rust-analyzer-src_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777924689,
+        "narHash": "sha256-9Z0puLyCSYvtYhP1IZMxC05DSgwA+5rE99jsv1KErc4=",
+        "owner": "rust-lang",
+        "repo": "rust-analyzer",
+        "rev": "91c7c2c4ca6a0520cfbf97e369e4fb7bf0b63b7a",
         "type": "github"
       },
       "original": {
@@ -1867,6 +1908,26 @@
         "type": "github"
       }
     },
+    "yazelix-cursors": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783832237,
+        "narHash": "sha256-xy457vsW58UdonTJ8MAU+S60cONScn+IKTnpsJQ9Jx0=",
+        "owner": "luccahuguet",
+        "repo": "yazelix-cursors",
+        "rev": "ae56aa509e698d50c65c9aca9d59cd98a4d244ac",
+        "type": "github"
+      },
+      "original": {
+        "owner": "luccahuguet",
+        "repo": "yazelix-cursors",
+        "type": "github"
+      }
+    },
     "yazelix-hm": {
       "inputs": {
         "fenix": "fenix",
@@ -1898,6 +1959,27 @@
       "original": {
         "owner": "luccahuguet",
         "repo": "yazelix",
+        "type": "github"
+      }
+    },
+    "yazelix-screen": {
+      "inputs": {
+        "fenix": "fenix_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783176833,
+        "narHash": "sha256-jYDwEMZSAR1nhUHsVmOWgphX000BfiWmULC3dcvgwzw=",
+        "owner": "luccahuguet",
+        "repo": "yazelix-screen",
+        "rev": "d5975b97fc157ce44b5140432fc006154a63886a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "luccahuguet",
+        "repo": "yazelix-screen",
         "type": "github"
       }
     },

@@ -59,6 +59,7 @@
           plugin = [
             pluginLabel
             "@pantheon-ai/opencode-warcraft-notifications"
+            "opencode-antigravity-auth"
           ];
 
           agent = {
@@ -66,6 +67,7 @@
             general.disable = true;
           };
           lsp = true;
+          tui.keybinds.command_list = "ctrl+shift+p";
         };
       };
 
@@ -85,6 +87,15 @@
         ++ [
           pkgs.libcanberra-gtk3  # canberra-gtk-play for warcraft-notifications fallback
           pkgs.alsa-utils        # aplay for warcraft-notifications wav playback
+          pkgs.pulseaudio        # paplay (silent playback, preferred by warcraft-notifications)
+
+          # oh-my-opencode-slim CLI + companion binary
+          (pkgs.writeShellScriptBin "omos" ''
+            exec ${pkgs.nodejs}/bin/npx oh-my-opencode-slim@latest "$@"
+          '')
+          (pkgs.writeShellScriptBin "oh-my-opencode-slim" ''
+            exec ${pkgs.nodejs}/bin/npx oh-my-opencode-slim@latest "$@"
+          '')
         ];
     };
 }

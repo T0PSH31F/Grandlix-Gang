@@ -142,7 +142,6 @@ in
               "pypr & disown"
               "hypr-sfx & disown"
               "udiskie & disown"
-              "rclone mount gdrive: ~/GoogleDrive --daemon --vfs-cache-mode full --vfs-cache-max-age 72h & disown"
               "${pkgs.pipewire}/bin/pw-play ~/Clan/NFP/layers/00-cyberia/02-assets/SFX/login-sound.mp3 & disown"
             ];
 

@@ -120,6 +120,8 @@ let
       cp -r ${renderer}/* $out/share/hermes-desktop/
       substituteInPlace $out/share/hermes-desktop/electron/main.cjs \
         --replace-fail "process.resourcesPath" "'$out/share/hermes-desktop'"
+      substituteInPlace $out/share/hermes-desktop/electron/git-review-ops.cjs \
+        --replace-fail "process.resourcesPath" "'$out/share/hermes-desktop'"
       makeWrapper ${pkgs.lib.getExe pkgs.electron} $out/bin/hermes-desktop \
         --add-flags "$out/share/hermes-desktop" \
         --set HERMES_DESKTOP_HERMES "${config.services.hermes-agent.package}/bin/hermes" \
@@ -478,13 +480,15 @@ in
         security.redact_secrets = true;
 
         dashboards.http = {
-          host = "127.0.0.1";
+          host = "0.0.0.0";
           port = 9119;
           theme = "cyberpunk";
           show_token_analytics = true;
           show_session_explorer = true;
           show_cost_breakdown = true;
         };
+
+        gateway.platforms.api_server.extra.host = "0.0.0.0";
 
         mcp_servers = {
           himalaya = {

@@ -131,6 +131,14 @@
       inputs.yazelixZellijPaneOrchestrator.inputs.flake-utils.follows = "flake-utils";
       inputs.yazelixZellijPopup.inputs.flake-utils.follows = "flake-utils";
     };
+    yazelix-cursors = {
+      url = "github:luccahuguet/yazelix-cursors";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    yazelix-screen = {
+      url = "github:luccahuguet/yazelix-screen";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -188,6 +196,8 @@
       vicinae-extensions,
       nixai,
       yazelix-hm,
+      yazelix-cursors,
+      yazelix-screen,
       disko,
       wakatime-lsp,
       antigravity,

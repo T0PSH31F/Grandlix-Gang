@@ -24,3 +24,5 @@ system_packages.txt
 
 .omo/
 session-state.json
+
+.slim/deepwork/

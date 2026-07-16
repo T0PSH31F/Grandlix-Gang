@@ -12,8 +12,8 @@ final: prev: {
     };
     phases = [ "installPhase" ];
     installPhase = ''
-      mkdir -p $out/lib
-      cp $src $out/lib/yazelix_pane_orchestrator.wasm
+      mkdir -p $out/share
+      cp $src $out/share/yazelix_pane_orchestrator.wasm
     '';
   };
 
@@ -27,8 +27,8 @@ final: prev: {
     };
     phases = [ "installPhase" ];
     installPhase = ''
-      mkdir -p $out/lib
-      cp $src $out/lib/yazelix_popup_runner.wasm
+      mkdir -p $out/share
+      cp $src $out/share/yazelix_popup_runner.wasm
     '';
   };
 

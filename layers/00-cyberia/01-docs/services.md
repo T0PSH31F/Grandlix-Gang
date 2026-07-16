@@ -18,6 +18,7 @@
 | 53 | AdGuard Home (DNS) | `http://z0r0:3002` | `admin` / `admin` (change on first login) |
 | 3002 | AdGuard Home (web) | `http://z0r0:3002` | `admin` / `admin` |
 | 3000 | Hermes Workspace | `http://z0r0:3000` | User `t0psh31f` |
+| 3001 | HedgeDoc | `http://z0r0:3001` | First user becomes admin |
 | 3005 | Langfuse (LLM tracing) | `http://z0r0:3005` | Auto-generated (see sops) |
 | 3008 | Grafana | `http://z0r0:3008` | `admin` / sops `grafana_admin_password` |
 | 3080 | Prometheus | `http://z0r0:3090` | No auth |

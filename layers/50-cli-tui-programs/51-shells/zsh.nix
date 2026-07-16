@@ -146,7 +146,7 @@ in
 
         ${lib.optionalString (!cfg.headless) ''
           if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "Waveterm" ]] && [[ -z "$SSH_CONNECTION" ]]; then
-              if command -v zellij >/dev/null 2>&1; then zellij attach -c "$HOST"; fi
+              if command -v zellij >/dev/null 2>&1; then zellij attach -c "z0r0.clan"; fi
           fi
         ''}
       '';

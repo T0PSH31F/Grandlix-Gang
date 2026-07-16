@@ -3,6 +3,7 @@
 {
   imports = [
     ./camofox-browser.nix
+    ./hedgedoc.nix
     ./karakeep.nix
     ./mautrix.nix
     ./rustdesk.nix

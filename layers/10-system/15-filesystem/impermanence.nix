@@ -101,6 +101,7 @@ with lib;
           ".hermes"
           ".claude"           # Claude Code transcripts + skills
           ".codex"            # Codex CLI state
+          ".opencode"         # OpenCode local plugin data
           ".zeroclaw"         # ZeroClaw logs + skills
           ".openclaw"         # OpenClaw logs + skills
           ".kilocode"         # KiloCode CLI state
@@ -132,14 +133,21 @@ with lib;
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.ssh 0700 t0psh31f users -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.gnupg 0700 t0psh31f users -"
 
+      # OpenCode local plugin data
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.opencode 0700 t0psh31f users -"
+
       # Noctalia state (moved from activationScripts)
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.local/share/noctalia 0700 t0psh31f users -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.cache/noctalia 0700 t0psh31f users -"
 
       # Hermes agent state (session DB, workspaces, homedir)
-      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes 0750 hermes hermes -"
-      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes/.hermes 0750 hermes hermes -"
-      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes/workspace 0750 hermes hermes -"
+      # Must be 2770 (group-writable + setgid) so t0psh31f (hermes group) can
+      # run `hermes auth`, `hermes --tui`, etc.  The hermes-agent NixOS module
+      # also declares 2770 tmpfiles rules for /var/lib/hermes; these /persist
+      # rules run *after* those, so they must match or they silently override.
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes 2770 hermes hermes -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes/.hermes 2770 hermes hermes -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/hermes/workspace 2770 hermes hermes -"
     ];
 
     # Suppress sudo lecture on every boot

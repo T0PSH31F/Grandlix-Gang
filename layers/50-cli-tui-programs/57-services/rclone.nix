@@ -34,8 +34,8 @@ in
       Service = {
         Type = "simple";
         ExecStartPre = "/run/current-system/sw/bin/mkdir -p %h/GoogleDrive";
-        ExecStart = "${pkgs.rclone}/bin/rclone mount ${cfg.remoteName}: %h/GoogleDrive --vfs-cache-mode writes --vfs-cache-max-size 10G";
-        ExecStop = "/run/current-system/sw/bin/fusermount -u %h/GoogleDrive";
+        ExecStart = "${pkgs.rclone}/bin/rclone mount ${cfg.remoteName}: %h/GoogleDrive --vfs-cache-mode full --vfs-cache-max-size 10G --vfs-cache-max-age 72h";
+        ExecStop = "/run/wrappers/bin/fusermount3 -u %h/GoogleDrive";
         Restart = "on-failure";
         RestartSec = "10s";
       };

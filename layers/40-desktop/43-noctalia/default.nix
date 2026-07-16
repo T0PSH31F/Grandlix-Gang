@@ -49,9 +49,65 @@ in
           gst_all_1.gst-plugins-base
           gst_all_1.gst-plugins-good
 
+          # Color generation helper — extracts colors from noctalia theme JSON
+          (pkgs.writeShellScriptBin "noctalia-regen-colors" ''
+            set -euo pipefail
+            WALLPAPER=$(noctalia msg wallpaper-get 2>/dev/null || echo "")
+            [ -z "$WALLPAPER" ] || [ ! -f "$WALLPAPER" ] && exit 0
+            # Get the active scheme source and name
+            SCHEME_RAW=$(noctalia msg color-scheme-get 2>/dev/null || echo "")
+            SCHEME_SOURCE=$(echo "$SCHEME_RAW" | awk '{print $1}')
+            SCHEME_NAME=$(echo "$SCHEME_RAW" | awk '{print $2}')
+            # noctalia theme CLI only supports Material You / custom scheme names,
+            # not builtin themes (e.g. "Ayu"). Fall back to m3-content for builtin.
+            if [ "$SCHEME_SOURCE" = "builtin" ] || [ -z "$SCHEME_NAME" ]; then
+              SCHEME="m3-content"
+            else
+              SCHEME="$SCHEME_NAME"
+            fi
+            noctalia theme "$WALLPAPER" --scheme "$SCHEME" --dark 2>/dev/null | ${pkgs.python3}/bin/python3 -c '
+            import json, sys
+            d = json.load(sys.stdin)
+            p = d["primary"].lstrip("#")
+            s = d["surface"].lstrip("#")
+            sc = d["secondary"].lstrip("#")
+            t = d["tertiary"].lstrip("#")
+            e = d["error"].lstrip("#")
+            sl = d.get("surface_lowest", d.get("surface", "#000000")).lstrip("#")
+            print(f"$primary = rgb({p})")
+            print(f"$surface = rgb({s})")
+            print(f"$secondary = rgb({sc})")
+            print(f"$error = rgb({e})")
+            print(f"$tertiary = rgb({t})")
+            print(f"$surface_lowest = rgb({sl})")
+            print()
+            print("general {")
+            print(f"    col.active_border = $primary")
+            print(f"    col.inactive_border = $surface")
+            print("}")
+            print()
+            print("group {")
+            print(f"    col.border_active = $secondary")
+            print(f"    col.border_inactive = $surface")
+            print(f"    col.border_locked_active = $error")
+            print(f"    col.border_locked_inactive = $surface")
+            print()
+            print("    groupbar {")
+            print(f"        col.active = $secondary")
+            print(f"        col.inactive = $surface")
+            print(f"        col.locked_active = $error")
+            print(f"        col.locked_inactive = $surface")
+            print("    }")
+            print("}")
+            ' > ~/.config/hypr/noctalia/noctalia-colors.conf
+          '')
+
           # Hook script — reloads compositor config when Noctalia changes wallpaper/colors
           (pkgs.writeShellScriptBin "noctalia-hypr-reload" ''
             set -euo pipefail
+
+            # Regenerate noctalia-colors.conf from current wallpaper
+            noctalia-regen-colors 2>/dev/null || true
 
             # Reload Hyprland config to pick up new colors from noctalia-colors.conf
             hyprctl reload 2>/dev/null || true
@@ -60,6 +116,9 @@ in
             hyprctl keyword decoration:screen_shader "" 2>/dev/null || true
             sleep 0.3
             hyprctl keyword decoration:screen_shader "$HOME/.config/hypr/vibrancy.frag" 2>/dev/null || true
+
+            # Sync Zellij colors
+            zellij-colors-sync 2>/dev/null || true
           '')
         ];
 
@@ -117,7 +176,8 @@ in
               mode = "dark";
               source = "wallpaper";
               wallpaper_scheme = "m3-content";
-              community_palette = "Creamy Forest";
+              # community_palette removed — use wallpaper-based color generation
+              # To restore a fixed palette, uncomment and set: community_palette = "Palette Name";
             };
             theme.templates = {
               builtin_ids = [
@@ -694,17 +754,48 @@ in
             # changes the wallpaper or regenerates the color palette.
             # This keeps borders, active/inactive colors, and the vibrancy
             # shader in sync without requiring a compositor restart.
-            hooks = {
-              enabled = true;
-              wallpaperChange = "noctalia-hypr-reload";
-              colorGeneration = "noctalia-hypr-reload && zellij-colors-sync";
-            };
+            # NOTE: hooks are not yet supported in v5.0.0 — using systemd
+            # service + noctalia-hypr-reload script instead.
+            # hooks = {
+            #   enabled = true;
+            #   wallpaperChange = "noctalia-hypr-reload";
+            #   colorGeneration = "noctalia-hypr-reload && zellij-colors-sync";
+            # };
           };
         };
 
         home.file = {
           ".face".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
           ".face.icon".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
+        };
+
+        # Sync Noctalia colors → Hyprland borders + Zellij on login.
+        # Runs noctalia-hypr-reload which regenerates noctalia-colors.conf
+        # from the current wallpaper and reloads the compositor.
+        systemd.user.services.noctalia-colors-sync = {
+          Unit = {
+            Description = "Sync Noctalia colors to Hyprland and Zellij";
+            After = [ "graphical-session.target" "noctalia.service" ];
+            Requires = [ "noctalia.service" ];
+          };
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 3 && noctalia-hypr-reload'";
+          };
+          Install = { WantedBy = [ "graphical-session.target" ]; };
+        };
+
+        # Re-sync colors every 15 min (wallpaper auto-regenerates on this cycle)
+        systemd.user.timers.noctalia-colors-sync = {
+          Unit = {
+            Description = "Periodic Noctalia color sync";
+          };
+          Timer = {
+            OnBootSec = "30s";
+            OnUnitActiveSec = "15min";
+            Unit = "noctalia-colors-sync.service";
+          };
+          Install = { WantedBy = [ "timers.target" ]; };
         };
       };
     };

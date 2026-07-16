@@ -101,7 +101,15 @@ in
     yazelixIntegration.enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable Helix + Yazi + Zellij integration (deprecated)";
+      description = "Enable Helix + Yazi + Zellij integration (deprecated — use zellij.yazelix.* flags instead)";
+    };
+
+    zellij.yazelix = {
+      bars.enable = lib.mkEnableOption "Yazelix Zellij bars (top + bottom, CPU/RAM, AI token usage)";
+      orchestrator.enable = lib.mkEnableOption "Yazelix pane orchestrator (Alt+y toggleable sidebars)";
+      popup.enable = lib.mkEnableOption "Yazelix popup runner (Alt+g floating windows)";
+      cursors.enable = lib.mkEnableOption "Yazelix cursor themes for Ghostty";
+      screen.enable = lib.mkEnableOption "Yazelix terminal welcome screen animations";
     };
 
     modernTools.enable = lib.mkOption {

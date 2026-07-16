@@ -79,6 +79,11 @@
         prometheus.port = 9090;
         loki.port = 3100;
       };
+      hedgedoc = {
+        enable = true;
+        port = 3001;
+        domain = "z0r0.local";
+      };
     };
 
     layer-30.theming.themes.greeter = {
@@ -93,6 +98,12 @@
     layer-40.desktop = {
       noctalia.backend = "hyprland";
     };
+
+  # Enable zellij bottom bar (CPU/RAM) via yazelix bars
+    layer-50.cli.zellij.yazelix.bars.enable = true;
+
+    # Enable rclone Google Drive mount as a user service (auto-restarts on failure)
+    layer-50.home.cli.services.rclone.enable = true;
 
     # supergraph — monorepo intelligence for AI coding agents
     layer-70.agent.supergraph.enable = true;

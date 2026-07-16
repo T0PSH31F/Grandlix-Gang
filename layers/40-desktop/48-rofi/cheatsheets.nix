@@ -7,24 +7,35 @@
 let
   cfg = { };
 
-  # Shared rofi theme string — reused across all cheatsheets
+  # Shared rofi theme setup — sources Noctalia Material You colors at runtime
+  # Uses $primary for accents, $surface for bg, $secondary for highlights
+  # Falls back to dark neon palette if noctalia-colors.conf is missing
   rofiTheme = ''
-    -theme-str 'window {width: 55%; height: 78%; background-color: #1c100f; border: 1px solid; border-color: #ffb4a9; border-radius: 8px; padding: 16px;}' \
-    -theme-str 'mainbox {background-color: transparent;}' \
-    -theme-str 'inputbar {background-color: #2a1a18; border-radius: 6px; padding: 8px; margin-bottom: 8px;}' \
-    -theme-str 'prompt {color: #ffb4a9; font: "monospace bold 11";}' \
-    -theme-str 'entry {color: #eae0dc; font: "monospace 10";}' \
-    -theme-str 'listview {background-color: transparent; columns: 1; spacing: 2px;}' \
-    -theme-str 'element {background-color: transparent; padding: 4px 8px; border-radius: 4px;}' \
-    -theme-str 'element active {background-color: #2a1a18;}' \
-    -theme-str 'element-text {color: #eae0dc; font: "monospace 10";}' \
-    -theme-str 'element-text active {color: #ffb4a9;}'
+    NOCTALIA_COLORS="$HOME/.config/hypr/noctalia/noctalia-colors.conf"
+    if [ -f "$NOCTALIA_COLORS" ]; then
+      eval "$(sed -n 's/^\$\([a-z_][a-z_]*\) = rgb(\([0-9a-fA-F]\{6,\}\))$/\1=\2/p' "$NOCTALIA_COLORS")"
+    fi
+    ROFI_PRIMARY="''${primary:-c7c3e6}"
+    ROFI_SURFACE="''${surface:-141315}"
+    ROFI_THEME_ARGS=" \
+      -theme-str 'window {width: 55%; height: 78%; background-color: #''${ROFI_SURFACE}; border: 1px solid; border-color: #''${ROFI_PRIMARY}; border-radius: 8px; padding: 16px;}' \
+      -theme-str 'mainbox {background-color: transparent;}' \
+      -theme-str 'inputbar {background-color: #''${ROFI_SURFACE}dd; border-radius: 6px; padding: 8px; margin-bottom: 8px;}' \
+      -theme-str 'prompt {color: #''${ROFI_PRIMARY}; font: "monospace bold 11";}' \
+      -theme-str 'entry {color: #e0e0ff; font: "monospace 10";}' \
+      -theme-str 'listview {background-color: transparent; columns: 1; spacing: 2px;}' \
+      -theme-str 'element {background-color: transparent; padding: 4px 8px; border-radius: 4px;}' \
+      -theme-str 'element active {background-color: #''${ROFI_SURFACE}bb;}' \
+      -theme-str 'element-text {color: #e0e0ff; font: "monospace 10";}' \
+      -theme-str 'element-text active {color: #''${ROFI_PRIMARY};}' \
+    "
   '';
 
   cheatsheet_picker = pkgs.writeShellScriptBin "cheatsheet" ''
+    ${rofiTheme}
     while true; do
       SELECTED=$(cat <<CHOICES | ${pkgs.rofi}/bin/rofi -dmenu -p "Cheatsheets" \
-        ${rofiTheme}
+        $ROFI_THEME_ARGS
     ⚡ Zellij
     📝 Neovim
     ✦ Helix
@@ -66,48 +77,59 @@ let
 
 🎯 NORMAL MODE
 ─────────────────────────────────────────
-Ctrl + A                    Mode Switcher (enter locked mode)
+Ctrl + G                    Lock / Unlock Interface
+🖱  Mouse                    Scroll, Select panes, Resize
 Ctrl + Q                    Quit Zellij
-Ctrl + U / Ctrl + D         Scroll Half Page Up/Down
 
-📦 PANE MODE  (Ctrl+A then P)
+📦 PANE MODE  (Ctrl + P)
 ─────────────────────────────────────────
 H / J / K / L               Move Focus (vim keys)
 N                           New Pane
-D / Ctrl + D                Close Pane
+X / D                       Close Pane
 F                           Toggle Fullscreen
-\\\\                           Horizontal Split
+\\                           Horizontal Split
 -                           Vertical Split
-Tab / Z                     Toggle Pane Frames
-P                           Switch to Pane Mode
+Z                           Toggle Pane Frames
 
-📑 TAB MODE  (Ctrl+A then T)
+📑 TAB MODE  (Ctrl + T)
 ─────────────────────────────────────────
 N                           New Tab
-X / Ctrl + D                Close Tab
-H / L                       Prev / Next Tab
-Tab                         Next Tab
-1-9                         Switch to Tab N
-T                           Switch to Tab Mode
+X                           Close Tab
+H / L / 1-9                 Switch Tabs
+[ / ]                       Prev / Next Tab
 
-📏 RESIZE MODE  (Ctrl+A then R)
+📏 RESIZE MODE  (Ctrl + N)
 ─────────────────────────────────────────
 H / J / K / L               Resize (vim keys)
 + / -                       Increase / Decrease
-R                           Switch to Resize Mode
 
-📜 SCROLL MODE  (Ctrl+A then S)
+📜 SCROLL MODE  (Ctrl + S)
 ─────────────────────────────────────────
-J / K                       Scroll Down / Up
-Ctrl + U / Ctrl + D         Half Page Up / Down
-Y / Enter                   Copy Selection
-S                           Switch to Scroll Mode
+J / K / D / U               Scroll
+PgUp / PgDn                 Page
+Y                           Copy Selection
+Esc / q                     Exit Scroll Mode
 
-🔧 SESSION MODE  (Ctrl+A then O)
+🔧 SESSION MODE  (Ctrl + O)
 ─────────────────────────────────────────
 D                           Detach Session
-Q                           Quit Zellij
-O                           Switch to Session Mode
+W                           Toggle between sessions
+
+🎨 YAZELIX INTEGRATION
+─────────────────────────────────────────
+Alt + Y                     Toggle Yazi Sidebar
+Alt + G                     Toggle Yazi Popup
+Ctrl + Shift + P            OpenCode Command Palette
+
+📊 BAR WIDGETS
+─────────────────────────────────────────
+Top Bar:    Session · Mode · Tabs · Git · Hostname · DateTime
+Bottom Bar: CPU Usage · RAM Usage
+
+🖱  MOUSE
+─────────────────────────────────────────
+Scroll                      Scroll in panes & logs
+Drag edges                  Resize panes
 
 🌐 PERSISTENT WEBSHELL (LAN/TS)
 ─────────────────────────────────────────
@@ -116,7 +138,8 @@ zellij ls                   List active sessions
 zellij attach webshell      Reattach to session
 ssh z0r0 -t zellij a web    Attach via LAN/Tailscale
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Zellij Keybinds" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Zellij Keybinds" $ROFI_THEME_ARGS
   '';
 
   nvim_cheatsheet = pkgs.writeShellScriptBin "nvim-cheatsheet" ''
@@ -156,7 +179,8 @@ p / P                      Paste after/before
 ─────────────────────────────────────────
 Space (hold)               Show keybind menu
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Neovim Keybinds" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Neovim Keybinds" $ROFI_THEME_ARGS
   '';
 
   yazi_cheatsheet = pkgs.writeShellScriptBin "yazi-cheatsheet" ''
@@ -191,7 +215,8 @@ o                         Open with
 :                         Shell Command
 ?                         Help
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Yazi Keybinds" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Yazi Keybinds" $ROFI_THEME_ARGS
   '';
 
   helix_cheatsheet = pkgs.writeShellScriptBin "helix-cheatsheet" ''
@@ -237,7 +262,8 @@ h/j/k/l                 Extend selection
 i + w                   Inside word
 a + w                   Around word
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Helix Keybinds" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Helix Keybinds" $ROFI_THEME_ARGS
   '';
 
   zsh_cheatsheet = pkgs.writeShellScriptBin "zsh-cheatsheet" ''
@@ -314,7 +340,8 @@ Ctrl + Shift + l        Toggle ligatures
 Ctrl + Shift + f        Fullscreen
 Ctrl + Shift + up/dn    Scroll page up/down
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Zsh / Ghostty" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Zsh / Ghostty" $ROFI_THEME_ARGS
   '';
 
   fzf_cheatsheet = pkgs.writeShellScriptBin "fzf-cheatsheet" ''
@@ -361,7 +388,8 @@ rg -g '*.js' pattern    Filter by filetype
 rg -C3 pattern          Context lines
 rg -o pattern           Only matching text
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Fzf / TV / Ripgrep" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Fzf / TV / Ripgrep" $ROFI_THEME_ARGS
   '';
 
   grep_sed_awk_cheatsheet = pkgs.writeShellScriptBin "grep-sed-awk-cheatsheet" ''
@@ -409,7 +437,8 @@ awk '!seen[\\\$0]++' f       Deduplicate lines
 awk 'length>80' f         Lines longer than 80
 awk '{print \\\$1, \\\$2}' f    Print multiple columns
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Grep / Sed / Awk" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Grep / Sed / Awk" $ROFI_THEME_ARGS
   '';
 
   cli_power_cheatsheet = pkgs.writeShellScriptBin "cli-power-cheatsheet" ''
@@ -490,7 +519,8 @@ colordiff file1 file2      Colorized diff
 git diff --no-index a b    Git-based diff
 cmp -l file1 file2         Byte-by-byte comparison
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Power Tools" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Power Tools" $ROFI_THEME_ARGS
   '';
 
   docker_cheatsheet = pkgs.writeShellScriptBin "docker-cheatsheet" ''
@@ -558,7 +588,8 @@ distrobox enter ubuntu        Enter container
 distrobox list                List containers
 distrobox stop / rm ubuntu    Stop / remove
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Docker / Podman" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Docker / Podman" $ROFI_THEME_ARGS
   '';
 
   vm_cheatsheet = pkgs.writeShellScriptBin "vm-cheatsheet" ''
@@ -630,11 +661,13 @@ bunx / npx tool             Run JS tool (ephemeral)
 distrobox create --name x --image fedora:39
 docker run --rm -it archlinux  Ephemeral Arch
     "
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "VMs / MicroVMs / Containers" ${rofiTheme}
+    ${rofiTheme}
+    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "VMs / MicroVMs / Containers" $ROFI_THEME_ARGS
   '';
 
   opencode_cheatsheet = pkgs.writeShellScriptBin "opencode-cheatsheet" ''
-    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "OpenCode" ${rofiTheme}
+    ${rofiTheme}
+    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "OpenCode" $ROFI_THEME_ARGS
 🤖 OPENCODE — AI Coding Agent
 ─────────────────────────────────────────
 BASIC USAGE
@@ -653,7 +686,7 @@ ONE-SHOT EXAMPLES
 INTERACTIVE TUI KEYBINDS
   Enter                          Submit message
   Tab                            Switch agents (build/plan)
-  Ctrl+P                         Command palette
+  Ctrl+Shift+P                   Command palette
   Ctrl+X L                       Switch session
   Ctrl+X M                       Switch model
   Ctrl+X N                       New session
@@ -682,7 +715,8 @@ CHEATSHEET_EOF
   '';
 
   hermes_cheatsheet = pkgs.writeShellScriptBin "hermes-cheatsheet" ''
-    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "Hermes Agent" ${rofiTheme}
+    ${rofiTheme}
+    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "Hermes Agent" $ROFI_THEME_ARGS
 🧠 HERMES AGENT — Autonomous AI Worker
 ─────────────────────────────────────────
 BASIC USAGE
