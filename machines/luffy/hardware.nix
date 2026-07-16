@@ -36,8 +36,8 @@
   environment.etc.crypttab = {
     mode = "0600";
     text = ''
-      swap_crypted UUID=b0a3e560-5af1-4311-abd0-12e5e463812b /persist/secrets/swap.key discard
-      luffy_storage UUID=1d5aefd2-bee6-47a3-b691-91d2794c5258 /persist/secrets/luffy_storage.key discard
+      swap_crypted UUID=b0a3e560-5af1-4311-abd0-12e5e463812b /persist/secrets/swap.key discard,nofail
+      luffy_storage UUID=1d5aefd2-bee6-47a3-b691-91d2794c5258 /persist/secrets/luffy_storage.key discard,nofail
     '';
   };
 
@@ -129,6 +129,7 @@
     {
       device = "/dev/mapper/swap_crypted";
       discardPolicy = "both";
+      options = [ "nofail" ];
     }
   ];
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

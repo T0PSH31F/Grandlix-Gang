@@ -99,7 +99,7 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = lib.mkDefault true; # Enabled for recovery - disable after setup
+      PasswordAuthentication = lib.mkForce true;
       PermitRootLogin = "yes";
     };
   };

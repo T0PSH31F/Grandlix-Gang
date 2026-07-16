@@ -24,9 +24,6 @@ in
 
     # i7-9700F (9th gen Coffee Lake) - luffy
     (lib.mkIf (hasTag "intel-9th-gen") {
-      # F-series has no iGPU, avoid i915 driver overhead
-      boot.initrd.kernelModules = lib.mkForce [ ];
-
       hardware.graphics.extraPackages = with pkgs; [
         intel-vaapi-driver # i965 driver
       ];
