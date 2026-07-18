@@ -143,6 +143,10 @@ with lib;
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.local/share/noctalia 0700 t0psh31f users -"
       "d ${config.layers.layer-10.system.config.impermanence.persistPath}/home/t0psh31f/.cache/noctalia 0700 t0psh31f users -"
 
+      # Skyvern automation data (subdirectories under the impermanence mount)
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/skyvern/data 0755 root root -"
+      "d ${config.layers.layer-10.system.config.impermanence.persistPath}/var/lib/skyvern/.skyvern 0700 root root -"
+
       # Hermes agent state (session DB, workspaces, homedir)
       # Must be 2770 (group-writable + setgid) so t0psh31f (hermes group) can
       # run `hermes auth`, `hermes --tui`, etc.  The hermes-agent NixOS module

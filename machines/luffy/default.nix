@@ -132,7 +132,6 @@ in
       bindHosts = [
         "127.0.0.1"       # Localhost for Caddy reverse proxy
         "192.168.1.54"    # LAN IP for network clients
-        "100.72.46.75"    # ZeroTier IP for VPN clients
       ];
       dhcp = false;  # Spectrum router handles DHCP
       gatewayIp = "192.168.1.54";  # Luffy's reserved LAN IP
