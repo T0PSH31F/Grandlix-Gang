@@ -29,7 +29,7 @@ in
     bindHosts = mkOption {
       type = types.listOf types.str;
       default = [ "0.0.0.0" ];
-      description = "IP addresses AdGuard Home should bind its DNS server to";
+      description = "IP addresses AdGuard Home should bind its DNS server to. Default 0.0.0.0 all interfaces. Override to specific IPs if port 53 conflicts with podman aardvark-dns.";
     };
 
     dhcp = mkOption {

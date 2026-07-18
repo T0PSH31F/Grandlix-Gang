@@ -222,7 +222,12 @@ in
           case "''${1-}" in
             desktop|gui)
               shift
-              exec hermes-desktop "$@"
+              if command -v hermes-desktop > /dev/null 2>&1; then
+                exec hermes-desktop "$@"
+              else
+                echo "hermes-desktop is not installed. Enable it with: layers.layer-76.hermes.enableDesktop = true" >&2
+                exit 1
+              fi
               ;;
           esac
           exec ${old.passthru.hermesVenv}/bin/hermes "$@"

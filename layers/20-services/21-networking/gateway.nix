@@ -29,8 +29,8 @@ in
   config = mkIf cfg.enable {
     # Enable IP forwarding for VPN exit node functionality
     boot.kernel.sysctl = {
-      "net.ipv4.ip_forward" = 1;
-      "net.ipv6.conf.all.forwarding" = 1;
+      "net.ipv4.ip_forward" = mkDefault 1;
+      "net.ipv6.conf.all.forwarding" = mkDefault 1;
     };
 
     # NAT for VPN traffic — allows VPN clients to route internet through luffy

@@ -96,6 +96,7 @@ in
     client.enable = true;
     server.enable = true;
   };
+  services.rustdesk-server.signal.relayHosts = [ "192.168.1.54" ];
 
   # Noctalia Greeter (native Wayland login)
   layers.layer-30.theming.themes.greeter = {
@@ -129,7 +130,9 @@ in
       enable = true;
       port = 3002;
       bindHosts = [
-        "0.0.0.0"  # Listen on all interfaces for LAN + VPN
+        "127.0.0.1"       # Localhost for Caddy reverse proxy
+        "192.168.1.54"    # LAN IP for network clients
+        "100.72.46.75"    # ZeroTier IP for VPN clients
       ];
       dhcp = false;  # Spectrum router handles DHCP
       gatewayIp = "192.168.1.54";  # Luffy's reserved LAN IP

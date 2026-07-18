@@ -41,6 +41,9 @@ with lib;
         # Tailscale VPN identity (prevents new node key/IP on reboot)
         "/var/lib/tailscale"
 
+        # Skyvern automation data (DB, artifacts, sessions)
+        "/var/lib/skyvern"
+
         # SSH host keys
         "/etc/ssh"
       ];
