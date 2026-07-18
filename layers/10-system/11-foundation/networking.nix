@@ -76,12 +76,18 @@
 
         # mDNS / Avahi (for Home Assistant and other services)
         5353 # mDNS
+
+        # VPN / Tunneling
+        51820 # WireGuard
+        9993   # ZeroTier
       ];
 
-      # Allow specific interfaces (e.g., Tailscale, Docker)
+      # Allow specific interfaces (e.g., Tailscale, Docker, VPNs)
       trustedInterfaces = [
         "tailscale0" # Tailscale VPN
-        "podman0" # Podman bridge
+        "podman0"    # Podman bridge
+        "zt0"        # ZeroTier
+        "wg0"        # WireGuard
       ];
 
       # Allow loopback

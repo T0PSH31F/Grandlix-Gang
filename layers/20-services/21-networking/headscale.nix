@@ -23,12 +23,12 @@ in
           base_domain = "grandlix.net";
           nameservers = {
             global = [
-              "1.1.1.1"
-              "1.0.0.1"
+              "127.0.0.1"  # AdGuard Home on luffy (local)
+              "1.1.1.1"    # Fallback
             ];
           };
         };
-        server_url = "http://localhost:${toString cfg.port}";
+        server_url = "https://headscale.lovelain.duckdns.org";
         # Permissive ACL - allow all our nodes full mesh
         policy = {
           mode = "file";

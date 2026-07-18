@@ -564,7 +564,7 @@ in
         mouse_mode = true;
         copy_command = "wl-copy";
         default_shell = "${pkgs.zsh}/bin/zsh";
-        auto_copy_on_select = false;
+        auto_copy_on_select = true;
         theme = "noctalia";
       };
 

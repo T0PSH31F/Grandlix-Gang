@@ -126,12 +126,20 @@ in
       lovable.enable = true;
     };
     adguard = {
-      enable = false; # Commented out/disabled to unblock rebuild
-      port = 3002; # avoids homepage and grafana
+      enable = true;
+      port = 3002;
       bindHosts = [
-        "127.0.0.1"
-        "192.168.1.54"
+        "0.0.0.0"  # Listen on all interfaces for LAN + VPN
       ];
+      dhcp = false;  # Spectrum router handles DHCP
+      gatewayIp = "192.168.1.54";  # Luffy's reserved LAN IP
+      subnet = "192.168.1.0/24";
+    };
+    gateway = {
+      enable = true;
+      wanInterface = "eth0";  # Connected to Spectrum router
+      vpnInterfaces = [ "tailscale0" "wg0" "zt0" ];
+      lanIp = "192.168.1.54";  # Must match IP reservation on Spectrum router
     };
   };
 
@@ -441,6 +449,22 @@ in
       8443 # Nginx SSL proxy for Matrix/Element (bypass Caddy TLS issues)
       8087 # Nginx HTTP proxy for Matrix (no SSL, for hermes gateway)
       8888 # SearXNG — cross-machine dashboard search
+      51820 # WireGuard
+      9993  # ZeroTier
+      53    # DNS (AdGuard)
+      67    # DHCP
+    ];
+    allowedUDPPorts = [
+      51820 # WireGuard
+      9993  # ZeroTier
+      53    # DNS
+      67    # DHCP
+    ];
+    trustedInterfaces = [
+      "tailscale0"
+      "podman0"
+      "zt0"
+      "wg0"
     ];
   };
 

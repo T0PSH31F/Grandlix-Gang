@@ -44,23 +44,38 @@ in
   inventory = {
     machines = machinesInventory;
     instances = {
-      # wireguard = {
-      #   module = {
-      #     name = "wireguard";
-      #     input = "clan-core";
-      #   };
-      #   roles = {
-      #     controller.machines.luffy = {
-      #       settings = {
-      #         endpoint = "nixfp.duckdns.org";
-      #         port = 51820;
-      #       };
-      #     };
-      #     peer.machines = {
-      #       z0r0 = { };
-      #     };
-      #   };
-      # };
+      wireguard = {
+        module = {
+          name = "wireguard";
+          input = "clan-core";
+        };
+        roles = {
+          controller.machines.luffy = {
+            settings = {
+              endpoint = "nixfp.duckdns.org";
+              port = 51820;
+            };
+          };
+          peer.machines = {
+            z0r0 = { };
+          };
+        };
+      };
+
+      zerotier = {
+        module = {
+          name = "zerotier";
+          input = "clan-core";
+        };
+        roles = {
+          controller.machines.luffy = {
+            settings = {
+              public = true;  # Allow open membership for easy device joining
+            };
+          };
+          peer.tags.all = { };  # All machines are peers
+        };
+      };
 
       wifi = {
         module = {

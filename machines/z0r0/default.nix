@@ -71,7 +71,7 @@
       ci.auto-update.enable = true;
       ci.github-runner.enable = true;
       adguard = {
-        enable = true;
+        enable = lib.mkForce false;  # Moved to luffy
       };
       monitoring = {
         enable = true;
@@ -174,7 +174,6 @@
     9119 # Hermes Dashboard
     8010 # Brain Service
     8080 # Signal CLI
-    3002 # AdGuard Home (web)
     3005 # Langfuse
     8000 # SillyTavern
     8081 # llama.cpp
@@ -182,6 +181,13 @@
     3100 # Loki
     3008 # Grafana
     61208 # Glances for homepage cross-machine stats
+  ];
+
+  networking.firewall.trustedInterfaces = [
+    "tailscale0"
+    "podman0"
+    "zt0"
+    "wg0"
   ];
 
   # Enable Glances for cross-machine dashboard system stats
