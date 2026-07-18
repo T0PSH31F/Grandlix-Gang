@@ -206,12 +206,14 @@ in
           Unit = {
             Description = "Ensure Hyprland optional configuration files exist";
             Before = [ "graphical-session-pre.target" ];
+          };
+          Install = {
             WantedBy = [ "graphical-session-pre.target" ];
           };
           Service = {
             Type = "oneshot";
             RemainAfterExit = true;
-            ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr && touch %h/.config/hypr/noctalia.conf %h/.config/hypr/hyprtoolkit.conf %h/.config/hypr/monitors.conf %h/.config/hypr/hyprviz.conf'";
+            ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr %h/.cache/noctalia/HVE && touch %h/.config/hypr/noctalia.conf %h/.config/hypr/hyprtoolkit.conf %h/.config/hypr/monitors.conf %h/.config/hypr/hyprviz.conf %h/.cache/noctalia/HVE/overlay.conf'";
           };
         };
 
