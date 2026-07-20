@@ -66,6 +66,11 @@ in
       };
     };
 
+    # Ensure uploads directory exists (impermanence may recreate /var/lib/hedgedoc empty)
+    systemd.tmpfiles.rules = [
+      "d /var/lib/hedgedoc/uploads 0755 root root -"
+    ];
+
     # Impermanence: persist uploads
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
       directories = [

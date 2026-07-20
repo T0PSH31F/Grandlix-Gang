@@ -49,6 +49,7 @@ let
     🖥️ Hyprland
     🤖 OpenCode
     🧠 Hermes Agent
+    📋 Shell Aliases
     CHOICES
       )
       [ -z "$SELECTED" ] && break
@@ -66,6 +67,7 @@ let
         "🖥️ Hyprland")         hypr-keybind-cheatsheet ;;
         "🤖 OpenCode")          opencode-cheatsheet ;;
         "🧠 Hermes Agent")      hermes-cheatsheet ;;
+        "📋 Shell Aliases")     aliases-cheatsheet ;;
       esac
     done
   '';
@@ -782,6 +784,24 @@ PROJECT: Streaming Liberation
 CHEATSHEET_EOF
   '';
 
+  aliases_cheatsheet = pkgs.writeShellScriptBin "aliases-cheatsheet" ''
+    ${rofiTheme}
+    # Dynamically list all zsh aliases (captures OMZ + custom aliases)
+    ALIASES=$(${pkgs.zsh}/bin/zsh -ic 'alias' 2>/dev/null | \
+      sed "s/^alias //" | \
+      sed "s/='/'  →  '/" | \
+      sed "s/^'//" | sed "s/'$//" | \
+      sort | \
+      awk -F"'" '{
+        name=$1; sub(/[[:space:]]+$/, "", name);
+        cmd=$2;
+        printf "  %-24s %s\n", name, cmd
+      }')
+    echo "📋 SHELL ALIASES
+    ─────────────────────────────────────────
+    $ALIASES" | ${pkgs.rofi}/bin/rofi -dmenu -p "Shell Aliases" -filter "" $ROFI_THEME_ARGS
+  '';
+
 in
 {
   home.home.packages = [
@@ -798,5 +818,6 @@ in
     cli_power_cheatsheet
     opencode_cheatsheet
     hermes_cheatsheet
+    aliases_cheatsheet
   ];
 }

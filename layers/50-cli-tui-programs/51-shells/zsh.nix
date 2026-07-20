@@ -114,6 +114,13 @@ in
         zk = "zellij kill-session";
       };
       initContent = ''
+        # Hermes Agent — ensure ~/.local/bin and ~/bin are on PATH
+        case ":$PATH:" in
+          *":$HOME/bin:"*) ;;
+          *) export PATH="$HOME/bin:$PATH" ;;
+        esac
+        export PATH="$HOME/.local/bin:$PATH"
+
         any-nix-shell zsh --info-right | source /dev/stdin
         bindkey '^Y' autosuggest-accept
         bindkey '^E' autosuggest-clear
@@ -146,7 +153,10 @@ in
 
         ${lib.optionalString (!cfg.headless) ''
           if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "Waveterm" ]] && [[ -z "$SSH_CONNECTION" ]]; then
-              if command -v zellij >/dev/null 2>&1; then zellij attach -c "z0r0.clan"; fi
+              if command -v zellij >/dev/null 2>&1; then
+                # Try attaching to existing persistent session; create with correct layout if missing
+                zellij attach "z0r0.clan" 2>/dev/null || zellij --layout opencode --session "z0r0.clan"
+              fi
           fi
         ''}
       '';

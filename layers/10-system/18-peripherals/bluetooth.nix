@@ -56,14 +56,24 @@ in
       bluetuith
     ];
 
-    # Auto-connect trusted devices
+    # Auto-connect trusted Bluetooth devices on boot
+    # Iterates through trusted devices and connects each one
     systemd.user.services.bluetooth-auto-connect = {
       description = "Auto-connect Bluetooth devices";
       after = [ "bluetooth.service" ];
       partOf = [ "bluetooth.service" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/timeout 10 ${pkgs.bluez}/bin/bluetoothctl connect-all || true'";
+        ExecStart = let
+          autoConnectScript = pkgs.writeShellScript "bluetooth-auto-connect" ''
+            set -euo pipefail
+            # Get all trusted Bluetooth devices and connect each
+            ${pkgs.bluez}/bin/bluetoothctl devices Trusted | while read -r _ mac name; do
+              echo "Connecting to $name ($mac)..."
+              ${pkgs.coreutils}/bin/timeout 10 ${pkgs.bluez}/bin/bluetoothctl connect "$mac" 2>/dev/null || true
+            done
+          '';
+        in "${autoConnectScript}";
         RemainAfterExit = true;
       };
       wantedBy = [ "default.target" ];

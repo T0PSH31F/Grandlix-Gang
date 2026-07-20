@@ -59,7 +59,6 @@ with lib;
           # Projects and work
           "Clan"
           "Projects"
-          "projects"
           "Documents"
           "Downloads"
           "Pictures"
@@ -86,11 +85,8 @@ with lib;
 
           # Legacy/Custom User Data
           "Agents"
-          "NixOS"
-          "Public"
           "Templates"
           "Games"
-          "Flatpaks"
           "Appimages"
           "Notes"
           ".icons"
@@ -111,12 +107,10 @@ with lib;
           ".kodi"
           ".var/app"
           ".authsome"
-          "Streaming_Liberation"
         ];
 
         files = [
           # Shell history
-          ".bash_history"
           ".zsh_history"
 
           # facter.json

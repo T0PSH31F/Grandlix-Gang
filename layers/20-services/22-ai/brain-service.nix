@@ -126,9 +126,13 @@ in
       '';
     };
 
+    # Grant postgres access to traverse /home/t0psh31f/ for PKB books
+    users.users.postgres.extraGroups = [ "users" ];
+
     # Create data directory
     systemd.tmpfiles.rules = [
       "d /var/lib/brain-service 0750 postgres postgres -"
+      "d /var/lib/brain-service/tiktoken-cache 0750 postgres postgres -"
     ];
 
     # Main API service
@@ -152,6 +156,7 @@ in
         HOST = cfg.host;
         BRAIN_MODE = "api";
         MANIFEST_PATH = "/var/lib/brain-service/manifest.json";
+        TIKTOKEN_CACHE_DIR = "/var/lib/brain-service/tiktoken-cache";
       } // lib.optionalAttrs (cfg.booksDir != null) {
         BOOKS_DIR = cfg.booksDir;
       };
@@ -183,6 +188,7 @@ in
           "EMBED_MODEL=${cfg.embedModel}"
           "EMBED_DIM=${toString cfg.embedDim}"
           "MANIFEST_PATH=/var/lib/brain-service/manifest.json"
+          "TIKTOKEN_CACHE_DIR=/var/lib/brain-service/tiktoken-cache"
         ];
       };
     };
@@ -205,6 +211,7 @@ in
         EMBED_DIM = toString cfg.embedDim;
         BOOKS_DIR = cfg.booksDir;
         MANIFEST_PATH = "/var/lib/brain-service/manifest.json";
+        TIKTOKEN_CACHE_DIR = "/var/lib/brain-service/tiktoken-cache";
       };
 
       serviceConfig = {
@@ -227,6 +234,7 @@ in
         export EMBED_MODEL=${cfg.embedModel}
         export EMBED_DIM=${toString cfg.embedDim}
         export MANIFEST_PATH=/var/lib/brain-service/manifest.json
+        export TIKTOKEN_CACHE_DIR=/var/lib/brain-service/tiktoken-cache
 
         exec ${pythonEnv}/bin/python ${brainScript}
       '')

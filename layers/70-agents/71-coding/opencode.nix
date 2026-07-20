@@ -49,12 +49,36 @@
                 HIMALAYA_BINARY = "/etc/profiles/per-user/t0psh31f/bin/himalaya";
               };
             };
-            # Disabled — consistently failing (100% error rate), not needed
-            browser-use.enabled = false;
-            file-manager.enabled = false;
-            ha-mcp.enabled = false;
-            mcp-registry.enabled = false;
-            sequential-thinking.enabled = false;
+            # ── Tool Discovery & Orchestration ───────────────────────
+            # NCP — semantic MCP gateway: reduces 50+ tools to 2 unified tools
+            # (find + code). Saves ~97% of context token overhead.
+            ncp = {
+              command = [ "npx" "-y" "@portel/ncp" ];
+              enabled = true;
+              type = "local";
+            };
+            # Forage — self-improving tool discovery: agents can search,
+            # install, and learn new MCP servers autonomously.
+            forage = {
+              command = [ "npx" "-y" "forage-mcp" ];
+              enabled = true;
+              type = "local";
+            };
+            # Mistral MCP — full Mistral AI surface (chat, OCR, Codestral, etc.)
+            # Also available via systemd HTTP service on :3333 for Hermes.
+            mistral = {
+              command = [ "npx" "-y" "mistral-mcp@latest" ];
+              enabled = true;
+              type = "local";
+              env.MISTRAL_API_KEY = "";  # Set via environmentFile or sops
+            };
+
+            # ── Disabled ───────────────────────────────────────────
+            browser-use.enabled = false;    # 100% error rate, not needed
+            file-manager.enabled = false;   # not useful
+            ha-mcp.enabled = false;         # not needed
+            mcp-registry.enabled = false;   # never worked
+            # sequential-thinking.enabled = false;  # available if wanted
           };
           plugin = [
             pluginLabel

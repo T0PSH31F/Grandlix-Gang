@@ -30,8 +30,8 @@ in
       enable = mkEnableOption "Noctalia Greeter (native Wayland login)";
       session = mkOption {
         type = types.str;
-        default = "hyprland";
-        description = "Default session to launch (hyprland, niri, etc.)";
+        default = "hyprland-uwsm";
+        description = "Default session to launch (hyprland-uwsm, niri-uwsm, etc.)";
       };
     };
   };

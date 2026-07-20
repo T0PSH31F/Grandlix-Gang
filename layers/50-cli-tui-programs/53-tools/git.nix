@@ -36,6 +36,7 @@ in
           init.defaultBranch = "main";
           core.editor = "hx";
           delta = lib.mkIf matugenEnabled { features = "matugen"; };
+          credential.helper = "store --file ~/.config/git/credentials";
         };
       };
 

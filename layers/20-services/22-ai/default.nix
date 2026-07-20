@@ -26,5 +26,7 @@
     ./llama-swap.nix # llama-swap router
     ./vllm.nix # vLLM inference server
     ./lokb.nix # lokb knowledge base with MCP server
+    ./freellmapi.nix # FreeLLMAPI — free-tier LLM router
+    ./mistral-mcp.nix # Mistral MCP server (HTTP mode)
   ];
 }

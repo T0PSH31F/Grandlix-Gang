@@ -282,9 +282,16 @@ in
         providers = {
           custom.request_timeout_seconds = 180;
           openrouter.request_timeout_seconds = 180;
+          # FreeLLMAPI — free-tier LLM router (28 providers, 339 models)
+          freellmapi = {
+            base_url = "http://127.0.0.1:3001/v1";
+            api_key = "";  # Uses FreeLLMAPI's unified key; set via env
+            request_timeout_seconds = 60;
+          };
         };
 
         fallback_providers = [
+          "freellmapi"
           "openrouter"
           "nous"
         ];
@@ -293,6 +300,7 @@ in
           openrouter = "round_robin";
           nous = "fill_first";
           opencode = "fill_first";
+          freellmapi = "fill_first";
         };
 
         toolsets = [ "hermes-cli" ];
@@ -513,6 +521,40 @@ in
             args = [];
             env = {};
           };
+
+          # NCP — semantic MCP gateway: reduces tool context overhead
+          ncp = {
+            command = "npx";
+            args = [ "-y" "@portel/ncp" ];
+            env = {};
+          };
+
+          # Forage — self-improving tool discovery & installation
+          forage = {
+            command = "npx";
+            args = [ "-y" "forage-mcp" ];
+            env = {};
+          };
+
+          # Mistral MCP — full Mistral AI surface (HTTP mode via systemd)
+          mistral = {
+            command = "npx";
+            args = [ "-y" "mistral-mcp@latest" ];
+            env = {
+              MISTRAL_API_KEY = "";  # Set via Hermes env or sops
+            };
+          };
+
+          # FreeLLMAPI MCP — query router state, switch strategies, check key health
+          freellmapi = {
+            command = "bash";
+            args = [ "-c" "echo 'FreeLLMAPI MCP at http://127.0.0.1:3001/mcp'" ];
+            env = {};
+            # Note: For Streamable HTTP MCP, configure as:
+            #   type = "http";
+            #   url = "http://127.0.0.1:3001/mcp";
+            # when Hermes supports HTTP MCP transport.
+          };
         };
       };
 
@@ -533,6 +575,14 @@ in
       '';
     };
 
+    # Ensure the .hermes directory stays group-readable so t0psh31f (in hermes group)
+    # can access the hermes venv. systemd StateDirectory= may reset permissions on restart,
+    # so tmpfiles.d enforces it persistently.
+    systemd.tmpfiles.rules = [
+      "d /var/lib/hermes/.hermes 0750 hermes hermes -"
+      "d /var/lib/hermes/.hermes/hermes-agent 0750 hermes hermes -"
+    ];
+
     system.activationScripts.hermes-migrate = {
       deps = [ "users" ];
       text = ''
@@ -546,6 +596,10 @@ in
         if [ -d "${config.services.hermes-agent.stateDir}" ]; then
           chown -R hermes:hermes "${config.services.hermes-agent.stateDir}"
           chmod -R u+rwX,g+rwX "${config.services.hermes-agent.stateDir}"
+        fi
+        # Clean up any nested .hermes that may remain from the original migration
+        if [ -d "${config.services.hermes-agent.stateDir}/.hermes/.hermes" ]; then
+          rm -rf "${config.services.hermes-agent.stateDir}/.hermes/.hermes"
         fi
       '';
     };

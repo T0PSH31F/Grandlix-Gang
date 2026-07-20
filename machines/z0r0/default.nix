@@ -91,7 +91,7 @@
       greetd.enable = false;
       noctalia-greeter = {
         enable = true;
-        session = "hyprland";
+        session = "hyprland-uwsm";
       };
     };
 
@@ -142,6 +142,18 @@
     };
     n8n-server.enable = false;
     infrastructure.langfuse.enable = true;
+
+    # FreeLLMAPI — free-tier LLM router for Hermes/OpenCode fallback
+    freellmapi = {
+      enable = true;
+      port = 3001;
+    };
+
+    # Mistral MCP — Mistral AI tool server (chat, OCR, Codestral)
+    mistral-mcp = {
+      enable = true;
+      port = 3333;
+    };
   };
 
   # Make Langfuse accessible from LAN for cross-machine dashboard monitoring

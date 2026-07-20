@@ -202,9 +202,11 @@ KDL
     theme "noctalia"
 KDL
 
-    rm -f "$LAYOUTS_DIR/opencode.kdl" "$LAYOUTS_DIR/compact.kdl"
+    # Write atomically — write to temp, then rename so zellij never sees a missing layout
+    _tmp_opencode=$(mktemp "$LAYOUTS_DIR/opencode.kdl.tmp.XXXXXX")
+    _tmp_compact=$(mktemp "$LAYOUTS_DIR/compact.kdl.tmp.XXXXXX")
 
-    cat > "$LAYOUTS_DIR/opencode.kdl" <<KDL
+    cat > "$_tmp_opencode" <<KDL
       layout {
         default_tab_template {
           ''${BAR}
@@ -252,13 +254,17 @@ KDL
       }
 KDL
 
-    cat > "$LAYOUTS_DIR/compact.kdl" <<KDL
+    cat > "$_tmp_compact" <<KDL
       layout {
         pane {
           command "zsh"
         }
       }
 KDL
+
+    # Atomic rename so zellij never sees a missing/incomplete layout file
+    mv "$_tmp_opencode" "$LAYOUTS_DIR/opencode.kdl"
+    mv "$_tmp_compact" "$LAYOUTS_DIR/compact.kdl"
 
     echo "zjstatus synced (primary=#''${PRIMARY})"
   '';
@@ -632,7 +638,7 @@ in
       if command -v zellij-colors-sync >/dev/null 2>&1; then
         zellij-colors-sync 2>/dev/null || true
       fi
-      z-oc() { zellij --layout opencode; }
+      z-oc() { zellij attach "z0r0.clan" 2>/dev/null || zellij --layout opencode --session "z0r0.clan"; }
     '';
 
     systemd.user.services.zellij-colors = {

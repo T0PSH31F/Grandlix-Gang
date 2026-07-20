@@ -104,7 +104,7 @@ in
     greetd.enable = false;
     noctalia-greeter = {
       enable = true;
-      session = "hyprland";
+      session = "hyprland-uwsm";
     };
   };
 
