@@ -33,31 +33,6 @@ in
       };
     };
 
-    # FreeLLMAPI — free-tier LLM router (28 providers, 339 models, :3001)
-    freellmapi = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable FreeLLMAPI LLM router service";
-      };
-      port = mkOption {
-        type = types.int;
-        default = 3001;
-      };
-    };
-
-    # Mistral MCP — Mistral AI tool server (HTTP mode, :3333)
-    mistral-mcp = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable Mistral MCP HTTP service";
-      };
-      port = mkOption {
-        type = types.int;
-        default = 3333;
-      };
-    };
   };
 
   config = mkIf cfg.enable {
