@@ -16,13 +16,15 @@ let
       owner = "tashfeenahmed";
       repo = "freellmapi";
       rev = "main";               # TODO: pin to a specific commit for reproducibility
-      hash = pkgs.lib.fakeSha256;  # TODO: set real hash after first build
+      hash = "sha256-YuCdAI0DG/vNc211wqfu/QcywA/+n0YUdZfsCPS3zAk=";
     };
 
-    npmDepsHash = pkgs.lib.fakeSha256;  # TODO: set real hash after first build
+    npmDepsHash = "sha256-v4ItOBqsXZYELklP0KOhG5iR2JqpFif5h44v/tT+1A0=";
 
     # Node.js >= 20.18 required
-    nativeBuildInputs = [ pkgs.nodejs_22 ];
+    nativeBuildInputs = [ pkgs.nodejs_22 pkgs.python3 pkgs.gcc pkgs.pkg-config ];
+    # better-sqlite3 native module needs kernel headers
+    buildInputs = [ pkgs.linuxHeaders ];
 
     # Build server + client
     buildPhase = ''
