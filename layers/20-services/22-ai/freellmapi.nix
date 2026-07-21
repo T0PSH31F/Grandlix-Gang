@@ -119,7 +119,7 @@ in
       } // cfg.extraEnv;
 
       serviceConfig = {
-        ExecStart = "${freellmapiPkg}/share/freellmapi/server/dist/index.js";
+        ExecStart = "${pkgs.nodejs_22}/bin/node ${freellmapiPkg}/share/freellmapi/dist/index.js";
         Restart = "on-failure";
         RestartSec = 5;
         User = "freellmapi";
