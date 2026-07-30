@@ -48,7 +48,9 @@ let
     🤖 OpenCode
     🧠 Hermes Agent
     📋 Shell Aliases
-    CHOICES
+    🛠️ CLI Tools
+    🏷️ Tag Groups
+CHOICES
       )
       [ -z "$SELECTED" ] && break
       case "$SELECTED" in
@@ -66,6 +68,8 @@ let
         "🤖 OpenCode")          opencode-cheatsheet ;;
         "🧠 Hermes Agent")      hermes-cheatsheet ;;
         "📋 Shell Aliases")     aliases-cheatsheet ;;
+        "🛠️ CLI Tools")       cli-tools-cheatsheet ;;
+        "🏷️ Tag Groups")      tag-groups-cheatsheet ;;
       esac
     done
   '';
@@ -804,6 +808,138 @@ CHEATSHEET_EOF
     $ALIASES" | ${pkgs.rofi}/bin/rofi -dmenu -p "Shell Aliases" -filter "" $ROFI_THEME_ARGS
   '';
 
+  cli_tools_cheatsheet = pkgs.writeShellScriptBin "cli-tools-cheatsheet" ''
+    ${rofiTheme}
+    TOOLS="
+📁 FILES
+  eza         Modern ls (icons, colors, tree)
+  fd          Fast find replacement
+  bat         Cat with syntax highlighting
+  ripgrep/rg  Ultra-fast grep
+  fzf         Fuzzy finder
+  zoxide/z    Smart cd
+  duf         Better df
+  dust        Better du
+  broot       Interactive tree
+  trash-cli   Safer rm
+
+🔧 SYSTEM
+  htop        Interactive process viewer
+  btop        Resource monitor
+  ncdu        Disk usage analyzer
+  lsof        List open files
+  journalctl  Systemd log viewer
+  systemctl   Service manager
+  loginctl    Session/login manager
+
+🌐 NETWORK
+  curl        HTTP / API tester
+  wget        File downloader
+  nmap        Port scanner
+  nc/netcat   TCP/UDP tool
+  dig         DNS lookup
+  ping        Network reachability
+  mtr         Traceroute + ping
+  ssh         Secure shell
+  nmcli       NetworkManager CLI
+
+💻 DEV
+  git         Version control
+  gh          GitHub CLI
+  nix         Package manager
+  nix-shell   Temporary dev env
+  home-manager Dotfile management
+  just        Command runner
+  lazygit     Git TUI
+
+🤖 AI
+  ollama      Local LLM runner
+  aider       AI pair programming
+  opencode    AI coding agent
+  hermes      AI agent (Nous)
+
+📦 NIX / NFP
+  nixos-rebuild Build + switch
+  nix flake   Flake management
+  nix-collect-garbage Free space
+  clan        Fleet manager
+  nh          Nix helper
+  nix-index   Locate by file
+
+📝 TEXT
+  helix/hx   Modal editor
+  nvim       Neovim
+  sed        Stream editor
+  awk        Text processing
+  jq         JSON processor
+  yq         YAML processor
+  pandoc     Document converter
+
+🎨 MEDIA
+  ffmpeg     Video/audio
+  yt-dlp     YouTube downloader
+"
+    TOOL=$(echo "$TOOLS" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Tool" -filter "" -i $ROFI_THEME_ARGS | awk '{print $1}')
+    [ -z "$TOOL" ] && exit 0
+    if command -v tldr > /dev/null 2>&1; then
+      tldr "$TOOL" 2>/dev/null | ${pkgs.rofi}/bin/rofi -dmenu -p "$TOOL" -filter "" $ROFI_THEME_ARGS
+    else
+      echo "Install tealdeer: nix profile install nixpkgs#tealdeer" | \
+        ${pkgs.rofi}/bin/rofi -dmenu -p "$TOOL" $ROFI_THEME_ARGS
+    fi
+  '';
+
+  tag_groups_cheatsheet = pkgs.writeShellScriptBin "tag-groups-cheatsheet" ''
+    ${rofiTheme}
+    TAGS="
+🏷️ ENABLED TAGS — z0r0
+─────────────────────────────────────────
+  workstation   Base tools, themes, network
+  desktop       GUI environment (Hyprland)
+  development   Dev tools (git, nix, editors)
+  gaming        Steam, Lutris, emulators
+  laptop        Power management, backlight
+  media         Jellyfin, *arr stack
+  ai-server     LLM backends, AI services
+  ai-agent      Hermes, OpenCode, MCP
+  intel-12th-gen CPU microcode, i915
+
+🏷️ ENABLED TAGS — luffy
+─────────────────────────────────────────
+  workstation   Base tools, themes, network
+  desktop       GUI (headless + cage)
+  gaming        GPU drivers (NVIDIA)
+  server        Server hardening, sshd
+  homelab       HA, SearXNG, Vaultwarden
+  cache-server  Nix binary cache
+  ai-server     AI backends + homepage
+  ai-agent      Full agent stack
+  development   Dev tools
+  media         Media services
+  intel-9th-gen CPU microcode
+
+🏷️ AVAILABLE TAGS (idle)
+─────────────────────────────────────────
+  gpu-compute   CUDA, ROCm, OpenCL
+  media-server  Jellyfin server mode
+  dev           Lightweight dev
+
+📊 WHAT EACH TAG ENABLES
+─────────────────────────────────────────
+  ai-agent     Hermes, OpenCode, MCP, herm, Claude Code, Gemini CLI
+  ai-server    Ollama, Open WebUI, ChromaDB, SillyTavern
+  workstation  Tailscale, avahi, SSH, firewall
+  desktop      Hyprland, Noctalia, rofi, Wayland
+  development  git, nix, helix, zellij, LSPs
+  gaming       Steam, Lutris, MangoHud
+  media        Jellyfin, Sonarr, Radarr, Prowlarr
+  homelab      Home Assistant, SearXNG, Headscale
+  server       sshd hardening, firewall
+  laptop       TLP, backlight, battery
+"
+    echo "$TAGS" | ${pkgs.rofi}/bin/rofi -dmenu -p "Tag Groups" -filter "" $ROFI_THEME_ARGS
+  '';
+
 in
 {
   home.home.packages = [
@@ -821,5 +957,7 @@ in
     opencode_cheatsheet
     hermes_cheatsheet
     aliases_cheatsheet
+    cli_tools_cheatsheet
+    tag_groups_cheatsheet
   ];
 }
