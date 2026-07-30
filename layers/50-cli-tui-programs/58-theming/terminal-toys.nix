@@ -10,7 +10,10 @@ in
 {
   home = lib.mkIf (cfg.enable && (cfg.terminal-toys.enable or true)) {
     home.packages = with pkgs; [
+      asciiquarium
       blahaj
+      boxes
+      catimg
       cbonsai
       cfonts
       chafa
@@ -18,16 +21,20 @@ in
       cmatrix
       figlet
       fortune-kind
+      genact
       lavat
       lolcat
       neo-cowsay
       neo
+      pipes
       fastfetch
       sl
       terminal-parrot
       terminaltexteffects
       terminal-toys
+      timg
       toilet
+      tty-clock
       unimatrix
     ];
   };

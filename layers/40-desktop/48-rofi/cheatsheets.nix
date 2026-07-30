@@ -879,15 +879,30 @@ CHEATSHEET_EOF
 
 🎮 FUN / TOYS
   lavat       Lava lamp in your terminal
+  pipes       Animated pipes screensaver
+  asciiquarium Sea creatures swimming
+  cmatrix     Matrix-style green rain
+  neo         Matrix rain (smaller)
+  unimatrix   Matrix rain by a Unicorn
+  cbonsai     Animated bonsai tree
+  genact      Fake activity generator
+  tty-clock   Terminal clock
+  sl          Steam Locomotive (typo ls)
   figlet      ASCII art text banners
   toilet      Fancy ASCII text (more fonts)
-  cowsay      Talking cow (or other animals)
+  cfonts      Colored fonts in terminal
+  cowsay      Talking cow (any animal)
+  charasay    Anime characters say things
+  fortune     Random fortune cookie
   lolcat      Rainbow-colored output
-  sl          Steam Locomotive (don't mistype ls)
-  cmatrix     Matrix-style green rain
-  neo         Matrix code rain (smaller)
+  terminal-parrot Animated dancing parrot
+  terminaltexteffects Text animation engine
   chafa       Image to terminal art
-  ascii-image-convert Image to ASCII
+  catimg      Image to terminal (fast)
+  timg        Terminal image viewer
+  boxes       ASCII boxes around text
+  fastfetch   System info (neofetch alt)
+  blahaj      BLÅHAJ shark in terminal
 "
     TOOL=$(echo "$TOOLS" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Tool" -filter "" -i $ROFI_THEME_ARGS | awk '{print $1}')
     [ -z "$TOOL" ] && exit 0
