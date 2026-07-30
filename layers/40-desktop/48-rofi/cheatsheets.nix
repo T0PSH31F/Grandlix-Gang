@@ -5,8 +5,6 @@
 }:
 
 let
-  cfg = { };
-
   # Shared rofi theme setup — sources Noctalia Material You colors at runtime
   # Uses $primary for accents, $surface for bg, $secondary for highlights
   # Falls back to dark neon palette if noctalia-colors.conf is missing
@@ -789,14 +787,18 @@ CHEATSHEET_EOF
     # Dynamically list all zsh aliases (captures OMZ + custom aliases)
     ALIASES=$(${pkgs.zsh}/bin/zsh -ic 'alias' 2>/dev/null | \
       sed "s/^alias //" | \
-      sed "s/='/'  →  '/" | \
-      sed "s/^'//" | sed "s/'$//" | \
+      sed "s/^-g //" | \
+      sed "s/='/' → '/" | \
+      sed "s/^'//; s/'$//" | \
       sort | \
       awk -F"'" '{
         name=$1; sub(/[[:space:]]+$/, "", name);
-        cmd=$2;
+        cmd=$3;
         printf "  %-24s %s\n", name, cmd
       }')
+    if [ -z "$ALIASES" ]; then
+      ALIASES="  (no aliases found or shell not available)"
+    fi
     echo "📋 SHELL ALIASES
     ─────────────────────────────────────────
     $ALIASES" | ${pkgs.rofi}/bin/rofi -dmenu -p "Shell Aliases" -filter "" $ROFI_THEME_ARGS

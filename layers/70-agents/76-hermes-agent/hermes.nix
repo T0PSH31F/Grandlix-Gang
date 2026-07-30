@@ -9,10 +9,12 @@ let
   cfg = config.layers.layer-76.hermes;
 
   # Derive the Matrix domain from the homeserver URL (e.g. https://matrix.local → matrix.local)
-  matrixDomain = let
-    hs = cfg.matrixBot.homeserver;
-    withoutProto = lib.removePrefix "https://" (lib.removePrefix "http://" hs);
-  in lib.head (lib.splitString ":" withoutProto);
+  matrixDomain =
+    let
+      hs = cfg.matrixBot.homeserver;
+      withoutProto = lib.removePrefix "https://" (lib.removePrefix "http://" hs);
+    in
+    lib.head (lib.splitString ":" withoutProto);
 
   # Shared sops file paths
   extSopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
@@ -68,68 +70,71 @@ let
   # The upstream desktop.nix's renderer is a `let` binding using the hermes-agent
   # flake's own pkgs (without linuxHeaders), so we rebuild it here using NFP's
   # pkgs.buildNpmPackage with linuxHeaders injected.
-  hermesDesktopPkg = let
-    sys = pkgs.stdenv.hostPlatform.system;
-    hermesNpmLib = inputs.hermes-agent.packages.${sys}.default.passthru.hermesNpmLib;
-    npm = hermesNpmLib.mkNpmPassthru {
-      folder = "apps/desktop";
-      attr = "desktop";
+  hermesDesktopPkg =
+    let
+      sys = pkgs.stdenv.hostPlatform.system;
+      hermesNpmLib = inputs.hermes-agent.packages.${sys}.default.passthru.hermesNpmLib;
+      npm = hermesNpmLib.mkNpmPassthru {
+        dirs = [
+          "apps/desktop"
+          "apps/shared"
+        ];
+      };
+      packageJson = builtins.fromJSON (builtins.readFile (npm.src + "/apps/desktop/package.json"));
+      version = packageJson.version;
+      renderer = pkgs.buildNpmPackage (
+        npm
+        // {
+          pname = "hermes-desktop-renderer";
+          inherit version;
+          doCheck = false;
+          buildInputs = [ pkgs.linuxHeaders ];
+          NIX_CFLAGS_COMPILE = "-isystem ${pkgs.linuxHeaders}/include";
+          buildPhase = ''
+            runHook preBuild
+            mkdir -p apps/desktop/build
+            echo '{"schemaVersion":1,"commit":"nix","branch":"nix","dirty":false,"source":"nix"}' > apps/desktop/build/install-stamp.json
+            patchShebangs .
+            pushd apps/desktop
+              npm rebuild node-pty --build-from-source
+              npm exec vite build
+              node scripts/bundle-electron-main.mjs
+              node scripts/stage-native-deps.mjs
+            popd
+            runHook postBuild
+          '';
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out
+            # vite build → dist/ (renderer), bundle-electron-main → dist/ (electron main + preload),
+            # stage-native-deps → dist/node_modules/node-pty/
+            cp -rn apps/desktop/dist $out/
+            cp -n apps/desktop/build/install-stamp.json $out/
+            runHook postInstall
+          '';
+        }
+      );
+    in
+    pkgs.stdenv.mkDerivation {
       pname = "hermes-desktop";
-    };
-    packageJson = builtins.fromJSON (builtins.readFile (npm.src + "/apps/desktop/package.json"));
-    version = packageJson.version;
-    renderer = pkgs.buildNpmPackage (npm // {
-      pname = "hermes-desktop-renderer";
       inherit version;
-      doCheck = false;
-      buildInputs = [ pkgs.linuxHeaders ];
-      NIX_CFLAGS_COMPILE = "-isystem ${pkgs.linuxHeaders}/include";
-      buildPhase = ''
-        runHook preBuild
-        mkdir -p apps/desktop/build
-        echo '{"schemaVersion":1,"commit":"nix","branch":"nix","dirty":false,"source":"nix"}' > apps/desktop/build/install-stamp.json
-        patchShebangs .
-        pushd apps/desktop
-          npm rebuild node-pty --build-from-source
-          node scripts/stage-native-deps.cjs
-          npm exec tsc -b
-          npm exec vite build
-        popd
-        runHook postBuild
-      '';
+      dontUnpack = true;
+      dontBuild = true;
+      nativeBuildInputs = [ pkgs.makeWrapper ];
       installPhase = ''
         runHook preInstall
-        mkdir -p $out
-        cp -rn apps/desktop/dist $out/
-        cp -rn apps/desktop/electron $out/
-        cp -rn apps/desktop/build/native-deps $out/
-        cp -n apps/desktop/build/install-stamp.json $out/
-        cp -n apps/desktop/package.json $out/
+        mkdir -p $out/share/hermes-desktop $out/bin
+        cp -r ${renderer}/* $out/share/hermes-desktop/
+        substituteInPlace $out/share/hermes-desktop/dist/electron-main.mjs \
+          --replace-fail "process.resourcesPath" "'$out/share/hermes-desktop'"
+        makeWrapper ${pkgs.lib.getExe pkgs.electron} $out/bin/hermes-desktop \
+          --add-flags "$out/share/hermes-desktop" \
+          --set HERMES_DESKTOP_HERMES "${config.services.hermes-agent.package}/bin/hermes" \
+          --set ELECTRON_IS_DEV 0
         runHook postInstall
       '';
-    });
-  in pkgs.stdenv.mkDerivation {
-    pname = "hermes-desktop";
-    inherit version;
-    dontUnpack = true;
-    dontBuild = true;
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/share/hermes-desktop $out/bin
-      cp -r ${renderer}/* $out/share/hermes-desktop/
-      substituteInPlace $out/share/hermes-desktop/electron/main.cjs \
-        --replace-fail "process.resourcesPath" "'$out/share/hermes-desktop'"
-      substituteInPlace $out/share/hermes-desktop/electron/git-review-ops.cjs \
-        --replace-fail "process.resourcesPath" "'$out/share/hermes-desktop'"
-      makeWrapper ${pkgs.lib.getExe pkgs.electron} $out/bin/hermes-desktop \
-        --add-flags "$out/share/hermes-desktop" \
-        --set HERMES_DESKTOP_HERMES "${config.services.hermes-agent.package}/bin/hermes" \
-        --set ELECTRON_IS_DEV 0
-      runHook postInstall
-    '';
-    meta.mainProgram = "hermes-desktop";
-  };
+      meta.mainProgram = "hermes-desktop";
+    };
 in
 {
   imports = [
@@ -169,12 +174,20 @@ in
     # NixOS-level sops secrets for the hermes-env template.
     # These are needed because the template lives at the NixOS level and can't
     # reference home-manager scoped secrets (defined in t0psh31f.nix).
-    sops.secrets = builtins.listToAttrs (map (name: {
-      inherit name;
-      value = { sopsFile = extSopsFile; };
-    }) extSecrets) // {
-      gemini_api_key = { sopsFile = vicinaeSopsFile; };
-    };
+    sops.secrets =
+      builtins.listToAttrs (
+        map (name: {
+          inherit name;
+          value = {
+            sopsFile = extSopsFile;
+          };
+        }) extSecrets
+      )
+      // {
+        gemini_api_key = {
+          sopsFile = vicinaeSopsFile;
+        };
+      };
 
     services.hermes-agent = {
       enable = true;
@@ -184,93 +197,112 @@ in
       # node-pty compilation (linux/types.h not found).
       # The upstream nixosModule defaults to inputs.self.packages which
       # bypasses our overlay. We fix it here directly using `inputs`.
-      package = let
-        origTui = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.tui;
-        origWeb = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.web;
-        origAgent = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
-        fixedTui = origTui.overrideAttrs (old: {
-          buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
-          NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -isystem ${pkgs.linuxHeaders}/include";
-        });
-        fixedWeb = origWeb.overrideAttrs (old: {
-          buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
-          NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -isystem ${pkgs.linuxHeaders}/include";
-        });
-      in origAgent.overrideAttrs (old: let
-        agentSrc = inputs.hermes-agent;
-        runtimePath = pkgs.lib.makeBinPath (with pkgs; [
-          nodejs_22 ripgrep git openssh ffmpeg tirith wl-clipboard xclip
-        ]);
-      in {
-        installPhase = ''
-          runHook preInstall
+      package =
+        let
+          origTui = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.tui;
+          origWeb = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.web;
+          origAgent = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          fixedTui = origTui.overrideAttrs (old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
+            NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -isystem ${pkgs.linuxHeaders}/include";
+          });
+          fixedWeb = origWeb.overrideAttrs (old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
+            NIX_CFLAGS_COMPILE = (old.NIX_CFLAGS_COMPILE or "") + " -isystem ${pkgs.linuxHeaders}/include";
+          });
+        in
+        origAgent.overrideAttrs (
+          old:
+          let
+            agentSrc = inputs.hermes-agent;
+            runtimePath = pkgs.lib.makeBinPath (
+              with pkgs;
+              [
+                nodejs_22
+                ripgrep
+                git
+                openssh
+                ffmpeg
+                tirith
+                wl-clipboard
+                xclip
+              ]
+            );
+          in
+          {
+            installPhase = ''
+              runHook preInstall
 
-          mkdir -p $out/share/hermes-agent $out/bin
-          cp -r ${agentSrc}/skills $out/share/hermes-agent/skills
-          cp -r ${agentSrc}/plugins $out/share/hermes-agent/plugins
-          cp -r ${agentSrc}/locales $out/share/hermes-agent/locales
-          cp -r ${fixedWeb} $out/share/hermes-agent/web_dist
+              mkdir -p $out/share/hermes-agent $out/bin
+              cp -r ${agentSrc}/skills $out/share/hermes-agent/skills
+              cp -r ${agentSrc}/plugins $out/share/hermes-agent/plugins
+              cp -r ${agentSrc}/locales $out/share/hermes-agent/locales
+              cp -r ${fixedWeb} $out/share/hermes-agent/web_dist
 
-          mkdir -p $out/ui-tui
-          cp -r ${fixedTui}/lib/hermes-tui/* $out/ui-tui/
+              mkdir -p $out/ui-tui
+              cp -r ${fixedTui}/lib/hermes-tui/* $out/ui-tui/
 
-          # Intercept `hermes desktop`/`hermes gui` — the Python CLI's cmd_gui
-          # hardcodes PROJECT_ROOT/apps/desktop which doesn't exist in the Nix
-          # package.  Delegate to the pre-built Electron binary instead.
-          cat > $out/bin/hermes <<'HERMES_WRAPPER'
-          #!${pkgs.runtimeShell}
-          case "''${1-}" in
-            desktop|gui)
-              shift
-              if command -v hermes-desktop > /dev/null 2>&1; then
-                exec hermes-desktop "$@"
-              else
-                echo "hermes-desktop is not installed. Enable it with: layers.layer-76.hermes.enableDesktop = true" >&2
-                exit 1
-              fi
-              ;;
-          esac
-          exec ${old.passthru.hermesVenv}/bin/hermes "$@"
-          HERMES_WRAPPER
-          chmod +x $out/bin/hermes
+              # Intercept `hermes desktop`/`hermes gui` — the Python CLI's cmd_gui
+              # hardcodes PROJECT_ROOT/apps/desktop which doesn't exist in the Nix
+              # package.  Delegate to the pre-built Electron binary instead.
+              cat > $out/bin/hermes <<'HERMES_WRAPPER'
+              #!${pkgs.runtimeShell}
+              case "''${1-}" in
+                desktop|gui)
+                  shift
+                  if command -v hermes-desktop > /dev/null 2>&1; then
+                    exec hermes-desktop "$@"
+                  else
+                    echo "hermes-desktop is not installed. Enable it with: layers.layer-76.hermes.enableDesktop = true" >&2
+                    exit 1
+                  fi
+                  ;;
+              esac
+              exec ${old.passthru.hermesVenv}/bin/hermes "$@"
+              HERMES_WRAPPER
+              chmod +x $out/bin/hermes
 
-          for name in hermes-agent hermes-acp; do
-            makeWrapper ${old.passthru.hermesVenv}/bin/$name $out/bin/$name \
-              --suffix PATH : "${runtimePath}" \
-              --set HERMES_BUNDLED_SKILLS $out/share/hermes-agent/skills \
-              --set HERMES_BUNDLED_PLUGINS $out/share/hermes-agent/plugins \
-              --set HERMES_BUNDLED_LOCALES $out/share/hermes-agent/locales \
-              --set HERMES_WEB_DIST $out/share/hermes-agent/web_dist \
-              --set HERMES_TUI_DIR $out/ui-tui \
-              --set HERMES_PYTHON ${old.passthru.hermesVenv}/bin/python3 \
-              --set HERMES_NODE ${pkgs.lib.getExe pkgs.nodejs_22}
-          done
+              for name in hermes-agent hermes-acp; do
+                makeWrapper ${old.passthru.hermesVenv}/bin/$name $out/bin/$name \
+                  --suffix PATH : "${runtimePath}" \
+                  --set HERMES_BUNDLED_SKILLS $out/share/hermes-agent/skills \
+                  --set HERMES_BUNDLED_PLUGINS $out/share/hermes-agent/plugins \
+                  --set HERMES_BUNDLED_LOCALES $out/share/hermes-agent/locales \
+                  --set HERMES_WEB_DIST $out/share/hermes-agent/web_dist \
+                  --set HERMES_TUI_DIR $out/ui-tui \
+                  --set HERMES_PYTHON ${old.passthru.hermesVenv}/bin/python3 \
+                  --set HERMES_NODE ${pkgs.lib.getExe pkgs.nodejs_22}
+              done
 
-          # Wrap the `hermes` script with the same env + PATH as the others,
-          # but via makeWrapper's --add-flags is not enough since we need the
-          # shell case above to run first.  Instead, source the env inline.
-          wrapProgram $out/bin/hermes \
-            --suffix PATH : "${runtimePath}" \
-            --set HERMES_BUNDLED_SKILLS $out/share/hermes-agent/skills \
-            --set HERMES_BUNDLED_PLUGINS $out/share/hermes-agent/plugins \
-            --set HERMES_BUNDLED_LOCALES $out/share/hermes-agent/locales \
-            --set HERMES_WEB_DIST $out/share/hermes-agent/web_dist \
-            --set HERMES_TUI_DIR $out/ui-tui \
-            --set HERMES_PYTHON ${old.passthru.hermesVenv}/bin/python3 \
-            --set HERMES_NODE ${pkgs.lib.getExe pkgs.nodejs_22}
+              # Wrap the `hermes` script with the same env + PATH as the others,
+              # but via makeWrapper's --add-flags is not enough since we need the
+              # shell case above to run first.  Instead, source the env inline.
+              wrapProgram $out/bin/hermes \
+                --suffix PATH : "${runtimePath}" \
+                --set HERMES_BUNDLED_SKILLS $out/share/hermes-agent/skills \
+                --set HERMES_BUNDLED_PLUGINS $out/share/hermes-agent/plugins \
+                --set HERMES_BUNDLED_LOCALES $out/share/hermes-agent/locales \
+                --set HERMES_WEB_DIST $out/share/hermes-agent/web_dist \
+                --set HERMES_TUI_DIR $out/ui-tui \
+                --set HERMES_PYTHON ${old.passthru.hermesVenv}/bin/python3 \
+                --set HERMES_NODE ${pkgs.lib.getExe pkgs.nodejs_22}
 
-          runHook postInstall
-        '';
-        passthru = old.passthru // {
-          hermesTui = fixedTui;
-          hermesWeb = fixedWeb;
-        };
-      });
+              runHook postInstall
+            '';
+            passthru = old.passthru // {
+              hermesTui = fixedTui;
+              hermesWeb = fixedWeb;
+            };
+          }
+        );
 
       # The `full` package (default) already bundles messaging + matrix.
       # Setting extraDependencyGroups triggers cfg.package.override which
       # recreates the derivation from scratch, discarding our fix above.
-      extraDependencyGroups = [ "voice" "tts-premium" ];
+      extraDependencyGroups = [
+        "voice"
+        "tts-premium"
+      ];
 
       settings = {
         model = {
@@ -285,7 +317,7 @@ in
           # FreeLLMAPI — free-tier LLM router (28 providers, 339 models)
           freellmapi = {
             base_url = "http://127.0.0.1:3001/v1";
-            api_key = "";  # Uses FreeLLMAPI's unified key; set via env
+            api_key = ""; # Uses FreeLLMAPI's unified key; set via env
             request_timeout_seconds = 60;
           };
         };
@@ -362,7 +394,14 @@ in
               output_format = "wav";
             };
           };
-          auto_tts.default = true;
+        };
+
+        auto_tts = true;
+
+        sessions = {
+          write_json_snapshots = true;
+          auto_prune = false;
+          retention_days = 90;
         };
 
         terminal = {
@@ -374,8 +413,10 @@ in
           shell_init_files = [ ];
           auto_source_bashrc = true;
           docker_image = "nikolaik/python-nodejs:python3.11-nodejs20";
-          docker_forward_env = [ ];
-          docker_env = { };
+          docker_forward_env = [ "FREELMAPI_BASE_URL" ];
+          docker_env = {
+            FREELMAPI_BASE_URL = "http://host.docker.internal:3001/v1";
+          };
           singularity_image = "docker://nikolaik/python-nodejs:python3.11-nodejs20";
           modal_image = "nikolaik/python-nodejs:python3.11-nodejs20";
           daytona_image = "nikolaik/python-nodejs:python3.11-nodejs20";
@@ -518,38 +559,50 @@ in
           # Exposes tools: brain_query, brain_remember, brain_ingest_book, brain_ingest_directory, brain_list_books
           brain-service = {
             command = "/run/current-system/sw/bin/brain-mcp";
-            args = [];
-            env = {};
+            args = [ ];
+            env = { };
           };
 
           # NCP — semantic MCP gateway: reduces tool context overhead
           ncp = {
             command = "npx";
-            args = [ "-y" "@portel/ncp" ];
-            env = {};
+            args = [
+              "-y"
+              "@portel/ncp"
+            ];
+            env = { };
           };
 
           # Forage — self-improving tool discovery & installation
           forage = {
             command = "npx";
-            args = [ "-y" "forage-mcp" ];
-            env = {};
+            args = [
+              "-y"
+              "forage-mcp"
+            ];
+            env = { };
           };
 
           # Mistral MCP — full Mistral AI surface (HTTP mode via systemd)
           mistral = {
             command = "npx";
-            args = [ "-y" "mistral-mcp@latest" ];
+            args = [
+              "-y"
+              "mistral-mcp@latest"
+            ];
             env = {
-              MISTRAL_API_KEY = "";  # Set via Hermes env or sops
+              MISTRAL_API_KEY = ""; # Set via Hermes env or sops
             };
           };
 
           # FreeLLMAPI MCP — query router state, switch strategies, check key health
           freellmapi = {
             command = "bash";
-            args = [ "-c" "echo 'FreeLLMAPI MCP at http://127.0.0.1:3001/mcp'" ];
-            env = {};
+            args = [
+              "-c"
+              "echo 'FreeLLMAPI MCP at http://127.0.0.1:3001/mcp'"
+            ];
+            env = { };
             # Note: For Streamable HTTP MCP, configure as:
             #   type = "http";
             #   url = "http://127.0.0.1:3001/mcp";
@@ -558,7 +611,10 @@ in
         };
       };
 
-      extraArgs = [ ];
+      extraArgs = [
+        "run"
+        "--replace"
+      ];
       restart = "always";
       restartSec = 5;
 
@@ -606,7 +662,7 @@ in
 
     users.users.t0psh31f.extraGroups = [ "hermes" ];
 
-    environment.systemPackages = lib.optional cfg.enableDesktop hermesDesktopPkg;
+    environment.systemPackages = lib.optional cfg.enableDesktop hermesDesktopPkg ++ [ pkgs.uni-pet pkgs.agentburn ];
 
     sops.templates."hermes-env" = {
       path = "/run/secrets/hermes-env";

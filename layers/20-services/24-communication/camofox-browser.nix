@@ -24,42 +24,6 @@ let
     pkgs.bash
   ]);
 
-  vncScript = pkgs.writeShellScriptBin "camofox-vnc-bridge" ''
-    export PATH="${lib.makeBinPath [
-      pkgs.x11vnc
-      pkgs.gawk
-      pkgs.gnugrep
-      pkgs.gnused
-      pkgs.procps
-      pkgs.coreutils
-      pkgs.shadow
-      pkgs.findutils
-      pkgs.bash
-    ]}"
-    VNC_PORT=5900
-    DISPLAY_NUM=":99"
-
-    log() { echo "[camofox-vnc] $*"; }
-
-    log "Waiting for Xvfb on $DISPLAY_NUM..."
-    for _ in $(seq 1 60); do
-      if pgrep -f "Xvfb $DISPLAY_NUM" > /dev/null 2>&1; then
-        break
-      fi
-      sleep 1
-    done
-
-    if ! pgrep -f "Xvfb $DISPLAY_NUM" > /dev/null 2>&1; then
-      log "ERROR: Xvfb on $DISPLAY_NUM not found after 60s"
-      exit 1
-    fi
-
-    log "Found Xvfb on $DISPLAY_NUM"
-    unset WAYLAND_DISPLAY
-    export DISPLAY="$DISPLAY_NUM"
-    log "Starting x11vnc on port $VNC_PORT -> $DISPLAY_NUM (noVNC via built-in websockify on ${toString cfg.vncPort})"
-    exec x11vnc -display "$DISPLAY_NUM" -forever -shared -nopw -rfbport "$VNC_PORT" -noxshm -noscr -noxdamage -fg
-  '';
 in
 {
   options.layers.layer-20.services.communication.camofox-browser = {

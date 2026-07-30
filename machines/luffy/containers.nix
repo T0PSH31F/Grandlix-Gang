@@ -64,7 +64,5 @@
     "d /var/lib/spacedrive 0755 root root -"
     "d /var/lib/skyvern/data 0755 root root -"
     "d /var/lib/skyvern/.skyvern 0700 root root -"
-    # "d /var/lib/beszel 0755 root root -"  # removed — beszel dropped
-    # "d /var/lib/homepage 0755 root root -"  # obsolete — replaced by NixOS native service
   ];
 }

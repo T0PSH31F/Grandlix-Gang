@@ -20,5 +20,7 @@ in
     ./74-ai-infra
     ./75-mcp
     ./76-hermes-agent
+    ./77-herm
+    ./78-hermes-webui
   ];
 }

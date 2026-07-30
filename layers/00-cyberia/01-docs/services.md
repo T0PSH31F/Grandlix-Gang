@@ -18,7 +18,7 @@
 | 53 | AdGuard Home (DNS) | `http://z0r0:3002` | `admin` / `admin` (change on first login) |
 | 3002 | AdGuard Home (web) | `http://z0r0:3002` | `admin` / `admin` |
 | 3000 | Hermes Workspace | `http://z0r0:3000` | User `t0psh31f` |
-| 3001 | HedgeDoc | `http://z0r0:3001` | First user becomes admin |
+| 3001 | freellmapi (free LLM router, 339 models) | `http://z0r0:3001/v1` | First-run setup code in journal |
 | 3005 | Langfuse (LLM tracing) | `http://z0r0:3005` | Auto-generated (see sops) |
 | 3008 | Grafana | `http://z0r0:3008` | `admin` / sops `grafana_admin_password` |
 | 3080 | Prometheus | `http://z0r0:3090` | No auth |
@@ -30,8 +30,8 @@
 | 61208 | Glances (system monitor) | `http://z0r0:61208` | No auth |
 
 ### Also on z0r0 (no web UI):
-- **Ollama** (CLI-only, no server) — `ollama run <model>`
 - **Jellyfin** — if enabled via media-stack tag, port 8096
+- **Ollama** — runs on luffy (port 11434), not z0r0. Access via Tailscale: `http://100.72.46.75:11434`
 
 ---
 

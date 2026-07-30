@@ -5,13 +5,7 @@
   ...
 }:
 let
-  inherit (lib)
-    mkIf
-    mkEnableOption
-    mkOption
-    types
-    ;
-  cfg = config.clan.services.matrix-synapse;
+  inherit (lib) mkIf mkEnableOption mkOption types;
 in
 {
   _class = "clan.service";

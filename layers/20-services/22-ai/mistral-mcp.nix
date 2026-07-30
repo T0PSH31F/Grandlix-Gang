@@ -43,6 +43,7 @@ in
       wantedBy = [ "multi-user.target" ];
 
       environment = {
+        HOME = "/tmp";  # npx needs writable HOME for cache (DynamicUser defaults HOME=/)
         MCP_TRANSPORT = "http";
         MCP_HTTP_PORT = toString cfg.port;
         MCP_HTTP_HOST = cfg.host;
@@ -58,7 +59,11 @@ in
         EnvironmentFile = lib.optional (cfg.environmentFile != null) cfg.environmentFile;
         NoNewPrivileges = true;
         PrivateTmp = true;
+        MemoryDenyWriteExecute = false;
       };
+
+      # npx needs sh and node in PATH for downloaded packages
+      path = [ pkgs.bash pkgs.nodejs_22 ];
     };
   };
 }

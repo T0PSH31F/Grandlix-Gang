@@ -8,5 +8,6 @@
     media-packages.enable = lib.mkDefault true;
     audio.enable = lib.mkDefault true;
     mpv.enable = lib.mkDefault true;
+    kodi.enable = lib.mkDefault true;
   };
 }

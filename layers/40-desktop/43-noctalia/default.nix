@@ -41,6 +41,7 @@ in
       imports = lib.optionals cfg.enable [
         ./ipc.nix
         ./mutable-includes.nix
+        ./hypridle.nix
         inputs.noctalia.homeModules.default
       ];
 
@@ -211,6 +212,7 @@ in
                 "zathura"
                 "snappy-switcher"
                 "hyprtoolkit"
+                "opencode"
               ];
             };
 
@@ -454,7 +456,10 @@ in
             };
 
             # ── Idle ─────────────────────────────────────────────────
-            idle.behavior_order = [ "lock" "screen-off" "lock-and-suspend" ];
+            # DISABLED: noctalia's native idle system causes Wayland
+            # "Broken pipe" crashes on Intel Iris Xe when the display
+            # wakes from DPMS screen-off. hypridle handles this instead.
+            idle.behavior_order = [ ];
             idle.behavior.lock = {
               action = "lock";
               enabled = false;
@@ -462,7 +467,7 @@ in
             };
             idle.behavior.screen-off = {
               action = "screen_off";
-              enabled = true;
+              enabled = false;
               timeout = 660.0;
             };
             idle.behavior.lock-and-suspend = {

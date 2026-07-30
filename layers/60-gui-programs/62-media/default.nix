@@ -12,5 +12,6 @@ in
     (mkDendriticModule "spicetify" ./spicetify.nix)
     (mkDendriticModule "vlc" ./vlc.nix)
     (mkDendriticModule "feh" ./feh.nix)
+    (mkDendriticModule "kodi" ./kodi.nix)
   ];
 }

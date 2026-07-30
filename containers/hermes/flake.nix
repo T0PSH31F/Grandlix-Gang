@@ -15,7 +15,6 @@
         };
 
         hermesVersion = "0.17.0";
-        webuiRev = "main";
 
         entrypoint = pkgs.writeShellScriptBin "entrypoint" (builtins.readFile ./entrypoint.sh);
 

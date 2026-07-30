@@ -47,6 +47,10 @@ let
     signalCli = 8080;
     hermesWorkspace = 3000;
     hermesDashboard = 9119;
+    hermesWebui = 8787;
+    aionUi = 3006;
+    paperclip = 3100;
+    missionControl = 3099;
     glances = 61208;
 
     # luffy — media
@@ -62,6 +66,7 @@ let
     calibreWeb = 8083;
     yourSpotify = 3457;
     kavita = 5000;
+    komga = 25600;
 
     # luffy — ai
     ollama = 11434;
@@ -207,6 +212,10 @@ let
       (zSrv "llama.cpp" "llamaCpp" "mdi-brain" "Inference Server")
       (zSrv "Langfuse" "langfuse" "mdi-chart-line-variant" "LLM Observability")
       (zSrv "Brain Service" "brainService" "mdi-brain" "AI Brain Layer")
+      (zSrv "Hermes WebUI" "hermesWebui" "mdi-react" "Web UI Dashboard")
+      (zSrv "AionUi" "aionUi" "mdi-account-group" "AI Agent Cowork UI")
+      (zSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
+      (zSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
     ];
 
     Infrastructure = [
@@ -282,6 +291,7 @@ let
         username = "admin";
         password = "admin";
       })
+      (lSrv "Komga" "komga" "mdi-book-multiple" "Comic / Manga Library")
       (lSrvW "Your Spotify" "yourSpotify" "spotify.png" "Spotify Analytics" {
         type = "yourspotify";
         url = "http://${hostOf "luffy"}:${toString ports.yourSpotify}";
@@ -561,6 +571,15 @@ in
 
     systemd.tmpfiles.rules = [
       "d /var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -"
+      "d /var/lib/homepage-dashboard/images 0755 homepage-dashboard homepage-dashboard -"
+      "L+ /var/lib/homepage-dashboard/images/robin.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Nico Robin.png}"
+      "L+ /var/lib/homepage-dashboard/images/vegapunk.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Stella.png}"
+      "L+ /var/lib/homepage-dashboard/images/franky.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Franck.png}"
+      "L+ /var/lib/homepage-dashboard/images/nami.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Nami.png}"
+      "L+ /var/lib/homepage-dashboard/images/sanji.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Sanji.png}"
+      "L+ /var/lib/homepage-dashboard/images/usopp.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Usopp.png}"
+      "L+ /var/lib/homepage-dashboard/images/luffy.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Lufy.png}"
+      "L+ /var/lib/homepage-dashboard/images/zoro.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Zoro.png}"
     ]
     ++ optional config.layers.layer-10.system.config.impermanence.enable "d /persist/var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -";
   };

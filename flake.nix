@@ -5,8 +5,8 @@
     extra-substituters = [
       "https://nix-community.cachix.org"
       "https://cache.nixos.org"
-      "https://cache.numtide.com"
       "https://numtide.cachix.org"
+      "https://cache.numtide.com"
       "https://vicinae.cachix.org"
       "https://hyprland.cachix.org"
       "https://niri.cachix.org"
@@ -155,6 +155,10 @@
     };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hermes-webui = {
+      url = "github:nesquena/hermes-webui/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-cachyos-kernel = {
@@ -355,6 +359,7 @@
 
                 services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);
                 n8n-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/n8n.nix);
+                homepage-dashboard-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/homepage-dashboard.nix);
               };
           };
       }

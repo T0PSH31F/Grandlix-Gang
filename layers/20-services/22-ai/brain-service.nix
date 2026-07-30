@@ -26,12 +26,12 @@ let
       llama-index-llms-openai
 
       # Document parsing
-      pymupdf  # PDF
-      ebooklib  # EPUB
-      beautifulsoup4  # HTML
-      markdown  # Markdown → HTML conversion
-      lxml  # Fast HTML parser
-      python-multipart  # File uploads
+      pymupdf # PDF
+      ebooklib # EPUB
+      beautifulsoup4 # HTML
+      markdown # Markdown → HTML conversion
+      lxml # Fast HTML parser
+      python-multipart # File uploads
 
       # File watching
       watchdog
@@ -43,7 +43,6 @@ let
 
   # Brain Service Python Script — loaded from external file to avoid Nix heredoc indentation issues
   brainScript = ./brain_server.py;
-
 
 in
 {
@@ -70,7 +69,7 @@ in
 
     llmModel = lib.mkOption {
       type = lib.types.str;
-      default = "openai/gpt-4o-mini";
+      default = "gpt-4o-mini";
       description = "LLM model for query answering";
     };
 
@@ -132,14 +131,18 @@ in
     # Create data directory
     systemd.tmpfiles.rules = [
       "d /var/lib/brain-service 0750 postgres postgres -"
-      "d /var/lib/brain-service/tiktoken-cache 0750 postgres postgres -"
+      "d /var/lib/brain-service/tiktoken-cache 0755 postgres postgres -"
     ];
 
     # Main API service
     systemd.services.brain-service = {
       description = "Brain Service PKB API";
       wantedBy = [ "multi-user.target" ];
-      after = [ "postgresql.service" "postgresql-extensions.service" "ollama.service" ];
+      after = [
+        "postgresql.service"
+        "postgresql-extensions.service"
+        "ollama.service"
+      ];
       requires = [ "postgresql.service" ];
 
       environment = {
@@ -157,7 +160,8 @@ in
         BRAIN_MODE = "api";
         MANIFEST_PATH = "/var/lib/brain-service/manifest.json";
         TIKTOKEN_CACHE_DIR = "/var/lib/brain-service/tiktoken-cache";
-      } // lib.optionalAttrs (cfg.booksDir != null) {
+      }
+      // lib.optionalAttrs (cfg.booksDir != null) {
         BOOKS_DIR = cfg.booksDir;
       };
 

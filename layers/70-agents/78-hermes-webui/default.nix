@@ -6,8 +6,6 @@ let
 in
 {
   imports = [
-    (mkDendriticModule "dolphin" ./dolphin.nix)
-    ./file-managers-system.nix
-    (mkDendriticModule "nemo" ./nemo.nix)
+    (mkDendriticModule "hermes-webui" ./hermes-webui.nix)
   ];
 }

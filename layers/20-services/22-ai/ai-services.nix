@@ -49,6 +49,9 @@ in
       cherry-studio.enable = mkDefault true;
       aider.enable = mkDefault true;
       context-forge.enable = mkDefault false; # opt-in, not enabled by default
+      mission-control.enable = mkDefault false; # opt-in, not enabled by default
+      aionui.enable = mkDefault false; # opt-in, not enabled by default
+      paperclip.enable = mkDefault false; # opt-in, needs PostgreSQL
     };
   };
 }

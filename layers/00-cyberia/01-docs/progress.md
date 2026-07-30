@@ -43,3 +43,14 @@
 | What's the goal? | Comprehensive layered refactoring of the dendritic NixOS config for NFP workstation/server fleet. |
 | What have I learned? | Stale binary cache hosts block evaluation; native Matrix synapse config resolves recursion issues. |
 | What have I done? | Made first commit/push to establish pre-refactoring safety checkpoint. |
+
+## Session: 2026-07-24
+
+### Fixes Applied
+- **Status:** complete
+- Actions taken:
+  - Fixed starship noctalia palette duplication: changed zsh init script from blind-append to marker-based replacement with atomic temp-file write. Prevents duplicate `[palettes.noctalia]` sections.
+  - Moved yazi file picker to left in `ide` tab of opencode layout (swapped pane order).
+  - Enabled Steam and Lutris after nixpkgs update to 2026-07-23.
+  - Updated AGENTS.md known issues to reflect re-enabled status.
+  - Verified noctalia sync: templates directory healthy, zellij-colors-sync and starship palette sync both use atomic write patterns.

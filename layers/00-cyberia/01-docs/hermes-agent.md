@@ -112,3 +112,29 @@ Admin panel at `http://<host>:9119` with cyberpunk theme:
 - Session explorer (inspect live/archived sessions)
 - Agent configuration viewer
 - Basic auth: `admin` / sops-encrypted password
+
+## Fleet Architecture (Multi-Machine)
+
+```
+z0r0 (laptop, ai-server + ai-agent)    luffy (server 24/7, ai-server + ai-agent)
+├── Hermes Agent :8085                  ├── Hermes Agent :8085
+├── Hermes Dashboard :9119              ├── Hermes Dashboard :9119
+├── Hermes WebUI :3000                  ├── Hermes WebUI :3000
+├── Herm TUI                            ├── Herm TUI
+│                                       │
+├── Matrix Gateway ─────────────────────┤  Matrix Synapse :8008
+│   (connects to luffy's Synapse)       │  (@hermes:matrix.local)
+│                                       │
+│                                       ├── Mission Control :3099
+│                                       │   (fleet control plane)
+│                                       ├── AionUi :3001
+│                                       └── Paperclip
+```
+
+### Inter-Agent Communication
+- **Matrix rooms** — Both Hermes instances share a Matrix room on luffy's Synapse.
+  Agents can chat, coordinate, and hand off tasks.
+- **Mission Control** — `mission-control.lovelain.duckdns.org` (builderz-labs/mission-control).
+  Self-hosted AI agent control plane: task dispatch, run review, spend tracking.
+- **Hermes API Server** — Both instances expose REST APIs at `0.0.0.0` with token auth,
+  callable across the Tailscale mesh network.

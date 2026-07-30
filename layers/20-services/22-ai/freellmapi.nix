@@ -22,7 +22,7 @@ let
     npmDepsHash = "sha256-v4ItOBqsXZYELklP0KOhG5iR2JqpFif5h44v/tT+1A0=";
 
     # Node.js >= 20.18 required
-    nativeBuildInputs = [ pkgs.nodejs_22 pkgs.python3 pkgs.gcc pkgs.pkg-config ];
+    nativeBuildInputs = [ pkgs.nodejs_24 pkgs.python3 pkgs.gcc pkgs.pkg-config ];
     # better-sqlite3 native module needs kernel headers
     buildInputs = [ pkgs.linuxHeaders ];
 
@@ -30,6 +30,12 @@ let
     buildPhase = ''
       runHook preBuild
       npm run build
+      # better-sqlite3's prebuild-install downloads binaries compiled for
+      # newer V8 than Node.js 22 exports at runtime.  Remove cached
+      # prebuilds so rebuild falls back to source compilation against
+      # the local Node.js headers.
+      rm -rf node_modules/better-sqlite3/prebuilds node_modules/better-sqlite3/build
+      npm rebuild better-sqlite3
       runHook postBuild
     '';
 
@@ -38,7 +44,15 @@ let
       mkdir -p $out/share/freellmapi
       cp -r server/dist $out/share/freellmapi/
       cp -r client/dist $out/share/freellmapi/public
-      cp -r server/node_modules $out/share/freellmapi/node_modules
+      # npm workspaces hoist shared deps to root node_modules.
+      # Copy root first; remove dangling workspace symlinks
+      # (@freellmapi/shared → ../../shared etc. that don't resolve
+      # in the store path); then merge server-specific overrides.
+      cp -r node_modules $out/share/freellmapi/
+      find $out/share/freellmapi/node_modules -type l ! -exec test -e {} \; -delete 2>/dev/null || true
+      if [ -d server/node_modules ]; then
+        cp -rn server/node_modules/* $out/share/freellmapi/node_modules/
+      fi
       cp server/package.json $out/share/freellmapi/
       runHook postInstall
     '';
@@ -114,12 +128,13 @@ in
         HOST = cfg.host;
         FREEAPI_DB_PATH = "${cfg.dataDir}/freeapi.db";
         NODE_ENV = "production";
+        ENCRYPTION_KEY = "cf3e9ec63ddfe6ad03ef3488d2e159ead1ae60eb34cbd48569199c2b830eedeb";
       } // lib.optionalAttrs (cfg.configFile != null) {
         FREEAPI_CONFIG_PATH = cfg.configFile;
       } // cfg.extraEnv;
 
       serviceConfig = {
-        ExecStart = "${pkgs.nodejs_22}/bin/node ${freellmapiPkg}/share/freellmapi/dist/index.js";
+        ExecStart = "${pkgs.nodejs_24}/bin/node ${freellmapiPkg}/share/freellmapi/dist/index.js";
         Restart = "on-failure";
         RestartSec = 5;
         User = "freellmapi";

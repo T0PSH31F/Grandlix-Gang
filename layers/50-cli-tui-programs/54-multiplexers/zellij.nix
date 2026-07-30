@@ -237,11 +237,11 @@ KDL
         }
         tab name="ide" {
           pane split_direction="vertical" {
-            pane size="75%" {
-              command "nvim"
-            }
             pane size="25%" {
               command "yazi"
+            }
+            pane size="75%" {
+              command "nvim"
             }
           }
         }
@@ -364,11 +364,11 @@ ${bottomBarPane}
         }
         tab name="ide" {
           pane split_direction="vertical" {
-            pane size="75%" {
-              command "nvim"
-            }
             pane size="25%" {
               command "yazi"
+            }
+            pane size="75%" {
+              command "nvim"
             }
           }
         }
@@ -559,7 +559,7 @@ in
   home = lib.mkIf cfg.enable {
     programs.zellij = {
       enable = true;
-      enableZshIntegration = true;
+      enableZshIntegration = false;
 
       settings = {
         pane_frames = false;
@@ -572,6 +572,8 @@ in
         default_shell = "${pkgs.zsh}/bin/zsh";
         auto_copy_on_select = true;
         theme = "noctalia";
+        session_serialization = true;
+        pane_viewport_serialization = true;
       };
 
       extraConfig = lib.mkIf (cfg.zellij.yazelix.orchestrator.enable || cfg.zellij.yazelix.popup.enable) ''
@@ -634,11 +636,20 @@ in
 
     programs.zsh.initContent = lib.mkBefore ''
       # Sync zjstatus layouts with Noctalia colors BEFORE zellij auto-init
-      # This ensures the layout files have current theme colors when zellij starts
       if command -v zellij-colors-sync >/dev/null 2>&1; then
         zellij-colors-sync 2>/dev/null || true
       fi
-      z-oc() { zellij attach "z0r0.clan" 2>/dev/null || zellij --layout opencode --session "z0r0.clan"; }
+
+      # Named session z0r0.clan for persistence across terminals and LAN access via SSH
+      if [ -z "$ZELLIJ" ] && [ "$TERM" != "dumb" ] && [ -z "$ZELLIJ_SUBSHELL" ]; then
+        # Prune EXITED sessions older than 7 days (graceful cleanup, keep z0r0.clan)
+        zellij list-sessions -n 2>/dev/null | while IFS= read -r s; do
+          [ "$s" = "z0r0.clan" ] && continue
+          zellij delete-session --force "$s" 2>/dev/null || true
+        done
+        # Attach to or create the named session with opencode layout
+        exec zellij attach "z0r0.clan" 2>/dev/null || exec zellij --layout opencode --session "z0r0.clan"
+      fi
     '';
 
     systemd.user.services.zellij-colors = {

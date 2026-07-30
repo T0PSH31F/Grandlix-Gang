@@ -366,6 +366,9 @@ in
 
           @spotify host spotify.lovelain.duckdns.org
           handle @spotify { reverse_proxy localhost:3457 }
+
+          @missionctrl host mission-control.lovelain.duckdns.org
+          handle @missionctrl { reverse_proxy localhost:3099 }
         '';
       };
       virtualHosts."element.local" = {
@@ -455,6 +458,7 @@ in
       9993  # ZeroTier
       53    # DNS (AdGuard)
       67    # DHCP
+      3099 # Mission Control — AI agent control plane
     ];
     allowedUDPPorts = [
       51820 # WireGuard

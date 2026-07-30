@@ -19,4 +19,14 @@
   layers.layer-75.mcp.enable = lib.mkDefault true;
 
   layers.layer-76.hermes.enable = lib.mkDefault true;
+
+  layers.layer-77.herm.enable = lib.mkDefault true;
+  layers.layer-77.open-skills.enable = lib.mkDefault true;
+
+  layers.layer-78.hermes-webui.enable = lib.mkDefault true;
+
+  # Override ai-services.nix's mkDefault false to enable these opt-in services
+  services.ai-services.mission-control.enable = lib.mkForce true;
+  services.ai-services.aionui.enable = lib.mkForce true;
+  services.ai-services.paperclip.enable = lib.mkForce true;
 }

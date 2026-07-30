@@ -53,37 +53,50 @@
             # NCP — semantic MCP gateway: reduces 50+ tools to 2 unified tools
             # (find + code). Saves ~97% of context token overhead.
             ncp = {
-              command = [ "npx" "-y" "@portel/ncp" ];
+              command = [
+                "npx"
+                "-y"
+                "@portel/ncp"
+              ];
               enabled = true;
               type = "local";
             };
             # Forage — self-improving tool discovery: agents can search,
             # install, and learn new MCP servers autonomously.
             forage = {
-              command = [ "npx" "-y" "forage-mcp" ];
+              command = [
+                "npx"
+                "-y"
+                "forage-mcp"
+              ];
               enabled = true;
               type = "local";
             };
             # Mistral MCP — full Mistral AI surface (chat, OCR, Codestral, etc.)
             # Also available via systemd HTTP service on :3333 for Hermes.
             mistral = {
-              command = [ "npx" "-y" "mistral-mcp@latest" ];
+              command = [
+                "npx"
+                "-y"
+                "mistral-mcp@latest"
+              ];
               enabled = true;
               type = "local";
-              env.MISTRAL_API_KEY = "";  # Set via environmentFile or sops
+              env.MISTRAL_API_KEY = ""; # Set via environmentFile or sops
             };
 
             # ── Disabled ───────────────────────────────────────────
-            browser-use.enabled = false;    # 100% error rate, not needed
-            file-manager.enabled = false;   # not useful
-            ha-mcp.enabled = false;         # not needed
-            mcp-registry.enabled = false;   # never worked
+            browser-use.enabled = false; # 100% error rate, not needed
+            file-manager.enabled = false; # not useful
+            ha-mcp.enabled = false; # not needed
+            mcp-registry.enabled = false; # never worked
             # sequential-thinking.enabled = false;  # available if wanted
           };
           plugin = [
             pluginLabel
             "@pantheon-ai/opencode-warcraft-notifications"
             "opencode-antigravity-auth"
+            "octto"
           ];
 
           agent = {
@@ -107,11 +120,12 @@
         "opencode/oh-my-opencode-slim.json".source = ./opencode/oh-my-opencode-slim.json;
       };
 
-      home.packages = lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop
+      home.packages =
+        lib.optional osConfig.layers.layer-70.agent.opencode.desktop pkgs.opencode-desktop
         ++ [
-          pkgs.libcanberra-gtk3  # canberra-gtk-play for warcraft-notifications fallback
-          pkgs.alsa-utils        # aplay for warcraft-notifications wav playback
-          pkgs.pulseaudio        # paplay (silent playback, preferred by warcraft-notifications)
+          pkgs.libcanberra-gtk3 # canberra-gtk-play for warcraft-notifications fallback
+          pkgs.alsa-utils # aplay for warcraft-notifications wav playback
+          pkgs.pulseaudio # paplay (silent playback, preferred by warcraft-notifications)
 
           # oh-my-opencode-slim CLI + companion binary
           (pkgs.writeShellScriptBin "omos" ''

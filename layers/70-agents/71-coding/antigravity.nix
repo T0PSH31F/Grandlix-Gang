@@ -18,7 +18,8 @@ in
 
   home = lib.mkIf config.layers.layer-70.agent.antigravity.enable {
     home.packages = [
-      inputs.antigravity.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.antigravity.packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-cli
+      inputs.antigravity.packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-ide-no-fhs
     ];
   };
 }

@@ -4,11 +4,6 @@
     ./ai.nix
   ];
 
-  layers.layer-20.services.config = {
-    homepage-dashboard.enable = lib.mkDefault true;
-    homepage-dashboard.lovable.enable = lib.mkDefault true;
-  };
-
   services = {
     llm-agents.enable = lib.mkDefault true;
     sillytavern-app.enable = lib.mkDefault true;

@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from llama_index.core import VectorStoreIndex, Document, Settings
+from llama_index.core.node_parser import SentenceSplitter
 from llama_index.vector_stores.postgres import PGVectorStore
 from llama_index.core import StorageContext
 from llama_index.embeddings.ollama import OllamaEmbedding
@@ -42,7 +43,7 @@ DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_PORT = os.getenv("DB_PORT", "5432")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "dummy")
 LLM_API_BASE = os.getenv("LLM_API_BASE", "https://openrouter.ai/api/v1")
-LLM_MODEL = os.getenv("LLM_MODEL", "openai/gpt-4o-mini")
+LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
 EMBED_DIM = int(os.getenv("EMBED_DIM", "768"))
@@ -51,6 +52,7 @@ MANIFEST_PATH = os.getenv("MANIFEST_PATH", "/var/lib/brain-service/manifest.json
 
 Settings.embed_model = OllamaEmbedding(model_name=EMBED_MODEL, base_url=OLLAMA_URL)
 Settings.llm = OpenAI(api_key=LLM_API_KEY, api_base=LLM_API_BASE, model=LLM_MODEL)
+Settings.text_splitter = SentenceSplitter(chunk_size=1024, chunk_overlap=200)
 
 
 def get_vector_store():

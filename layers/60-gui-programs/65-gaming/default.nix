@@ -39,11 +39,12 @@ in
 
   nixos = mkIf config.layers.layer-60.gui.gaming.enable {
     programs.steam = mkIf config.layers.layer-60.gui.gaming.enableSteam {
-      enable = false;  # Disabled due to FHS env build issues (libmount.so.1)
+      enable = true;
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
       gamescopeSession.enable = true;
       extraCompatPackages = with pkgs; [ proton-ge-bin ];
+      extraPackages = with pkgs; [ util-linux ];
     };
 
     programs.gamemode = mkIf config.layers.layer-60.gui.gaming.enableGamemode {
@@ -140,15 +141,16 @@ in
         steam-rom-manager
       ];
 
-programs.lutris = {
-        enable = false;  # Disabled: FHS env build failure (libmount.so.1) — re-enable after nixpkgs update
-        extraPackages = with pkgs; [
-          mangohud
-          winetricks
-          gamescope
-          gamemode
-          umu-launcher
-        ];
-      };
+     programs.lutris = {
+         enable = true;
+         extraPackages = with pkgs; [
+           mangohud
+           winetricks
+           gamescope
+           gamemode
+           umu-launcher
+           util-linux
+         ];
+       };
     };
 }

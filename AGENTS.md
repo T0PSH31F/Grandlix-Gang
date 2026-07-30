@@ -99,7 +99,7 @@ Files like `opencode.json`, `tui.json`, `himalaya config.toml`, and other dotfil
 | Machine | Role | Hardware | Deploy Target |
 |---------|------|----------|---------------|
 | **z0r0** | Laptop workstation, AI server, dev | LG 17Z90Q, i7-1260P, 16GB RAM | `root@127.0.0.1` (local) |
-| **luffy** | Server, homelab, cache, AI | Intel 9th gen, remote | `root@100.80.146.120` (Tailscale) |
+| **luffy** | Server, homelab, cache, AI, agent control plane | Intel 9th gen, remote | `root@100.80.146.120` (Tailscale) |
 
 ### Flake Structure (Dendritic Layers)
 
@@ -135,9 +135,10 @@ NFP/
 | Issue | Status | Workaround |
 |-------|--------|------------|
 | `util-linux-2.42` broken symlink references | Active | GC roots added at boot; use `nix-safe-gc` only |
+| UniPet source hash + npm deps hash (`sha256` stale) | **Fixed** (2026-07-25) | Source tarball hash and npm deps hash both updated in `layers/80-lib/82-overlays/custom-packages.nix`. The `npmDepsHash` was previously set to `lib.fakeHash` (placeholder); replaced with real hash `sha256-jDqXZMd+3jVInzWb3R1mxwTqhTSOFtUrbfMkAyJt7EI=`. Source hash updated to `sha256-+bP60vOnCsmEknSSYZ5kxY0xfXEUHZY9dKtVWBofo5A=`. |
 | Camoufox v135 `libgkcodecs.so` SIGSEGV on glibc ≥ 2.42 | **Resolved** (2026-07-03) | Bumped prebuilt to v150.0.2-beta.25 in `layers/80-lib/82-overlays/custom-packages.nix`; also patches the missing-`await` and `isMobile` CDP bugs in the bundled camofox-browser 1.11.2 / playwright-core 1.61.1 |
-| Lutris 0.5.22 build failure (`libmount.so.1`) | Active | Disabled temporarily; re-enable after nixpkgs update |
-| Steam build failure (`libmount.so.1`) | Active | Disabled temporarily; same root cause as Lutris |
+| Steam/lutris/steam-run fhsenv-rootfs build failure (`libmount.so.1`) | **Fixed** (2026-07-25) | Root cause: `glib` 2.88.1 links `glib-compile-schemas` against `libmount.so.1` from `util-linuxMinimal` but won't propagate it (`buildInputs` only, not `propagatedBuildInputs`). fhsenv rootfs builders run `glib-compile-schemas` in a sandbox without `libmount.so.1` available. Fix: patched `buildFHSEnvBubblewrap` via overlay in `layers/80-lib/82-overlays/custom-packages.nix` to inject a glib build that propagates `util-linuxMinimal` — but ONLY for fhsenv rootfs derivations (no global glib rebuild). The earlier `extraPackages` fix (2026-07-24) was ineffective. |
+| `cache.numtide.com` binary cache timeout | Active (mitigated) | Cache server unreachable from this network. Moved to end of substituter lists in `flake.nix` and `caches.nix` so timeouts don't delay more reliable caches |
 | openrazer incompatible with linux 7.0.10 | Active | Disabled: `peripherals.razer.enable = lib.mkForce false` |
 | LM Studio packaging error in unstable | Active | Disabled: `ai-services.lmstudio.enable = lib.mkForce false` |
 

@@ -2,6 +2,127 @@
 # Custom packages you might want available on all systems.
 
 final: prev: {
+  # glibc 2.42+ bits/local_lim.h includes <linux/limits.h>, but nixpkgs'
+  # cc-wrapper doesn't add linuxHeaders to the default include path.
+  # In structured-attrs mode, nativeBuildInputs alone won't add -I flags.
+  # Fix: use postPatch to append -I after stdenv sets up NIX_CFLAGS_COMPILE.
+  flatpak = prev.flatpak.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  seahorse = prev.seahorse.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  vte = prev.vte.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  libadwaita = prev.libadwaita.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  xdg-desktop-portal = prev.xdg-desktop-portal.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  xdg-desktop-portal-gtk = prev.xdg-desktop-portal-gtk.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  gnome-bluetooth = prev.gnome-bluetooth.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  zenity = prev.zenity.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  libpanel = prev.libpanel.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  gedit = prev.gedit.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  gnome-color-manager = prev.gnome-color-manager.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  rustdesk = prev.rustdesk.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  mupdf = prev.mupdf.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
+    '';
+  });
+  # Fix libmount.so.1 rpath: glib 2.88 doesn't propagate util-linuxMinimal,
+  # so binaries linked against glib can't find libmount at runtime.
+  gtk4 = prev.gtk4.overrideAttrs (old: {
+    postFixup = (old.postFixup or "") + ''
+      patchelf --add-rpath ${final.lib.getLib final.util-linuxMinimal}/lib "$out/bin/gtk4-update-icon-cache" 2>/dev/null || true
+    '';
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.patchelf ];
+  });
+  # Fix glib tools: glib-compile-resources, glib-compile-schemas etc.
+  # are linked against libmount.so.1 from util-linuxMinimal but don't
+  # have the rpath. This breaks every package that uses these tools.
+  # Fix rpath with patchelf rather than buildInputs (avoids circular dep).
+  glib = prev.glib.overrideAttrs (old: {
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.patchelf ];
+    postFixup = (old.postFixup or "") + ''
+      for f in ''${!outputDev}/bin/*; do
+        if [[ -x "$f" ]]; then
+          patchelf --add-rpath ${final.lib.getLib final.util-linuxMinimal}/lib "$f" 2>/dev/null || true
+        fi
+      done
+    '';
+  });
+  # Fix: glib 2.88.x libgio links libmount.so.1 from util-linuxMinimal, but
+  # buildFHSEnv's rootfs builder sandbox doesn't have util-linuxMinimal
+  # available (glib doesn't propagate it). Fix by wrapping buildFHSEnv to add
+  # util-linuxMinimal to the rootfs derivation's nativeBuildInputs. Only affects
+  # fhsenv rootfs builds (steam, lutris, steam-run), not the entire system.
+  buildFHSEnvBubblewrap =
+    let
+      # Intercept callPackage: when buildFHSEnv.nix is called, call the ORIGINAL
+      # file (with ORIGINAL pkgs, no glib override) but wrap the result to add
+      # util-linuxMinimal to nativeBuildInputs of the rootfs derivation.
+      interceptCallPackage = file: overrides:
+        if builtins.isPath file && builtins.baseNameOf file == "buildFHSEnv.nix" then
+          let
+            originalBuildFHSEnv = prev.lib.callPackageWith prev.pkgs file overrides;
+          in
+          # Return a wrapper: call original, then add util-linuxMinimal to
+          # the rootfs derivation's nativeBuildInputs so libmount.so.1 is
+          # available when glib-compile-schemas runs in the build sandbox.
+          args: (originalBuildFHSEnv args).overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+              prev.util-linuxMinimal
+            ];
+          })
+        else
+          prev.callPackage file overrides;
+    in
+    prev.lib.callPackageWith prev.pkgs
+      (prev.path + "/pkgs/build-support/build-fhsenv-bubblewrap/default.nix")
+      { callPackage = interceptCallPackage; };
+
   # Yazelix Zellij Orchestrator
   yazelix-orchestrator = final.stdenv.mkDerivation {
     pname = "yazelix-orchestrator";
@@ -104,77 +225,79 @@ final: prev: {
   # The v150 alpha.26 release no longer ships a `version.json` file in the
   # zip — we synthesize one from `application.ini` so camoufox-js (used by
   # camofox-browser) can identify the bundle version.
-  camoufox = let
-    version = "150.0.2-beta.25";
-    release = "150.0.2";
-    runtimeLibs = with final; [
-      gtk3
-      libxcb
-      libx11
-      libxkbcommon
-      alsa-lib
-      libdrm
-      mesa
-      nss
-      nspr
-      dbus
-      ffmpeg_7
-      libpulseaudio
-      stdenv.cc.cc.lib
-    ];
-  in final.stdenv.mkDerivation {
-    pname = "camoufox";
-    inherit version;
+  camoufox =
+    let
+      version = "150.0.2-beta.25";
+      release = "150.0.2";
+      runtimeLibs = with final; [
+        gtk3
+        libxcb
+        libx11
+        libxkbcommon
+        alsa-lib
+        libdrm
+        mesa
+        nss
+        nspr
+        dbus
+        ffmpeg_7
+        libpulseaudio
+        stdenv.cc.cc.lib
+      ];
+    in
+    final.stdenv.mkDerivation {
+      pname = "camoufox";
+      inherit version;
 
-    src = final.fetchzip {
-      url = "https://github.com/daijro/camoufox/releases/download/v150.0.2-beta.25/camoufox-150.0.2-alpha.26-lin.x86_64.zip";
-      hash = "sha256-F/J3HNsGAmlpl4FUdT6vFJwQA0djWEdDjI8heho0zcc=";
-      stripRoot = false;
+      src = final.fetchzip {
+        url = "https://github.com/daijro/camoufox/releases/download/v150.0.2-beta.25/camoufox-150.0.2-alpha.26-lin.x86_64.zip";
+        hash = "sha256-F/J3HNsGAmlpl4FUdT6vFJwQA0djWEdDjI8heho0zcc=";
+        stripRoot = false;
+      };
+
+      nativeBuildInputs = [ final.makeWrapper ];
+      dontBuild = true;
+      dontConfigure = true;
+      dontFixup = true;
+
+      installPhase = ''
+        mkdir -p $out/lib $out/bin $out/share/camoufox
+
+        # Copy all files (preserves the upstream camoufox-bin wrapper script
+        # and the pre-patched ELF binaries / .so files).
+        cp -r . $out/share/camoufox/
+
+        # Symlink every .so into $out/lib so the dynamic linker can find them
+        # via the LD_LIBRARY_PATH prepend below.
+        find $out/share/camoufox -maxdepth 1 -name "*.so" -exec ln -sf {} $out/lib/ \;
+
+        # Synthesize version.json (alpha.26 doesn't ship one). camoufox-js needs
+        # this to recognize the bundle via `Version.fromPath()`. It looks for
+        # version.json relative to the executable's directory (path.dirname of
+        # CAMOUFOX_EXECUTABLE), which resolves to $out/bin/ — so we must place
+        # it there too, not just under share/camoufox/.
+        cat > $out/share/camoufox/version.json <<EOF
+        { "version": "${version}", "release": "${release}" }
+        EOF
+        cp $out/share/camoufox/version.json $out/bin/version.json
+        # Also copy properties.json to bin/ (camoufox-js reads it from there)
+        cp $out/share/camoufox/properties.json $out/bin/properties.json 2>/dev/null || true
+
+        # Wrap the upstream camoufox-bin entry point. The upstream wrapper sets
+        # up LD_LIBRARY_PATH for the prebuilt's own dependencies; we additionally
+        # prepend the Nix runtime lib path so the current nixpkgs libraries
+        # (gtk3, x11, libdrm, mesa, ffmpeg, libpulse, dbus, nss, nspr,
+        # libxkbcommon, gcc.cc.lib) resolve correctly.
+        makeWrapper $out/share/camoufox/camoufox-bin $out/bin/camoufox-bin \
+          --prefix LD_LIBRARY_PATH : ${final.lib.makeLibraryPath runtimeLibs} \
+          --prefix LD_LIBRARY_PATH : $out/lib
+
+        # Also expose `camoufox` as a convenient alias.
+        ln -sf $out/bin/camoufox-bin $out/bin/camoufox
+      '';
+
+      meta.mainProgram = "camoufox";
     };
-
-    nativeBuildInputs = [ final.makeWrapper ];
-    dontBuild = true;
-    dontConfigure = true;
-    dontFixup = true;
-
-    installPhase = ''
-      mkdir -p $out/lib $out/bin $out/share/camoufox
-
-      # Copy all files (preserves the upstream camoufox-bin wrapper script
-      # and the pre-patched ELF binaries / .so files).
-      cp -r . $out/share/camoufox/
-
-      # Symlink every .so into $out/lib so the dynamic linker can find them
-      # via the LD_LIBRARY_PATH prepend below.
-      find $out/share/camoufox -maxdepth 1 -name "*.so" -exec ln -sf {} $out/lib/ \;
-
-      # Synthesize version.json (alpha.26 doesn't ship one). camoufox-js needs
-      # this to recognize the bundle via `Version.fromPath()`. It looks for
-      # version.json relative to the executable's directory (path.dirname of
-      # CAMOUFOX_EXECUTABLE), which resolves to $out/bin/ — so we must place
-      # it there too, not just under share/camoufox/.
-      cat > $out/share/camoufox/version.json <<EOF
-      { "version": "${version}", "release": "${release}" }
-      EOF
-      cp $out/share/camoufox/version.json $out/bin/version.json
-      # Also copy properties.json to bin/ (camoufox-js reads it from there)
-      cp $out/share/camoufox/properties.json $out/bin/properties.json 2>/dev/null || true
-
-      # Wrap the upstream camoufox-bin entry point. The upstream wrapper sets
-      # up LD_LIBRARY_PATH for the prebuilt's own dependencies; we additionally
-      # prepend the Nix runtime lib path so the current nixpkgs libraries
-      # (gtk3, x11, libdrm, mesa, ffmpeg, libpulse, dbus, nss, nspr,
-      # libxkbcommon, gcc.cc.lib) resolve correctly.
-      makeWrapper $out/share/camoufox/camoufox-bin $out/bin/camoufox-bin \
-        --prefix LD_LIBRARY_PATH : ${final.lib.makeLibraryPath runtimeLibs} \
-        --prefix LD_LIBRARY_PATH : $out/lib
-
-      # Also expose `camoufox` as a convenient alias.
-      ln -sf $out/bin/camoufox-bin $out/bin/camoufox
-    '';
-
-    meta.mainProgram = "camoufox";
-  };
   # camofox-browser: replaced by jo-camofox-browser from camoufox-nix flake overlay
   # (jo-inc fork with VNC + persistence plugins, OpenAPI docs, tracing)
   # Override to use our prebuilt camoufox instead of camoufox-nix's source-built one
@@ -182,10 +305,15 @@ final: prev: {
   # Also add missing linux-headers + gcc for better-sqlite3 native addon compilation
   # VNC watcher paths (NOVNC_DIR, websockify, awk) fixed via systemd PATH + tmpfiles
   # in layers/20-services/24-communication/camofox-browser.nix — no derivation patch needed.
-  jo-camofox-browser = (prev.jo-camofox-browser.override { camoufox = final.camoufox; }).overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ final.linuxHeaders final.gcc ];
-    buildInputs = (old.buildInputs or []) ++ [ final.linuxHeaders ];
-  });
+  jo-camofox-browser =
+    (prev.jo-camofox-browser.override { camoufox = final.camoufox; }).overrideAttrs
+      (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+          final.linuxHeaders
+          final.gcc
+        ];
+        buildInputs = (old.buildInputs or [ ]) ++ [ final.linuxHeaders ];
+      });
 
   # Fix for browserify build failure: npm: command not found
   # browserify = prev.nodePackages.browserify.overrideAttrs (old: {
@@ -198,15 +326,40 @@ final: prev: {
   # Fix for noctalia-greeter build failure: missing linux/errno.h
   # + libmount.so.1 / libselinux.so.1 link errors from glib-2.88
   noctalia-greeter = prev.noctalia-greeter.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ final.linuxHeaders ];
-    buildInputs = (old.buildInputs or []) ++ [
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.linuxHeaders ];
+    buildInputs = (old.buildInputs or [ ]) ++ [
       final.linuxHeaders
       final.util-linux.lib
       (final.lib.getLib final.libselinux)
     ];
   });
+  # Fix desktop-file-utils build failure:
+  # 1. glib 2.88.1 libgio-2.0.so has NEEDED libselinux.so.1 and libmount.so.1
+  #    from libselinux and util-linuxMinimal respectively.
+  # 2. Meson/ninja handles linking directly — it doesn't use nixpkgs' LDFLAGS
+  #    for rpath. So buildInputs alone won't add runtime search paths.
+  # 3. Fix: add libselinux to buildInputs (linker needs it at build time) and
+  #    use postFixup to manually add rpath entries via patchelf (runtime).
+  desktop-file-utils = prev.desktop-file-utils.overrideAttrs (old: {
+    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+      final.linuxHeaders
+      final.patchelf
+    ];
+    buildInputs = (old.buildInputs or [ ]) ++ [
+      final.linuxHeaders
+      (final.lib.getLib final.libselinux)
+    ];
+    postFixup = (old.postFixup or "") + ''
+      for f in $out/bin/*; do
+        if [[ -x "$f" ]]; then
+          patchelf --add-rpath ${final.lib.getLib final.util-linuxMinimal}/lib "$f"
+          patchelf --add-rpath ${final.lib.getLib final.libselinux}/lib "$f"
+        fi
+      done
+    '';
+  });
 
-  pythonPackagesExtensions = (prev.pythonPackagesExtensions or []) ++ [
+  pythonPackagesExtensions = (prev.pythonPackagesExtensions or [ ]) ++ [
     (python-final: python-prev: {
       radios = python-prev.radios.overridePythonAttrs (old: {
         pythonRelaxDeps = [ "pycountry" ];
@@ -242,18 +395,21 @@ final: prev: {
       rustPlatform.bindgenHook
     ];
 
-    buildInputs = with final; [
-      openssl
-      sqlite
-      zlib
-      linuxHeaders
-    ] ++ final.lib.optionals final.stdenv.isLinux [
-      # For PDF rendering (poppler)
-      poppler
-      poppler_gi
-      cairo
-      glib
-    ];
+    buildInputs =
+      with final;
+      [
+        openssl
+        sqlite
+        zlib
+        linuxHeaders
+      ]
+      ++ final.lib.optionals final.stdenv.isLinux [
+        # For PDF rendering (poppler)
+        poppler
+        poppler_gi
+        cairo
+        glib
+      ];
 
     # Patch lokb-cli to remove lokb-embed dependency (ONNX runtime version conflict).
     # Full-text search (Tantivy) and knowledge graph work without embeddings.
@@ -286,51 +442,128 @@ final: prev: {
   # and token-efficient context generation for AI coding agents.
   # https://github.com/bravenewxyz/supergraph
   # Uses prebuilt binary from GitHub releases (linux-x64).
-  supergraph = let
-    version = "1.1.33";
-    src = final.fetchzip {
-      url = "https://github.com/bravenewxyz/supergraph/releases/download/v${version}/supergraph-linux-x64.tar.gz";
-      hash = "sha256-7WvIkd8mrEkeHBnsdSn3FQ/CYSLgcOG5d8RxoLKaQD4=";
-      stripRoot = false;
+  supergraph =
+    let
+      version = "1.1.33";
+      src = final.fetchzip {
+        url = "https://github.com/bravenewxyz/supergraph/releases/download/v${version}/supergraph-linux-x64.tar.gz";
+        hash = "sha256-7WvIkd8mrEkeHBnsdSn3FQ/CYSLgcOG5d8RxoLKaQD4=";
+        stripRoot = false;
+      };
+    in
+    final.stdenv.mkDerivation {
+      pname = "supergraph";
+      inherit version;
+
+      dontUnpack = true;
+      dontBuild = true;
+      dontConfigure = true;
+
+      nativeBuildInputs = with final; [
+        makeWrapper
+        autoPatchelfHook
+      ];
+
+      buildInputs = with final; [
+        stdenv.cc.cc.lib
+      ];
+
+      installPhase = ''
+        runHook preInstall
+
+        mkdir -p $out/bin $out/lib
+
+        # Copy binary
+        cp ${src}/supergraph $out/bin/supergraph
+        chmod +x $out/bin/supergraph
+
+        # Copy shared libs if present
+        cp -r ${src}/lib/* $out/lib/ 2>/dev/null || true
+
+        runHook postInstall
+      '';
+
+      meta = with final.lib; {
+        description = "Monorepo intelligence — structural analysis, deep audits, and interactive visualization for AI agents";
+        homepage = "https://github.com/bravenewxyz/supergraph";
+        license = licenses.mit;
+        maintainers = [ ];
+        mainProgram = "supergraph";
+      };
     };
-  in final.stdenv.mkDerivation {
-    pname = "supergraph";
-    inherit version;
 
-    dontUnpack = true;
-    dontBuild = true;
-    dontConfigure = true;
+  uni-pet = final.buildNpmPackage rec {
+    pname = "uni-pet";
+    version = "0.1.5";
 
-    nativeBuildInputs = with final; [
-      makeWrapper
-      autoPatchelfHook
-    ];
+    src = final.fetchFromGitHub {
+      owner = "ydyangdan";
+      repo = "UniPet";
+      rev = "v${version}";
+      hash = "sha256-+bP60vOnCsmEknSSYZ5kxY0xfXEUHZY9dKtVWBofo5A=";
+    };
 
-    buildInputs = with final; [
-      stdenv.cc.cc.lib
-    ];
+    npmDepsHash = "sha256-jDqXZMd+3jVInzWb3R1mxwTqhTSOFtUrbfMkAyJt7EI=";
 
-    installPhase = ''
-      runHook preInstall
+    dontNpmBuild = true;
 
-      mkdir -p $out/bin $out/lib
-
-      # Copy binary
-      cp ${src}/supergraph $out/bin/supergraph
-      chmod +x $out/bin/supergraph
-
-      # Copy shared libs if present
-      cp -r ${src}/lib/* $out/lib/ 2>/dev/null || true
-
-      runHook postInstall
-    '';
+    # Electron's install.js tries to download prebuilt binaries from github.com
+    # during npm install, which fails in the nix sandbox (no network).
+    # Skip all lifecycle scripts during install to avoid this.
+    npmFlags = [ "--ignore-scripts" ];
 
     meta = with final.lib; {
-      description = "Monorepo intelligence — structural analysis, deep audits, and interactive visualization for AI agents";
-      homepage = "https://github.com/bravenewxyz/supergraph";
+      description = "Universal Desktop Pet for AI coding agents";
+      homepage = "https://github.com/ydyangdan/UniPet";
       license = licenses.mit;
-      maintainers = [ ];
-      mainProgram = "supergraph";
+      mainProgram = "unipet";
+    };
+  };
+
+  agentburn = with final.python3Packages; buildPythonPackage rec {
+    pname = "agentburn";
+    version = "0.1.0-unstable-2026-07-26";
+    format = "pyproject";
+
+    # Not on PyPI — distributed via GitHub + uvx. Fetch from GitHub instead.
+    # No version tag exists on the repo — use main branch.
+    src = final.fetchFromGitHub {
+      owner = "Socialpranker";
+      repo = "agentburn";
+      rev = "main";
+      hash = "sha256-3X/lIzHQRg8X45Q8aS86j6X9yy5zdEgHJA79I49C1I4=";
+    };
+
+    # pyproject.toml requires setuptools>=68 as build backend
+    nativeBuildInputs = [ setuptools ];
+
+    doCheck = false;
+
+    meta = with final.lib; {
+      description = "Local profiler for AI agent spend";
+      homepage = "https://github.com/Socialpranker/agentburn";
+      license = licenses.mit;
+      mainProgram = "agentburn";
+    };
+  };
+
+  hermes-paperclip-adapter = final.buildNpmPackage rec {
+    pname = "hermes-paperclip-adapter";
+    version = "0.1.0";
+
+    src = final.fetchFromGitHub {
+      owner = "NousResearch";
+      repo = "hermes-paperclip-adapter";
+      rev = "main";
+      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # placeholder — will fail
+    };
+
+    npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # placeholder
+
+    meta = with final.lib; {
+      description = "Paperclip adapter for Hermes Agent";
+      homepage = "https://github.com/NousResearch/hermes-paperclip-adapter";
+      license = licenses.mit;
     };
   };
 }

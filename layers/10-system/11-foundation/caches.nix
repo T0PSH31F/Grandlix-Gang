@@ -21,8 +21,8 @@
       substituters = [
         "https://nix-community.cachix.org"
         "https://cache.nixos.org"
-        "https://cache.numtide.com"
         "https://numtide.cachix.org"
+        "https://cache.numtide.com"
         "https://vicinae.cachix.org"
         "https://hyprland.cachix.org"
         "https://niri.cachix.org"
@@ -48,8 +48,8 @@
       # Ensure these are trusted for non-root users (making sure extra-trusted-substituters are pulled in)
       trusted-substituters = [
         "https://nix-community.cachix.org"
-        "https://cache.numtide.com"
         "https://numtide.cachix.org"
+        "https://cache.numtide.com"
         "https://vicinae.cachix.org"
         "https://hyprland.cachix.org"
         "https://niri.cachix.org"

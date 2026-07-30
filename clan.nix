@@ -12,7 +12,7 @@ let
         "ai-agent"
         "intel-12th-gen"
       ];
-      deploy.targetHost = "root@192.168.1.39";
+      deploy.targetHost = "root@127.0.0.1";
     };
 
     luffy = {
@@ -24,6 +24,7 @@ let
         "homelab"
         "cache-server"
         "ai-server"
+        "ai-agent"
         "development"
         "media"
         "intel-9th-gen"

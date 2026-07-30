@@ -144,13 +144,13 @@
     infrastructure.langfuse.enable = true;
 
     # FreeLLMAPI — free-tier LLM router for Hermes/OpenCode fallback
-    freellmapi = {
+    ai-services.freellmapi = {
       enable = true;
       port = 3001;
     };
 
     # Mistral MCP — Mistral AI tool server (chat, OCR, Codestral)
-    mistral-mcp = {
+    ai-services.mistral-mcp = {
       enable = true;
       port = 3333;
     };

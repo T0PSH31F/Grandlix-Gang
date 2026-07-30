@@ -16,6 +16,9 @@
     ./cherry-studio.nix # Cherry Studio desktop app
     ./aider.nix # Aider AI pair programming
     ./context-forge.nix # ContextForge MCP gateway
+    ./mission-control.nix # Mission Control — self-hosted AI agent control plane
+    ./aionui.nix # AionUi — AI agent Cowork web UI
+    ./paperclip.nix # Paperclip — AI agent team orchestration
     ./brain-service.nix # FastAPI + LlamaIndex + PGVector RAG
     ./llm-agents.nix # LLM coding agent packages
     ./sillytavern.nix # SillyTavern AI chat frontend
