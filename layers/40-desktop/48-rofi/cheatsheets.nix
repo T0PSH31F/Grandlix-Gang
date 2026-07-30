@@ -876,6 +876,18 @@ CHEATSHEET_EOF
 🎨 MEDIA
   ffmpeg     Video/audio
   yt-dlp     YouTube downloader
+
+🎮 FUN / TOYS
+  lavat       Lava lamp in your terminal
+  figlet      ASCII art text banners
+  toilet      Fancy ASCII text (more fonts)
+  cowsay      Talking cow (or other animals)
+  lolcat      Rainbow-colored output
+  sl          Steam Locomotive (don't mistype ls)
+  cmatrix     Matrix-style green rain
+  neo         Matrix code rain (smaller)
+  chafa       Image to terminal art
+  ascii-image-convert Image to ASCII
 "
     TOOL=$(echo "$TOOLS" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Tool" -filter "" -i $ROFI_THEME_ARGS | awk '{print $1}')
     [ -z "$TOOL" ] && exit 0
