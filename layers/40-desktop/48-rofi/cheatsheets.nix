@@ -878,40 +878,50 @@ CHEATSHEET_EOF
   yt-dlp     YouTube downloader
 
 🎮 FUN / TOYS
-  lavat       Lava lamp in your terminal
-  pipes       Animated pipes screensaver
+  pipes.sh    Animated pipes screensaver
   asciiquarium Sea creatures swimming
+  nyancat     Rainbow poptart cat
   cmatrix     Matrix-style green rain
   neo         Matrix rain (smaller)
   unimatrix   Matrix rain by a Unicorn
   cbonsai     Animated bonsai tree
   genact      Fake activity generator
+  lavat       Lava lamp in your terminal
   tty-clock   Terminal clock
+  cpufetch    CPU art in terminal
   sl          Steam Locomotive (typo ls)
+  terminal-parrot Animated dancing parrot
+  terminaltexteffects Text animation engine
+  terminal-toys All-in-one screensaver
   figlet      ASCII art text banners
   toilet      Fancy ASCII text (more fonts)
+  banner      Large banner text
+  ascii       ASCII character table
   cfonts      Colored fonts in terminal
+  boxes       ASCII boxes around text
   cowsay      Talking cow (any animal)
+  neo-cowsay  Cow with character files
+  ponysay     My Little Pony says things
   charasay    Anime characters say things
   fortune     Random fortune cookie
   lolcat      Rainbow-colored output
-  terminal-parrot Animated dancing parrot
-  terminaltexteffects Text animation engine
   chafa       Image to terminal art
   catimg      Image to terminal (fast)
   timg        Terminal image viewer
-  boxes       ASCII boxes around text
   fastfetch   System info (neofetch alt)
   blahaj      BLÅHAJ shark in terminal
 "
     TOOL=$(echo "$TOOLS" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Tool" -filter "" -i $ROFI_THEME_ARGS | awk '{print $1}')
     [ -z "$TOOL" ] && exit 0
+    # Try tldr first, fall back to --help if no tldr page exists
     if command -v tldr > /dev/null 2>&1; then
-      tldr "$TOOL" 2>/dev/null | ${pkgs.rofi}/bin/rofi -dmenu -p "$TOOL" -filter "" $ROFI_THEME_ARGS
-    else
-      echo "Install tealdeer: nix profile install nixpkgs#tealdeer" | \
-        ${pkgs.rofi}/bin/rofi -dmenu -p "$TOOL" $ROFI_THEME_ARGS
+      PAGE=$(tldr "$TOOL" 2>/dev/null)
     fi
+    if [ -z "$PAGE" ] && command -v "$TOOL" > /dev/null 2>&1; then
+      PAGE=$("$TOOL" --help 2>&1 | head -60)
+    fi
+    echo "''${PAGE:-No help available for $TOOL}" | \
+      ${pkgs.rofi}/bin/rofi -dmenu -p "$TOOL" -filter "" $ROFI_THEME_ARGS
   '';
 
   tag_groups_cheatsheet = pkgs.writeShellScriptBin "tag-groups-cheatsheet" ''

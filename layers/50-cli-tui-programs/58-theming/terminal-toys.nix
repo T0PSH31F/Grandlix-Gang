@@ -10,7 +10,9 @@ in
 {
   home = lib.mkIf (cfg.enable && (cfg.terminal-toys.enable or true)) {
     home.packages = with pkgs; [
+      ascii
       asciiquarium
+      banner
       blahaj
       boxes
       catimg
@@ -19,6 +21,7 @@ in
       chafa
       charasay
       cmatrix
+      cpufetch
       figlet
       fortune-kind
       genact
@@ -26,7 +29,9 @@ in
       lolcat
       neo-cowsay
       neo
+      nyancat
       pipes
+      ponysay
       fastfetch
       sl
       terminal-parrot
