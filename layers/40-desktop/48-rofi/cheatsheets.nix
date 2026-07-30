@@ -788,20 +788,18 @@ CHEATSHEET_EOF
 
   aliases_cheatsheet = pkgs.writeShellScriptBin "aliases-cheatsheet" ''
     ${rofiTheme}
-    # Dynamically list all zsh aliases (captures OMZ + custom aliases)
-    ALIASES=$(${pkgs.zsh}/bin/zsh -ic 'alias' 2>/dev/null | \
-      sed "s/^alias //" | \
-      sed "s/^-g //" | \
-      sed "s/='/' → '/" | \
-      sed "s/^'//; s/'$//" | \
+    # Dynamically list all zsh aliases
+    # Filter: only lines matching 'name=value' pattern (excludes ASCII art, prompts)
+    ALIASES=$(zsh -ic 'alias' 2>/dev/null | \
+      grep -E '^[a-zA-Z_-][a-zA-Z0-9_-]*=' | \
+      sed 's/^alias //' | \
+      sed "s/^\([^=]*\)='\(.*\)'$/\1 → \2/" | \
+      sed 's/^\([^=]*\)="\(.*\)"$/\1 → \2/' | \
+      sed 's/^\([^=]*\)=\(.*\)$/\1 → \2/' | \
       sort | \
-      awk -F"'" '{
-        name=$1; sub(/[[:space:]]+$/, "", name);
-        cmd=$3;
-        printf "  %-24s %s\n", name, cmd
-      }')
+      awk -F' → ' '{printf "  %-28s %s\n", $1, $2}')
     if [ -z "$ALIASES" ]; then
-      ALIASES="  (no aliases found or shell not available)"
+      ALIASES="  (no aliases found)"
     fi
     echo "📋 SHELL ALIASES
     ─────────────────────────────────────────
