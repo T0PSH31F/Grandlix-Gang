@@ -30,10 +30,10 @@ in
       # gemini-cli # - AI agent that brings the power of Gemini directly into your terminal
       goose-cli # - CLI for Goose - a local, extensible, open source AI agent that automates engineering tasks
       jules # - Jules, the asynchronous coding agent from Google, in the terminal
-      kilocode-cli # - The open-source AI coding agent. Now available in your terminal.
+      # kilocode-cli # - DISABLED: upstream kilo-console build broken (vite shebang /usr/bin/env missing in sandbox)
       # letta-code # - Memory-first coding agent that learns and evolves across sessions
       # mistral-vibe # - Minimal CLI coding agent by Mistral AI - open-source command-line coding assistant powered by Devstral
-      nanocoder # - A beautiful local-first coding agent running in your terminal - built by the community for the community ⚒
+      # nanocoder # - A beautiful local-first coding agent running in your terminal - built by the community for the community ⚒ (removed: pnpm insecure deps)
       opencode # - AI coding agent built for the terminal
       pi # - A terminal-based coding agent with multi-model support
       # qoder-cli # - Qoder AI CLI tool - Terminal-based AI assistant for code development

@@ -17,6 +17,45 @@ let
 
   zjstatusWasm = "${inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/zjstatus.wasm";
 
+  # ── Clipboard Bridge (Wayland + X11 + OSC 52) ────────────────────────
+  # Zellij's background server often lacks $WAYLAND_DISPLAY, causing
+  # wl-copy to silently fail. This wrapper tries every available path.
+  zellij-clipboard = pkgs.writeShellScriptBin "zellij-clipboard" ''
+    set -e
+
+    # Try to locate the Wayland display
+    if [ -z "''${WAYLAND_DISPLAY:-}" ]; then
+      for sock in "$XDG_RUNTIME_DIR/wayland-0" "$XDG_RUNTIME_DIR/wayland-1"; do
+        if [ -S "$sock" ]; then
+          export WAYLAND_DISPLAY="''${sock##*/}"
+          break
+        fi
+      done
+    fi
+
+    # 1) Wayland → wl-copy (preferred)
+    if [ -n "''${WAYLAND_DISPLAY:-}" ] && command -v wl-copy >/dev/null 2>&1; then
+      exec wl-copy --paste-once "$@"
+    fi
+
+    # 2) X11 → xclip
+    if [ -n "''${DISPLAY:-}" ] && command -v xclip >/dev/null 2>&1; then
+      exec xclip -selection clipboard -i "$@"
+    fi
+
+    # 3) OSC 52 fallback → tell terminal to copy
+    if command -v base64 >/dev/null 2>&1; then
+      INPUT=$(cat)
+      ESCAPED=$(printf "%s" "$INPUT" | base64 | tr -d '\n')
+      printf "\e]52;c;%s\a" "$ESCAPED"
+    else
+      # Last resort: write to temp file, print path
+      TMP=$(mktemp /tmp/zellij-clip-XXXXXX)
+      cat > "$TMP"
+      echo "Clipboard data written to $TMP" >&2
+    fi
+  '';
+
   # ── Noctalia Color Sync Script ──────────────────────────────────────
   zellij-colors-sync = pkgs.writeShellScriptBin "zellij-colors-sync" ''
     COLORS_FILE="''${HOME}/.config/hypr/noctalia/noctalia-colors.conf"
@@ -568,7 +607,7 @@ in
         scrollback_buffer_size = 50000;
         scrollback_editor = "${lib.getExe pkgs.neovim}";
         mouse_mode = true;
-        copy_command = "wl-copy";
+        copy_command = "zellij-clipboard";
         default_shell = "${pkgs.zsh}/bin/zsh";
         auto_copy_on_select = true;
         theme = "noctalia";
@@ -664,7 +703,7 @@ in
       Install = { WantedBy = [ "graphical-session.target" ]; };
     };
 
-    home.packages = [ zellij-colors-sync ]
+    home.packages = [ zellij-colors-sync zellij-clipboard ]
       ++ lib.optional cfg.zellij.yazelix.cursors.enable yazelixCursorsPkg
       ++ lib.optional cfg.zellij.yazelix.screen.enable yazelixScreenPkg;
   };

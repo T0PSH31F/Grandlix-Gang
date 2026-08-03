@@ -65,6 +65,7 @@
       mobile.ios.enable = true;
       config.impermanence.enable = true;
       virtualization.enable = true;
+      sessionResilience.enable = true; # Fixes uwsm DBus timeouts, getty GC, orphaned session cleanup
     };
 
     layer-20.services.config = {
@@ -99,7 +100,9 @@
       noctalia.backend = "hyprland";
     };
 
-  # Enable zellij bottom bar (CPU/RAM) via yazelix bars
+    layer-60.gui.documents.enable = true;
+
+    # Enable zellij bottom bar (CPU/RAM) via yazelix bars
     layer-50.cli.zellij.yazelix.bars.enable = true;
 
     # Enable rclone Google Drive mount as a user service (auto-restarts on failure)
@@ -123,13 +126,14 @@
     openssh.settings.UsePAM = lib.mkForce false;
     sillytavern-app.enable = lib.mkForce false; # Crash-looping, not needed on z0r0
     ai-services.lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
+    ai-services.qdrant.enable = lib.mkForce false; # Disabled: LLVM intrinsic signature mismatch with new LLVM
     llm-agents.enable = true;
 
     # Brain Service — Personal Knowledge Base (PDF/EPUB/HTML/MD RAG for Hermes)
     ai-services.brain-service = {
       enable = true;
       port = 8010;
-      mcpEnable = true;
+      mcpEnable = false; # Disabled temporarily: pymupdf tests fail (test_2791, test_4090 memory ratio)
       booksDir = "/home/t0psh31f/Notes/PKB";
       embedModel = "nomic-embed-text";
       embedDim = 768;
@@ -143,9 +147,29 @@
     n8n-server.enable = false;
     infrastructure.langfuse.enable = true;
 
+    # Kong AI Gateway — unified LLM/API gateway
+    ai-services.kong-gateway = {
+      enable = true;
+      environmentFile = config.sops.templates."kong-env".path;
+    };
+
+    # Upstream LLM routers behind Kong
+    ai-services.omniroute = {
+      enable = true;
+      environmentFile = config.sops.templates."kong-env".path;
+    };
+    ai-services.freellmpool = {
+      enable = true;
+      environmentFile = config.sops.templates."kong-env".path;
+    };
+    ai-services.langgraph = {
+      enable = true;
+      environmentFile = config.sops.templates."langgraph-env".path;
+    };
+
     # FreeLLMAPI — free-tier LLM router for Hermes/OpenCode fallback
     ai-services.freellmapi = {
-      enable = true;
+      enable = false; # DISABLED: source hash mismatch (rev=main keeps changing), needs pinning to a specific commit
       port = 3001;
     };
 

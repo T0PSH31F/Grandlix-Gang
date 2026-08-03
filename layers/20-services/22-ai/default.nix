@@ -29,6 +29,11 @@
     ./llama-swap.nix # llama-swap router
     ./vllm.nix # vLLM inference server
     ./lokb.nix # lokb knowledge base with MCP server
+    ./omniroute.nix # OmniRoute — coding LLM router
+    ./freellmpool.nix # freellmpool — free-tier LLM pool
+    ./kong-gateway.nix # Kong AI Gateway — unified LLM/API gateway
+    ./kong-secrets.nix # Sops secrets for Kong + routers
+    ./langgraph.nix # LangGraph — multi-agent orchestration
     ./freellmapi.nix # FreeLLMAPI — free-tier LLM router
     ./mistral-mcp.nix # Mistral MCP server (HTTP mode)
   ];

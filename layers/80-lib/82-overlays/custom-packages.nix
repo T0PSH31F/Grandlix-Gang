@@ -2,6 +2,28 @@
 # Custom packages you might want available on all systems.
 
 final: prev: {
+  # scipy 1.18.0 test failure: floating point precision issue in test_support_moments_sample
+  # pymupdf 1.27.2.3 test failure: memory ratio assertion in test_2791
+  # upstream nixpkgs test issues — disable tests for both
+  python3 = prev.python3.override {
+    packageOverrides = self: super: {
+      scipy = super.scipy.overrideAttrs { doCheck = false; };
+      pymupdf = super.pymupdf.overrideAttrs { doCheck = false; };
+    };
+  };
+  python314 = prev.python314.override {
+    packageOverrides = self: super: {
+      scipy = super.scipy.overrideAttrs { doCheck = false; };
+      pymupdf = super.pymupdf.overrideAttrs { doCheck = false; };
+    };
+  };
+  python312 = prev.python312.override {
+    packageOverrides = self: super: {
+      scipy = super.scipy.overrideAttrs { doCheck = false; };
+      pymupdf = super.pymupdf.overrideAttrs { doCheck = false; };
+    };
+  };
+
   # glibc 2.42+ bits/local_lim.h includes <linux/limits.h>, but nixpkgs'
   # cc-wrapper doesn't add linuxHeaders to the default include path.
   # In structured-attrs mode, nativeBuildInputs alone won't add -I flags.

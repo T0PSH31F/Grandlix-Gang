@@ -406,3 +406,13 @@ sudo nixos-rebuild switch --flake .#luffy --target-host root@100.80.146.120
 
 8. **clan-core vars**: Secrets are managed via `clan.core.vars` with sops
    backend. Never hardcode secrets in nix files. See `.agents/rules/clan-architecture.md`.
+
+9. **uwsm session crashes**: If the session crashes and you get locked out
+   (can't re-login, TTY shows flashing cursor), this is caused by:
+   - uwsm env-preloader DBus timeout (`org.freedesktop.DBus.Error.NoReply`)
+   - Getty binary GC'd from Nix store (makes TTY inaccessible)
+   - Orphaned session state preventing greetd from starting fresh
+   Fix: `session-resilience.nix` in `layers/10-system/19-optimizations/`
+   adds: getty GC root pinning, uwsm DBus retry/timeout overrides,
+   boot-time orphaned session cleanup and recovery. Enable via
+   `layers.layer-10.system.sessionResilience.enable = true`.

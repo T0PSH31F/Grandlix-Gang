@@ -8,6 +8,40 @@
 }:
 let
   cfg = osConfig.layers.layer-40.desktop.hyprland;
+
+  # ── Screenshot script: save to file + copy to clipboard ────────────
+  hypr-screenshot = pkgs.writeShellScriptBin "hypr-screenshot" ''
+    set -e
+    MODE="''${1:-region}"
+    SAVE_DIR="''${HOME}/Pictures/Screenshots"
+    TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
+    FILENAME="screenshot-$TIMESTAMP.png"
+
+    mkdir -p "$SAVE_DIR"
+
+    case "$MODE" in
+      region)
+        grim -g "$(slurp)" - | tee "$SAVE_DIR/$FILENAME" | wl-copy
+        ;;
+      full)
+        grim - | tee "$SAVE_DIR/$FILENAME" | wl-copy
+        ;;
+      edit)
+        grim -g "$(slurp)" - | swappy -f -
+        exit $?
+        ;;
+      edit-full)
+        grim - | swappy -f -
+        exit $?
+        ;;
+      *)
+        echo "Usage: hypr-screenshot {region|full|edit|edit-full}"
+        exit 1
+        ;;
+    esac
+
+    notify-send -t 2000 -u low -i camera-photo "Screenshot saved" "$FILENAME → clipboard + $SAVE_DIR"
+  '';
 in
 {
   options.layers.layer-40.desktop.hyprland = {
@@ -39,7 +73,7 @@ in
         hyprland = {
           prettyName = "Hyprland";
           comment = "Hyprland compositor managed by UWSM";
-          binPath = "/run/current-system/sw/bin/Hyprland";
+          binPath = "/run/current-system/sw/bin/start-hyprland";
         };
       };
     };
@@ -64,6 +98,7 @@ in
           cliphist
           grim
           wl-freeze
+          hypr-screenshot
           hyprkeys
           hyprland-autoname-workspaces
           hyprland-qt-support
@@ -87,6 +122,17 @@ in
           wl-clipboard
           xdg-user-dirs
           xdg-utils
+        ];
+
+        # Swappy screenshot tool config → save to ~/Pictures/Screenshots
+        xdg.configFile."swappy/config".text = ''
+          [Default]
+          save_dir=$HOME/Pictures/Screenshots
+        '';
+
+        # Ensure screenshots directory exists
+        systemd.user.tmpfiles.rules = [
+          "d ${config.home.homeDirectory}/Pictures/Screenshots 0755 - - -"
         ];
 
         wayland.windowManager.hyprland = {

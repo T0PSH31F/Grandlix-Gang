@@ -113,6 +113,26 @@ with lib;
             }
           ];
         }
+        # Kong AI Gateway metrics
+        (mkIf config.services.ai-services.kong-gateway.enable {
+          job_name = "kong";
+          metrics_path = "/metrics";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:${toString config.services.ai-services.kong-gateway.proxyPort}" ];
+            }
+          ];
+        })
+        # LangGraph metrics
+        (mkIf config.services.ai-services.langgraph.enable {
+          job_name = "langgraph";
+          metrics_path = "/metrics";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:${toString config.services.ai-services.langgraph.port}" ];
+            }
+          ];
+        })
         # Hermes API health
         {
           job_name = "blackbox-hermes";

@@ -12,7 +12,7 @@ in
     wayland.windowManager.hyprland.settings = {
       "$mod" = "SUPER";
       "$terminal" = "ghostty";
-      "$fileManager" = "nemo-with-extensions";
+      "$fileManager" = "dolphin";
       "$browser" = "brave";
       "$ipc" = "noctalia msg";
 
@@ -21,7 +21,7 @@ in
         "$mod, Return, exec, uwsm app -- ghostty"
         "$mod SHIFT, Return, exec, uwsm app -- warp-terminal"
         "$mod, T, exec, uwsm app -- ghostty"
-        "$mod, E, exec, uwsm app -- nemo"
+        "$mod, E, exec, uwsm app -- dolphin"
         "$mod, Y, exec, uwsm app -- ghostty -e yazi"
         "$mod SHIFT, Y, exec, ghostty -e nu ~/.config/yazelix/nushell/scripts/core/start_yazelix.nu launch"
         "$mod, M, exec, uwsm app -- spotify"
@@ -55,13 +55,13 @@ in
         "ALT, Return, exec, pypr toggle term"
         "$mod, G, exec, pypr toggle gedit"
 
-        # ── Screenshots (Grim + Slurp) ─────────────────────────────────
-        ", Print, exec, grim -g \"$(slurp)\" - | swappy -f -"
-        "SHIFT, Print, exec, grim - | swappy -f -"
-        "$mod CTRL, S, exec, grim -g \"$(slurp)\" - | swappy -f -"
-        ", XF86AudioEject, exec, grim -g \"$(slurp)\" - | swappy -f -"
-        "SHIFT, XF86AudioEject, exec, grim - | swappy -f -"
-        "CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | swappy -f -"
+        # ── Screenshots (save to ~/Pictures/Screenshots + clipboard) ────
+        ", Print, exec, hypr-screenshot region"
+        "SHIFT, Print, exec, hypr-screenshot full"
+        "$mod CTRL, S, exec, hypr-screenshot edit"
+        ", XF86AudioEject, exec, hypr-screenshot region"
+        "SHIFT, XF86AudioEject, exec, hypr-screenshot full"
+        "CTRL SHIFT, S, exec, hypr-screenshot edit"
 
         # ── Theme & Layout Management ──────────────────────────────────
         # "$mod SHIFT, P, exec, noctalia-theme-toggle"

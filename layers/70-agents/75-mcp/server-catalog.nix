@@ -27,7 +27,7 @@
   config = lib.mkIf config.layers.layer-75.mcp.enable {
     home-manager.users.t0psh31f = {
       home.packages = with pkgs; [
-        kilocode-cli
+        # kilocode-cli # DISABLED: upstream kilo-console build broken (vite shebang /usr/bin/env missing in sandbox)
         picoclaw
         zeroclaw
         crush

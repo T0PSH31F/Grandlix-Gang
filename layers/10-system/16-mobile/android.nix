@@ -16,7 +16,6 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       android-tools # ADB, Fastboot
-      jmtpfs # MTP Filesystem
       scrcpy # Screen mirroring
       heimdall-gui # GUI for Heimdall
       mtkclient

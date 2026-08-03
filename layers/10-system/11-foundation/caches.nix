@@ -28,7 +28,7 @@
         "https://niri.cachix.org"
         "https://mic92.cachix.org"
         "https://noctalia.cachix.org"
-        "https://cache.garnix.io"
+        # "https://cache.garnix.io"  # DOWN: 502 Bad Gateway (2026-08-01) — re-enable when garnix recovers
       ];
 
       # Set the trusted public keys for the substituters above
@@ -42,7 +42,7 @@
         "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
         "mic92.cachix.org-1:2Vf2WbWuQDWg9s2ykt8ZzNt6gtB+oqjEUo3vAqVM0GA="
         "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-        "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+        # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="  # re-enable when garnix recovers
       ];
 
       # Ensure these are trusted for non-root users (making sure extra-trusted-substituters are pulled in)

@@ -51,6 +51,9 @@
     "olm-3.2.16"
     "nodejs-20.20.2"
     "nodejs-slim-20.20.2"
+    "webull-desktop-9.3.0"
+    "electron-40.10.5"
+    "pnpm-10.29.2"
   ];
 
   # Bootloader
