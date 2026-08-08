@@ -3,15 +3,17 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://nix-community.cachix.org"
+      # cache.nixos.org first — most populous; numtide.com last (unreachable from
+      # this network, timeouts). Kept in sync with layers/10-system/11-foundation/caches.nix.
       "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
       "https://numtide.cachix.org"
-      "https://cache.numtide.com"
       "https://vicinae.cachix.org"
       "https://hyprland.cachix.org"
       "https://niri.cachix.org"
       # "https://cache.garnix.io"  # DOWN: 502 Bad Gateway (2026-08-01) — remove when garnix recovers
       "https://noctalia.cachix.org"
+      "https://cache.numtide.com"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -225,15 +227,14 @@
         aiPkgOverlay = final: prev: {
           # nixpkgs-ai provides bleeding-edge AI packages not yet in nixos-unstable.
           # To update: `nix flake update nixpkgs-ai` in this directory.
-          opencode = (import inputs.nixpkgs-ai {
+          # Single import to avoid triple-evaluation of nixpkgs-ai.
+          _aiPkgs = import inputs.nixpkgs-ai {
             inherit (final) system;
             config.allowUnfree = true;
-          }).opencode;
-          opencode-desktop = (import inputs.nixpkgs-ai {
-            inherit (final) system;
-            config.allowUnfree = true;
-          }).opencode-desktop;
-          ollama = (import inputs.nixpkgs-ai { inherit (final) system; config.allowUnfree = true; }).ollama;
+          };
+          opencode = final._aiPkgs.opencode;
+          opencode-desktop = final._aiPkgs.opencode-desktop;
+          ollama = final._aiPkgs.ollama;
         };
       in
       {
@@ -255,12 +256,9 @@
             import inputs.nixpkgs {
               localSystem = system;
               config.allowUnfree = true;
-              overlays = [
-                inputs.camoufox-nix.overlays.default
-                (import ./layers/80-lib/82-overlays/custom-packages.nix)
-                aiPkgOverlay
-
-              ];
+              # Overlays are applied via nixpkgs.overlays in
+              # layers/10-system/11-foundation/overlays.nix (single source of truth).
+              # No overlays here to avoid double-application.
             };
         };
 
@@ -330,11 +328,9 @@
             _module.args.pkgs = import inputs.nixpkgs {
               localSystem = system;
               config.allowUnfree = true;
-              overlays = [
-                inputs.camoufox-nix.overlays.default
-                (import ./layers/80-lib/82-overlays/custom-packages.nix)
-                aiPkgOverlay
-              ];
+              # Overlays are applied via nixpkgs.overlays in
+              # layers/10-system/11-foundation/overlays.nix (single source of truth).
+              # No overlays here to avoid double-application.
             };
             packages.iso =
               (inputs.nixpkgs.lib.nixosSystem {

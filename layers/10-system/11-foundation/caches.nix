@@ -18,17 +18,20 @@
         "@wheel"
       ];
       # Set the main substituters list
+      # cache.nixos.org FIRST — it's the most populous cache; checking smaller
+      # caches first wastes a round-trip per path on misses.
+      # cache.numtide.com kept last: unreachable from this network (timeouts).
+      # mic92.cachix.org removed 2026-08-07: timed out during builds (progress.md).
       substituters = [
-        "https://nix-community.cachix.org"
         "https://cache.nixos.org"
+        "https://nix-community.cachix.org"
         "https://numtide.cachix.org"
-        "https://cache.numtide.com"
         "https://vicinae.cachix.org"
         "https://hyprland.cachix.org"
         "https://niri.cachix.org"
-        "https://mic92.cachix.org"
         "https://noctalia.cachix.org"
         # "https://cache.garnix.io"  # DOWN: 502 Bad Gateway (2026-08-01) — re-enable when garnix recovers
+        "https://cache.numtide.com" # unreachable from this network — last so timeouts don't delay working caches
       ];
 
       # Set the trusted public keys for the substituters above
@@ -40,7 +43,6 @@
         "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-        "mic92.cachix.org-1:2Vf2WbWuQDWg9s2ykt8ZzNt6gtB+oqjEUo3vAqVM0GA="
         "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
         # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="  # re-enable when garnix recovers
       ];
@@ -53,7 +55,6 @@
         "https://vicinae.cachix.org"
         "https://hyprland.cachix.org"
         "https://niri.cachix.org"
-        "https://mic92.cachix.org"
         "https://noctalia.cachix.org"
       ];
     };

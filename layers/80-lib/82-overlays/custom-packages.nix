@@ -2,119 +2,14 @@
 # Custom packages you might want available on all systems.
 
 final: prev: {
-  # scipy 1.18.0 test failure: floating point precision issue in test_support_moments_sample
-  # pymupdf 1.27.2.3 test failure: memory ratio assertion in test_2791
-  # upstream nixpkgs test issues — disable tests for both
-  python3 = prev.python3.override {
-    packageOverrides = self: super: {
-      scipy = super.scipy.overrideAttrs { doCheck = false; };
-      pymupdf = super.pymupdf.overrideAttrs { doCheck = false; };
-    };
-  };
-  python314 = prev.python314.override {
-    packageOverrides = self: super: {
-      scipy = super.scipy.overrideAttrs { doCheck = false; };
-      pymupdf = super.pymupdf.overrideAttrs { doCheck = false; };
-    };
-  };
-  python312 = prev.python312.override {
-    packageOverrides = self: super: {
-      scipy = super.scipy.overrideAttrs { doCheck = false; };
-      pymupdf = super.pymupdf.overrideAttrs { doCheck = false; };
-    };
-  };
-
-  # glibc 2.42+ bits/local_lim.h includes <linux/limits.h>, but nixpkgs'
-  # cc-wrapper doesn't add linuxHeaders to the default include path.
-  # In structured-attrs mode, nativeBuildInputs alone won't add -I flags.
-  # Fix: use postPatch to append -I after stdenv sets up NIX_CFLAGS_COMPILE.
-  flatpak = prev.flatpak.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  seahorse = prev.seahorse.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  vte = prev.vte.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  libadwaita = prev.libadwaita.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  xdg-desktop-portal = prev.xdg-desktop-portal.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  xdg-desktop-portal-gtk = prev.xdg-desktop-portal-gtk.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  gnome-bluetooth = prev.gnome-bluetooth.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  zenity = prev.zenity.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  libpanel = prev.libpanel.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  gedit = prev.gedit.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  gnome-color-manager = prev.gnome-color-manager.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  rustdesk = prev.rustdesk.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  mupdf = prev.mupdf.overrideAttrs (old: {
-    postPatch = (old.postPatch or "") + ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${final.linuxHeaders}/include"
-    '';
-  });
-  # Fix libmount.so.1 rpath: glib 2.88 doesn't propagate util-linuxMinimal,
-  # so binaries linked against glib can't find libmount at runtime.
-  gtk4 = prev.gtk4.overrideAttrs (old: {
-    postFixup = (old.postFixup or "") + ''
-      patchelf --add-rpath ${final.lib.getLib final.util-linuxMinimal}/lib "$out/bin/gtk4-update-icon-cache" 2>/dev/null || true
-    '';
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.patchelf ];
-  });
-  # Fix glib tools: glib-compile-resources, glib-compile-schemas etc.
-  # are linked against libmount.so.1 from util-linuxMinimal but don't
-  # have the rpath. This breaks every package that uses these tools.
-  # Fix rpath with patchelf rather than buildInputs (avoids circular dep).
-  glib = prev.glib.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.patchelf ];
-    postFixup = (old.postFixup or "") + ''
-      for f in ''${!outputDev}/bin/*; do
-        if [[ -x "$f" ]]; then
-          patchelf --add-rpath ${final.lib.getLib final.util-linuxMinimal}/lib "$f" 2>/dev/null || true
-        fi
-      done
-    '';
-  });
+  # REMOVED (2026-08-06): glibc 2.42+ linuxHeaders overlays for flatpak,
+  # seahorse, vte, libadwaita, xdg-desktop-portal, xdg-desktop-portal-gtk,
+  # gnome-bluetooth, zenity, libpanel, gedit, gnome-color-manager, rustdesk,
+  # mupdf. The fix is now upstream in nixpkgs-unstable — these packages build
+  # and cache-hit without the postPatch workaround. Removing saves ~23 builds.
+  #
+  # If any of these fail to build after this removal, the upstream fix may have
+  # regressed — re-add the specific override and file an upstream issue.
   # Fix: glib 2.88.x libgio links libmount.so.1 from util-linuxMinimal, but
   # buildFHSEnv's rootfs builder sandbox doesn't have util-linuxMinimal
   # available (glib doesn't propagate it). Fix by wrapping buildFHSEnv to add
@@ -190,23 +85,16 @@ final: prev: {
     '';
   };
 
-  # Disable glances test suite as they try to bind to localhost and fail in sandbox
-  glances = prev.glances.overridePythonAttrs (old: {
-    doCheck = false;
-  });
+  # REMOVED (2026-08-06): glances test-disable overlay. Upstream 4.5.5 already
+  # disables specific sandbox-failing tests (test_webui, test_msg_curse, etc.).
+  # Removing restores cache hit for glances.
 
-  # Disable openldap tests only for i686-linux (32-bit) builds to prevent flaky test failures on cache misses,
-  # while keeping the x86_64-linux build identical to nixpkgs to preserve binary cache hits.
-  openldap = prev.openldap.overrideAttrs (old: {
-    doCheck = !(prev.stdenv.hostPlatform.system == "i686-linux");
-  });
-
-  # Disable pipx tests as they are currently failing on Python 3.13
-  pipx = prev.pipx.overrideAttrs (old: {
-    doCheck = false;
-    doInstallCheck = false;
-    pytestCheckPhase = "true";
-  });
+  # REMOVED (2026-08-07): openldap i686 doCheck overlay — z0r0/luffy are both
+  # x86_64-only; this conditional never fires and merely shadows the cached
+  # upstream attr. Referenced nowhere in the repo.
+  # REMOVED (2026-08-07): pipx test-disable overlay — was added when pipx tests
+  # failed on Python 3.13. If still needed it forces a local build of pipx
+  # (cache miss); test on next rebuild — remove pipx from packages if it fails.
 
   # Fix for noto-fonts-subset build failure (cp fails when glob matches no files)
   noto-fonts-subset = final.runCommand "noto-fonts-subset" { } ''
@@ -345,41 +233,14 @@ final: prev: {
   #   ];
   # });
 
-  # Fix for noctalia-greeter build failure: missing linux/errno.h
-  # + libmount.so.1 / libselinux.so.1 link errors from glib-2.88
-  noctalia-greeter = prev.noctalia-greeter.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.linuxHeaders ];
-    buildInputs = (old.buildInputs or [ ]) ++ [
-      final.linuxHeaders
-      final.util-linux.lib
-      (final.lib.getLib final.libselinux)
-    ];
-  });
-  # Fix desktop-file-utils build failure:
-  # 1. glib 2.88.1 libgio-2.0.so has NEEDED libselinux.so.1 and libmount.so.1
-  #    from libselinux and util-linuxMinimal respectively.
-  # 2. Meson/ninja handles linking directly — it doesn't use nixpkgs' LDFLAGS
-  #    for rpath. So buildInputs alone won't add runtime search paths.
-  # 3. Fix: add libselinux to buildInputs (linker needs it at build time) and
-  #    use postFixup to manually add rpath entries via patchelf (runtime).
-  desktop-file-utils = prev.desktop-file-utils.overrideAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
-      final.linuxHeaders
-      final.patchelf
-    ];
-    buildInputs = (old.buildInputs or [ ]) ++ [
-      final.linuxHeaders
-      (final.lib.getLib final.libselinux)
-    ];
-    postFixup = (old.postFixup or "") + ''
-      for f in $out/bin/*; do
-        if [[ -x "$f" ]]; then
-          patchelf --add-rpath ${final.lib.getLib final.util-linuxMinimal}/lib "$f"
-          patchelf --add-rpath ${final.lib.getLib final.libselinux}/lib "$f"
-        fi
-      done
-    '';
-  });
+  # REMOVED (2026-08-07): noctalia-greeter overlay — DEAD CODE. The greeter
+  # module (layers/30-theming/32-boot/greeter.nix) builds from
+  # inputs.noctalia-greeter.packages.<system>.default directly and applies its
+  # own overrideAttrs there. Nothing references pkgs.noctalia-greeter.
+  # REMOVED (2026-08-07): desktop-file-utils linuxHeaders/libselinux/patchelf
+  # overlay — same glib-2.88 libmount.so.1 era as the glibc-2.42 fixes removed
+  # 2026-08-06, which are now upstream. If the build fails with libselinux or
+  # libmount.so.1 link errors, restore from git history (commit before this).
 
   pythonPackagesExtensions = (prev.pythonPackagesExtensions or [ ]) ++ [
     (python-final: python-prev: {
@@ -569,23 +430,8 @@ final: prev: {
     };
   };
 
-  hermes-paperclip-adapter = final.buildNpmPackage rec {
-    pname = "hermes-paperclip-adapter";
-    version = "0.1.0";
-
-    src = final.fetchFromGitHub {
-      owner = "NousResearch";
-      repo = "hermes-paperclip-adapter";
-      rev = "main";
-      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # placeholder — will fail
-    };
-
-    npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # placeholder
-
-    meta = with final.lib; {
-      description = "Paperclip adapter for Hermes Agent";
-      homepage = "https://github.com/NousResearch/hermes-paperclip-adapter";
-      license = licenses.mit;
-    };
-  };
+  # REMOVED (2026-08-07): hermes-paperclip-adapter — buildNpmPackage with
+  # placeholder hashes (sha256-AAAA...) that never got filled in. Referenced
+  # nowhere in the repo. It caused EVERY rebuild to attempt a doomed npm build.
+  # Re-add with real hashes if Paperclip integration resumes.
 }

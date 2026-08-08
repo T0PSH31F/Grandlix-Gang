@@ -37,6 +37,8 @@
         "flakes"
       ];
 
+      connect-timeout = lib.mkDefault 5; # fail fast on dead caches (numtide, etc.)
+
       # Store optimization
       auto-optimise-store = lib.mkDefault true;
 
