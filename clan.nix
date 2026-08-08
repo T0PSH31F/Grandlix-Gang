@@ -111,7 +111,10 @@ in
           input = "self";
         };
         roles.server.machines.luffy = { };
-        roles.client.machines.z0r0 = { };
+        # DISABLED: luffy offline (last seen 28d ago) — http://luffy.d:5000
+        # was first substituter causing 5s timeout on every path lookup.
+        # Re-enable when luffy comes back online.
+        # roles.client.machines.z0r0 = { };
       };
 
       matrix-synapse = {

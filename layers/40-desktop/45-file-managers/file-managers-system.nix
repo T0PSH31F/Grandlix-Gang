@@ -24,7 +24,7 @@
     folder-color-switcher
     gnome-control-center
     # calibre
-    cosmic-files
+    # cosmic-files  # DROPPED: 2-day build blocker, not in any cache
     koreader
     openbooks
     readest

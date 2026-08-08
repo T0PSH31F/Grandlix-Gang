@@ -2,8 +2,8 @@
 # Purpose:
 # - Apply all overlays via nixpkgs.overlays for NixOS module evaluation.
 # - This is the SINGLE source of truth for overlays.
-# - flake.nix pkgsForSystem and perSystem reference the same overlays
-#   to keep the flake-parts and clan pkgs in sync.
+# - flake.nix pkgsForSystem and perSystem must NOT apply overlays
+#   to avoid double-application which changes derivation hashes.
 
 {
   config,
@@ -21,15 +21,13 @@ let
   customOverlay = import ../../80-lib/82-overlays/custom-packages.nix;
   desktopOverlay = import ../../80-lib/82-overlays/desktop-packages.nix;
 
-  # Camoufox anti-detection browser (source-built Firefox fork)
+  # Camoufox anti-detection browser
   camoufoxOverlay = inputs.camoufox-nix.overlays.default;
 
-  # AI package overlay — swaps opencode/opencode-desktop/ollama to bleeding-edge
-  # from the nixpkgs-ai flake input (updated independently from nixos-unstable).
-  # Single import to avoid triple-evaluation of nixpkgs-ai.
+  # AI package overlay — single import to avoid triple-evaluation.
   aiPkgOverlay = final: prev: {
     _aiPkgs = import inputs.nixpkgs-ai {
-      inherit (final.stdenv.hostPlatform) system;
+      inherit (final) system;
       config.allowUnfree = true;
     };
     opencode = final._aiPkgs.opencode;
@@ -38,7 +36,6 @@ let
   };
 in
 {
-  # Core overlays always applied
   nixpkgs.overlays = [
     camoufoxOverlay
     customOverlay

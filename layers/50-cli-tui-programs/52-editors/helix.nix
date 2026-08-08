@@ -324,7 +324,11 @@ in
             config.clangd.fallbackFlags = [ "-std=c++20" ];
           };
           ocaml-lsp.command = lib.getExe pkgs.ocamlPackages.ocaml-lsp;
-          python-lsp.command = lib.getExe pkgs.python312Packages.python-lsp-server;
+          # Use default python3 package set (tracks nixpkgs' cached interpreter).
+          # Pinning python312Packages forces an entire uncached py3.12 tree
+          # (scipy source build + 39min test suite that fails on a 2e-09
+          # floating-point tolerance — see 2026-08-07 progress log).
+          python-lsp.command = lib.getExe pkgs.python3Packages.python-lsp-server;
           rust-analyzer = {
             command = lib.getExe pkgs.rust-analyzer;
             config.check = {

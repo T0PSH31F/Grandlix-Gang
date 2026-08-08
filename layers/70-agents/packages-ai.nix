@@ -14,10 +14,10 @@ in
     (lib.mkIf (hasTag "ai-server") {
       environment.systemPackages = with pkgs; [
         ollama
-        python3Packages.kokoro
+        # python3Packages.kokoro  # DROPPED: pulls onnxruntime transitively, not used by GLaDOS (uses piper-tts)
         espeak-ng
-        onnxruntime
-        voxtype-onnx
+        # onnxruntime  # DROPPED: only used by voxtype-onnx, not GLaDOS (uses piper-tts)
+        # voxtype-onnx  # DROPPED: not used anywhere
         pipx
       ];
     })

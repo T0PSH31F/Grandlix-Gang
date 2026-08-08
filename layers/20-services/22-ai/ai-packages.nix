@@ -13,7 +13,7 @@ in
     environment.systemPackages = with pkgs; [
       fabric-ai
       go-hass-agent
-      qdrant
+      # qdrant  # DROPPED: service mkForce false, package pointless to build
       ramalama
       bluemail
       librechat

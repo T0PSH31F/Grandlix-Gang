@@ -256,9 +256,7 @@
             import inputs.nixpkgs {
               localSystem = system;
               config.allowUnfree = true;
-              # Overlays are applied via nixpkgs.overlays in
-              # layers/10-system/11-foundation/overlays.nix (single source of truth).
-              # No overlays here to avoid double-application.
+              # Overlays applied via nixpkgs.overlays in overlays.nix (single source of truth).
             };
         };
 
@@ -328,9 +326,7 @@
             _module.args.pkgs = import inputs.nixpkgs {
               localSystem = system;
               config.allowUnfree = true;
-              # Overlays are applied via nixpkgs.overlays in
-              # layers/10-system/11-foundation/overlays.nix (single source of truth).
-              # No overlays here to avoid double-application.
+              # Overlays applied via nixpkgs.overlays in overlays.nix (single source of truth).
             };
             packages.iso =
               (inputs.nixpkgs.lib.nixosSystem {

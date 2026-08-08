@@ -93,3 +93,8 @@ All evaluation warnings on z0r0 + luffy toplevel eval eliminated:
 - opencode tui settings moved to programs.opencode.tui (tui.json, v1.2.15+)
 - home.pointerCursor.enable set explicitly
 Verified: zero `evaluation warning` lines on both machines' toplevel eval.
+
+### Garnix cache 503 + scipy build failure (2026-08-07)
+- garnix.cachix.org: 502/503 since 2026-08-01. Already commented out in caches.nix + flake.nix. Nothing to do except wait for garnix to recover, then uncomment.
+- scipy failure was caused by helix.nix pinning `python312Packages.python-lsp-server`, forcing a 39-minute scipy source build on Python 3.12 that fails on a 2e-09 floating-point tolerance in `TestDistributions::test_support_moments_sample[Normal]`. Fixed by switching to `python3Packages.python-lsp-server` (tracks nixpkgs' default cached interpreter). Dry-run after fix: 0 python3.12 derivations.
+- Verified: nix build dry-run shows 0 python3.12 paths.
