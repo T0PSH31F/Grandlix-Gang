@@ -54,3 +54,31 @@
   - Enabled Steam and Lutris after nixpkgs update to 2026-07-23.
   - Updated AGENTS.md known issues to reflect re-enabled status.
   - Verified noctalia sync: templates directory healthy, zellij-colors-sync and starship palette sync both use atomic write patterns.
+
+## Session: 2026-08-07 — Build/cache optimization pass
+
+### Goal
+Reduce package builds + overlay usage; target <30min rebuilds.
+
+### Changes (commit 4dbfa99)
+- Purged dead/broken overlays from `82-overlays/custom-packages.nix`:
+  hermes-paperclip-adapter (placeholder hashes, unreferenced), openldap i686
+  doCheck (dead conditional), pipx test-disable (upstream fixed),
+  noctalia-greeter overlay (dead — module uses flake input), desktop-file-utils
+  patchelf overlay (glib-2.88 fix upstream).
+- Cache ordering: cache.nixos.org first, numtide.com last (unreachable),
+  mic92.cachix.org dropped (timeouts). Synced flake.nix nixConfig.
+- nix-settings.nix: connect-timeout = 5.
+- KEPT (still needed): buildFHSEnvBubblewrap glib/libmount fix, camoufox
+  prebuilt + jo-camofox-browser override, lokb, supergraph, uni-pet,
+  agentburn, noto-fonts-subset, zjstatus/yazelix wasm fetchers,
+  radios pythonRelaxDeps.
+- Kept overlays (flake inputs): camoufox-nix, nixpkgs-ai (opencode/ollama bleeding edge).
+
+### Verification
+- `nix eval` z0r0 + luffy system.name OK, substituters list verified.
+- Dry-run toplevel z0r0: 462 drvs to build (mostly wrappers/fhsenv-rootfs/
+  config generation — cheap), 1376 paths fetched. None of the removed
+  overlays appear in the build list → they now cache-hit.
+- NOTE: flake check has a PRE-EXISTING makeTest failure (fails on clean HEAD too) — not from this change.
+- TODO: real `time clan machines update z0r0` run to get the actual baseline.
