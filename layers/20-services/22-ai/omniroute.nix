@@ -143,10 +143,11 @@ in
       '';
 
       serviceConfig = {
-        Restart = "always";
-        RestartSec = 15;
         Type = "oneshot";
         RemainAfterExit = true;
+        # No Restart here — oneshot+Restart is invalid. The stack self-heals via
+        # podman's own restart policies; a manual `systemctl start omniroute`
+        # (or the omniroute-ctl helper) recovers after `down`.
         EnvironmentFile = lib.optional (cfg.environmentFile != null) cfg.environmentFile;
         NoNewPrivileges = true;
         ProtectSystem = "strict";

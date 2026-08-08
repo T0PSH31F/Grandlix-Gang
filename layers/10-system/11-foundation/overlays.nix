@@ -1,8 +1,9 @@
 # layers/nixos/overlays.nix
 # Purpose:
-# - Attach overlays for custom/local packages.
-# - Desktop overlay will eventually be conditional on tags; for now
-#   we can condition on system-profile.role or hostname as a stepping stone.
+# - Apply all overlays via nixpkgs.overlays for NixOS module evaluation.
+# - This is the SINGLE source of truth for overlays.
+# - flake.nix pkgsForSystem and perSystem reference the same overlays
+#   to keep the flake-parts and clan pkgs in sync.
 
 {
   config,
@@ -23,25 +24,21 @@ let
   # Camoufox anti-detection browser (source-built Firefox fork)
   camoufoxOverlay = inputs.camoufox-nix.overlays.default;
 
-  # AI package overlay — swaps opencode/open code-desktop/ollama to bleeding-edge
+  # AI package overlay — swaps opencode/opencode-desktop/ollama to bleeding-edge
   # from the nixpkgs-ai flake input (updated independently from nixos-unstable).
+  # Single import to avoid triple-evaluation of nixpkgs-ai.
   aiPkgOverlay = final: prev: {
-    opencode = (import inputs.nixpkgs-ai {
-      inherit (final) system;
+    _aiPkgs = import inputs.nixpkgs-ai {
+      inherit (final.stdenv.hostPlatform) system;
       config.allowUnfree = true;
-    }).opencode;
-    opencode-desktop = (import inputs.nixpkgs-ai {
-      inherit (final) system;
-      config.allowUnfree = true;
-    }).opencode-desktop;
-    ollama = (import inputs.nixpkgs-ai {
-      inherit (final) system;
-      config.allowUnfree = true;
-    }).ollama;
+    };
+    opencode = final._aiPkgs.opencode;
+    opencode-desktop = final._aiPkgs.opencode-desktop;
+    ollama = final._aiPkgs.ollama;
   };
 in
 {
-  # Custom package fixes always applied
+  # Core overlays always applied
   nixpkgs.overlays = [
     camoufoxOverlay
     customOverlay

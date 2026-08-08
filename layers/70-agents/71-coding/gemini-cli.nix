@@ -9,7 +9,7 @@
   };
 
   home = lib.mkIf config.layers.layer-70.agent.gemini-cli.enable {
-    programs.gemini-cli = {
+    programs.antigravity-cli = {
       enable = true;
       settings = {
         # Default settings

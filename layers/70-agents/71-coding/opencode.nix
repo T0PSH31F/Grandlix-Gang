@@ -32,7 +32,10 @@
         commands = ./opencode/commands;
         context = ./opencode/rules.md;
 
-        tui.theme = lib.mkForce "noctalia";
+        tui = {
+          theme = lib.mkForce "noctalia";
+          keybinds.command_list = "ctrl+shift+p";
+        };
 
         settings = {
           mcp = {
@@ -97,6 +100,7 @@
             "@pantheon-ai/opencode-warcraft-notifications"
             "opencode-antigravity-auth@latest"
             "octto"
+            "file:~/.config/opencode/plugins/context-capture"
           ];
 
           agent = {
@@ -104,7 +108,6 @@
             general.disable = true;
           };
           lsp = true;
-          tui.keybinds.command_list = "ctrl+shift+p";
 
           provider.google.models = {
             antigravity-gemini-3-pro = {
@@ -194,6 +197,18 @@
         "opencode/themes/noctalia.json".source =
           config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
         "opencode/oh-my-opencode-slim.json".source = ./opencode/oh-my-opencode-slim.json;
+
+        # Context-capture plugin — automatic session persistence to context-mode FTS5
+        "opencode/plugins/context-capture/package.json".text = builtins.toJSON {
+          name = "opencode-context-capture";
+          version = "1.0.0";
+          type = "module";
+          main = "context-capture.js";
+          exports = {
+            "." = "./context-capture.js";
+          };
+        };
+        "opencode/plugins/context-capture/context-capture.js".source = ./opencode/plugins/context-capture.js;
       };
 
       home.packages =

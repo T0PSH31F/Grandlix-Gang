@@ -59,6 +59,7 @@ in
       '';
 
       home.pointerCursor = {
+        enable = lib.mkForce true; # explicit — relying on non-null to auto-enable is deprecated
         package = lib.mkForce sonic-hyprcursor;
         name = lib.mkForce "Sonic-Hyprcursor";
         size = lib.mkForce cfg.size;

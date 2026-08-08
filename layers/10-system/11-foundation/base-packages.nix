@@ -44,7 +44,8 @@
     poppler-utils
     qpdf
     python3Packages.weasyprint
-    texlive.combined.scheme-small
+    # texlive.combined schemes deprecated (removal in 27.05) — use texliveSmall
+    texliveSmall
     wkhtmltopdf
 
     # Isolation
