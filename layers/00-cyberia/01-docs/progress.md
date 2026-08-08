@@ -82,3 +82,14 @@ Reduce package builds + overlay usage; target <30min rebuilds.
   overlays appear in the build list → they now cache-hit.
 - NOTE: flake check has a PRE-EXISTING makeTest failure (fails on clean HEAD too) — not from this change.
 - TODO: real `time clan machines update z0r0` run to get the actual baseline.
+
+### Evaluation warnings cleanup (commit 194821f)
+All evaluation warnings on z0r0 + luffy toplevel eval eliminated:
+- overlays.nix `inherit (final) system` → `final.stdenv.hostPlatform`
+- texlive.combined.scheme-small → texliveSmall (removal in 27.05)
+- fzf fileWidget{Command,Options} → fileWidget.{command,options}
+- programs.gemini-cli → programs.antigravity-cli
+- omniroute oneshot unit: removed invalid Restart=always
+- opencode tui settings moved to programs.opencode.tui (tui.json, v1.2.15+)
+- home.pointerCursor.enable set explicitly
+Verified: zero `evaluation warning` lines on both machines' toplevel eval.
