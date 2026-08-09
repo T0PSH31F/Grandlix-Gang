@@ -168,48 +168,24 @@ in
     #   - Adds Restart=on-failure with retry limits so transient DBus
     #     timeouts don't immediately trigger OnFailure=wayland-session-shutdown
     #
-    # NOTE: environment.etc cannot create directories with '@' in the name
-    # (Permission denied in nix build sandbox). Activation scripts can't write
-    # to /etc under impermanence (read-only). Use tmpfiles rules only — they
-    # run after /etc is set up and can create directories with '@' in names.
+    # Drop-ins go to /etc/systemd/user/ via environment.etc.
 
-    systemd.tmpfiles.rules = [
-      "d /etc/systemd/user/wayland-wm-env@.service.d 0755 root root -"
-      "d /etc/systemd/user/wayland-wm@.service.d 0755 root root -"
-    ];
+    environment.etc."systemd/user/wayland-wm-env@.service.d/10-session-resilience.conf".text = ''
+      [Unit]
+      StartLimitBurst=3
+      StartLimitIntervalSec=30
 
-    # Use a systemd service to write drop-in files after tmpfiles creates dirs
-    systemd.services.wayland-wm-env-drops = {
-      description = "Write wayland-wm-env drop-in overrides";
-      after = [ "systemd-tmpfiles-setup.service" ];
-      requires = [ "systemd-tmpfiles-setup.service" ];
-      before = [ "systemd-user-sessions.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig.Type = "oneshot";
-      serviceConfig.RemainAfterExit = true;
-      script = let
-        waylandWmEnvConf = pkgs.writeText "10-session-resilience.conf" ''
-          [Unit]
-          StartLimitBurst=3
-          StartLimitIntervalSec=30
+      [Service]
+      ExecStartPre=${uwsm-dbus-wait-script}
+      TimeoutStartSec=60
+      Restart=on-failure
+      RestartSec=5
+    '';
 
-          [Service]
-          ExecStartPre=${uwsm-dbus-wait-script}
-          TimeoutStartSec=60
-          Restart=on-failure
-          RestartSec=5
-        '';
-        waylandWmConf = pkgs.writeText "10-session-resilience.conf" ''
-          [Service]
-          TimeoutStartSec=45
-        '';
-      in ''
-        mkdir -p /etc/systemd/user/wayland-wm-env@.service.d
-        cp -f ${waylandWmEnvConf} /etc/systemd/user/wayland-wm-env@.service.d/10-session-resilience.conf
-        mkdir -p /etc/systemd/user/wayland-wm@.service.d
-        cp -f ${waylandWmConf} /etc/systemd/user/wayland-wm@.service.d/10-session-resilience.conf
-      '';
-    };
+    environment.etc."systemd/user/wayland-wm@.service.d/10-session-resilience.conf".text = ''
+      [Service]
+      TimeoutStartSec=45
+    '';
 
     # ============================================================================
     # 3. BOOT-TIME SESSION CLEANUP
