@@ -119,7 +119,6 @@ in
     monitoring = {
       enable = false;
       domain = "grafana.lovelain.duckdns.org";
-      grafana.port = 3001; # avoids homepage on 3000
       prometheus.port = 9090;
     };
     homepage-dashboard = {
