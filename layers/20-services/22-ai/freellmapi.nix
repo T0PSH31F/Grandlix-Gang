@@ -19,7 +19,7 @@ let
       hash = "sha256-te1DljLlhRfT0mWu4EB3pTKB8PkZecHHffX/kTwJlJY=";
     };
 
-    npmDepsHash = "sha256-GzzEXKO1BE/28xR5i6BFuIBhhB4C5JRohFhrvISbvDo=";
+    npmDepsHash = "sha256-7W55aNLi6BlWg8wksG1a+jmWmAdJ3DRW8tq5coFH0H8=";
 
     # Node.js >= 20.18 required
     nativeBuildInputs = [ pkgs.nodejs_24 pkgs.python3 pkgs.gcc pkgs.pkg-config ];
