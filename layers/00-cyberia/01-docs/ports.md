@@ -19,7 +19,7 @@
 | **993** | himalaya IMAPS | z0r0 | `layers/50-cli-tui-programs/53-tools/himalaya.nix` | Email client IMAP |
 | **3001** | Grafana | luffy | `machines/luffy/default.nix` | Monitoring dashboards |
 | **3001** | HedgeDoc | z0r0 | `machines/z0r0/default.nix` | Collaborative markdown |
-| **3001** | Grafana | z0r0 | Moved to 3008 | |
+| **3008** | Grafana | z0r0 | `machines/z0r0/default.nix` | Monitoring dashboards (moved from 3001) |
 | **3002** | Lovable | luffy | `machines/luffy/default.nix` | AI app builder |
 | **3003** | FreeLLMAPI | z0r0 | `machines/z0r0/default.nix` | Free-tier LLM router |
 | **3007** | N8N | luffy | `machines/luffy/default.nix` | Workflow automation |
