@@ -181,7 +181,8 @@ in
     # Use a systemd service to write drop-in files after tmpfiles creates dirs
     systemd.services.wayland-wm-env-drops = {
       description = "Write wayland-wm-env drop-in overrides";
-      after = [ "tmpfiles-setup.service" ];
+      after = [ "systemd-tmpfiles-setup.service" ];
+      requires = [ "systemd-tmpfiles-setup.service" ];
       before = [ "systemd-user-sessions.service" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Type = "oneshot";
@@ -203,7 +204,9 @@ in
           TimeoutStartSec=45
         '';
       in ''
+        mkdir -p /etc/systemd/user/wayland-wm-env@.service.d
         cp -f ${waylandWmEnvConf} /etc/systemd/user/wayland-wm-env@.service.d/10-session-resilience.conf
+        mkdir -p /etc/systemd/user/wayland-wm@.service.d
         cp -f ${waylandWmConf} /etc/systemd/user/wayland-wm@.service.d/10-session-resilience.conf
       '';
     };
