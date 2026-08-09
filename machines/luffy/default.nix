@@ -274,6 +274,7 @@ in
       lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
       aider.enable = true;
       postgresql.enable = true;
+      opencompany.enable = true;
     };
 
     # Moved from Nami

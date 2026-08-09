@@ -36,5 +36,6 @@
     ./langgraph.nix # LangGraph — multi-agent orchestration
     ./freellmapi.nix # FreeLLMAPI — free-tier LLM router
     ./mistral-mcp.nix # Mistral MCP server (HTTP mode)
+    ./opencompany.nix # OpenCompany — AI agent workflow canvas
   ];
 }
