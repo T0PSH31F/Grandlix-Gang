@@ -14,7 +14,7 @@ in
     (mkDendriticModule "mcp" ./73-tooling/mcp.nix)
     (mkDendriticModule "opencode" ./71-coding/opencode.nix)
     (mkDendriticModule "antigravity" ./71-coding/antigravity.nix)
-    (mkDendriticModule "supergraph" ./71-coding/supergraph.nix)
+    (mkDendriticModule "codegraph" ./71-coding/codegraph.nix)
     (mkDendriticModule "agent-audio" ./72-voice/asr-tts/agent-audio.nix)
     ./packages-ai.nix
     ./74-ai-infra

@@ -325,60 +325,37 @@ final: prev: {
     };
   };
 
-  # ── supergraph: Monorepo intelligence for AI agents ────────────────
-  # AST-based codebase indexing with MCP server, blast radius analysis,
-  # and token-efficient context generation for AI coding agents.
-  # https://github.com/bravenewxyz/supergraph
-  # Uses prebuilt binary from GitHub releases (linux-x64).
-  supergraph =
-    let
-      version = "1.1.33";
-      src = final.fetchzip {
-        url = "https://github.com/bravenewxyz/supergraph/releases/download/v${version}/supergraph-linux-x64.tar.gz";
-        hash = "sha256-7WvIkd8mrEkeHBnsdSn3FQ/CYSLgcOG5d8RxoLKaQD4=";
-        stripRoot = false;
-      };
-    in
-    final.stdenv.mkDerivation {
-      pname = "supergraph";
-      inherit version;
+  # ── codegraph: Semantic code intelligence for AI agents ───────────
+  # Already in nixpkgs as `codegraph` (v1.4.1+). No overlay needed.
+  # https://github.com/colbymchenry/codegraph
 
-      dontUnpack = true;
-      dontBuild = true;
-      dontConfigure = true;
+  # ── lazyskills: TUI for managing agent skills ────────────────────
+  # Blazing-fast terminal UI for managing agent skills across all agents.
+  # https://github.com/alvinunreal/lazyskills
+  lazyskills = final.buildGoModule rec {
+    pname = "lazyskills";
+    version = "0.1.0-unstable-2026-08-08";
 
-      nativeBuildInputs = with final; [
-        makeWrapper
-        autoPatchelfHook
-      ];
-
-      buildInputs = with final; [
-        stdenv.cc.cc.lib
-      ];
-
-      installPhase = ''
-        runHook preInstall
-
-        mkdir -p $out/bin $out/lib
-
-        # Copy binary
-        cp ${src}/supergraph $out/bin/supergraph
-        chmod +x $out/bin/supergraph
-
-        # Copy shared libs if present
-        cp -r ${src}/lib/* $out/lib/ 2>/dev/null || true
-
-        runHook postInstall
-      '';
-
-      meta = with final.lib; {
-        description = "Monorepo intelligence — structural analysis, deep audits, and interactive visualization for AI agents";
-        homepage = "https://github.com/bravenewxyz/supergraph";
-        license = licenses.mit;
-        maintainers = [ ];
-        mainProgram = "supergraph";
-      };
+    src = final.fetchFromGitHub {
+      owner = "alvinunreal";
+      repo = "lazyskills";
+      rev = "main";
+      hash = "sha256-RobTHBmAAQLCAOthSmPddP/oJRjBtQSHuCH5AodOlwY=";
     };
+
+    vendorHash = "sha256-P8bweTw1Htc3HFWPOJJNSIKlp62LWfKzK3MVAC98Svs=";
+
+    # Tests fail in sandbox (network access)
+    doCheck = false;
+
+    meta = with final.lib; {
+      description = "Blazing-fast TUI for managing agent skills";
+      homepage = "https://github.com/alvinunreal/lazyskills";
+      license = licenses.mit;
+      maintainers = [ ];
+      mainProgram = "lazyskills";
+    };
+  };
 
   uni-pet = final.buildNpmPackage rec {
     pname = "uni-pet";

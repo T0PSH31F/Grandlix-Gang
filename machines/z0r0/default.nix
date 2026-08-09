@@ -108,8 +108,8 @@
     # Enable rclone Google Drive mount as a user service (auto-restarts on failure)
     layer-50.home.cli.services.rclone.enable = true;
 
-    # supergraph — monorepo intelligence for AI coding agents
-    layer-70.agent.supergraph.enable = true;
+    # codegraph — semantic code intelligence for AI coding agents
+    layer-70.agent.codegraph.enable = true;
   };
 
   # ============================================================================

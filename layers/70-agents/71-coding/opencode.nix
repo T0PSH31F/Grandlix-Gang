@@ -39,6 +39,16 @@
 
         settings = {
           mcp = {
+            # ── CodeGraph: Semantic code intelligence ─────────────────
+            codegraph = {
+              command = [
+                "codegraph"
+                "serve"
+                "--mcp"
+              ];
+              enabled = true;
+              type = "local";
+            };
             himalaya = {
               command = [
                 "node"
