@@ -168,33 +168,37 @@ in
     #   - Adds Restart=on-failure with retry limits so transient DBus
     #     timeouts don't immediately trigger OnFailure=wayland-session-shutdown
     #
-    # The drop-in goes to /etc/systemd/user/ which is the system-wide
-    # override directory for user-level template services.
+    # NOTE: environment.etc cannot create directories with '@' in the name
+    # (Permission denied in nix build sandbox when output path is reused from
+    # a failed build). Use tmpfiles rules to create the directories and write
+    # the drop-in files at activation time instead.
 
-    environment.etc."systemd/user/wayland-wm-env@.service.d/10-session-resilience.conf".text = ''
-      [Unit]
-      # Allow 3 retries within 30 seconds before entering failed state.
-      # This prevents a single transient DBus NoReply from killing the session.
-      StartLimitBurst=3
-      StartLimitIntervalSec=30
+    systemd.tmpfiles.rules = [
+      "d /etc/systemd/user/wayland-wm-env@.service.d 0755 root root -"
+      "d /etc/systemd/user/wayland-wm@.service.d 0755 root root -"
+    ];
 
-      [Service]
-      # Wait for D-Bus session bus before env-preloader runs
-      ExecStartPre=${uwsm-dbus-wait-script}
+    system.activationScripts.wayland-wm-env-drops = let
+      waylandWmEnvConf = pkgs.writeText "10-session-resilience.conf" ''
+        [Unit]
+        StartLimitBurst=3
+        StartLimitIntervalSec=30
 
-      # Increase timeout from 30s to 60s for DBus-heavy environments
-      TimeoutStartSec=60
-
-      # Retry on failure with 5-second delay
-      Restart=on-failure
-      RestartSec=5
-    '';
-
-    # Also increase the compositor startup timeout
-    environment.etc."systemd/user/wayland-wm@.service.d/10-session-resilience.conf".text = ''
-      [Service]
-      # Increase compositor startup timeout from 30s to 45s
-      TimeoutStartSec=45
+        [Service]
+        ExecStartPre=${uwsm-dbus-wait-script}
+        TimeoutStartSec=60
+        Restart=on-failure
+        RestartSec=5
+      '';
+      waylandWmConf = pkgs.writeText "10-session-resilience.conf" ''
+        [Service]
+        TimeoutStartSec=45
+      '';
+    in lib.mkAfter ''
+      mkdir -p /etc/systemd/user/wayland-wm-env@.service.d
+      cp -f ${waylandWmEnvConf} /etc/systemd/user/wayland-wm-env@.service.d/10-session-resilience.conf
+      mkdir -p /etc/systemd/user/wayland-wm@.service.d
+      cp -f ${waylandWmConf} /etc/systemd/user/wayland-wm@.service.d/10-session-resilience.conf
     '';
 
     # ============================================================================

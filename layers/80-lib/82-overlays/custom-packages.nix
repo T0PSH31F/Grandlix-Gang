@@ -92,9 +92,14 @@ final: prev: {
   # REMOVED (2026-08-07): openldap i686 doCheck overlay — z0r0/luffy are both
   # x86_64-only; this conditional never fires and merely shadows the cached
   # upstream attr. Referenced nowhere in the repo.
-  # REMOVED (2026-08-07): pipx test-disable overlay — was added when pipx tests
-  # failed on Python 3.13. If still needed it forces a local build of pipx
-  # (cache miss); test on next rebuild — remove pipx from packages if it fails.
+
+  # Disable pipx tests — test_inject parametrize bug on Python 3.14
+  # (collection error: 1 name vs 13 values in parametrize)
+  pipx = prev.pipx.overridePythonAttrs (old: {
+    disabledTestPaths = (old.disabledTestPaths or [ ]) ++ [
+      "tests/test_inject.py"
+    ];
+  });
 
   # Fix for noto-fonts-subset build failure (cp fails when glob matches no files)
   noto-fonts-subset = final.runCommand "noto-fonts-subset" { } ''
@@ -405,16 +410,17 @@ final: prev: {
 
   agentburn = with final.python3Packages; buildPythonPackage rec {
     pname = "agentburn";
-    version = "0.1.0-unstable-2026-07-26";
+    version = "0.1.0-unstable-2026-08-06";
     format = "pyproject";
 
     # Not on PyPI — distributed via GitHub + uvx. Fetch from GitHub instead.
-    # No version tag exists on the repo — use main branch.
+    # No version tag exists on the repo — use main branch with current hash.
+    # If hash drifts again, update hash from build error message.
     src = final.fetchFromGitHub {
       owner = "Socialpranker";
       repo = "agentburn";
       rev = "main";
-      hash = "sha256-3X/lIzHQRg8X45Q8aS86j6X9yy5zdEgHJA79I49C1I4=";
+      hash = "sha256-7aR7WoS8dh7e59KfYfldw5htlPCs82Q/dfUdx5ObsBw=";
     };
 
     # pyproject.toml requires setuptools>=68 as build backend

@@ -88,9 +88,11 @@ in
             ];
 
             # trust and use the cache
-            nix.settings.substituters = flip map (attrNames roles.server.machines) (
+            # Use mkAfter to append luffy AFTER the main substituters in caches.nix,
+            # so cache.nixos.org and other reliable caches are tried first.
+            nix.settings.substituters = lib.mkAfter (flip map (attrNames roles.server.machines) (
               machineName: "http://${machineName}.d:5000"
-            );
+            ));
             nix.settings.trusted-public-keys = [
               config.clan.core.vars.generators.harmonia.files.pub-key.value
             ];
