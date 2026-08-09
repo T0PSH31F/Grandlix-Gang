@@ -171,7 +171,7 @@
 
     # FreeLLMAPI — free-tier LLM router for Hermes/OpenCode fallback
     ai-services.freellmapi = {
-      enable = false; # DISABLED: source hash mismatch (rev=main keeps changing), needs pinning to a specific commit
+      enable = true;
       port = 3001;
     };
 

@@ -16,7 +16,7 @@ let
       owner = "tashfeenahmed";
       repo = "freellmapi";
       rev = "93afdca5843d945852998adc7ecbf4289cb9fa71"; # pinned 2026-08-01
-      hash = "sha256-YuCdAI0DG/vNc211wqfu/QcywA/+n0YUdZfsCPS3zAk="; # may need updating after pin
+      hash = "sha256-te1DljLlhRfT0mWu4EB3pTKB8PkZecHHffX/kTwJlJY=";
     };
 
     npmDepsHash = "sha256-v4ItOBqsXZYELklP0KOhG5iR2JqpFif5h44v/tT+1A0=";
