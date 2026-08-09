@@ -151,7 +151,7 @@
     ai-services.kong-gateway = {
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
-      port = 8081; # Avoid conflict with signal-cli on 8080
+      proxyPort = 8081; # Avoid conflict with signal-cli on 8080
     };
 
     # Upstream LLM routers behind Kong
