@@ -162,30 +162,20 @@ in
     # ============================================================================
     # 2. UWSM DBUS TIMEOUT RESILIENCE
     # ============================================================================
-    # Create a systemd drop-in override for wayland-wm-env@.service that:
-    #   - Waits for D-Bus before running the env-preloader
-    #   - Increases the start timeout from 30s to 60s
-    #   - Adds Restart=on-failure with retry limits so transient DBus
-    #     timeouts don't immediately trigger OnFailure=wayland-session-shutdown
+    # DISABLED: environment.etc cannot create directories with '@' in the name
+    # (Permission denied in nix build sandbox). The '@' is required for systemd
+    # template unit drop-in directories (wayland-wm-env@.service.d).
+    # This is a known NixOS limitation with no clean workaround under impermanence.
     #
-    # Drop-ins go to /etc/systemd/user/ via environment.etc.
-
-    environment.etc."systemd/user/wayland-wm-env@.service.d/10-session-resilience.conf".text = ''
-      [Unit]
-      StartLimitBurst=3
-      StartLimitIntervalSec=30
-
-      [Service]
-      ExecStartPre=${uwsm-dbus-wait-script}
-      TimeoutStartSec=60
-      Restart=on-failure
-      RestartSec=5
-    '';
-
-    environment.etc."systemd/user/wayland-wm@.service.d/10-session-resilience.conf".text = ''
-      [Service]
-      TimeoutStartSec=45
-    '';
+    # The drop-in would add:
+    #   - StartLimitBurst=3, StartLimitIntervalSec=30
+    #   - ExecStartPre for D-Bus wait
+    #   - TimeoutStartSec=60
+    #   - Restart=on-failure, RestartSec=5
+    #
+    # To re-enable, either:
+    #   1. Wait for NixOS to fix environment.etc with '@' paths
+    #   2. Or use a custom systemd generator that writes drop-ins at boot
 
     # ============================================================================
     # 3. BOOT-TIME SESSION CLEANUP
