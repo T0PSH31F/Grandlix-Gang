@@ -23,9 +23,10 @@ let
 
     installPhase = ''
       runHook preInstall
-      mkdir -p $out
-      cp -r aionui-web/* $out/
-      chmod +x $out/aionui-web
+      mkdir -p $out/bin $out/share/aionui
+      cp -r aionui-web/* $out/share/aionui/
+      chmod +x $out/share/aionui/aionui-web
+      ln -s $out/share/aionui/aionui-web $out/bin/aionui-web
       runHook postInstall
     '';
 

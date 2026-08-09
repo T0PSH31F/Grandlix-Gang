@@ -104,7 +104,8 @@ in
 
     # ── Environment file for FreeLLMAPI ─────────────────────────────
     # FreeLLMAPI needs its own env vars for provider aggregation
-    sops.templates."freellmapi-env" = {
+    # Only create when service is enabled (user may not exist otherwise)
+    sops.templates."freellmapi-env" = lib.mkIf config.services.ai-services.freellmapi.enable {
       content = ''
         # FreeLLMAPI provider keys
         OPENROUTER_API_KEY=${config.sops.placeholder.openrouter_api_key_1}
