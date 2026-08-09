@@ -172,7 +172,7 @@
     # FreeLLMAPI — free-tier LLM router for Hermes/OpenCode fallback
     ai-services.freellmapi = {
       enable = true;
-      port = 3001;
+      port = 3003; # Avoid conflict with HedgeDoc on 3001
     };
 
     # Mistral MCP — Mistral AI tool server (chat, OCR, Codestral)
