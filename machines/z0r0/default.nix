@@ -151,6 +151,7 @@
     ai-services.kong-gateway = {
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
+      port = 8081; # Avoid conflict with signal-cli on 8080
     };
 
     # Upstream LLM routers behind Kong
@@ -161,9 +162,10 @@
     ai-services.freellmpool = {
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
+      port = 8082; # Avoid conflict with signal-cli on 8080
     };
     ai-services.langgraph = {
-      enable = true;
+      enable = false; # DISABLED: langgraph.server module not in nixpkgs (needs langgraph-cli)
       environmentFile = config.sops.templates."langgraph-env".path;
     };
 
