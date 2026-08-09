@@ -102,6 +102,15 @@ let
 
     # luffy — reverse proxy
     caddyAdmin = 2019;
+
+    # luffy — new services
+    opencompany = 5680;
+
+    # z0r0 — AI routers
+    kongGateway = 8081;
+    freellmpool = 8082;
+    freellmapi = 3003;
+    mistralMcp = 3333;
   };
 
   hostOf =
@@ -216,6 +225,11 @@ let
       (zSrv "AionUi" "aionUi" "mdi-account-group" "AI Agent Cowork UI")
       (zSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
       (zSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
+      (zSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
+      (zSrv "FreeLLMPool" "freellmpool" "mdi-pool" "Free-Tier LLM Pool")
+      (zSrv "FreeLLMAPI" "freellmapi" "mdi-api" "Free-Tier LLM Router")
+      (zSrv "Mistral MCP" "mistralMcp" "mdi-brain" "Mistral AI Tool Server")
+      (lSrv "OpenCompany" "opencompany" "mdi-office-building" "AI Workflow Canvas")
     ];
 
     Infrastructure = [
