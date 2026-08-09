@@ -21,6 +21,7 @@ The `layers/00-cyberia/01-docs/` directory is the **canonical knowledge base** f
 |----------|---------|
 | `AGENT_ONBOARDING.md` | System overview, boot flow, impermanence, recovery, known issues — **read first** |
 | `services.md` | All service ports, URLs, and logins across the fleet |
+| `ports.md` | Port allocation registry — check before adding new services |
 | `features.md` | High-level feature overview (desktop, editor, CLI, AI stack) |
 | `hermes-agent.md` | Hermes AI agent architecture and configuration |
 | `deployment.md` | Deployment methods and commands |
