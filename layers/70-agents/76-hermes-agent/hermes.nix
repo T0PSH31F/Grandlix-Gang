@@ -595,6 +595,13 @@ in
             };
           };
 
+          # CodeGraph — semantic code intelligence (Rust-powered code graph)
+          codegraph = {
+            command = "codegraph";
+            args = [ "serve" "--mcp" ];
+            env = { };
+          };
+
           # FreeLLMAPI MCP — query router state, switch strategies, check key health
           freellmapi = {
             command = "bash";
