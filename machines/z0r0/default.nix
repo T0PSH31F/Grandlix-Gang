@@ -155,18 +155,16 @@
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
       proxyPort = 8081; # Avoid conflict with signal-cli on 8080
+      routers.codingRouter = "extreme-router"; # Use ExtremeRouter (154+ providers, RTK savings)
     };
 
     # Upstream LLM routers behind Kong
-    # ExtremeRouter replaces OmniRoute — 154+ providers, RTK savings, quota tracking
     ai-services.extreme-router = {
       enable = true;
       port = 20128;
     };
     ai-services.omniroute = {
-      enable = false; # Disabled — replaced by ExtremeRouter
-      # enable = true;
-      # environmentFile = config.sops.templates."kong-env".path;
+      enable = false; # Disabled — ExtremeRouter is the coding router
     };
     ai-services.freellmpool = {
       enable = true;

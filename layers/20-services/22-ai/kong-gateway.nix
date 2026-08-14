@@ -40,14 +40,13 @@ let
           url = "http://127.0.0.1:${toString cfg.routers.freellmpool.port}/v1";
           tags = [ "llm" "free-only" ];
         })
-        # OmniRoute — coding combos with RTK compression
-        ++ (optional cfg.routers.omniroute.enable {
+        # Coding router — mutually exclusive (omniroute or extreme-router)
+        ++ (optional (cfg.routers.codingRouter == "omniroute") {
           name = "omniroute-llm";
           url = "http://127.0.0.1:${toString cfg.routers.omniroute.port}/v1";
           tags = [ "llm" "coding" ];
         })
-        # ExtremeRouter — 154+ providers, RTK savings, smart fallback
-        ++ (optional cfg.routers.extreme-router.enable {
+        ++ (optional (cfg.routers.codingRouter == "extreme-router") {
           name = "extremerouter-llm";
           url = "http://127.0.0.1:${toString cfg.routers.extreme-router.port}/v1";
           tags = [ "llm" "coding" "extreme" ];
@@ -86,11 +85,10 @@ let
             methods = [ "POST" ];
             tags = [ "llm" "frontier" ];
           }
-          # Coding traffic → OmniRoute or ExtremeRouter
-          # When both are enabled, ExtremeRouter takes precedence
+          # Coding traffic → OmniRoute or ExtremeRouter (mutually exclusive)
           {
             name = "llm-coding";
-            service = { name = if cfg.routers.extreme-router.enable then "extremerouter-llm" else "omniroute-llm"; };
+            service = { name = if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm"; };
             paths = [ "/llm/coding/v1/chat/completions" ];
             methods = [ "POST" ];
             tags = [ "llm" "coding" ];
@@ -183,7 +181,24 @@ let
             };
           };
         })
-        ++ (optional cfg.routers.extreme-router.enable {
+        ++ (optional (cfg.routers.codingRouter == "omniroute") {
+          name = "omniroute-upstream";
+          targets = [
+            {
+              target = "127.0.0.1:${toString cfg.routers.omniroute.port}";
+              weight = 100;
+            }
+          ];
+          healthchecks = {
+            active = {
+              type = "http";
+              http_path = "/api/health";
+              healthy = { interval = 10; };
+              unhealthy = { interval = 5; };
+            };
+          };
+        })
+        ++ (optional (cfg.routers.codingRouter == "extreme-router") {
           name = "extremerouter-upstream";
           targets = [
             {
@@ -321,12 +336,23 @@ in
         enable = mkEnableOption "Route traffic to freellmpool" // { default = true; };
         port = mkOption { type = types.port; default = 8080; };
       };
+
+      # Coding router — mutually exclusive. Only one can be active.
+      codingRouter = mkOption {
+        type = types.enum [ "omniroute" "extreme-router" ];
+        default = "extreme-router";
+        description = ''
+          Which coding LLM router to use for /llm/coding/* traffic.
+          - "omniroute": OmniRoute (231+ providers, 17 combo strategies)
+          - "extreme-router": ExtremeRouter (154+ providers, RTK savings, quota tracking, 49 free providers)
+          Only one can be active at a time — Kong routes accordingly.
+        '';
+      };
+
       omniroute = {
-        enable = mkEnableOption "Route traffic to OmniRoute" // { default = true; };
         port = mkOption { type = types.port; default = 20128; };
       };
       extreme-router = {
-        enable = mkEnableOption "Route traffic to ExtremeRouter (replaces OmniRoute when enabled)" // { default = false; };
         port = mkOption { type = types.port; default = 20128; };
       };
     };

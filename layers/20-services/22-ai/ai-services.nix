@@ -52,7 +52,7 @@ in
       mission-control.enable = mkDefault false; # opt-in, not enabled by default
       aionui.enable = mkDefault false; # opt-in, not enabled by default
       paperclip.enable = mkDefault false; # opt-in, needs PostgreSQL
-      extreme-router.enable = mkDefault false; # opt-in, replaces OmniRoute when enabled
+      # extreme-router.enable is controlled by kong-gateway.routers.codingRouter
     };
   };
 }
