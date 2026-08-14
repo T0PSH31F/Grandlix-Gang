@@ -64,6 +64,7 @@ let
     "signal_allowed_users"
     "camofox_api_key"
     "elevenlabs_api_key"
+    "xiaomi_mimo_api_key_wright"
   ];
 
   # Hermes-desktop (Electron app) built with linuxHeaders fix for node-pty.
@@ -707,6 +708,7 @@ in
         OLLAMA_API_KEY=${config.sops.placeholder.ollama_api_key}
         ANTHROPIC_API_KEY=${config.sops.placeholder.anthropic_api_key}
         NVIDIA_API_KEY=${config.sops.placeholder.nvidia_api_key}
+        XIAOMI_MIMO_API_KEY=${config.sops.placeholder.xiaomi_mimo_api_key_wright}
 
         # ── Tool API Keys ────────────────────────────────────────────
         TINYBIRD_API_KEY=${config.sops.placeholder.tinybird_api_gh}

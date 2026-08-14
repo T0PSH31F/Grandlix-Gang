@@ -122,8 +122,11 @@
   # ============================================================================
 
   services = {
-    # Fix PAM interaction with publickey-hostbound SSH extension
-    openssh.settings.UsePAM = lib.mkForce false;
+    # UsePAM left at default (true) — the previous lib.mkForce false broke
+    # session management, audit, and login limits. The publickey-hostbound
+    # issue is better fixed by disabling the extension in sshd_config or
+    # by using AuthenticationMethods explicitly.
+    # openssh.settings.UsePAM = lib.mkForce false;  # REMOVED: see above
     sillytavern-app.enable = lib.mkForce false; # Crash-looping, not needed on z0r0
     ai-services.lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
     ai-services.qdrant.enable = lib.mkForce false; # Disabled: LLVM intrinsic signature mismatch with new LLVM
@@ -285,6 +288,19 @@
     fi
   '';
 
+  system.activationScripts.clean-boot-entries = ''
+    if [ -d /boot/loader/entries ]; then
+      for f in /boot/loader/entries/*.conf; do
+        [ -f "$f" ] || continue
+        init_path=$(${pkgs.gnugrep}/bin/grep -E 'options.*init=' "$f" | ${pkgs.gnused}/bin/sed -E 's/.*init=([^ ]+).*/\1/')
+        if [ -n "$init_path" ] && [ ! -e "$init_path" ]; then
+          echo "Pruning orphan boot entry: $f (init $init_path missing)"
+          rm -f "$f"
+        fi
+      done
+    fi
+  '';
+
   # Safe automatic garbage collection — only removes old generations,
   # never unreferenced paths that might have broken reference metadata.
   systemd.services.nix-safe-gc = {
@@ -304,12 +320,18 @@
     (pkgs.writeShellScriptBin "nix-safe-gc" ''
       echo "Running safe garbage collection (deleting generations older than ''${1:-14d})..."
       ${pkgs.nix}/bin/nix-collect-garbage --delete-older-than "''${1:-14d}"
+      if [ -d /boot/loader/entries ]; then
+        echo "Pruning orphan boot entries..."
+        for f in /boot/loader/entries/*.conf; do
+          [ -f "$f" ] || continue
+          init_path=$(grep -E 'options.*init=' "$f" | sed -E 's/.*init=([^ ]+).*/\1/')
+          if [ -n "$init_path" ] && [ ! -e "$init_path" ]; then
+            echo "Removing orphan entry: $f"
+            sudo rm -f "$f"
+          fi
+        done
+      fi
       echo "Done. No unreferenced-but-needed paths were harmed."
-      echo ""
-      echo "WARNING: Do NOT use 'nix-store --gc' or 'nix-store --gc --max-freed'"
-      echo "without running 'nixos-rebuild boot' first. The util-linux broken-"
-      echo "reference-metadata bug (see AGENT_ONBOARDING.md) can delete boot-"
-      echo "critical paths. Use this 'nix-safe-gc' command instead."
     '')
   ];
 }

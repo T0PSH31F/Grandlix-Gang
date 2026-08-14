@@ -551,4 +551,74 @@ in
       ];
     }
   ];
+
+  # ============================================================================
+  # 06 - STORE INTEGRITY & SAFE GARBAGE COLLECTION
+  # ============================================================================
+  # Same util-linux GC root fix as z0r0 — prevents nix-store --gc from
+  # deleting boot-critical util-linux sibling outputs (mount, login, swap).
+  # See machines/z0r0/default.nix for full explanation.
+
+  system.activationScripts.gcroot-util-linux = ''
+    mkdir -p /nix/var/nix/gcroots
+    _ulbin="${pkgs.util-linux.bin}"
+    if [ -d "$_ulbin/bin" ]; then
+      for link in "$_ulbin"/bin/*; do
+        [ -L "$link" ] || continue
+        target=$(readlink -f "$link" 2>/dev/null) || continue
+        case "$target" in
+          /nix/store/*)
+            storepath=$(echo "$target" | cut -d/ -f1-4)
+            name=$(basename "$storepath")
+            ln -sfn "$storepath" "/nix/var/nix/gcroots/util-linux-fix-$name"
+            ;;
+        esac
+      done
+    fi
+  '';
+
+  system.activationScripts.clean-boot-entries = ''
+    if [ -d /boot/loader/entries ]; then
+      for f in /boot/loader/entries/*.conf; do
+        [ -f "$f" ] || continue
+        init_path=$(${pkgs.gnugrep}/bin/grep -E 'options.*init=' "$f" | ${pkgs.gnused}/bin/sed -E 's/.*init=([^ ]+).*/\1/')
+        if [ -n "$init_path" ] && [ ! -e "$init_path" ]; then
+          echo "Pruning orphan boot entry: $f (init $init_path missing)"
+          rm -f "$f"
+        fi
+      done
+    fi
+  '';
+
+  # Safe automatic garbage collection
+  systemd.services.nix-safe-gc = {
+    description = "Safe Nix GC (old generations only, preserves unreferenced-but-needed paths)";
+    startAt = "Sun 04:00";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.nix}/bin/nix-collect-garbage --delete-older-than 14d";
+      Nice = 19;
+      IOSchedulingClass = "idle";
+    };
+  };
+
+  # Provide a safe-gc convenience script
+  environment.systemPackages = with pkgs; [
+    (pkgs.writeShellScriptBin "nix-safe-gc" ''
+      echo "Running safe garbage collection (deleting generations older than ''${1:-14d})..."
+      ${pkgs.nix}/bin/nix-collect-garbage --delete-older-than "''${1:-14d}"
+      if [ -d /boot/loader/entries ]; then
+        echo "Pruning orphan boot entries..."
+        for f in /boot/loader/entries/*.conf; do
+          [ -f "$f" ] || continue
+          init_path=$(grep -E 'options.*init=' "$f" | sed -E 's/.*init=([^ ]+).*/\1/')
+          if [ -n "$init_path" ] && [ ! -e "$init_path" ]; then
+            echo "Removing orphan entry: $f"
+            sudo rm -f "$f"
+          fi
+        done
+      fi
+      echo "Done. No unreferenced-but-needed paths were harmed."
+    '')
+  ];
 }

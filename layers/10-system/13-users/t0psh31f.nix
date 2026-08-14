@@ -36,7 +36,7 @@
     ];
   };
 
-  users.users.t0psh31f.hashedPasswordFile = lib.mkForce null;
+  # hashedPasswordFile = lib.mkForce null;  # REMOVED: let Clan manage via vars
 
   # Home Manager configuration for t0psh31f
   # Permanent fix for backup collisions: Automatically remove old backups before activation

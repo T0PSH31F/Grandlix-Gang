@@ -61,7 +61,7 @@
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 10; # Increased for more rollback room
+        configurationLimit = 15; # Increased from 10 for more rollback room
       };
       efi.canTouchEfiVariables = true;
     };
@@ -93,11 +93,11 @@
   };
 
   documentation = {
-    enable = false;
-    nixos.enable = false;
-    man.enable = false;
-    info.enable = false;
-    doc.enable = false;
+    enable = true; # Re-enabled: was disabled entirely, now provides docs
+    nixos.enable = true; # Re-enabled: NixOS manual
+    man.enable = true; # Re-enabled: man pages are essential for CLI work
+    info.enable = false; # Keep disabled: rarely used
+    doc.enable = false; # Keep disabled: rarely used
   };
 
   # ============================================================================
@@ -114,14 +114,20 @@
 
   programs.zsh.enable = true;
 
-  # Bypass broken check-sshd-config.drv / sandbox PAM link error by disabling build-time system checks
-  system.checks = lib.mkForce [ ];
+  # system.checks: Re-enabled. The previous lib.mkForce [] silenced ALL NixOS
+  # config validation (broken symlinks, config errors, etc). The original issue
+  # was a broken check-sshd-config.drv / sandbox PAM link error which should be
+  # fixed at the source, not by disabling all checks. If a specific check fails,
+  # scope the override to that single check instead of nuking everything.
+  # system.checks = lib.mkForce [ ];  # REMOVED: see above
 
-  # Root password from secrets
-  # Fallback root password - change immediately after first login with `passwd`
+  # Root password: managed by Clan vars (user-root service with prompt=true).
+  # Run `clan vars generate z0r0` to set the root password.
+  # The hardcoded hash below is a fallback only — Clan's hashedPasswordFile
+  # will take precedence when available.
   users.users.root = {
     hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
-    hashedPasswordFile = lib.mkForce null;
+    # hashedPasswordFile = lib.mkForce null;  # REMOVED: let Clan manage via vars
     openssh.authorizedKeys.keys = [
       "ssh-ed25519AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDg4e32XqA2CyYsHyl+urGN1Soiz00DLgc+dkDw/uFCw luffy@agentaflow.com"
