@@ -158,9 +158,15 @@
     };
 
     # Upstream LLM routers behind Kong
-    ai-services.omniroute = {
+    # ExtremeRouter replaces OmniRoute — 154+ providers, RTK savings, quota tracking
+    ai-services.extreme-router = {
       enable = true;
-      environmentFile = config.sops.templates."kong-env".path;
+      port = 20128;
+    };
+    ai-services.omniroute = {
+      enable = false; # Disabled — replaced by ExtremeRouter
+      # enable = true;
+      # environmentFile = config.sops.templates."kong-env".path;
     };
     ai-services.freellmpool = {
       enable = true;
