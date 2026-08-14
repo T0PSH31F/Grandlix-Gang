@@ -180,6 +180,14 @@
       inputs.systems.follows = "systems";
     };
 
+    # Polyfloor — Multi-floor AI company OS
+    polyfloor = {
+      url = "github:T0PSH31F/Polyfloor";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
+    };
+
     # Utility inputs defined at top-level to allow follows
     systems.url = "github:nix-systems/default";
     flake-utils = {
