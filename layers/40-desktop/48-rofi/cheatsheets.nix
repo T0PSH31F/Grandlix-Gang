@@ -15,25 +15,25 @@ let
     fi
     ROFI_PRIMARY="''${primary:-c7c3e6}"
     ROFI_SURFACE="''${surface:-141315}"
-    ROFI_THEME_ARGS=(
-      -theme-str window {width: 55%; height: 78%; background-color: #''${ROFI_SURFACE}; border: 1px solid; border-color: #''${ROFI_PRIMARY}; border-radius: 8px; padding: 16px;}
-      -theme-str mainbox {background-color: transparent;}
-      -theme-str inputbar {background-color: #''${ROFI_SURFACE}dd; border-radius: 6px; padding: 8px; margin-bottom: 8px;}
-      -theme-str prompt {color: #''${ROFI_PRIMARY}; font: monospace bold 11;}
-      -theme-str entry {color: #e0e0ff; font: monospace 10;}
-      -theme-str listview {background-color: transparent; columns: 1; spacing: 2px;}
-      -theme-str element {background-color: transparent; padding: 4px 8px; border-radius: 4px;}
-      -theme-str element active {background-color: #''${ROFI_SURFACE}bb;}
-      -theme-str element-text {color: #e0e0ff; font: monospace 10;}
-      -theme-str element-text active {color: #''${ROFI_PRIMARY};}
-    )
+    rofi_with_theme() {
+      ${pkgs.rofi}/bin/rofi "$@" \
+        -theme-str "window {width: 55%; height: 78%; background-color: #''${ROFI_SURFACE}; border: 1px solid; border-color: #''${ROFI_PRIMARY}; border-radius: 8px; padding: 16px;}" \
+        -theme-str "mainbox {background-color: transparent;}" \
+        -theme-str "inputbar {background-color: #''${ROFI_SURFACE}dd; border-radius: 6px; padding: 8px; margin-bottom: 8px;}" \
+        -theme-str "prompt {color: #''${ROFI_PRIMARY}; font: monospace bold 11;}" \
+        -theme-str "entry {color: #e0e0ff; font: monospace 10;}" \
+        -theme-str "listview {background-color: transparent; columns: 1; spacing: 2px;}" \
+        -theme-str "element {background-color: transparent; padding: 4px 8px; border-radius: 4px;}" \
+        -theme-str "element active {background-color: #''${ROFI_SURFACE}bb;}" \
+        -theme-str "element-text {color: #e0e0ff; font: monospace 10;}" \
+        -theme-str "element-text active {color: #''${ROFI_PRIMARY};}"
+    }
   '';
 
   cheatsheet_picker = pkgs.writeShellScriptBin "cheatsheet" ''
     ${rofiTheme}
     while true; do
-      SELECTED=$(cat <<CHOICES | ${pkgs.rofi}/bin/rofi -dmenu -p "Cheatsheets" \
-        ''${ROFI_THEME_ARGS[@]}
+      SELECTED=$(cat <<CHOICES | rofi_with_theme -dmenu -p "Cheatsheets"
     ⚡ Zellij
     📝 Neovim
     ✦ Helix
@@ -143,7 +143,7 @@ zellij attach webshell      Reattach to session
 ssh z0r0 -t zellij a web    Attach via LAN/Tailscale
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Zellij Keybinds" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Zellij Keybinds"
   '';
 
   nvim_cheatsheet = pkgs.writeShellScriptBin "nvim-cheatsheet" ''
@@ -184,7 +184,7 @@ p / P                      Paste after/before
 Space (hold)               Show keybind menu
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Neovim Keybinds" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Neovim Keybinds"
   '';
 
   yazi_cheatsheet = pkgs.writeShellScriptBin "yazi-cheatsheet" ''
@@ -220,7 +220,7 @@ o                         Open with
 ?                         Help
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Yazi Keybinds" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Yazi Keybinds"
   '';
 
   helix_cheatsheet = pkgs.writeShellScriptBin "helix-cheatsheet" ''
@@ -267,7 +267,7 @@ i + w                   Inside word
 a + w                   Around word
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Helix Keybinds" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Helix Keybinds"
   '';
 
   zsh_cheatsheet = pkgs.writeShellScriptBin "zsh-cheatsheet" ''
@@ -345,7 +345,7 @@ Ctrl + Shift + f        Fullscreen
 Ctrl + Shift + up/dn    Scroll page up/down
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Zsh / Ghostty" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Zsh / Ghostty"
   '';
 
   fzf_cheatsheet = pkgs.writeShellScriptBin "fzf-cheatsheet" ''
@@ -393,7 +393,7 @@ rg -C3 pattern          Context lines
 rg -o pattern           Only matching text
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Fzf / TV / Ripgrep" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Fzf / TV / Ripgrep"
   '';
 
   grep_sed_awk_cheatsheet = pkgs.writeShellScriptBin "grep-sed-awk-cheatsheet" ''
@@ -442,7 +442,7 @@ awk 'length>80' f         Lines longer than 80
 awk '{print \\\$1, \\\$2}' f    Print multiple columns
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Grep / Sed / Awk" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Grep / Sed / Awk"
   '';
 
   cli_power_cheatsheet = pkgs.writeShellScriptBin "cli-power-cheatsheet" ''
@@ -524,7 +524,7 @@ git diff --no-index a b    Git-based diff
 cmp -l file1 file2         Byte-by-byte comparison
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Power Tools" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "CLI Power Tools"
   '';
 
   docker_cheatsheet = pkgs.writeShellScriptBin "docker-cheatsheet" ''
@@ -593,7 +593,7 @@ distrobox list                List containers
 distrobox stop / rm ubuntu    Stop / remove
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "Docker / Podman" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "Docker / Podman"
   '';
 
   vm_cheatsheet = pkgs.writeShellScriptBin "vm-cheatsheet" ''
@@ -666,12 +666,12 @@ distrobox create --name x --image fedora:39
 docker run --rm -it archlinux  Ephemeral Arch
     "
     ${rofiTheme}
-    echo "$CHEATSHEET" | ${pkgs.rofi}/bin/rofi -dmenu -p "VMs / MicroVMs / Containers" ''${ROFI_THEME_ARGS[@]}
+    echo "$CHEATSHEET" | rofi_with_theme -dmenu -p "VMs / MicroVMs / Containers"
   '';
 
   opencode_cheatsheet = pkgs.writeShellScriptBin "opencode-cheatsheet" ''
     ${rofiTheme}
-    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "OpenCode" ''${ROFI_THEME_ARGS[@]}
+    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | rofi_with_theme -dmenu -p "OpenCode"
 🤖 OPENCODE — AI Coding Agent
 ─────────────────────────────────────────
 BASIC USAGE
@@ -720,7 +720,7 @@ CHEATSHEET_EOF
 
   hermes_cheatsheet = pkgs.writeShellScriptBin "hermes-cheatsheet" ''
     ${rofiTheme}
-    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | ${pkgs.rofi}/bin/rofi -dmenu -p "Hermes Agent" ''${ROFI_THEME_ARGS[@]}
+    ${pkgs.coreutils}/bin/cat <<'CHEATSHEET_EOF' | rofi_with_theme -dmenu -p "Hermes Agent"
 🧠 HERMES AGENT — Autonomous AI Worker
 ─────────────────────────────────────────
 BASIC USAGE
@@ -803,7 +803,7 @@ CHEATSHEET_EOF
     fi
     echo "📋 SHELL ALIASES
     ─────────────────────────────────────────
-    $ALIASES" | ${pkgs.rofi}/bin/rofi -dmenu -p "Shell Aliases" -filter "" ''${ROFI_THEME_ARGS[@]}
+    $ALIASES" | rofi_with_theme -dmenu -p "Shell Aliases" -filter ""
   '';
 
   cli_tools_cheatsheet = pkgs.writeShellScriptBin "cli-tools-cheatsheet" ''
@@ -911,7 +911,7 @@ CHEATSHEET_EOF
   fastfetch   System info (neofetch alt)
   blahaj      BLÅHAJ shark in terminal
 "
-    TOOL=$(echo "$TOOLS" | ${pkgs.rofi}/bin/rofi -dmenu -p "CLI Tool" -filter "" -i ''${ROFI_THEME_ARGS[@]} | awk '{print $1}')
+    TOOL=$(echo "$TOOLS" | rofi_with_theme -dmenu -p "CLI Tool" -filter "" -i | awk '{print $1}')
     [ -z "$TOOL" ] && exit 0
     # Try tldr first, fall back to --help if no tldr page exists
     if command -v tldr > /dev/null 2>&1; then
@@ -921,7 +921,7 @@ CHEATSHEET_EOF
       PAGE=$("$TOOL" --help 2>&1 | head -60)
     fi
     echo "''${PAGE:-No help available for $TOOL}" | \
-      ${pkgs.rofi}/bin/rofi -dmenu -p "$TOOL" -filter "" ''${ROFI_THEME_ARGS[@]}
+      rofi_with_theme -dmenu -p "$TOOL" -filter ""
   '';
 
   tag_groups_cheatsheet = pkgs.writeShellScriptBin "tag-groups-cheatsheet" ''
@@ -972,7 +972,7 @@ CHEATSHEET_EOF
   server       sshd hardening, firewall
   laptop       TLP, backlight, battery
 "
-    echo "$TAGS" | ${pkgs.rofi}/bin/rofi -dmenu -p "Tag Groups" -filter "" ''${ROFI_THEME_ARGS[@]}
+    echo "$TAGS" | rofi_with_theme -dmenu -p "Tag Groups" -filter ""
   '';
 
 in
