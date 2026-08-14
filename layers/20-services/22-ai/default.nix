@@ -30,6 +30,7 @@
     ./vllm.nix # vLLM inference server
     ./lokb.nix # lokb knowledge base with MCP server
     ./omniroute.nix # OmniRoute — coding LLM router
+    ./extreme-router.nix # ExtremeRouter — AI gateway with 154+ providers and RTK
     ./freellmpool.nix # freellmpool — free-tier LLM pool
     ./kong-gateway.nix # Kong AI Gateway — unified LLM/API gateway
     ./kong-secrets.nix # Sops secrets for Kong + routers

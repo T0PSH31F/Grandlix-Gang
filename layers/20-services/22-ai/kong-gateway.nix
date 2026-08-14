@@ -45,6 +45,12 @@ let
           name = "omniroute-llm";
           url = "http://127.0.0.1:${toString cfg.routers.omniroute.port}/v1";
           tags = [ "llm" "coding" ];
+        })
+        # ExtremeRouter — 154+ providers, RTK savings, smart fallback
+        ++ (optional cfg.routers.extreme-router.enable {
+          name = "extremerouter-llm";
+          url = "http://127.0.0.1:${toString cfg.routers.extreme-router.port}/v1";
+          tags = [ "llm" "coding" "extreme" ];
         });
 
       # ── Routes ───────────────────────────────────────────────────
@@ -80,10 +86,11 @@ let
             methods = [ "POST" ];
             tags = [ "llm" "frontier" ];
           }
-          # Coding traffic → OmniRoute
+          # Coding traffic → OmniRoute or ExtremeRouter
+          # When both are enabled, ExtremeRouter takes precedence
           {
             name = "llm-coding";
-            service = { name = "omniroute-llm"; };
+            service = { name = if cfg.routers.extreme-router.enable then "extremerouter-llm" else "omniroute-llm"; };
             paths = [ "/llm/coding/v1/chat/completions" ];
             methods = [ "POST" ];
             tags = [ "llm" "coding" ];
@@ -171,6 +178,23 @@ let
             active = {
               type = "http";
               http_path = "/health";
+              healthy = { interval = 10; };
+              unhealthy = { interval = 5; };
+            };
+          };
+        })
+        ++ (optional cfg.routers.extreme-router.enable {
+          name = "extremerouter-upstream";
+          targets = [
+            {
+              target = "127.0.0.1:${toString cfg.routers.extreme-router.port}";
+              weight = 100;
+            }
+          ];
+          healthchecks = {
+            active = {
+              type = "http";
+              http_path = "/api/health";
               healthy = { interval = 10; };
               unhealthy = { interval = 5; };
             };
@@ -299,6 +323,10 @@ in
       };
       omniroute = {
         enable = mkEnableOption "Route traffic to OmniRoute" // { default = true; };
+        port = mkOption { type = types.port; default = 20128; };
+      };
+      extreme-router = {
+        enable = mkEnableOption "Route traffic to ExtremeRouter (replaces OmniRoute when enabled)" // { default = false; };
         port = mkOption { type = types.port; default = 20128; };
       };
     };
