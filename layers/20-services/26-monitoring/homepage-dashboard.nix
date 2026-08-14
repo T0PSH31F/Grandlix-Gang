@@ -111,6 +111,8 @@ let
     freellmpool = 8082;
     freellmapi = 3003;
     mistralMcp = 3333;
+    extremeRouter = 20128;
+    omniroute = 20128; # Same port — only one active at a time
   };
 
   hostOf =
@@ -226,6 +228,7 @@ let
       (zSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
       (zSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
       (zSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
+      (zSrv "ExtremeRouter" "extremeRouter" "mdi-router-network" "AI Gateway — 154+ Providers, RTK Savings")
       (zSrv "FreeLLMPool" "freellmpool" "mdi-pool" "Free-Tier LLM Pool")
       (zSrv "FreeLLMAPI" "freellmapi" "mdi-api" "Free-Tier LLM Router")
       (zSrv "Mistral MCP" "mistralMcp" "mdi-brain" "Mistral AI Tool Server")
