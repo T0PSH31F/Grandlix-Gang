@@ -709,6 +709,8 @@ in
         ANTHROPIC_API_KEY=${config.sops.placeholder.anthropic_api_key}
         NVIDIA_API_KEY=${config.sops.placeholder.nvidia_api_key}
         XIAOMI_MIMO_API_KEY=${config.sops.placeholder.xiaomi_mimo_api_key_wright}
+        # Kong AI Gateway — unified LLM routing (routes to ExtremeRouter, FreeLLMAPI, etc.)
+        KONG_API_KEY=placeholder-set-via-sops
 
         # ── Tool API Keys ────────────────────────────────────────────
         TINYBIRD_API_KEY=${config.sops.placeholder.tinybird_api_gh}

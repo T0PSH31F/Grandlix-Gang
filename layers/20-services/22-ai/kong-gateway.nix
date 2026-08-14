@@ -101,6 +101,15 @@ let
             methods = [ "POST" ];
             tags = [ "llm" "free" ];
           }
+          # Model discovery → coding router (ExtremeRouter or OmniRoute)
+          # OpenCode/Hermes call /v1/models to enumerate available models
+          {
+            name = "llm-models";
+            service = { name = if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm"; };
+            paths = [ "/v1/models" "/llm/v1/models" ];
+            methods = [ "GET" ];
+            tags = [ "llm" "models" ];
+          }
           # MCP gateway
           {
             name = "mcp-gateway";

@@ -15,19 +15,27 @@ in
   ];
 
   options.layers.layer-30.theming.themes.greeter = {
-    sddm = {
-      enable = mkEnableOption "SDDM with Astronaut theme";
+    # Greeter selection — mutually exclusive. Only one can be active.
+    type = mkOption {
+      type = types.enum [ "sddm" "greetd" "noctalia-greeter" ];
+      default = "noctalia-greeter";
+      description = ''
+        Which login greeter to use:
+        - "sddm": SDDM with Astronaut theme (Qt-based, X11/Wayland)
+        - "greetd": Greetd with ReGreet in cage (minimal, Wayland-native)
+        - "noctalia-greeter": Noctalia Greeter (native Wayland, recommended)
+      '';
     };
+
     greetd = {
-      enable = mkEnableOption "Greetd with ReGreet (cage)";
       background = mkOption {
         type = types.path;
         default = ../../00-cyberia/02-assets/sddm_background/fallback1.jpg;
-        description = "Path to the background image for ReGreet";
+        description = "Path to the background image for ReGreet (greetd only)";
       };
     };
+
     noctalia-greeter = {
-      enable = mkEnableOption "Noctalia Greeter (native Wayland login)";
       session = mkOption {
         type = types.str;
         default = "hyprland-uwsm";
@@ -37,25 +45,8 @@ in
   };
 
   config = mkMerge [
-    {
-      assertions = [
-        {
-          assertion = !(cfg.sddm.enable && cfg.greetd.enable);
-          message = "SDDM and Greetd cannot be enabled at the same time.";
-        }
-        {
-          assertion = !(cfg.sddm.enable && cfg.noctalia-greeter.enable);
-          message = "SDDM and Noctalia Greeter cannot be enabled at the same time.";
-        }
-        {
-          assertion = !(cfg.greetd.enable && cfg.noctalia-greeter.enable);
-          message = "ReGreet and Noctalia Greeter cannot be enabled at the same time.";
-        }
-      ];
-    }
-
     # SDDM Implementation
-    (mkIf cfg.sddm.enable {
+    (mkIf (cfg.type == "sddm") {
       services.xserver.enable = true;
       services.displayManager.sddm = {
         enable = true;
@@ -73,7 +64,7 @@ in
     })
 
     # Greetd Implementation (cage + regreet per best practice)
-    (mkIf cfg.greetd.enable {
+    (mkIf (cfg.type == "greetd") {
       services.greetd = {
         enable = true;
         settings = {
@@ -101,7 +92,7 @@ in
     })
 
     # Noctalia Greeter Implementation
-    (mkIf cfg.noctalia-greeter.enable {
+    (mkIf (cfg.type == "noctalia-greeter") {
       users.users.greeter = {
         isSystemUser = true;
         group = "greeter";

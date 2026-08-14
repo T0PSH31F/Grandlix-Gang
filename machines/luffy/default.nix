@@ -79,6 +79,7 @@ in
   # ============================================================================
   layers = {
     layer-10.system = {
+      # Options: "latest" | "cachyos" | "zen"
       hardware.kernel = "cachyos"; # Maximum performance for desktop
       config.impermanence.enable = true;
       virtualization.enable = true;
@@ -100,12 +101,9 @@ in
 
   # Noctalia Greeter (native Wayland login)
   layers.layer-30.theming.themes.greeter = {
-    sddm.enable = false;
-    greetd.enable = false;
-    noctalia-greeter = {
-      enable = true;
-      session = "hyprland-uwsm";
-    };
+    # Options: "sddm" | "greetd" | "noctalia-greeter"
+    type = "noctalia-greeter";
+    noctalia-greeter.session = "hyprland-uwsm";
   };
 
   # xserver not needed with cage greeter

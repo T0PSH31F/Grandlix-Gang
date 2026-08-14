@@ -57,6 +57,7 @@
   # Note: Most features are automatically enabled via machine.tags -> 90-profiles
   layers = {
     layer-10.system = {
+      # Options: "latest" | "cachyos" | "zen"
       hardware.kernel = "zen"; # Zen is best for laptops (responsiveness without thermal/battery penalty)
       peripherals.corsair.enable = true;
       peripherals.openrgb.enable = true;
@@ -88,12 +89,9 @@
     };
 
     layer-30.theming.themes.greeter = {
-      sddm.enable = false;
-      greetd.enable = false;
-      noctalia-greeter = {
-        enable = true;
-        session = "hyprland-uwsm";
-      };
+      # Options: "sddm" | "greetd" | "noctalia-greeter"
+      type = "noctalia-greeter";
+      noctalia-greeter.session = "hyprland-uwsm";
     };
 
     layer-40.desktop = {
@@ -155,6 +153,7 @@
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
       proxyPort = 8081; # Avoid conflict with signal-cli on 8080
+      # Options: "omniroute" | "extreme-router"
       routers.codingRouter = "extreme-router"; # Use ExtremeRouter (154+ providers, RTK savings)
     };
 
