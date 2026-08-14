@@ -121,7 +121,8 @@ in
     };
 
     # ── Environment file for LangGraph ───────────────────────────────
-    sops.templates."langgraph-env" = {
+    # Only create when langgraph is enabled AND the user exists
+    sops.templates."langgraph-env" = lib.mkIf (config.services.ai-services.langgraph.enable && builtins.pathExists /var/lib/langgraph) {
       content = ''
         # LangGraph → Kong connection
         OPENAI_BASE_URL=http://127.0.0.1:${toString cfg.proxyPort}/llm/v1
