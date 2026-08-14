@@ -39,5 +39,6 @@
     ./mistral-mcp.nix # Mistral MCP server (HTTP mode)
     ./opencompany.nix # OpenCompany — AI agent workflow canvas
     ./polyfloor.nix # Polyfloor — Multi-floor AI company OS
+    ./polyfloor-secrets.nix # Polyfloor SOPS secrets
   ];
 }

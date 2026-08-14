@@ -186,6 +186,13 @@
       enable = true;
       port = 3333;
     };
+
+    # Polyfloor — Multi-floor AI company OS
+    ai-services.polyfloor = {
+      enable = true;
+      port = 8001;
+      environmentFile = config.sops.templates."polyfloor-env".path;
+    };
   };
 
   # Make Langfuse accessible from LAN for cross-machine dashboard monitoring
