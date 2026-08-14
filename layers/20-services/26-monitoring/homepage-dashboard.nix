@@ -107,7 +107,7 @@ let
     opencompany = 5680;
 
     # z0r0 — AI routers
-    kongGateway = 8081;
+    kongGateway = 8090;
     freellmpool = 8082;
     freellmapi = 3003;
     mistralMcp = 3333;

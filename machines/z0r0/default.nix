@@ -152,7 +152,7 @@
     ai-services.kong-gateway = {
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
-      proxyPort = 8081; # Avoid conflict with signal-cli on 8080
+      proxyPort = 8090; # Changed from 8081 (was in use by llama-swap)
       # Options: "omniroute" | "extreme-router"
       routers.codingRouter = "extreme-router"; # Use ExtremeRouter (154+ providers, RTK savings)
     };
