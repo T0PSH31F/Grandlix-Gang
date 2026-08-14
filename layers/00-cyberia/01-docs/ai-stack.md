@@ -7,7 +7,7 @@
 ```mermaid
 graph TB
     subgraph "LLM Routing"
-        FR[freellmapi<br/>:3001]
+        FR[freellmapi<br/>:3003]
         OR[OpenRouter]
         GC[Gemini/Cerebras/Groq/Nous<br/>via Hermes providers]
     end
@@ -52,7 +52,7 @@ graph TB
 
 | Port | Service | Purpose | Config File |
 |------|---------|---------|-------------|
-| **3001** | freellmapi | OpenAI-compatible LLM router (28 free providers, 339 models) | `layers/20-services/22-ai/freellmapi.nix` |
+| **3003** | freellmapi | OpenAI-compatible LLM router (28 free providers, 339 models) | `layers/20-services/22-ai/freellmapi.nix` |
 | **5432** | PostgreSQL (PGVector) | Vector store for brain-service PKB | — |
 | **8010** | brain-service | PKB RAG API — PDF/EPUB/HTML/MD ingestion + query | `layers/20-services/22-ai/brain-service.nix` |
 | **8080** | Signal REST API | Signal messaging bridge | — |
@@ -91,7 +91,7 @@ The primary AI agent. Runs as a systemd service under the `hermes` user with sta
 | **ncp** | `npx -y @portel/ncp` | Semantic MCP gateway — reduces tool context overhead |
 | **forage** | `npx -y forage-mcp` | Self-improving tool discovery & installation |
 | **himalaya** | `node /home/t0psh31f/Projects/himalaya-mcp/dist/index.js` | Email integration via himalaya CLI |
-| **freellmapi** | `bash -c '...'` (placeholder) | URL: `http://127.0.0.1:3001/mcp` once Hermes supports HTTP MCP transport |
+| **freellmapi** | `bash -c '...'` (placeholder) | URL: `http://127.0.0.1:3003/mcp` once Hermes supports HTTP MCP transport |
 
 ### Terminal Sandbox Config
 
@@ -108,7 +108,7 @@ docker_forward_env = [
   "FREELMAPI_BASE_URL"        # Forwarded to terminal containers
 ];
 docker_env = {
-  FREELMAPI_BASE_URL = "http://host.docker.internal:3001/v1";
+  FREELMAPI_BASE_URL = "http://host.docker.internal:3003/v1";
 };
 ```
 
@@ -145,8 +145,8 @@ Default is `jarvis`. Set via: `export HERMES_PERSONA=<name>`
 
 OpenAI-compatible endpoint aggregating 28 free LLM providers (339 models).
 
-**Endpoint:** `http://127.0.0.1:3001/v1`
-**Web UI:** (first-run setup via browser at `http://127.0.0.1:3001`)
+**Endpoint:** `http://127.0.0.1:3003/v1`
+**Web UI:** (first-run setup via browser at `http://127.0.0.1:3003`)
 
 ### Configuration
 
@@ -159,10 +159,10 @@ OpenAI-compatible endpoint aggregating 28 free LLM providers (339 models).
 
 ```bash
 # List models
-curl http://127.0.0.1:3001/v1/models
+curl http://127.0.0.1:3003/v1/models
 
 # Chat completion (with API key)
-curl http://127.0.0.1:3001/v1/chat/completions \
+curl http://127.0.0.1:3003/v1/chat/completions \
   -H "Authorization: Bearer <api-key>" \
   -H "Content-Type: application/json" \
   -d '{"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"Hello"}]}'
@@ -180,12 +180,12 @@ fallback_providers = [ "freellmapi" "openrouter" "nous" ];
 
 Terminal containers spawned by Hermes can reach freellmapi via:
 ```
-FREELMAPI_BASE_URL=http://host.docker.internal:3001/v1
+FREELMAPI_BASE_URL=http://host.docker.internal:3003/v1
 ```
 
 ### First-Run Setup
 
-1. Visit `http://127.0.0.1:3001` in a browser
+1. Visit `http://127.0.0.1:3003` in a browser
 2. Use the setup code shown in the journal: `journalctl -u freellmapi | grep "setup code"`
 3. Create the first admin account
 4. Generate API keys for programmatic access
@@ -346,7 +346,7 @@ services.hermes-agent = {
       docker_image = "nikolaik/python-nodejs:python3.11-nodejs20";
       container_persistent = true;
       docker_run_as_host_user = true;
-      docker_env.FREELMAPI_BASE_URL = "http://host.docker.internal:3001/v1";
+      docker_env.FREELMAPI_BASE_URL = "http://host.docker.internal:3003/v1";
     };
     # Fallback providers shared across all instances
     fallback_providers = [ "freellmapi" "openrouter" "nous" ];
@@ -389,7 +389,7 @@ curl http://127.0.0.1:8010/health  # Check brain-service health
 curl http://127.0.0.1:8010/manifest # List ingested books
 
 # freellmapi API
-curl http://127.0.0.1:3001/v1/models  # List available models
+curl http://127.0.0.1:3003/v1/models  # List available models
 ```
 
 ## Configuration Files

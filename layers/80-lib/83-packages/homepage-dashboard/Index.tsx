@@ -18,7 +18,7 @@ const Index = () => {
 
       {/* Main content */}
       <main className="relative z-10 pt-[120px] px-4 lg:px-8 pb-12 max-w-[1600px] mx-auto">
-        {/* Render categories in order: luffy, zoro, nami, sanji, then vegapunk, then robin, chopper */}
+        {/* Render categories in order: z0r0, luffy, then other services */}
         {otherCategories.slice(0, 4).map(cat => (
           <CategorySection key={cat.id} category={cat} searchQuery={searchQuery} />
         ))}

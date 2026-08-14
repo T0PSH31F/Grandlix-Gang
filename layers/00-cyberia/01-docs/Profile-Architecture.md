@@ -55,7 +55,7 @@ Tags are explicitly matched via `clan.nix`. Ensure your tags in `clan.nix` perfe
 
 1. **Tag-Level Defaults:** If you want ALL machines with the `homelab` tag to get a new service, edit `layers/90-profiles/tags/homelab.nix` and add it using `lib.mkDefault true`.
 2. **Machine-Level Additions:** If ONLY `z0r0` needs a specific hardware flag (like Corsair drivers), add it directly to `features` in `machines/z0r0/default.nix` as `enable = true;`.
-3. **Machine-Level Overrides:** If `nami` has the `homelab` tag but you DO NOT want it to run `searxng`, add `services.searxng.enable = false;` explicitly in `machines/nami/default.nix`. This overrides the `mkDefault true` injected by the tag.
+3. **Machine-Level Overrides:** If `luffy` has the `homelab` tag but you DO NOT want it to run `searxng`, add `services.searxng.enable = false;` explicitly in `machines/luffy/default.nix`. This overrides the `mkDefault true` injected by the tag.
 
 ## How to Deploy a New Machine
 

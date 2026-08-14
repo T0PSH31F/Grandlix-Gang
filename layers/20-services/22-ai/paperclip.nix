@@ -8,27 +8,19 @@ with lib;
 let
   cfg = config.services.ai-services.paperclip;
 
-  paperclipPkg = pkgs.buildNpmPackage rec {
-    pname = "paperclipai";
-    version = "2026.722.0";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "paperclipai";
-      repo = "paperclip";
-      rev = "master";
-      hash = "sha256-2sIELkht3RYds+PccJogeMDTAvttmDhRLVhwUqyl65g=";
-    };
-
-    npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # placeholder
-    dontNpmBuild = false;
-
-    meta = with lib; {
-      description = "Open-source orchestration for teams of AI agents";
-      homepage = "https://github.com/paperclipai/paperclip";
-      license = licenses.mit;
-      mainProgram = "paperclipai";
-    };
-  };
+  # PAPERCLIP IS DISABLED — pnpm monorepo with complex overrides/patches.
+  #
+  # The upstream repo (paperclipai/paperclip) doesn't ship pnpm-lock.yaml.
+  # Generating one locally fails because the project uses pnpm overrides and
+  # patchedDependencies that must match the lockfile exactly.
+  #
+  # To enable this package:
+  # 1. Wait for upstream to commit pnpm-lock.yaml, OR
+  # 2. Fork the repo and commit the lock file, OR
+  # 3. Use OCI container approach (virtualisation.oci-containers)
+  #
+  # See: https://github.com/paperclipai/paperclip/issues (request lock file)
+  paperclipPkg = null; # Placeholder — cannot build without upstream lock file
 in
 {
   options.services.ai-services.paperclip = {
@@ -60,7 +52,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    systemd.services.paperclip = {
+    # Paperclip cannot be built — see comment above paperclipPkg
+    assertions = [{
+      assertion = paperclipPkg != null;
+      message = "paperclip is currently disabled: upstream doesn't ship pnpm-lock.yaml. See layers/20-services/22-ai/paperclip.nix for details.";
+    }];
+
+    systemd.services.paperclip = mkIf (paperclipPkg != null) {
       description = "Paperclip — AI agent team orchestration";
       after = [ "network.target" "postgresql.service" ];
       wants = [ "postgresql.service" ];
