@@ -19,12 +19,12 @@ let
       -theme-str 'window {width: 55%; height: 78%; background-color: #''${ROFI_SURFACE}; border: 1px solid; border-color: #''${ROFI_PRIMARY}; border-radius: 8px; padding: 16px;}' \
       -theme-str 'mainbox {background-color: transparent;}' \
       -theme-str 'inputbar {background-color: #''${ROFI_SURFACE}dd; border-radius: 6px; padding: 8px; margin-bottom: 8px;}' \
-      -theme-str 'prompt {color: #''${ROFI_PRIMARY}; font: "monospace bold 11";}' \
-      -theme-str 'entry {color: #e0e0ff; font: "monospace 10";}' \
+      -theme-str 'prompt {color: #''${ROFI_PRIMARY}; font: monospace bold 11;}' \
+      -theme-str 'entry {color: #e0e0ff; font: monospace 10;}' \
       -theme-str 'listview {background-color: transparent; columns: 1; spacing: 2px;}' \
       -theme-str 'element {background-color: transparent; padding: 4px 8px; border-radius: 4px;}' \
       -theme-str 'element active {background-color: #''${ROFI_SURFACE}bb;}' \
-      -theme-str 'element-text {color: #e0e0ff; font: "monospace 10";}' \
+      -theme-str 'element-text {color: #e0e0ff; font: monospace 10;}' \
       -theme-str 'element-text active {color: #''${ROFI_PRIMARY};}' \
     "
   '';
