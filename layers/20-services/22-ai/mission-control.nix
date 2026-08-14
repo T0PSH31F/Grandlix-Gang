@@ -33,12 +33,15 @@ in
       environment = {
         MISSION_CONTROL_DATA_DIR = "/app/.data";
       };
+      extraOptions = [
+        "--userns=keep-id"
+      ];
     };
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
 
     systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 0755 root root -"
+      "d ${cfg.dataDir} 0777 root root -"
     ];
   };
 }

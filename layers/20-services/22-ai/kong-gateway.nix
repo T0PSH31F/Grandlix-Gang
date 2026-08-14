@@ -437,7 +437,7 @@ in
       volumes = [
         "${kongYml}:/etc/kong/kong.base.yml:ro"
         "${config.sops.templates."kong-consumers".path}:/etc/kong/consumers.yml:ro"
-        "${cfg.dataDir}/logs:/usr/local/kong/logs"
+        # Logs go to stdout/stderr — no volume mount needed
       ];
       extraOptions = [
         "--add-host=host.docker.internal:host-gateway"
