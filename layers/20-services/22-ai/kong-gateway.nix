@@ -327,7 +327,7 @@ in
 
     image = mkOption {
       type = types.str;
-      default = "kong:latest";
+      default = "docker.io/kong/kong:latest";
       description = "Kong Docker image";
     };
 

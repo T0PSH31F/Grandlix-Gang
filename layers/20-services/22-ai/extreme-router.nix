@@ -31,7 +31,7 @@ in
 
     image = mkOption {
       type = types.str;
-      default = "rsalmn/extremerouter:latest";
+      default = "docker.io/rsalmn/extremerouter:latest";
       description = "Docker image for ExtremeRouter";
     };
 
