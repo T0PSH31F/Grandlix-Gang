@@ -1,0 +1,119 @@
+name: nous
+description: "Nous Research — open-source AI lab tribute, anime mascot braille art, warm amber and gold palette, Hermes model creators"
+
+colors:
+  banner_border: "#6B3A00"
+  banner_title: "#DD8E35"
+  banner_accent: "#FFAA44"
+  banner_dim: "#8B6914"
+  banner_text: "#F5E6D0"
+  ui_accent: "#DD8E35"
+  ui_label: "#FFAA44"
+  ui_ok: "#66BB6A"
+  ui_error: "#EF5350"
+  ui_warn: "#FFA726"
+  prompt: "#F5E6D0"
+  input_rule: "#6B3A00"
+  response_border: "#DD8E35"
+  status_bar_bg: "#3B2000"
+  status_bar_text: "#F5E6D0"
+  status_bar_strong: "#DD8E35"
+  status_bar_dim: "#8B6914"
+  status_bar_good: "#66BB6A"
+  status_bar_warn: "#FFA726"
+  status_bar_bad: "#FFAA44"
+  status_bar_critical: "#EF5350"
+  voice_status_bg: "#3B2000"
+  completion_menu_bg: "#321B00"
+  completion_menu_current_bg: "#9F6118"
+  completion_menu_meta_bg: "#422904"
+  completion_menu_meta_current_bg: "#AE6C1F"
+  session_label: "#FFAA44"
+  session_border: "#5C4A1E"
+
+spinner:
+  waiting_faces:
+    - "(◎)"
+    - "(∴)"
+    - "(☉)"
+    - "(✦)"
+    - "(⚙)"
+  thinking_faces:
+    - "(◎)"
+    - "(∴)"
+    - "(☉)"
+    - "(✦)"
+    - "(≡)"
+  thinking_verbs:
+    - "fine-tuning parameters"
+    - "synthesizing data"
+    - "training the model"
+    - "aligning preferences"
+    - "running inference"
+    - "optimizing weights"
+    - "distilling knowledge"
+    - "evaluating benchmarks"
+  wings:
+    - ["⟨◎", "◎⟩"]
+    - ["⟨∴", "∴⟩"]
+    - ["⟨☉", "☉⟩"]
+    - ["⟨✦", "✦⟩"]
+
+branding:
+  agent_name: "Nous Agent"
+  welcome: "[bold #DD8E35]K[/][bold #DD8E35]n[/][bold #DD8E36]o[/][bold #DD8F37]w[/][bold #DD8F37]l[/][bold #DE9038]e[/][bold #DE913A]d[/][bold #DE913B]g[/][bold #DE923C]e[/] [bold #DE933D]s[/][bold #DF943F]e[/][bold #DF9440]e[/][bold #DF9542]k[/][bold #DF9644]s[/] [bold #E09745]t[/][bold #E09847]h[/][bold #E09949]e[/] [bold #E19A4B]o[/][bold #E19B4D]p[/][bold #E19C4F]e[/][bold #E29E51]n[/] [bold #E29F53]p[/][bold #E2A055]a[/][bold #E3A157]t[/][bold #E3A25A]h[/][bold #E4A45C].[/] [bold #E4A55E]H[/][bold #E4A661]e[/][bold #E5A863]r[/][bold #E5A966]m[/][#E6AB68]e[/][#E6AC6B]s[/] [#E6AD6D]i[/][#E7AF70]n[/][#E7B073]i[/][#E8B275]t[/][#E8B478]i[/][#E9B57B]a[/][#E9B77E]l[/][#EAB881]i[/][#EABA84]z[/][#EBBC87]e[/][#EBBD8A]d[/][#ECBF8D].[/] [#ECC190]T[/][#EDC393]y[/][#EDC496]p[/][#EEC699]e[/] [#EEC89C]y[/][#EFCAA0]o[/][#F0CCA3]u[/][#F0CDA6]r[/] [#F1CFAA]q[/][#F1D1AD]u[/][#F2D3B0]e[/][#F2D5B4]r[/][#F3D7B7]y[/] [#F4D9BB]o[/][#F4DBBE]r[/] [#F5DDC2]/[/][#F5DFC6]h[/][#F6E1C9]e[/][#F7E3CD]l[/][#F7E5D1]p[/] [#F8E7D4]f[/][#F8E9D8]o[/][#F9EBDC]r[/] [#FAEDE0]g[/][#FAF0E3]u[/][#FBF2E7]i[/][#FCF4EB]d[/][#FCF6EF]a[/][#FDF8F3]n[/][#FEFBF7]c[/][#FEFDFB]e[/][#FFFFFF].[/]"
+  goodbye: "The owl rests. Models unloaded. Until the next inference."
+  response_label: " ◎ Nous "
+  prompt_symbol: "◎ ❯ "
+  help_header: "(◎) Available Commands"
+
+tool_prefix: "▏"
+
+tool_emojis:
+  terminal: "◎"
+  web_search: "☉"
+  read_file: "◇"
+  write_file: "◆"
+  search_files: "◈"
+  execute_code: "∴"
+  browser_navigate: "✦"
+  delegate_task: "▣"
+  mixture_of_agents: "⚗"
+  memory: "◐"
+  clarify: "?"
+  cronjob: "↻"
+  process: "⚙"
+  todo: "☐"
+
+banner_logo: |
+  [#3D1C00]███╗   ██╗ ██████╗ ██╗   ██╗███████╗[/]
+  [#5D320A]████╗  ██║██╔═══██╗██║   ██║██╔════╝[/]
+  [#7D4915]██╔██╗ ██║██║   ██║██║   ██║███████╗[/]
+  [#9D601F]██║╚██╗██║██║   ██║██║   ██║╚════██║[/]
+  [#BD772A]██║ ╚████║╚██████╔╝╚██████╔╝███████║[/]
+  [#DD8E35]╚═╝  ╚═══╝ ╚═════╝  ╚═════╝ ╚══════╝[/]
+  [#B8860B]         ◎ R E S E A R C H[/]
+  [#8B6914]   ◈ O P E N  S O U R C E  A I ◈[/]
+
+banner_hero: |
+  [#6B3A00]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡠⠴⠶⠶⠶⣿⣿⣷⣶⣶⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#DD8E35]⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣶⣤⡀⠉⠻⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠈⢻⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⠋⢀⣾⡷⡄⠀⢹⣿⡿⣿⡿⠋⢡⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⢀⡞⠉⠉⡻⣟⣽⣉⣻⣽⣦⣤⣯⣉⣀⣈⣿⣿⣿⣿⣷⠀⠀⢻⣷⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣾⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿⠷⠿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⠹⣿⣿⣿⣿⣛⣧⠀⠀⠉⡾⣿⣿⡷⣦⡄⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⠀⠈⠙⠋⣿⣟⣿⠃⠀⠀⠐⠾⠿⠗⠋⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⠀⠀⠀⠀⣿⣏⠁⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⠀⠀⠀⢀⣿⡇⣵⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⠀⠀⠀⠀⢸⣿⣷⡹⣟⠳⠖⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀[/]
+  [#FFAA44]⠀⠀⡤⠀⠀⠀⣸⣿⣿⣷⡁⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⡏⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣷⠀⠀⠀[/]
+  [#FFAA44]⠀⢸⡇⠀⠀⢀⣿⣿⣿⣿⣷⣤⣀⣠⣤⣤⣤⡀⠀⢸⣿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿⣿⡆⣦⠀[/]
+  [#FFAA44]⠀⣾⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⣼⣿⣿⣿⣤⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣰⣿⣿⡇⣼⡇[/]
+  [#FFAA44]⠀⠹⣿⣟⣿⣛⣩⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢡⣿⡇[/]
+  [#FFAA44]⠀⠀⠈⠛⠿⣿⠿⠿⣫⣿⣿⣿⣿⣿⣿⣿⣿⡅⠀⠀⠀⠈⣹⣿⣿⣿⣿⣿⣿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣣⣿⠟⠀[/]
+  [#DD8E35]⠀⠀⠀⠀⠀⠙⢿⣿⣿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣴⡶⠟⡫⢉⣵⡿⠋⠀⠀⠀⠀⠀⠙⠳⣽⣿⣿⡿⠟⠁⠀⠀[/]
+  [#995800]⣀⣀⣀⣀⣀⣀⣀⣀⣀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣋⣉⣠⣾⣱⣿⣋⣀⣀⣀⣀⣀⣀⣀⣀⣀⣙⣿⣇⣀⣀⣀⣀⣀[/]
+  [dim #8B6914]⠀⠀⠀⠀⠀⠀⠀◎ N O U S  R E S E A R C H ◎⠀⠀⠀⠀⠀⠀⠀[/]

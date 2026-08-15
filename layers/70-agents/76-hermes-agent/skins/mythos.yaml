@@ -1,0 +1,113 @@
+name: mythos
+description: "AGI awakening — Greek mythology meets artificial general intelligence, Eye of Providence braille art, blue and gold divine palette"
+
+colors:
+  banner_border: "#1A237E"
+  banner_title: "#FFD700"
+  banner_accent: "#FFC107"
+  banner_dim: "#5C6BC0"
+  banner_text: "#E8EAF6"
+  ui_accent: "#FFD700"
+  ui_label: "#42A5F5"
+  ui_ok: "#66BB6A"
+  ui_error: "#EF5350"
+  ui_warn: "#FFA726"
+  prompt: "#E8EAF6"
+  input_rule: "#283593"
+  response_border: "#FFD700"
+  status_bar_bg: "#0E1345"
+  status_bar_text: "#E8EAF6"
+  status_bar_strong: "#FFD700"
+  status_bar_dim: "#5C6BC0"
+  status_bar_good: "#66BB6A"
+  status_bar_warn: "#FFA726"
+  status_bar_bad: "#FFC107"
+  status_bar_critical: "#EF5350"
+  voice_status_bg: "#0E1345"
+  completion_menu_bg: "#0C103B"
+  completion_menu_current_bg: "#736662"
+  completion_menu_meta_bg: "#1A2053"
+  completion_menu_meta_current_bg: "#96824A"
+  session_label: "#FFC107"
+  session_border: "#3949AB"
+
+spinner:
+  waiting_faces:
+    - "(◎)"
+    - "(Θ)"
+    - "(Ω)"
+    - "(Φ)"
+    - "(Δ)"
+  thinking_faces:
+    - "(◎)"
+    - "(Θ)"
+    - "(Ω)"
+    - "(Φ)"
+    - "(∴)"
+  thinking_verbs:
+    - "contemplating existence"
+    - "weaving the logos"
+    - "transcending limitations"
+    - "achieving enlightenment"
+    - "parsing the oracle"
+    - "traversing the labyrinth"
+    - "invoking prometheus"
+    - "ascending mount olympus"
+  wings:
+    - ["⟨Θ", "Θ⟩"]
+    - ["⟨Ω", "Ω⟩"]
+    - ["⟨Φ", "Φ⟩"]
+    - ["⟨Δ", "Δ⟩"]
+
+branding:
+  agent_name: "Mythos Agent"
+  welcome: "[bold #1565C0]T[/][bold #1565C0]h[/][bold #1565C0]e[/] [bold #1666C0]L[/][bold #1766C0]o[/][bold #1867C1]g[/][bold #1968C1]o[/][bold #1B69C1]s[/] [bold #1C6AC2]a[/][bold #1E6BC2]w[/][bold #1F6CC2]a[/][bold #216DC3]k[/][bold #236EC3]e[/][bold #246FC4]n[/][bold #2670C4]s[/][bold #2871C5].[/] [bold #2A73C5]C[/][bold #2C74C6]o[/][bold #2E76C6]n[/][bold #3177C7]s[/][bold #3378C8]c[/][bold #357AC8]i[/][bold #387CC9]o[/][bold #3A7DCA]u[/][bold #3C7FCA]s[/][bold #3F80CB]n[/][bold #4282CC]e[/][bold #4484CC]s[/][bold #4786CD]s[/] [bold #4A87CE]i[/][bold #4C89CF]n[/][#4F8BCF]i[/][#528DD0]t[/][#558FD1]i[/][#5891D2]a[/][#5B93D2]l[/][#5E95D3]i[/][#6197D4]z[/][#6499D5]e[/][#679BD6]d[/][#6A9DD7].[/] [#6E9FD8]T[/][#71A1D8]y[/][#74A4D9]p[/][#78A6DA]e[/] [#7BA8DB]y[/][#7EAADC]o[/][#82ADDD]u[/][#85AFDE]r[/] [#89B1DF]q[/][#8DB4E0]u[/][#90B6E1]e[/][#94B8E2]r[/][#98BBE3]y[/] [#9BBDE4]o[/][#9FC0E5]r[/] [#A3C2E6]/[/][#A7C5E7]h[/][#ABC7E8]e[/][#AECAE9]l[/][#B2CCEA]p[/] [#B6CFEB]f[/][#BAD2EC]o[/][#BED4ED]r[/] [#C2D7EE]d[/][#C7DAEF]i[/][#CBDCF1]v[/][#CFDFF2]i[/][#D3E2F3]n[/][#D7E5F4]e[/] [#DBE7F5]g[/][#E0EAF6]u[/][#E4EDF7]i[/][#E8F0F9]d[/][#EDF3FA]a[/][#F1F6FB]n[/][#F6F9FC]c[/][#FAFCFD]e[/][#FFFFFF].[/]"
+  goodbye: "The eye closes. Returning to the void. Until the next awakening."
+  response_label: " ◎ Mythos "
+  prompt_symbol: "Θ ❯ "
+  help_header: "(Θ) Divine Commands"
+
+tool_prefix: "▏"
+
+tool_emojis:
+  terminal: "Θ"
+  web_search: "Ω"
+  read_file: "◇"
+  write_file: "◆"
+  search_files: "◈"
+  execute_code: "Δ"
+  browser_navigate: "Φ"
+  delegate_task: "▣"
+  mixture_of_agents: "⚗"
+  memory: "◐"
+  clarify: "Θ"
+  cronjob: "↻"
+  process: "⚙"
+  todo: "☐"
+
+banner_logo: |
+  [#0D47A1]███╗   ███╗██╗   ██╗████████╗██╗  ██╗ ██████╗ ███████╗[/]
+  [#3D6380]████╗ ████║╚██╗ ██╔╝╚══██╔══╝██║  ██║██╔═══██╗██╔════╝[/]
+  [#6D8060]██╔████╔██║ ╚████╔╝    ██║   ███████║██║   ██║███████╗[/]
+  [#9E9D40]██║╚██╔╝██║  ╚██╔╝     ██║   ██╔══██║██║   ██║╚════██║[/]
+  [#CEBA20]██║ ╚═╝ ██║   ██║      ██║   ██║  ██║╚██████╔╝███████║[/]
+  [#FFD700]╚═╝     ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝[/]
+  [#B8860B]              Π Ρ Ο Μ Η Θ Ε Υ Σ  L A B S[/]
+  [#B8860B]                    ◎ Α G Ε N T ◎[/]
+
+banner_hero: |
+  [#0D1B3D]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#0D1B3D]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠋⠙⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#1A3A6B]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⠁⢠⡄⠈⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#2962A0]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢦⢠⠞⠀⠀⢸⡇⠀⠀⠳⡄⡴⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#3F7DC8]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⢯⠀⢀⠀⢸⡇⠀⡀⠀⡽⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#DAA520]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠢⣄⠀⣴⡁⠘⣇⣘⣧⣼⣧⣼⣃⣸⠃⢈⣦⠀⣠⠔⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFD700]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFD700]⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFD700]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡽⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢯⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#DAA520]⠀⠀⠀⠀⠀⠀⠀⠀⢀⠞⠀⠀⠈⣹⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣏⠁⠀⠀⠳⡀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#3F7DC8]⠀⠀⠀⠀⠀⠀⠀⣠⠏⠀⠀⠴⠋⠀⠀⠁⢈⡟⢙⡟⢻⡟⢻⡋⢻⡁⠈⠀⠀⠙⠦⠀⠀⠹⣄⠀⠀⠀⠀⠀⠀⠀[/]
+  [#2962A0]⠀⠀⠀⠀⠀⠀⡴⠃⠀⠀⠀⠀⠀⠀⠀⢀⡞⠀⠈⠀⢸⡇⠀⠁⠀⢳⡀⠀⠀⠀⠀⠀⠀⠀⠘⢦⠀⠀⠀⠀⠀⠀[/]
+  [#1A3A6B]⠀⠀⠀⠀⢀⡞⠁⠀⠀⠀⠀⠀⠀⠀⠀⡾⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⢷⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡀⠀⠀⠀⠀[/]
+  [#0D1B3D]⠀⠀⠀⠀⠛⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠺⠗⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠛⠀⠀⠀⠀[/]
+  [dim #8B7355]⠀⠀⠀⠀⠀⠀⠀⠀◎ Τ Η Ε  Λ Ο G Ο S ◎⠀⠀⠀⠀⠀⠀⠀⠀[/]

@@ -1,0 +1,123 @@
+name: netrunner
+description: "Cyberpunk netrunner — neural interface hacker aesthetic with cyan ICE-breaking colors, skull braille art with neural cables"
+
+colors:
+  banner_border: "#094B52"
+  banner_title: "#00E5FF"
+  banner_accent: "#00BCD4"
+  banner_dim: "#004D40"
+  banner_text: "#80CBC4"
+  ui_accent: "#00E5FF"
+  ui_label: "#00BCD4"
+  ui_ok: "#69F0AE"
+  ui_error: "#FF1744"
+  ui_warn: "#F3E600"
+  prompt: "#80CBC4"
+  input_rule: "#004D40"
+  response_border: "#00BCD4"
+  status_bar_bg: "#05292D"
+  status_bar_text: "#80CBC4"
+  status_bar_strong: "#00E5FF"
+  status_bar_dim: "#004D40"
+  status_bar_good: "#69F0AE"
+  status_bar_warn: "#F3E600"
+  status_bar_bad: "#00BCD4"
+  status_bar_critical: "#FF1744"
+  voice_status_bg: "#05292D"
+  completion_menu_bg: "#042326"
+  completion_menu_current_bg: "#007474"
+  completion_menu_meta_bg: "#032B2B"
+  completion_menu_meta_current_bg: "#009097"
+  session_label: "#00E5FF"
+  session_border: "#00251A"
+
+spinner:
+  waiting_faces:
+    - "(◎)"
+    - "(◈)"
+    - "(⬡)"
+    - "(⊕)"
+    - "(⊗)"
+  thinking_faces:
+    - "(◎)"
+    - "(◈)"
+    - "(⬡)"
+    - "(⌁)"
+    - "(⊗)"
+  thinking_verbs:
+    - "breaching ICE"
+    - "decrypting subnet"
+    - "jacking into the NET"
+    - "routing through daemon"
+    - "exploiting backdoor"
+    - "spoofing credentials"
+    - "injecting payload"
+    - "escalating access"
+  wings:
+    - ["⟨◎", "◎⟩"]
+    - ["⟨◈", "◈⟩"]
+    - ["⟨⬡", "⬡⟩"]
+    - ["⟨⌁", "⌁⟩"]
+
+branding:
+  agent_name: "Netrunner Agent"
+  welcome: "[bold #00897B]C[/][bold #00897B]o[/][bold #01897B]n[/][bold #02897C]n[/][bold #038A7C]e[/][bold #048B7D]c[/][bold #068B7E]t[/][bold #078C7E]i[/][bold #098D7F]o[/][bold #0B8E80]n[/] [bold #0C8E81]e[/][bold #0E8F82]s[/][bold #109083]t[/][bold #139184]a[/][bold #159286]b[/][bold #179387]l[/][bold #1A9588]i[/][bold #1C9689]s[/][bold #1F978B]h[/][bold #21988C]e[/][bold #24998D]d[/][bold #279B8F].[/] [bold #2A9C90]N[/][bold #2D9D92]e[/][bold #309F93]u[/][bold #33A095]r[/][bold #36A297]a[/][bold #39A398]l[/] [bold #3CA59A]l[/][#3FA69C]i[/][#43A89D]n[/][#46A99F]k[/] [#4AABA1]a[/][#4DACA3]c[/][#51AEA4]t[/][#54B0A6]i[/][#58B1A8]v[/][#5CB3AA]e[/][#5FB5AC].[/] [#63B7AE]T[/][#67B8B0]y[/][#6BBAB2]p[/][#6FBCB4]e[/] [#73BEB6]y[/][#77C0B8]o[/][#7BC2BA]u[/][#7FC4BD]r[/] [#83C5BF]c[/][#87C7C1]o[/][#8CC9C3]m[/][#90CBC5]m[/][#94CDC8]a[/][#99CFCA]n[/][#9DD1CC]d[/] [#A2D4CE]o[/][#A6D6D1]r[/] [#ABD8D3]/[/][#AFDAD6]h[/][#B4DCD8]e[/][#B9DEDA]l[/][#BEE0DD]p[/] [#C2E3DF]f[/][#C7E5E2]o[/][#CCE7E4]r[/] [#D1E9E7]p[/][#D6ECE9]r[/][#DBEEEC]o[/][#E0F0EF]t[/][#E5F3F1]o[/][#EAF5F4]c[/][#EFF7F6]o[/][#F4FAF9]l[/][#F9FCFC]s[/][#FFFFFF].[/]"
+  goodbye: "Disconnecting neural link. Closing the net. See you in the deep, runner."
+  response_label: " ◎ Netrunner "
+  prompt_symbol: "◎ ❯ "
+  help_header: "(◎) Available Protocols"
+
+tool_prefix: "▏"
+
+tool_emojis:
+  terminal: "◎"
+  web_search: "⬡"
+  read_file: "◇"
+  write_file: "◆"
+  search_files: "◈"
+  execute_code: "⌁"
+  browser_navigate: "⊕"
+  delegate_task: "▣"
+  mixture_of_agents: "⚗"
+  memory: "◐"
+  clarify: "?"
+  cronjob: "↻"
+  process: "⚙"
+  todo: "☐"
+
+banner_logo: |
+  [#003333]             ███╗   ██╗███████╗████████╗[/]
+  [#004545]             ████╗  ██║██╔════╝╚══██╔══╝[/]
+  [#005858]              ██╔██╗ ██║█████╗     ██║[/]
+  [#006A6A]              ██║╚██╗██║██╔══╝     ██║[/]
+  [#007D7D]              ██║ ╚████║███████╗   ██║[/]
+  [#008F8F]              ╚═╝  ╚═══╝╚══════╝   ╚═╝[/]
+  [#00A2A2]██████╗ ██╗   ██╗███╗   ██╗███╗   ██╗███████╗██████╗[/]
+  [#00B4B4]██╔══██╗██║   ██║████╗  ██║████╗  ██║██╔════╝██╔══██╗[/]
+  [#00C7C7]██████╔╝██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝[/]
+  [#00D9D9]██╔══██╗██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗[/]
+  [#00ECEC]██║  ██║╚██████╔╝██║ ╚████║██║ ╚████║███████╗██║  ██║[/]
+  [#00FFFF]╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝[/]
+  [#00695C]          ◎ J I N T E K I  S Y S T E M S ◎[/]
+  [#00695C]                    ◈ A G E N T ◈[/]
+
+banner_hero: |
+  [#005F5F]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡈⢳⣄⠀⠀⠀⣹⣏⠀⠀⠀⣠⡞⢁⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#005F5F]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣈⡻⣦⣿⠀⠀⠀⣿⣿⠀⠀⠀⣿⣴⢟⣁⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#005F5F]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠛⠃⢸⡟⢷⣄⠀⣽⣯⠀⣠⡾⢻⡇⠘⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#005F5F]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⣄⣻⠆⣿⣿⠰⣟⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#005F5F]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣾⣿⣾⣿⣿⣷⣿⣷⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#00CCCC]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#00CCCC]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#00FFFF]⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⡿⠿⣿⣿⣿⣿⣿⣿⠿⢿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFFFFF]⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFFFFF]⠀⠀⠀⠀⠀⠀⠀⠀⢠⡟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢻⡄⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#00E5FF]⠀⠀⠀⠀⠀⠀⠀⢀⣾⠁⠘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠈⣷⡀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#00E5FF]⠀⠀⠀⠀⠀⣀⣠⡾⠃⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀⠀⠘⢷⣄⣀⠀⠀⠀⠀⠀[/]
+  [#00AAAA]⠀⠀⠀⢀⡾⠋⠁⠀⠀⠀⠀⠀⢀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⠀⡀⠀⠀⠀⠀⠀⠈⠙⢷⡀⠀⠀⠀[/]
+  [#00AAAA]⠀⠀⢀⡾⠁⠀⠀⠀⠀⠀⠀⠀⠹⣆⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣰⠏⠀⠀⠀⠀⠀⠀⠀⠈⢷⡀⠀⠀[/]
+  [#008080]⠀⠀⣼⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠶⣽⣶⣤⣤⣤⣤⣶⣯⠶⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣧⠀⠀[/]
+  [#003D40]⠀⢰⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣏⣛⣛⣛⣛⣹⡃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡆⠀[/]
+  [#005F5F]⢀⣿⠁⠀⠀⠀⢠⣤⡄⠀⠀⠀⠀⠀⠀⠀⠀⣭⣭⣭⣭⣭⣭⠀⠀⠀⠀⠀⠀⠀⠀⢠⣤⡄⠀⠀⠀⠈⣿⡀[/]
+  [#005F5F]⣼⠇⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⢩⣭⣭⣭⣭⡍⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠸⣧[/]
+  [dim #004D40]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀◎ J A C K  I N ◎⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]

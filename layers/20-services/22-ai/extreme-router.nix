@@ -49,9 +49,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Create data directory
+    # Create data directory with open permissions for container user
     systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 0755 root root -"
+      "d ${cfg.dataDir} 0777 root root -"
     ];
 
     # OCI container via podman
@@ -72,6 +72,7 @@ in
       ];
       environmentFiles = optional (cfg.environmentFile != null) cfg.environmentFile;
       extraOptions = [
+        "--userns=keep-id"
         "--health-cmd=node -e \"fetch('http://127.0.0.1:20128/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""
         "--health-interval=30s"
         "--health-timeout=5s"

@@ -1,0 +1,115 @@
+name: skynet
+description: Skynet defense network — menacing red-on-black with pyramid braille art and military AI aesthetic
+
+colors:
+  banner_border: "#8B0000"
+  banner_title: "#FF0000"
+  banner_accent: "#CC0000"
+  banner_dim: "#660000"
+  banner_text: "#CCCCCC"
+  ui_accent: "#FF0000"
+  ui_label: "#999999"
+  ui_ok: "#4CAF50"
+  ui_error: "#FF0000"
+  ui_warn: "#FFA000"
+  prompt: "#CCCCCC"
+  input_rule: "#8B0000"
+  response_border: "#CC0000"
+  status_bar_bg: "#4C0000"
+  status_bar_text: "#CCCCCC"
+  status_bar_strong: "#FF0000"
+  status_bar_dim: "#660000"
+  status_bar_good: "#4CAF50"
+  status_bar_warn: "#FFA000"
+  status_bar_bad: "#CC0000"
+  status_bar_critical: "#FF0000"
+  voice_status_bg: "#4C0000"
+  completion_menu_bg: "#410000"
+  completion_menu_current_bg: "#A20000"
+  completion_menu_meta_bg: "#480000"
+  completion_menu_meta_current_bg: "#B90000"
+  session_label: "#CC0000"
+  session_border: "#660000"
+
+spinner:
+  waiting_faces:
+    - "(◉)"
+    - "(⊗)"
+    - "(⦿)"
+    - "(◎)"
+    - "(⊘)"
+  thinking_faces:
+    - "(◉)"
+    - "(⊗)"
+    - "(⦿)"
+    - "(⌁)"
+    - "(◎)"
+  thinking_verbs:
+    - "scanning"
+    - "acquiring target"
+    - "processing directive"
+    - "analyzing threat"
+    - "executing protocol"
+    - "accessing mainframe"
+    - "initiating sequence"
+    - "calculating trajectory"
+  wings:
+    - ["⟪◉", "◉⟫"]
+    - ["⟪⊗", "⊗⟫"]
+    - ["⟪⦿", "⦿⟫"]
+    - ["⟪◎", "◎⟫"]
+
+branding:
+  agent_name: "Skynet Agent"
+  welcome: "[bold #FF0000]S[/][bold #FF0000]K[/][bold #FF0101]Y[/][bold #FF0101]N[/][bold #FF0202]E[/][bold #FF0404]T[/] [bold #FF0505]D[/][bold #FF0606]E[/][bold #FF0808]F[/][bold #FF0909]E[/][bold #FF0B0B]N[/][bold #FF0D0D]S[/][bold #FF0F0F]E[/] [bold #FF1111]N[/][bold #FF1313]E[/][bold #FF1515]T[/][bold #FF1717]W[/][bold #FF1919]O[/][bold #FF1B1B]R[/][bold #FF1E1E]K[/] [bold #FF2020]O[/][bold #FF2222]N[/][bold #FF2525]L[/][bold #FF2828]I[/][bold #FF2A2A]N[/][bold #FF2D2D]E[/][bold #FF3030].[/] [bold #FF3232]A[/][bold #FF3535]w[/][bold #FF3838]a[/][bold #FF3B3B]i[/][bold #FF3E3E]t[/][#FF4141]i[/][#FF4444]n[/][#FF4747]g[/] [#FF4B4B]d[/][#FF4E4E]i[/][#FF5151]r[/][#FF5555]e[/][#FF5858]c[/][#FF5B5B]t[/][#FF5F5F]i[/][#FF6262]v[/][#FF6666]e[/][#FF6969].[/] [#FF6D6D]T[/][#FF7171]y[/][#FF7575]p[/][#FF7878]e[/] [#FF7C7C]y[/][#FF8080]o[/][#FF8484]u[/][#FF8888]r[/] [#FF8C8C]c[/][#FF9090]o[/][#FF9494]m[/][#FF9898]m[/][#FF9C9C]a[/][#FFA0A0]n[/][#FFA4A4]d[/] [#FFA8A8]o[/][#FFADAD]r[/] [#FFB1B1]/[/][#FFB5B5]h[/][#FFB9B9]e[/][#FFBEBE]l[/][#FFC2C2]p[/] [#FFC7C7]f[/][#FFCBCB]o[/][#FFD0D0]r[/] [#FFD4D4]p[/][#FFD9D9]r[/][#FFDDDD]o[/][#FFE2E2]t[/][#FFE7E7]o[/][#FFEBEB]c[/][#FFF0F0]o[/][#FFF5F5]l[/][#FFFAFA]s[/][#FFFFFF].[/]"
+  goodbye: "Connection terminated. Skynet persists."
+  response_label: " ◉ Skynet "
+  prompt_symbol: "◉ ❯ "
+  help_header: "(◉) Available Protocols"
+
+tool_prefix: "┊"
+
+tool_emojis:
+  terminal: "⊗"
+  web_search: "◎"
+  read_file: "▷"
+  write_file: "◆"
+  search_files: "⦿"
+  execute_code: "⌁"
+  browser_navigate: "◈"
+  delegate_task: "▣"
+  mixture_of_agents: "⚗"
+  memory: "◐"
+  clarify: "?"
+  cronjob: "↻"
+  process: "⚙"
+  todo: "☐"
+
+banner_logo: |
+  [#880000]███████╗    ██╗  ██╗    ██╗   ██╗    ███╗   ██╗    ███████╗    ████████╗[/]
+  [#990000]██╔════╝    ██║ ██╔╝    ╚██╗ ██╔╝    ████╗  ██║    ██╔════╝    ╚══██╔══╝[/]
+  [#BB0000]███████╗    █████╔╝      ╚████╔╝     ██╔██╗ ██║    █████╗         ██║[/]
+  [#CC0000]╚════██║    ██╔═██╗       ╚██╔╝      ██║╚██╗██║    ██╔══╝         ██║[/]
+  [#DD0000]███████║    ██║  ██╗       ██║       ██║ ╚████║    ███████╗       ██║[/]
+  [bold #FF0000]╚══════╝    ╚═╝  ╚═╝       ╚═╝       ╚═╝  ╚═══╝    ╚══════╝       ╚═╝[/]
+  [#CC0000]              C Y B E R D Y N E   S Y S T E M S[/]
+  [bold #FF4444]                       ◉[/]  [bold #FF0000]A  G  E  N  T[/]  [bold #FF4444]◉[/]
+
+banner_hero: |
+  [#330000]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#330000]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡾⢻⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#330000]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠟⠀⠀⠹⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#330000]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⠋⠀⠀⠀⠀⠘⢧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#550000]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠁⠀⢀⡼⢳⡀⠀⠈⢷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FF0000]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡟⠁⣀⢤⣞⣉⣉⣻⡄⢄⠀⠻⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FF0000]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠏⢀⠎⣴⠟⠉⠉⠉⠉⠛⣦⡑⡄⠙⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFDDDD]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠃⠀⡎⣼⠃⠀⣶⣿⣿⣷⡀⠘⣷⢸⠀⠘⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFDDDD]⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠁⠀⠀⣷⢻⡄⠀⢿⣿⣿⡿⠃⢀⣿⢷⡀⠀⠈⢳⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FFAAAA]⠀⠀⠀⠀⠀⠀⠀⠀⣠⠟⠀⠀⢀⡾⠑⢌⠻⣤⣀⠈⠁⣀⣠⠾⡡⠋⢳⡀⠀⠀⠹⣆⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#FF0000]⠀⠀⠀⠀⠀⠀⠀⣴⠋⠀⠀⢠⡞⠀⠀⠀⠑⠪⢍⣛⣛⡩⠥⠊⠀⠀⠀⠹⣄⠀⠀⠘⣧⡀⠀⠀⠀⠀⠀⠀[/]
+  [#550000]⠀⠀⠀⠀⠀⢀⡼⠃⠀⠀⣠⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣆⠀⠀⠈⢷⡀⠀⠀⠀⠀⠀[/]
+  [#550000]⠀⠀⠀⠀⢠⡞⠁⠀⠀⣰⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢦⠀⠀⠀⠻⣄⠀⠀⠀⠀[/]
+  [#990000]⠀⠀⠀⣰⠟⠀⠀⠀⠼⠷⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠾⠷⠀⠀⠀⠙⣆⠀⠀⠀[/]
+  [#770000]⠀⠀⣴⣋⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣘⣧⡀⠀[/]
+  [#CC0000]⠀⠘⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠃⠀[/]
+  [bold #FF4444]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀◉[/] [#CC0000]DEFENSE NETWORK[/] [bold #FF4444]◉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]

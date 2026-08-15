@@ -1,0 +1,116 @@
+# Telemate - DOS BBS terminal program aesthetic (v4.2x era)
+# Cyan status bar, white-on-black terminal, ANSI BBS vibes
+# ATDT HERMES.BBS / CONNECT 57600 / NO CARRIER
+name: telemate
+description: Telemate DOS terminal revival. Cyan status bar, BBS ANSI vibes, modem call-outs.
+
+colors:
+  # Telemate palette: bright white terminal text, iconic cyan status bar
+  banner_border: "#00CCCC"
+  banner_title: "#FFFFFF"
+  banner_accent: "#00FFFF"
+  banner_dim: "#0088BB"
+  banner_text: "#CCCCCC"
+  ui_accent: "#00FFFF"
+  ui_label: "#00CCCC"
+  ui_ok: "#00FF88"
+  ui_error: "#FF4444"
+  ui_warn: "#FFCC00"
+  prompt: "#FFFFFF"
+  input_rule: "#0088BB"
+  response_border: "#00CCCC"
+  status_bar_bg: "#007070"
+  status_bar_text: "#CCCCCC"
+  status_bar_strong: "#FFFFFF"
+  status_bar_dim: "#0088BB"
+  status_bar_good: "#00FF88"
+  status_bar_warn: "#FFCC00"
+  status_bar_bad: "#00FFFF"
+  status_bar_critical: "#FF4444"
+  voice_status_bg: "#007070"
+  completion_menu_bg: "#005F5F"
+  completion_menu_current_bg: "#00B2D3"
+  completion_menu_meta_bg: "#006670"
+  completion_menu_meta_current_bg: "#40C5DE"
+  session_label: "#00FFFF"
+  session_border: "#005577"
+
+spinner:
+  waiting_faces:
+    - "(♪)"
+    - "(♫)"
+    - "(•)"
+    - "(○)"
+    - "(◉)"
+  thinking_faces:
+    - "[▁]"
+    - "[▃]"
+    - "[▅]"
+    - "[▇]"
+    - "[▅]"
+    - "[▃]"
+  thinking_verbs:
+    - "DIALING"
+    - "NEGOTIATING"
+    - "HANDSHAKE"
+    - "CARRIER DETECT"
+    - "TRANSMITTING"
+    - "RECEIVING PACKET"
+    - "AT COMMAND"
+    - "BUFFERING XMODEM"
+  wings:
+    - ["«", "»"]
+    - ["‹", "›"]
+    - ["[", "]"]
+    - ["<", ">"]
+
+branding:
+  agent_name: "Telemate Agent"
+  welcome: '[bold #FFFFFF]C[/][bold #FEFFFF]O[/][bold #FCFFFF]N[/][bold #FAFFFF]N[/][bold #F8FFFF]E[/][bold #F5FFFF]C[/][bold #F2FFFF]T[/] [bold #EEFFFF]5[/][bold #EBFFFF]7[/][bold #E7FFFF]6[/][bold #E3FFFF]0[/][bold #DFFFFF]0[/] [bold #DAFFFF]:[/][bold #D6FFFF]:[/] [bold #D1FFFF]H[/][bold #CCFFFF]E[/][bold #C7FFFF]R[/][bold #C1FFFF]M[/][#BCFFFF]E[/][#B6FFFF]S[/][#B0FFFF].[/][#AAFFFF]B[/][#A4FFFF]B[/][#9EFFFF]S[/] [#98FFFF]:[/][#91FFFF]:[/] [#8BFFFF]P[/][#84FFFF]R[/][#7DFFFF]E[/][#76FFFF]S[/][#6FFFFF]S[/] [#68FFFF]E[/][#60FFFF]S[/][#59FFFF]C[/] [#51FFFF]F[/][#4AFFFF]O[/][#42FFFF]R[/] [#3AFFFF]T[/][#32FFFF]E[/][#2AFFFF]R[/][#21FFFF]M[/][#19FFFF]I[/][#11FFFF]N[/][#08FFFF]A[/][#00FFFF]L[/]'
+  goodbye: "NO CARRIER :: CONNECTION TERMINATED :: 73s"
+  response_label: " [TM] HERMES.BBS "
+  prompt_symbol: "ATDT "
+  help_header: "^L - Help Menu - Keyboard Shortcuts"
+
+tool_prefix: "│"
+
+tool_emojis:
+  terminal: "■"
+  read_file: "▤"
+  write_file: "▥"
+  search_files: "◆"
+  web_search: "♪"
+  web_fetch: "♫"
+  patch: "▓"
+  todo: "□"
+  memory: "◈"
+  skill_view: "▫"
+  skills_list: "◉"
+  vision_analyze: "◎"
+  text_to_speech: "♪"
+  cronjob: "◐"
+
+banner_logo: |
+  [bold #0055AA] _____ _____ _     _____ __  __    _  _____ _____ [/]
+  [bold #0088CC]|_   _| ____| |   | ____|  \/  |  / \|_   _| ____|[/]
+  [bold #00CCCC]  | | |  _| | |   |  _| | |\/| | / _ \ | | |  _|  [/]
+  [bold #55DDDD]  | | | |___| |___| |___| |  | |/ ___ \| | | |___ [/]
+  [bold #AAEEEE]  |_| |_____|_____|_____|_|  |_/_/   \_\_| |_____|[/]
+  [bold #FFFFFF]                                                  [/]
+              [bold #00FFFF]v 4 . 2 0   f o r   D O S[/]
+
+banner_hero: |
+  [#FFFFFF] [/][#FFFFFF]W[/][#FFFFFF]i[/][#FFFFFF]n[/][#FFFFFF] [/][#555599]│[/][#FFFFFF] [/][#FFFFFF]D[/][#FFFFFF]i[/][#FFFFFF]a[/][#FFFFFF]l[/][#FFFFFF] [/][#555599]│[/][#FFFFFF] [/][#FFFFFF]T[/][#FFFFFF]e[/][#FFFFFF]r[/][#FFFFFF]m[/][#FFFFFF] [/][#555599]│[/][#FFFFFF] [/][#FFFFFF]E[/][#FFFFFF]d[/][#FFFFFF]i[/][#FFFFFF]t[/][#FFFFFF] [/][#555599]│[/][#FFFFFF] [/][#FFFFFF]V[/][#FFFFFF]i[/][#FFFFFF]e[/][#FFFFFF]w[/][#FFFFFF] [/][#555599]│[/][#FFFFFF] [/][#FFFFFF]O[/][#FFFFFF]p[/][#FFFFFF]t[/][#FFFFFF]s[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/]
+  [#00CCCC]────────────────────────────────────────────[/]
+  [#CCCCCC]                                            [/]
+  [#CCCCCC] TELEMATE Version [/][bold #00FFFF]4[/][#CCCCCC].[/][bold #00FFFF]20[/][#CCCCCC]                      [/]
+  [#CCCCCC] Copyright [/][bold #00FFFF]1988[/][#CCCCCC]-[/][bold #00FFFF]1995[/][#CCCCCC] White River            [/]
+  [#CCCCCC]                                            [/]
+  [#CCCCCC] Registered to: HERMES AGENT                [/]
+  [#CCCCCC]                                            [/]
+  [#CCCCCC] [/][bold #00FFFF]OK[/][#CCCCCC]                                         [/]
+  [#CCCCCC] [/][bold #00FFFF]ATDT[/][#CCCCCC] HERMES.BBS                            [/]
+  [#CCCCCC] [/][bold #00FFFF]CONNECT[/][#CCCCCC] [/][bold #00FFFF]57600[/][#CCCCCC]                              [/]
+  [#CCCCCC]                                            [/]
+  [#00CCCC]────────────────────────────────────────────[/]
+  [black on #00CCCC] [/][black on #00CCCC]^[/][black on #00CCCC]L[/][black on #00CCCC]=[/][black on #00CCCC]H[/][black on #00CCCC]e[/][black on #00CCCC]l[/][black on #00CCCC]p[/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC]A[/][black on #00CCCC]N[/][black on #00CCCC]S[/][black on #00CCCC]I[/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC]5[/][black on #00CCCC]7[/][black on #00CCCC]6[/][black on #00CCCC]0[/][black on #00CCCC]0[/][black on #00CCCC]N[/][black on #00CCCC]8[/][black on #00CCCC]1[/][black on #00CCCC],[/][black on #00CCCC]1[/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC] [/][black on #00CCCC]T[/][black on #00CCCC]M[/][black on #00CCCC] [/][black on #00CCCC]v[/][black on #00CCCC]4[/][black on #00CCCC].[/][black on #00CCCC]2[/][black on #00CCCC]0[/][black on #00CCCC] [/]

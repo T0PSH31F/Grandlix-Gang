@@ -1,0 +1,103 @@
+name: vault-tec
+description: Fallout Vault-Tec terminal — green phosphor CRT on black
+
+colors:
+  banner_border: "#1a5c14"
+  banner_title: "#1bff80"
+  banner_accent: "#33ff33"
+  banner_dim: "#0e4e0b"
+  banner_text: "#20c040"
+  ui_accent: "#33ff33"
+  ui_label: "#1bff80"
+  ui_ok: "#33ff33"
+  ui_error: "#ff3333"
+  ui_warn: "#ffb641"
+  prompt: "#20c040"
+  input_rule: "#145b11"
+  response_border: "#1bff80"
+  status_bar_bg: "#0E330B"
+  status_bar_text: "#20c040"
+  status_bar_strong: "#1bff80"
+  status_bar_dim: "#0e4e0b"
+  status_bar_good: "#33ff33"
+  status_bar_warn: "#ffb641"
+  status_bar_bad: "#33ff33"
+  status_bar_critical: "#ff3333"
+  voice_status_bg: "#0E330B"
+  completion_menu_bg: "#0C2B09"
+  completion_menu_current_bg: "#1F941D"
+  completion_menu_meta_bg: "#0C3109"
+  completion_menu_meta_current_bg: "#1EAF36"
+  session_label: "#33ff33"
+  session_border: "#0e4e0b"
+
+spinner:
+  waiting_faces:
+    - "(☢)"
+    - "(⚙)"
+    - "(◈)"
+    - "(▣)"
+    - "(☢)"
+  thinking_faces:
+    - "(☢)"
+    - "(⚙)"
+    - "(◈)"
+    - "(⌁)"
+    - "(▣)"
+  thinking_verbs:
+    - "accessing mainframe"
+    - "decrypting holotape"
+    - "querying database"
+    - "loading protocol"
+    - "scanning frequencies"
+    - "booting subsystem"
+    - "verifying clearance"
+    - "parsing telemetry"
+  wings:
+    - ["⟪☢", "☢⟫"]
+    - ["⟪◈", "◈⟫"]
+    - ["⟪⚙", "⚙⟫"]
+    - ["⟪▣", "▣⟫"]
+
+branding:
+  agent_name: "Vault-Tec Agent"
+  welcome: "ROBCO INDUSTRIES (TM) TERMLINK PROTOCOL — ENTER QUERY OR /HELP FOR COMMANDS"
+  goodbye: "CONNECTION TERMINATED. STAY SAFE, VAULT DWELLER. ☢"
+  response_label: " ☢ Vault-Tec "
+  prompt_symbol: "☢ ❯ "
+  help_header: "(☢) VAULT-TEC COMMAND DIRECTORY"
+
+tool_prefix: "│"
+
+tool_emojis:
+  terminal: "⚙"
+  read_file: "📋"
+  search_files: "🔍"
+  web_search: "📡"
+  write_file: "✏"
+
+banner_logo: |
+  [bold #1bff80]                     ██╗   ██╗ █████╗ ██╗   ██╗██╗  ████████╗   ████████╗███████╗ ██████╗[/]
+  [bold #20c040]                     ██║   ██║██╔══██╗██║   ██║██║  ╚══██╔══╝   ╚══██╔══╝██╔════╝██╔════╝[/]
+  [#199515]                      ██║   ██║███████║██║   ██║██║     ██║█████╗██║   █████╗  ██║     [/]
+  [#146c11]                      ╚██╗ ██╔╝██╔══██║██║   ██║██║     ██║╚════╝██║   ██╔══╝  ██║     [/]
+  [#145b11]                       ╚████╔╝ ██║  ██║╚██████╔╝███████╗██║      ██║   ███████╗╚██████╗[/]
+  [#0e4e0b]                        ╚═══╝  ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝      ╚═╝   ╚══════╝ ╚═════╝[/]
+
+banner_hero: |
+  [#0e4e0b]⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠴⢖⡚⠛⠛⠛⠛⢓⡲⠦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [#146c11]⠀⠀⠀⠀⠀⣀⡴⣚⣭⣶⣿⣿⣿⠀⠀⠀⠀⣾⣿⣿⣶⣭⣓⢦⣀⠀⠀⠀⠀⠀[/]
+  [#199515]⠀⠀⠀⢠⡞⣩⣾⣿⣿⣿⣿⣿⣿⡆⠀⠀⢠⣿⣿⣿⣿⣿⣿⣷⣍⢳⡄⠀⠀⠀[/]
+  [#20c040]⠀⠀⣰⢫⣾⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣷⡝⣆⠀⠀[/]
+  [#1bff80]⠀⣼⢣⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡎⣧⠀[/]
+  [#33ff33]⢰⢇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠷⠾⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡼⡆[/]
+  [#33ff33]⣾⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠁⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣷[/]
+  [#1bff80]⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡁⠀⠀⣾⣿⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿[/]
+  [#33ff33]⢿⢸⣿⣿⣿⣿⣿⣿⠿⠟⠛⣧⡀⠀⠀⠀⠀⢀⣼⠛⠻⠿⣿⣿⣿⣿⣿⣿⡏⡿[/]
+  [#33ff33]⠸⡎⠿⠟⠛⠉⠁⠀⠀⢀⣴⣿⣿⣶⣤⣤⣶⣿⣿⣦⣀⠀⠀⠈⠉⠛⠻⠿⢳⠇[/]
+  [#1bff80]⠀⢻⡄⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⢠⡟⠀[/]
+  [#20c040]⠀⠀⠹⣄⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⣠⠏⠀⠀[/]
+  [#199515]⠀⠀⠀⠘⢧⣙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢟⡽⠃⠀⠀⠀[/]
+  [#146c11]⠀⠀⠀⠀⠀⠉⠳⢭⡻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢟⡯⠞⠉⠀⠀⠀⠀⠀[/]
+  [#0e4e0b]⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠲⠯⢭⣭⣿⣿⣯⡭⠽⠖⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀[/]
+  [dim #0e4e0b]⠀⠀⠀⠀ROBCO INDUSTRIES TERMLINK⠀⠀⠀⠀[/]

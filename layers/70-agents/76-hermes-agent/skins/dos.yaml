@@ -1,0 +1,111 @@
+# DOS - MS-DOS / Norton Commander terminal aesthetic
+# Bright blue EGA background feel, cyan borders, white text, yellow F-key highlights
+name: dos
+description: MS-DOS Norton Commander revival. Cyan dual-pane vibes, yellow F-key shortcuts.
+
+colors:
+  # Norton/EDIT.COM palette: EGA 16-color era
+  banner_border: "#55FFFF"
+  banner_title: "#FFFFFF"
+  banner_accent: "#FFFF55"
+  banner_dim: "#00AAAA"
+  banner_text: "#FFFFFF"
+  ui_accent: "#FFFF55"
+  ui_label: "#55FFFF"
+  ui_ok: "#55FF55"
+  ui_error: "#FF5555"
+  ui_warn: "#FFFF55"
+  prompt: "#FFFFFF"
+  input_rule: "#00AAAA"
+  response_border: "#55FFFF"
+  status_bar_bg: "#2F8C8C"
+  status_bar_text: "#FFFFFF"
+  status_bar_strong: "#FFFFFF"
+  status_bar_dim: "#00AAAA"
+  status_bar_good: "#55FF55"
+  status_bar_warn: "#FFFF55"
+  status_bar_bad: "#FFFF55"
+  status_bar_critical: "#FF5555"
+  voice_status_bg: "#2F8C8C"
+  completion_menu_bg: "#287777"
+  completion_menu_current_bg: "#59C88C"
+  completion_menu_meta_bg: "#218080"
+  completion_menu_meta_current_bg: "#82D6A9"
+  session_label: "#FFFF55"
+  session_border: "#00AAAA"
+
+spinner:
+  waiting_faces:
+    - "(F1)"
+    - "(F2)"
+    - "(F3)"
+    - "(F5)"
+    - "(F7)"
+    - "(F9)"
+  thinking_faces:
+    - "[░]"
+    - "[▒]"
+    - "[▓]"
+    - "[█]"
+  thinking_verbs:
+    - "READING DIR"
+    - "ALLOCATING FAT"
+    - "COPYING FILES"
+    - "PARSING COMMAND"
+    - "LOADING OVERLAY"
+    - "ACCESSING DISK"
+    - "SCANNING CLUSTERS"
+    - "EXEC COMMAND.COM"
+  wings:
+    - ["╔═", "═╗"]
+    - ["║ ", " ║"]
+    - ["╚═", "═╝"]
+
+branding:
+  agent_name: "MS-DOS Agent"
+  welcome: '[bold #55FFFF]C[/][bold #55FFFE]:[/][bold #57FFFC]\[/][bold #59FFFA]>[/] [bold #5BFFF8]H[/][bold #5EFFF5]E[/][bold #61FFF2]R[/][bold #64FFEF]M[/][bold #67FFEC]E[/][bold #6BFFE8]S[/][bold #6EFFE5].[/][bold #72FFE1]E[/][bold #77FFDC]X[/][bold #7BFFD8]E[/] [bold #80FFD3]L[/][#84FFCF]O[/][#89FFCA]A[/][#8EFFC5]D[/][#93FFC0]E[/][#98FFBB]D[/][#9EFFB5].[/] [#A4FFAF]P[/][#A9FFAA]R[/][#AFFFA4]E[/][#B5FF9E]S[/][#BBFF98]S[/] [#C1FF92]F[/][#C8FF8B]1[/] [#CEFF85]F[/][#D5FF7E]O[/][#DBFF78]R[/] [#E2FF71]H[/][#E9FF6A]E[/][#F0FF63]L[/][#F7FF5C]P[/][#FFFF55].[/]'
+  goodbye: "C:\> Thank you for using Norton Commander."
+  response_label: " C:\\> HERMES "
+  prompt_symbol: "C:\\> "
+  help_header: "F1 - HELP.COM - Available Commands"
+
+tool_prefix: "║"
+
+tool_emojis:
+  terminal: "█"
+  read_file: "▓"
+  write_file: "▒"
+  search_files: "░"
+  web_search: "◆"
+  web_fetch: "◇"
+  patch: "■"
+  todo: "□"
+  memory: "▪"
+  skill_view: "▫"
+  skills_list: "◈"
+  vision_analyze: "◉"
+  text_to_speech: "◎"
+  cronjob: "◐"
+
+banner_logo: |
+  [bold #0077AA]███╗   ███╗███████╗      ██████╗  ██████╗ ███████╗[/]
+  [bold #0077AA]████╗ ████║██╔════╝      ██╔══██╗██╔═══██╗██╔════╝[/]
+  [bold #00AACC]██╔████╔██║███████╗█████╗██║  ██║██║   ██║███████╗[/]
+  [bold #55CCEE]██║╚██╔╝██║╚════██║╚════╝██║  ██║██║   ██║╚════██║[/]
+  [bold #AADDFF]██║ ╚═╝ ██║███████║      ██████╔╝╚██████╔╝███████║[/]
+  [bold #CCEEFF]╚═╝     ╚═╝╚══════╝      ╚═════╝  ╚═════╝ ╚══════╝[/]
+  [bold #FFFFFF]                                                  [/]
+            [bold #FFFF55]N O R T O N  C O M M A N D E R[/]
+
+banner_hero: |
+  [#55FFFF]╔[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][bold #FFFF55]([/][#FFFFFF] [/][#FFFFFF]C[/][#FFFFFF]:[/][#FFFFFF]\[/][#FFFFFF] [/][bold #FFFF55])[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]╗[/][#55FFFF]╔[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][bold #FFFF55]([/][#FFFFFF] [/][#FFFFFF]D[/][#FFFFFF]:[/][#FFFFFF]\[/][#FFFFFF] [/][bold #FFFF55])[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]╗[/]
+  [#55FFFF]║[/][#FFFFFF] [/][#FFFFFF].[/][#FFFFFF].[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][bold #FFFF55]<[/][#FFFFFF]D[/][#FFFFFF]I[/][#FFFFFF]R[/][bold #FFFF55]>[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/][#55FFFF]║[/][#FFFFFF] [/][#FFFFFF].[/][#FFFFFF].[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][bold #FFFF55]<[/][#FFFFFF]D[/][#FFFFFF]I[/][#FFFFFF]R[/][bold #FFFF55]>[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/]
+  [#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]A[/][#FFFFFF]U[/][#FFFFFF]T[/][#FFFFFF]O[/][#FFFFFF]E[/][#FFFFFF]X[/][#FFFFFF]E[/][#FFFFFF]C[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]B[/][#FFFFFF]A[/][#FFFFFF]T[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/][#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]D[/][#FFFFFF]O[/][#FFFFFF]S[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][bold #FFFF55]<[/][#FFFFFF]D[/][#FFFFFF]I[/][#FFFFFF]R[/][bold #FFFF55]>[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/]
+  [#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]C[/][#FFFFFF]O[/][#FFFFFF]M[/][#FFFFFF]M[/][#FFFFFF]A[/][#FFFFFF]N[/][#FFFFFF]D[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]C[/][#FFFFFF]O[/][#FFFFFF]M[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/][#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]U[/][#FFFFFF]T[/][#FFFFFF]I[/][#FFFFFF]L[/][#FFFFFF]S[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][bold #FFFF55]<[/][#FFFFFF]D[/][#FFFFFF]I[/][#FFFFFF]R[/][bold #FFFF55]>[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/]
+  [#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]C[/][#FFFFFF]O[/][#FFFFFF]N[/][#FFFFFF]F[/][#FFFFFF]I[/][#FFFFFF]G[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]S[/][#FFFFFF]Y[/][#FFFFFF]S[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/][#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]R[/][#FFFFFF]E[/][#FFFFFF]A[/][#FFFFFF]D[/][#FFFFFF]M[/][#FFFFFF]E[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]T[/][#FFFFFF]X[/][#FFFFFF]T[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/]
+  [#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]H[/][#FFFFFF]E[/][#FFFFFF]R[/][#FFFFFF]M[/][#FFFFFF]E[/][#FFFFFF]S[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]E[/][#FFFFFF]X[/][#FFFFFF]E[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/][#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]S[/][#FFFFFF]K[/][#FFFFFF]I[/][#FFFFFF]L[/][#FFFFFF]L[/][#FFFFFF]S[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]D[/][#FFFFFF]A[/][#FFFFFF]T[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/]
+  [#55FFFF]╟[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]╢[/][#55FFFF]╟[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]─[/][#55FFFF]╢[/]
+  [#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]5[/][#FFFFFF] [/][#FFFFFF]f[/][#FFFFFF]i[/][#FFFFFF]l[/][#FFFFFF]e[/][#FFFFFF]s[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]1[/][#FFFFFF]2[/][#FFFFFF].[/][#FFFFFF]4[/][#FFFFFF]K[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/][#55FFFF]║[/][#FFFFFF] [/][#FFFFFF]5[/][#FFFFFF] [/][#FFFFFF]f[/][#FFFFFF]i[/][#FFFFFF]l[/][#FFFFFF]e[/][#FFFFFF]s[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF]8[/][#FFFFFF].[/][#FFFFFF]2[/][#FFFFFF]K[/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#FFFFFF] [/][#55FFFF]║[/]
+  [#55FFFF]╚[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]╝[/][#55FFFF]╚[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]═[/][#55FFFF]╝[/]
+  
+  [on #00AAAA] [/][on #00AAAA] [/][on #00AAAA] [/][on #00AAAA] [/][bold #FFFF55 on #00AAAA]1[/][#FFFFFF on #00AAAA]H[/][#FFFFFF on #00AAAA]e[/][#FFFFFF on #00AAAA]l[/][#FFFFFF on #00AAAA]p[/][on #00AAAA] [/][bold #FFFF55 on #00AAAA]2[/][#FFFFFF on #00AAAA]V[/][#FFFFFF on #00AAAA]i[/][#FFFFFF on #00AAAA]e[/][#FFFFFF on #00AAAA]w[/][on #00AAAA] [/][bold #FFFF55 on #00AAAA]3[/][#FFFFFF on #00AAAA]E[/][#FFFFFF on #00AAAA]d[/][#FFFFFF on #00AAAA]i[/][#FFFFFF on #00AAAA]t[/][on #00AAAA] [/][bold #FFFF55 on #00AAAA]4[/][#FFFFFF on #00AAAA]C[/][#FFFFFF on #00AAAA]o[/][#FFFFFF on #00AAAA]p[/][#FFFFFF on #00AAAA]y[/][on #00AAAA] [/][bold #FFFF55 on #00AAAA]5[/][#FFFFFF on #00AAAA]M[/][#FFFFFF on #00AAAA]o[/][#FFFFFF on #00AAAA]v[/][#FFFFFF on #00AAAA]e[/][on #00AAAA] [/][bold #FFFF55 on #00AAAA]6[/][#FFFFFF on #00AAAA]E[/][#FFFFFF on #00AAAA]x[/][#FFFFFF on #00AAAA]i[/][#FFFFFF on #00AAAA]t[/][on #00AAAA] [/][on #00AAAA] [/][on #00AAAA] [/][on #00AAAA] [/][on #00AAAA] [/]
