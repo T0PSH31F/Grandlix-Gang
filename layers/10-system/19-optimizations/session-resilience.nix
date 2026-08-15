@@ -157,6 +157,30 @@ in
           ln -sfn "$_storepath" "/nix/var/nix/gcroots/agetty-''${_name}"
         fi
       fi
+
+      # ── Pin util-linux sibling outputs ────────────────────────────────
+      # The util-linux -bin output contains symlinks to sibling outputs
+      # (-mount, -login, -swap, -lastlog) that nix's GC does NOT track as
+      # references. Without explicit GC roots, nix-collect-garbage deletes
+      # these sibling outputs, leaving dangling symlinks → mount: command
+      # not found → unbootable system.
+      #
+      # This scans all util-linux*-bin outputs in /nix/store and pins any
+      # symlink targets that live in different store paths.
+      for _bindir in /nix/store/*util-linux*-bin/bin; do
+        [ -d "$_bindir" ] || continue
+        for _link in "$_bindir"/*; do
+          [ -L "$_link" ] || continue
+          _target=$(readlink -f "$_link" 2>/dev/null) || continue
+          # Only pin if target is in a DIFFERENT store path (sibling output)
+          _link_store=$(echo "$_link" | grep -o '/nix/store/[^/]*' | head -1)
+          _target_store=$(echo "$_target" | grep -o '/nix/store/[^/]*' | head -1)
+          [ "$_link_store" = "$_target_store" ] && continue
+          [ -e "$_target" ] || continue
+          _name=$(basename "$_target_store")
+          ln -sfn "$_target_store" "/nix/var/nix/gcroots/util-linux-sibling-''${_name}" 2>/dev/null || true
+        done
+      done
     '';
 
     # ============================================================================

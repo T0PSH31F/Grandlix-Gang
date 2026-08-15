@@ -15,7 +15,7 @@ in
     host = mkOption {
       type = types.str;
       default = "127.0.0.1";
-      description = "Host to bind the backend service to";
+      description = "Host to bind the backend service to (loopback by default)";
     };
 
     port = mkOption {
@@ -39,7 +39,16 @@ in
     manageDatabase = mkOption {
       type = types.bool;
       default = false;
-      description = "Whether to create the polyfloor database and user (use only if no shared PostgreSQL)";
+      description = ''
+        Whether to create the polyfloor database and user.
+        Disable when using NFP's shared PostgreSQL (default).
+      '';
+    };
+
+    logLevel = mkOption {
+      type = types.enum [ "debug" "info" "warning" "error" "critical" ];
+      default = "info";
+      description = "Backend log level";
     };
   };
 
@@ -62,7 +71,7 @@ in
     ];
 
     # PostgreSQL: ensure database and user exist (uses existing shared instance)
-    services.postgresql = mkIf (!cfg.manageDatabase) {
+    services.postgresql = mkIf cfg.manageDatabase {
       ensureUsers = [
         {
           name = "polyfloor";
@@ -72,25 +81,32 @@ in
       ensureDatabases = [ "polyfloor" ];
     };
 
-    # Polyfloor backend service — headless, no Wayland variables
+    # Polyfloor backend service — headless, no Wayland/GUI variables
     systemd.services.polyfloor-backend = {
       description = "Polyfloor FastAPI backend";
       wantedBy = [ "multi-user.target" ];
-      after = [ "postgresql.service" "network.target" ];
+      after = [ "network.target" ];
 
       environment = {
         POLYFLOOR_HOST = cfg.host;
         POLYFLOOR_PORT = toString cfg.port;
+        POLYFLOOR_LOG_LEVEL = cfg.logLevel;
         POLYFLOOR_OUTPUT_ROOT = "${cfg.dataDir}/floors";
       };
 
       serviceConfig = {
-        User = "polyfloor";
-        Group = "polyfloor";
-        WorkingDirectory = cfg.dataDir;
+        # Execution — uses uv for now; replace with packaged executable when available
         ExecStart = "${pkgs.uv}/bin/uv run uvicorn polyfloor.main:app --host ${cfg.host} --port ${toString cfg.port}";
         Restart = "on-failure";
         RestartSec = "5s";
+
+        # User isolation
+        User = "polyfloor";
+        Group = "polyfloor";
+        WorkingDirectory = cfg.dataDir;
+
+        # Secrets via SOPS environment file
+        EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
 
         # Hardening
         NoNewPrivileges = true;
@@ -99,13 +115,23 @@ in
         ProtectHome = true;
         ReadWritePaths = [ cfg.dataDir ];
         StateDirectory = "polyfloor";
-      }
-      // optionalAttrs (cfg.environmentFile != null) {
-        EnvironmentFile = cfg.environmentFile;
+
+        # Network — bind to loopback only
+        IPAddressAllow = [ "127.0.0.1" "::1" ];
+
+        # Capabilities
+        CapabilityBoundingSet = "";
+        AmbientCapabilities = "";
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectControlGroups = true;
+        RestrictNamespaces = true;
+        RestrictRealtime = true;
+        LockPersonality = true;
       };
     };
 
-    # Impermanence: persist polyfloor data
+    # Impermanence: persist polyfloor data (opt-in, NFP controls this)
     environment.persistence."/persist" =
       mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
         {

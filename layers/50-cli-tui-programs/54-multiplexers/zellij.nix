@@ -678,17 +678,6 @@ in
       if command -v zellij-colors-sync >/dev/null 2>&1; then
         zellij-colors-sync 2>/dev/null || true
       fi
-
-      # Named session z0r0.clan for persistence across terminals and LAN access via SSH
-      if [ -z "$ZELLIJ" ] && [ "$TERM" != "dumb" ] && [ -z "$ZELLIJ_SUBSHELL" ]; then
-        # Prune EXITED sessions older than 7 days (graceful cleanup, keep z0r0.clan)
-        zellij list-sessions -n 2>/dev/null | while IFS= read -r s; do
-          [ "$s" = "z0r0.clan" ] && continue
-          zellij delete-session --force "$s" 2>/dev/null || true
-        done
-        # Attach to or create the named session with opencode layout
-        exec zellij attach "z0r0.clan" 2>/dev/null || exec zellij --layout opencode --session "z0r0.clan"
-      fi
     '';
 
     systemd.user.services.zellij-colors = {

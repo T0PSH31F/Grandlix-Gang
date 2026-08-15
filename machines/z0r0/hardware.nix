@@ -92,6 +92,7 @@
 
   # Swap Configuration
   swapDevices = [
+    { device = "/dev/disk/by-uuid/f3b5cc40-4eaf-4f9e-a3e5-b2f2f43b4826"; }
     {
       device = "/persist/swapfile";
       size = 32768; # 32GB

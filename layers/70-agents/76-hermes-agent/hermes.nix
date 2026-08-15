@@ -617,6 +617,10 @@ in
             # when Hermes supports HTTP MCP transport.
           };
         };
+
+        display = {
+          skin = "lain";
+        };
       };
 
       extraArgs = [
@@ -645,6 +649,9 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/hermes/.hermes 0750 hermes hermes -"
       "d /var/lib/hermes/.hermes/hermes-agent 0750 hermes hermes -"
+      # Symlink user skins into HERMES_HOME so custom skins resolve
+      # deterministically across rebuilds (replaces one-off `ln -s`).
+      "L /var/lib/hermes/.hermes/skins - hermes hermes - /home/t0psh31f/.hermes/skins"
     ];
 
     system.activationScripts.hermes-migrate = {

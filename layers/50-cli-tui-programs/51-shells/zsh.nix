@@ -163,6 +163,11 @@ in
         ${lib.optionalString (!cfg.headless) ''
           if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$TMUX" ]] && [[ -z "$STY" ]] && [[ "$TERM_PROGRAM" != "vscode" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "Waveterm" ]] && [[ -z "$SSH_CONNECTION" ]]; then
               if command -v zellij >/dev/null 2>&1; then
+                # Prune old EXITED sessions (keep z0r0.clan)
+                zellij list-sessions -n 2>/dev/null | while IFS= read -r s; do
+                  [ "$s" = "z0r0.clan" ] && continue
+                  zellij delete-session --force "$s" 2>/dev/null || true
+                done
                 # Try attaching to existing persistent session; create with correct layout if missing
                 zellij attach "z0r0.clan" 2>/dev/null || zellij --layout opencode --session "z0r0.clan"
               fi

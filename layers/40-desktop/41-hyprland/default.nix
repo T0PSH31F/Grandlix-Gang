@@ -73,7 +73,7 @@ in
         hyprland = {
           prettyName = "Hyprland";
           comment = "Hyprland compositor managed by UWSM";
-          binPath = "/run/current-system/sw/bin/start-hyprland";
+          binPath = "/run/current-system/sw/bin/Hyprland";
         };
       };
     };
@@ -141,7 +141,9 @@ in
           package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
           portalPackage =
             inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-          systemd.enable = true;
+          # Disabled: UWSM manages systemd integration (targets, env vars, session lifecycle).
+          # Enabling this causes exec-once/exec-shutdown to fight UWSM over hyprland-session.target.
+          systemd.enable = false;
           plugins = [
             # Temporarily disabled due to ABI mismatch with recent Hyprland commits (renderHWCursorBuffer)
             # inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors

@@ -215,6 +215,11 @@ with lib;
         echo "restoring blank /@root subvolume..."
         ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot /mnt/@root-blank /mnt/@root
 
+        # Ensure essential skeleton mount directories exist on /@root for impermanence bind mounts
+        echo "ensuring mount skeleton directories on /@root..."
+        ${pkgs.coreutils}/bin/mkdir -p /mnt/@root/{bin,etc/ssh,etc/NetworkManager/system-connections,var/lib/systemd,var/lib/nixos,var/lib/hermes,var/lib/tailscale,var/lib/skyvern,var/log,tmp,usr,home/t0psh31f,root}
+        ${pkgs.coreutils}/bin/touch /mnt/@root/etc/NIXOS
+
         # NOTE: We DO NOT roll back @home. Wiping @home destroys the mount points
         # for impermanence bind-mounts from /persist, causing race conditions
         # that lead to login failures (black screens).
