@@ -4,10 +4,10 @@
 with lib;
 
 let
-  cfg = config.programs.kiro-cli;
+  cfg = config.layers.layer-70.agent.kiro-cli;
 in
 {
-  options.programs.kiro-cli = {
+  options.layers.layer-70.agent.kiro-cli = {
     enable = mkEnableOption "Kiro CLI — command-line interface for Kiro agentic IDE";
   };
 

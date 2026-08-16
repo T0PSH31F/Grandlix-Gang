@@ -113,7 +113,7 @@
     layer-50.cli.azure-cli.enable = true;
 
     # Kiro CLI — agentic IDE command-line interface
-    programs.kiro-cli.enable = true;
+    layer-70.agent.kiro-cli.enable = true;
   };
 
   # ============================================================================
