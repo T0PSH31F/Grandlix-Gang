@@ -19,7 +19,7 @@ in
       azure-cli-extensions.acrcssc     # Azure Container Registry CSSC
       azure-cli-extensions.acrquery    # Azure Container Registry Query
       azure-cli-extensions.aks-preview # Azure Kubernetes Service
-      azure-cli-extensions.containerapp # Azure Container Apps
+      # azure-cli-extensions.containerapp # DISABLED: kubernetes version conflict
 
       # AI extensions
       azure-cli-extensions.ai-examples # Azure AI Examples
