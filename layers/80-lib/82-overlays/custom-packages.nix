@@ -424,15 +424,19 @@ final: prev: {
   # 20% fewer tokens for coding agents, 60-95% for JSON.
   headroom-ai = final.python3Packages.buildPythonPackage rec {
     pname = "headroom-ai";
-    version = "0.1.0";  # Update from PyPI as needed
+    version = "0.35.0";
+    format = "wheel";
 
-    pyproject = true;
-    build-system = with final.python3Packages; [ setuptools ];
-
-    src = final.fetchPypi {
-      inherit pname version;
-      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # TODO: get real hash
+    src = final.fetchurl {
+      url = "https://files.pythonhosted.org/packages/cp310/h/headroom-ai/headroom_ai-${version}-cp310-abi3-manylinux_2_28_x86_64.whl";
+      hash = "sha256-q9u6vDFLCeDyexZvC+Q9w4a43jOASKZv6AS8HTzyv/Q=";
     };
+
+    nativeBuildInputs = with final.python3Packages; [
+      pythonRelaxDepsHook
+    ];
+
+    pythonRelaxDeps = true;
 
     propagatedBuildInputs = with final.python3Packages; [
       fastapi
@@ -442,6 +446,15 @@ final: prev: {
     ];
 
     doCheck = false;
+
+    meta = with final.lib; {
+      description = "Context compression proxy for AI agents — 20-95% fewer tokens";
+      homepage = "https://github.com/headroomlabs-ai/headroom";
+      license = licenses.asl20;
+      mainProgram = "headroom";
+      platforms = [ "x86_64-linux" ];
+    };
+  };
 
     meta = with final.lib; {
       description = "Context compression proxy for AI agents — 20-95% fewer tokens";
