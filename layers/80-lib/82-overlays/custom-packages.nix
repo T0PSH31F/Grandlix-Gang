@@ -434,7 +434,7 @@ final: prev: {
 
     nativeBuildInputs = with final.python3Packages; [
       pythonRelaxDepsHook
-    ];
+    ] ++ [ final.ast-grep ];
 
     pythonRelaxDeps = true;
 
