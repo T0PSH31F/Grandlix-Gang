@@ -442,7 +442,7 @@ final: prev: {
     propagatedBuildInputs = with final.python3Packages; [
       fastapi
       uvicorn
-      httpx
+      (httpx.override { enableHttp2 = true; })
       pydantic
       tiktoken
       rich
