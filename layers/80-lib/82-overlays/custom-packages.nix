@@ -434,9 +434,10 @@ final: prev: {
 
     nativeBuildInputs = with final.python3Packages; [
       pythonRelaxDepsHook
-    ] ++ [ final.ast-grep ];
+    ];
 
     pythonRelaxDeps = true;
+    pythonRemoveDeps = [ "ast-grep-cli" ];  # Not available in nixpkgs, optional for code compression
 
     propagatedBuildInputs = with final.python3Packages; [
       fastapi
