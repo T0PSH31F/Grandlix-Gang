@@ -108,6 +108,12 @@
 
     # codegraph — semantic code intelligence for AI coding agents
     layer-70.agent.codegraph.enable = true;
+
+    # Azure CLI — containers, AI endpoints, VMs
+    layer-50.cli.azure-cli.enable = true;
+
+    # Kiro CLI — agentic IDE command-line interface
+    programs.kiro-cli.enable = true;
   };
 
   # ============================================================================

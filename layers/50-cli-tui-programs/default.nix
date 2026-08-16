@@ -32,6 +32,7 @@ in
     (mkDendriticModule "nix-tools" ./53-tools/nix-tools.nix)
     (mkDendriticModule "python" ./53-tools/python.nix)
     (mkDendriticModule "system-utils" ./53-tools/system-utils.nix)
+    (mkDendriticModule "azure-cli" ./53-tools/azure-cli.nix)
     (mkDendriticModule "yazelix" ./59-integrations/yazelix.nix)
     (mkDendriticModule "vivid" ./58-theming/vivid.nix)
     (mkDendriticModule "terminal-toys" ./58-theming/terminal-toys.nix)

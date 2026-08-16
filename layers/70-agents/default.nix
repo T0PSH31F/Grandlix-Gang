@@ -15,6 +15,7 @@ in
     (mkDendriticModule "opencode" ./71-coding/opencode.nix)
     (mkDendriticModule "antigravity" ./71-coding/antigravity.nix)
     (mkDendriticModule "codegraph" ./71-coding/codegraph.nix)
+    (mkDendriticModule "kiro-cli" ./71-coding/kiro-cli.nix)
     (mkDendriticModule "agent-audio" ./72-voice/asr-tts/agent-audio.nix)
     ./packages-ai.nix
     ./74-ai-infra
