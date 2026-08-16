@@ -455,12 +455,4 @@ final: prev: {
       platforms = [ "x86_64-linux" ];
     };
   };
-
-    meta = with final.lib; {
-      description = "Context compression proxy for AI agents — 20-95% fewer tokens";
-      homepage = "https://github.com/headroomlabs-ai/headroom";
-      license = licenses.asl20;
-      mainProgram = "headroom";
-    };
-  };
 }
