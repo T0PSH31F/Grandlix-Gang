@@ -15,20 +15,8 @@ in
     environment.systemPackages = with pkgs; [
       azure-cli
 
-      # Container extensions
-      azure-cli-extensions.acrcssc     # Azure Container Registry CSSC
-      azure-cli-extensions.acrquery    # Azure Container Registry Query
+      # Extensions — add more as needed after verifying they build
       azure-cli-extensions.aks-preview # Azure Kubernetes Service
-      # azure-cli-extensions.containerapp # DISABLED: kubernetes version conflict
-
-      # AI extensions
-      azure-cli-extensions.ai-examples # Azure AI Examples
-      azure-cli-extensions.arize-ai    # Arize AI observability
-
-      # VM extensions
-      azure-cli-extensions.vm-repair   # Virtual Machine Repair
-
-      # Networking
       azure-cli-extensions.nsp         # Network Security Perimeter
     ];
   };
