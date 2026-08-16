@@ -193,6 +193,12 @@
       port = 3333;
     };
 
+    # Headroom — context compression proxy (20-95% token savings)
+    ai-services.headroom = {
+      enable = true;
+      port = 8787;
+    };
+
     # Polyfloor — Multi-floor AI company OS
     ai-services.polyfloor = {
       enable = true;

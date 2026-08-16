@@ -97,6 +97,17 @@
               type = "local";
               env.MISTRAL_API_KEY = ""; # Set via environmentFile or sops
             };
+            # Headroom MCP — context compression (20-95% token savings)
+            # Tools: headroom_compress, headroom_retrieve, headroom_stats
+            headroom = {
+              command = [
+                "headroom"
+                "mcp"
+                "serve"
+              ];
+              enabled = true;
+              type = "local";
+            };
 
             # ── Disabled ───────────────────────────────────────────
             browser-use.enabled = false; # 100% error rate, not needed

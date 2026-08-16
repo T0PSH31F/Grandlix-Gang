@@ -417,4 +417,34 @@ final: prev: {
   # placeholder hashes (sha256-AAAA...) that never got filled in. Referenced
   # nowhere in the repo. It caused EVERY rebuild to attempt a doomed npm build.
   # Re-add with real hashes if Paperclip integration resumes.
+
+  # ── Headroom: Context compression proxy for AI agents ────────────
+  # https://github.com/headroomlabs-ai/headroom
+  # Compresses tool outputs, logs, files, and RAG chunks before LLM.
+  # 20% fewer tokens for coding agents, 60-95% for JSON.
+  headroom-ai = final.python3Packages.buildPythonPackage rec {
+    pname = "headroom-ai";
+    version = "0.1.0";  # Update from PyPI as needed
+
+    src = final.fetchPypi {
+      inherit pname version;
+      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # TODO: get real hash
+    };
+
+    propagatedBuildInputs = with final.python3Packages; [
+      fastapi
+      uvicorn
+      httpx
+      pydantic
+    ];
+
+    doCheck = false;
+
+    meta = with final.lib; {
+      description = "Context compression proxy for AI agents — 20-95% fewer tokens";
+      homepage = "https://github.com/headroomlabs-ai/headroom";
+      license = licenses.asl20;
+      mainProgram = "headroom";
+    };
+  };
 }

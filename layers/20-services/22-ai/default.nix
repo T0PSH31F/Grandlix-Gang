@@ -37,6 +37,7 @@
     ./langgraph.nix # LangGraph — multi-agent orchestration
     ./freellmapi.nix # FreeLLMAPI — free-tier LLM router
     ./mistral-mcp.nix # Mistral MCP server (HTTP mode)
+    ./headroom.nix # Headroom — context compression proxy for AI agents
     ./opencompany.nix # OpenCompany — AI agent workflow canvas
     ./polyfloor.nix # Polyfloor — Multi-floor AI company OS
     ./polyfloor-secrets.nix # Polyfloor SOPS secrets
