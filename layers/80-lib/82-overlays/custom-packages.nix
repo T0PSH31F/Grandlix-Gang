@@ -443,6 +443,11 @@ final: prev: {
       uvicorn
       httpx
       pydantic
+      tiktoken
+      rich
+      opentelemetry-api
+      pyyaml
+      tomlkit
     ];
 
     doCheck = false;
