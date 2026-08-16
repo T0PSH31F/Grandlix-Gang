@@ -194,10 +194,13 @@
     };
 
     # Headroom — context compression proxy (20-95% token savings)
-    ai-services.headroom = {
-      enable = true;
-      port = 8787;
-    };
+    # DISABLED: platform-specific wheel, hard to package in Nix
+    # Install via pip: pip install "headroom-ai[all]"
+    # Run manually: headroom proxy --port 8787
+    # ai-services.headroom = {
+    #   enable = true;
+    #   port = 8787;
+    # };
 
     # Polyfloor — Multi-floor AI company OS
     ai-services.polyfloor = {
