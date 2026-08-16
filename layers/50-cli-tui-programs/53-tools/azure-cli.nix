@@ -16,21 +16,20 @@ in
       azure-cli
 
       # Container extensions
-      azure-cli-extensions.acr          # Azure Container Registry
-      azure-cli-extensions.aks          # Azure Kubernetes Service
+      azure-cli-extensions.acrcssc     # Azure Container Registry CSSC
+      azure-cli-extensions.acrquery    # Azure Container Registry Query
+      azure-cli-extensions.aks-preview # Azure Kubernetes Service
       azure-cli-extensions.containerapp # Azure Container Apps
-      azure-cli-extensions.acssc        # Azure Container Storage
 
-      # AI / OpenAI extensions
-      azure-cli-extensions.azext_ai     # Azure AI Services
-      azure-cli-extensions.cognitiveservices  # Cognitive Services
+      # AI extensions
+      azure-cli-extensions.ai-examples # Azure AI Examples
+      azure-cli-extensions.arize-ai    # Arize AI observability
 
       # VM extensions
-      azure-cli-extensions.vm           # Virtual Machines
-      azure-cli-extensions.disk         # Managed Disks
+      azure-cli-extensions.vm-repair   # Virtual Machine Repair
 
       # Networking
-      azure-cli-extensions.nsp          # Network Security Perimeter
+      azure-cli-extensions.nsp         # Network Security Perimeter
     ];
   };
 }
