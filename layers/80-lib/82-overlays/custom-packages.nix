@@ -426,6 +426,9 @@ final: prev: {
     pname = "headroom-ai";
     version = "0.1.0";  # Update from PyPI as needed
 
+    pyproject = true;
+    build-system = with final.python3Packages; [ setuptools ];
+
     src = final.fetchPypi {
       inherit pname version;
       hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # TODO: get real hash
