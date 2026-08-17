@@ -213,6 +213,7 @@
   layers.layer-76.hermes.enableDesktop = true;
   layers.layer-76.hermes-workspace.enable = true;
   layers.layer-76.hermes-dashboard.enable = true;
+  layers.layer-76.hermes-live-voice.enable = true;
 
   layers.layer-20.services.communication.signal-cli-daemon = {
     enable = true;
