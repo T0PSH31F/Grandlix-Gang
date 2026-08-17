@@ -16,6 +16,26 @@ let
     in
     lib.head (lib.splitString ":" withoutProto);
 
+  # Vendored custom Hermes skins (source of truth: ./skins/).
+  # Each is symlinked into HERMES_HOME/skins/<name>.yaml at build time.
+  skinFiles = [
+    "bubblegum-80s"
+    "catppuccin"
+    "dos"
+    "empire"
+    "lain"
+    "mother"
+    "mythos"
+    "neonwave"
+    "netrunner"
+    "nous"
+    "pirate"
+    "sakura"
+    "skynet"
+    "telemate"
+    "vault-tec"
+  ];
+
   # Shared sops file paths
   extSopsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
   vicinaeSopsFile = ../../../layers/00-cyberia/03-treasure/secrets/vicinae.yaml;
@@ -649,10 +669,12 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/hermes/.hermes 0750 hermes hermes -"
       "d /var/lib/hermes/.hermes/hermes-agent 0750 hermes hermes -"
-      # Symlink user skins into HERMES_HOME so custom skins resolve
-      # deterministically across rebuilds (replaces one-off `ln -s`).
-      "L /var/lib/hermes/.hermes/skins - hermes hermes - /home/t0psh31f/.hermes/skins"
-    ];
+      # Vendored custom skins — symlinked from the Nix store (flake source) into
+      # HERMES_HOME so they resolve deterministically across rebuilds/reboots and
+      # flake edits propagate. Source of truth: layers/70-agents/76-hermes-agent/skins/.
+    ] ++ lib.concatMap (name: [
+      "L /var/lib/hermes/.hermes/skins/${name}.yaml - hermes hermes - ${./skins}/${name}.yaml"
+    ]) skinFiles;
 
     system.activationScripts.hermes-migrate = {
       deps = [ "users" ];
