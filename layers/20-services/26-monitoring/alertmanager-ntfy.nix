@@ -1,0 +1,56 @@
+# alertmanager-ntfy — Forward Prometheus Alertmanager notifications to ntfy.sh
+# https://github.com/alexbakker/alertmanager-ntfy
+#
+# Bridges Prometheus alerts to ntfy for push notifications.
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib;
+let
+  cfg = config.services.alertmanager-ntfy;
+in
+{
+  options.services.alertmanager-ntfy = {
+    enable = mkEnableOption "alertmanager-ntfy — Prometheus alerts to ntfy";
+
+    ntfyUrl = mkOption {
+      type = types.str;
+      default = "http://localhost:8099";
+      description = "ntfy server URL";
+    };
+
+    ntfyTopic = mkOption {
+      type = types.str;
+      default = "prometheus-alerts";
+      description = "ntfy topic for alerts";
+    };
+
+    alertmanagerUrl = mkOption {
+      type = types.str;
+      default = "http://localhost:9093";
+      description = "Prometheus Alertmanager URL";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    # alertmanager-ntfy service
+    systemd.services.alertmanager-ntfy = {
+      description = "alertmanager-ntfy — Prometheus alerts to ntfy";
+      after = [ "network.target" "alertmanager.service" "ntfy-sh.service" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        ExecStart = "${pkgs.alertmanager-ntfy}/bin/alertmanager-ntfy --ntfy-url ${cfg.ntfyUrl} --ntfy-topic ${cfg.ntfyTopic} --alertmanager-url ${cfg.alertmanagerUrl}";
+        Restart = "always";
+        RestartSec = 5;
+      };
+    };
+
+    # Grafana notification channel for ntfy
+    # Configure in Grafana UI: Alerting → Contact Points → New → ntfy
+    # URL: ${cfg.ntfyUrl}/${cfg.ntfyTopic}
+  };
+}

@@ -13,5 +13,6 @@ in
     (mkDendriticModule "vlc" ./vlc.nix)
     (mkDendriticModule "feh" ./feh.nix)
     (mkDendriticModule "kodi" ./kodi.nix)
+    (mkDendriticModule "mopidy" ./mopidy.nix)
   ];
 }

@@ -7,6 +7,48 @@
 with lib;
 let
   cfg = config.services.ai-services.polyfloor;
+
+  # Polyfloor FastAPI backend — built from the pinned source (convention matches
+  # freellmpool.nix: buildPythonApplication + fetchFromGitHub). The backend lives
+  # in the repo's `backend/` subdir (hatchling package `polyfloor`).
+  polyfloorPkg = pkgs.python3Packages.buildPythonApplication rec {
+    pname = "polyfloor";
+    version = "0.1.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "T0PSH31F";
+      repo = "Polyfloor";
+      rev = "e660ac8738098ab4c28bdde2adb23c4b9a216edf";
+      hash = "sha256-Wkw9PPTZ8MtusdK+DPddAAmGB2GH7SH4K1SHmFfM8R8=";
+    };
+
+    # Build from the backend/ subdirectory (where pyproject.toml lives)
+    postUnpack = "sourceRoot=$sourceRoot/backend";
+
+    pyproject = true;
+    build-system = [ pkgs.python3Packages.hatchling ];
+
+    dependencies = with pkgs.python3Packages; [
+      fastapi
+      uvicorn
+      pydantic
+      pydantic-settings
+      asyncpg
+      httpx
+      sse-starlette
+      structlog
+    ];
+
+    doCheck = false;
+
+    meta = {
+      description = "Polyfloor — Multi-floor AI company OS (FastAPI backend)";
+      homepage = "https://github.com/T0PSH31F/Polyfloor";
+      license = pkgs.lib.licenses.mit;
+      platforms = pkgs.lib.platforms.linux;
+      mainProgram = "polyfloor";
+    };
+  };
 in
 {
   options.services.ai-services.polyfloor = {
@@ -49,6 +91,13 @@ in
       type = types.enum [ "debug" "info" "warning" "error" "critical" ];
       default = "info";
       description = "Backend log level";
+    };
+
+    package = mkOption {
+      type = types.package;
+      default = polyfloorPkg;
+      defaultText = "Polyfloor backend built from pinned source";
+      description = "The Polyfloor backend package (FastAPI app).";
     };
   };
 
@@ -95,8 +144,9 @@ in
       };
 
       serviceConfig = {
-        # Execution — uses uv for now; replace with packaged executable when available
-        ExecStart = "${pkgs.uv}/bin/uv run uvicorn polyfloor.main:app --host ${cfg.host} --port ${toString cfg.port}";
+        # Execution — packaged backend (hatchling app). The `polyfloor` console
+        # script runs uvicorn with settings read from POLYFLOOR_* env vars.
+        ExecStart = "${cfg.package}/bin/polyfloor";
         Restart = "on-failure";
         RestartSec = "5s";
 

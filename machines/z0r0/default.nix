@@ -88,6 +88,37 @@
       };
     };
 
+    # Honcho — self-hosted cross-agent memory
+    services.honcho = {
+      enable = true;
+      port = 8000;
+    };
+
+    # ntfy — push notification service
+    services.ntfy-sh = {
+      enable = true;
+      port = 8099;
+    };
+
+    # alertmanager-ntfy — Prometheus alerts to ntfy
+    services.alertmanager-ntfy = {
+      enable = true;
+      ntfyUrl = "http://localhost:8099";
+      ntfyTopic = "prometheus-alerts";
+    };
+
+    # Mopidy — music server
+    services.mopidy = {
+      enable = true;
+      port = 6680;
+      youtube.enable = true;
+      podcast.enable = true;
+      jellyfin = {
+        enable = true;
+        url = "http://localhost:8096";
+      };
+    };
+
     layer-30.theming.themes.greeter = {
       # Options: "sddm" | "greetd" | "noctalia-greeter"
       type = "noctalia-greeter";
