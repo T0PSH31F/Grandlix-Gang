@@ -206,6 +206,28 @@
             };
           };
         };
+
+        # Kong AI Gateway — unified LLM provider
+        # Routes to ExtremeRouter (coding), FreeLLMAPI (free), etc.
+        # OpenCode calls /v1/models to enumerate available models
+        provider.kong = {
+          baseUrl = "http://127.0.0.1:8090/v1";
+          name = "Kong AI Gateway";
+          models = {
+            # Models are auto-discovered via /v1/models endpoint
+            # Add static model definitions here if needed
+          };
+        };
+
+        # ExtremeRouter — 154+ providers, RTK savings, smart fallback
+        provider.extreme-router = {
+          baseUrl = "http://127.0.0.1:20128/v1";
+          name = "ExtremeRouter";
+          models = {
+            # Models are auto-discovered via /v1/models endpoint
+            # 154+ providers with auto-fallback
+          };
+        };
       };
 
       xdg.configFile = {
