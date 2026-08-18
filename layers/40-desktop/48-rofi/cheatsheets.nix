@@ -977,7 +977,7 @@ CHEATSHEET_EOF
 
 in
 {
-  home.home.packages = [
+  environment.systemPackages = [
     cheatsheet_picker
     zellij_cheatsheet
     nvim_cheatsheet

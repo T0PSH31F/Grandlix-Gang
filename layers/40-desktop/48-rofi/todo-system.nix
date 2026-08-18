@@ -356,7 +356,7 @@ $task_list"
 
 in
 {
-  options.layers.layer-40.desktop.todo-system = {
+  options.layers.layer-20.services.todo-system = {
     enable = lib.mkEnableOption "Rofi + Hermes To-Do system" // {
       default = true;
     };

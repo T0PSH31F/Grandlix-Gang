@@ -138,7 +138,7 @@ in
         protonplus
         protontricks
         steam-rom-manager
-        wineWowPackages.stable
+        wineWow64Packages.stable
         bottles
       ];
 
