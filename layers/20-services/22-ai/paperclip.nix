@@ -7,20 +7,6 @@
 with lib;
 let
   cfg = config.services.ai-services.paperclip;
-
-  # PAPERCLIP IS DISABLED — pnpm monorepo with complex overrides/patches.
-  #
-  # The upstream repo (paperclipai/paperclip) doesn't ship pnpm-lock.yaml.
-  # Generating one locally fails because the project uses pnpm overrides and
-  # patchedDependencies that must match the lockfile exactly.
-  #
-  # To enable this package:
-  # 1. Wait for upstream to commit pnpm-lock.yaml, OR
-  # 2. Fork the repo and commit the lock file, OR
-  # 3. Use OCI container approach (virtualisation.oci-containers)
-  #
-  # See: https://github.com/paperclipai/paperclip/issues (request lock file)
-  paperclipPkg = null; # Placeholder — cannot build without upstream lock file
 in
 {
   options.services.ai-services.paperclip = {
@@ -52,36 +38,29 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Paperclip cannot be built — see comment above paperclipPkg
-    assertions = [{
-      assertion = paperclipPkg != null;
-      message = "paperclip is currently disabled: upstream doesn't ship pnpm-lock.yaml. See layers/20-services/22-ai/paperclip.nix for details.";
-    }];
-
-    systemd.services.paperclip = mkIf (paperclipPkg != null) {
-      description = "Paperclip — AI agent team orchestration";
-      after = [ "network.target" "postgresql.service" ];
-      wants = [ "postgresql.service" ];
-      wantedBy = [ "multi-user.target" ];
-
-      serviceConfig = {
-        ExecStart = "${lib.getExe paperclipPkg}";
-        Restart = "always";
-        RestartSec = 5;
-        Environment = [
-          "PORT=${toString cfg.port}"
-          "NODE_ENV=production"
-          "SERVE_UI=true"
-          "DATABASE_URL=${cfg.databaseUrl}"
-          "BETTER_AUTH_SECRET=${cfg.authSecret}"
-          "PAPERCLIP_DEPLOYMENT_MODE=authenticated"
-          "PAPERCLIP_DEPLOYMENT_EXPOSURE=private"
-          "PAPERCLIP_PUBLIC_URL=http://localhost:${toString cfg.port}"
-        ];
-        StateDirectory = "paperclip";
-        WorkingDirectory = "${paperclipPkg}";
+    virtualisation.oci-containers.containers.paperclip = {
+      image = "ghcr.io/paperclipai/paperclip:latest";
+      ports = [ "127.0.0.1:${toString cfg.port}:3100" ];
+      environment = {
+        PORT = "3100";
+        NODE_ENV = "production";
+        SERVE_UI = "true";
+        DATABASE_URL = cfg.databaseUrl;
+        BETTER_AUTH_SECRET = cfg.authSecret;
+        PAPERCLIP_DEPLOYMENT_MODE = "authenticated";
+        PAPERCLIP_DEPLOYMENT_EXPOSURE = "private";
+        PAPERCLIP_PUBLIC_URL = "http://localhost:${toString cfg.port}";
       };
+      volumes = [
+        "${cfg.dataDir}:/app/data"
+      ];
+      extraOptions = [ "--network=host" ];
+      autoStart = true;
     };
+
+    systemd.tmpfiles.rules = [
+      "d ${cfg.dataDir} 0755 root root -"
+    ];
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
   };

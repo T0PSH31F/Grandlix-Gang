@@ -326,8 +326,17 @@ final: prev: {
   };
 
   # ── codegraph: Semantic code intelligence for AI agents ───────────
-  # Already in nixpkgs as `codegraph` (v1.4.1+). No overlay needed.
-  # https://github.com/colbymchenry/codegraph
+  # Wrap codegraph to strip plain-text update banners on stdout that break stdio MCP JSON-RPC
+  codegraph = final.symlinkJoin {
+    name = "codegraph-${prev.codegraph.version or "1.4.1"}";
+    paths = [ prev.codegraph ];
+    nativeBuildInputs = [ final.makeWrapper ];
+    postBuild = ''
+      unlink $out/bin/codegraph
+      makeWrapper ${prev.codegraph}/bin/codegraph $out/bin/codegraph \
+        --run 'if [ "$1" = "serve" ]; then exec ${prev.codegraph}/bin/codegraph "$@" | ${final.gnugrep}/bin/grep --line-buffered -v "^\[CodeGraph\]"; fi'
+    '';
+  };
 
   # ── lazyskills: TUI for managing agent skills ────────────────────
   # Blazing-fast terminal UI for managing agent skills across all agents.
@@ -450,6 +459,7 @@ final: prev: {
       opentelemetry-api
       pyyaml
       tomlkit
+      mcp
     ];
 
     doCheck = false;

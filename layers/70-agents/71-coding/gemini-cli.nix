@@ -5,15 +5,10 @@
 }:
 {
   options.layers.layer-70.agent.gemini-cli = {
-    enable = lib.mkEnableOption "Gemini CLI agent";
+    enable = lib.mkEnableOption "Gemini CLI agent (alias for Antigravity)";
   };
 
-  home = lib.mkIf config.layers.layer-70.agent.gemini-cli.enable {
-    programs.antigravity-cli = {
-      enable = true;
-      settings = {
-        # Default settings
-      };
-    };
+  config = lib.mkIf config.layers.layer-70.agent.gemini-cli.enable {
+    layers.layer-70.agent.antigravity.enable = true;
   };
 }

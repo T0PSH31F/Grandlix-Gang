@@ -86,9 +86,6 @@ in
       mobile.android.enable = true;
       peripherals.razer.enable = lib.mkForce false; # Disabled: openrazer driver incompatible with linux 7.0.10
     };
-    layer-70.agent = {
-      ai-agent-stack.enable = true;
-    };
   };
   layers.layer-20.services.config.your-spotify.enable = true;
 
@@ -257,22 +254,6 @@ in
       };
     };
 
-    ai-services = {
-      enable = true;
-      qdrant.enable = false; # Disabled — only wanted the homepage-dashboard widget entry
-      ollama = {
-        enable = true;
-        acceleration = null;
-      };
-      chromadb.enable = true;
-      open-webui.enable = true;
-      sillytavern.enable = false; # Commented out/disabled to unblock rebuild
-      jan.enable = true;
-      lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
-      aider.enable = true;
-      postgresql.enable = true;
-      opencompany.enable = true;
-    };
 
     # Moved from Nami
     n8n-server.enable = true;

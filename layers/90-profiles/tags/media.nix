@@ -9,5 +9,15 @@
     audio.enable = lib.mkDefault true;
     mpv.enable = lib.mkDefault true;
     kodi.enable = lib.mkDefault true;
+    mopidy = {
+      enable = lib.mkDefault true;
+      port = lib.mkDefault 6680;
+      youtube.enable = lib.mkDefault true;
+      podcast.enable = lib.mkDefault true;
+      jellyfin = {
+        enable = lib.mkDefault true;
+        url = lib.mkDefault "http://localhost:8096";
+      };
+    };
   };
 }

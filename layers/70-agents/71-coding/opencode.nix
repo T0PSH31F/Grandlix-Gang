@@ -52,14 +52,14 @@
             himalaya = {
               command = [
                 "node"
-                "/home/t0psh31f/Projects/himalaya-mcp/dist/index.js"
+                "/home/t0psh31f/Projects/AI/Hermes-Agent/himalaya-mcp/dist/index.js"
               ];
               enabled = true;
               type = "local";
               env = {
                 HIMALAYA_ACCOUNT = "wrighterik77";
                 HIMALAYA_FOLDER = "INBOX";
-                HIMALAYA_BINARY = "/etc/profiles/per-user/t0psh31f/bin/himalaya";
+                HIMALAYA_BINARY = "${pkgs.himalaya}/bin/himalaya";
               };
             };
             # ── Tool Discovery & Orchestration ───────────────────────
@@ -205,27 +205,27 @@
               modalities = { input = [ "text" "image" "pdf" ]; output = [ "text" ]; };
             };
           };
-        };
 
-        # Kong AI Gateway — unified LLM provider
-        # Routes to ExtremeRouter (coding), FreeLLMAPI (free), etc.
-        # OpenCode calls /v1/models to enumerate available models
-        provider.kong = {
-          baseUrl = "http://127.0.0.1:8090/v1";
-          name = "Kong AI Gateway";
-          models = {
-            # Models are auto-discovered via /v1/models endpoint
-            # Add static model definitions here if needed
+          # Kong AI Gateway — unified LLM provider
+          # Routes to ExtremeRouter (coding), FreeLLMAPI (free), etc.
+          # OpenCode calls /v1/models to enumerate available models
+          provider.kong = {
+            baseUrl = "http://127.0.0.1:8090/v1";
+            name = "Kong AI Gateway";
+            models = {
+              # Models are auto-discovered via /v1/models endpoint
+              # Add static model definitions here if needed
+            };
           };
-        };
 
-        # ExtremeRouter — 154+ providers, RTK savings, smart fallback
-        provider.extreme-router = {
-          baseUrl = "http://127.0.0.1:20128/v1";
-          name = "ExtremeRouter";
-          models = {
-            # Models are auto-discovered via /v1/models endpoint
-            # 154+ providers with auto-fallback
+          # ExtremeRouter — 154+ providers, RTK savings, smart fallback
+          provider.extreme-router = {
+            baseUrl = "http://127.0.0.1:20128/v1";
+            name = "ExtremeRouter";
+            models = {
+              # Models are auto-discovered via /v1/models endpoint
+              # 154+ providers with auto-fallback
+            };
           };
         };
       };

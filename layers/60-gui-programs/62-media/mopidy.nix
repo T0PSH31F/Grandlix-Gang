@@ -11,10 +11,10 @@
 }:
 with lib;
 let
-  cfg = config.services.mopidy;
+  cfg = config.layers.layer-60.gui.mopidy;
 in
 {
-  options.services.mopidy = {
+  options.layers.layer-60.gui.mopidy = {
     enable = mkEnableOption "Mopidy — extensible music server";
 
     port = mkOption {

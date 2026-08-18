@@ -200,6 +200,7 @@ The util-linux broken-reference bug will delete boot-critical paths. Use `nix-sa
 - Follow existing repo style
 - Reference the layer/module affected in commit messages
 - Note any cross-machine impact (shared layers affect both z0r0 and luffy)
+- **Atomic Commits & Pushes**: All code changes, refactors, and system updates MUST be committed and pushed atomically (complete self-contained commits and pushes without leaving transient half-applied changes).
 
 ---
 

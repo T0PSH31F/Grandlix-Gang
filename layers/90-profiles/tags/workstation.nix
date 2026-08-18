@@ -13,6 +13,7 @@
   layers = {
     layer-10.system.config.resource-limits.enable = lib.mkDefault true;
     layer-50.cli.nixTools.enable = lib.mkDefault true;
+    layer-50.home.cli.services.rclone.enable = lib.mkDefault true;
     layer-30.theming.themes = {
       grub-lain.enable = lib.mkDefault false;
       plymouth-hellonavi.enable = lib.mkDefault false;

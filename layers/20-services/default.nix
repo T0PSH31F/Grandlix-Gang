@@ -18,10 +18,7 @@
     ./26-monitoring/monitoring.nix
     ./26-monitoring/ntfy-sh.nix
 
-    ./27-automation/home-assistant.nix
-    ./27-automation/n8n.nix
-    ./27-automation/pastebin.nix
-    ./27-automation/searxng.nix
+    ./27-automation
     ./29-ci
   ];
 }

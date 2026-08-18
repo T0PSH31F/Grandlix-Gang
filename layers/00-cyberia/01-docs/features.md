@@ -62,6 +62,16 @@ Material You theming from wallpaper via Noctalia v5 (native C++/OpenGL ES shell)
 | Jellyfin | Z0r0 | 8096 |
 | Sonarr / Radarr / Prowlarr | Z0r0 | 8989/7878/9696 |
 
+## To-Do + Ideas System
+
+Text-backed task management integrated with Hyprland, Rofi, and Hermes:
+- **Super+.** opens a Rofi menu to toggle/add/edit tasks in `~/Notes/todo.md`
+- **Hermes hook** auto-breaks new tasks into steps with time estimates (written to `~/Notes/todo-breakdown.md`)
+- **9:00 AM daily** voice roundup via `espeak` TTS
+- **Ideas section** in `todo.md` is preserved as-is (no auto-breakdown)
+
+**Details**: [todo-system/README.md](../20-services/27-automation/30-todo-system/README.md)
+
 ## Security
 
 - **SOPS-nix**: All secrets encrypted at rest (Age), decrypted at build time

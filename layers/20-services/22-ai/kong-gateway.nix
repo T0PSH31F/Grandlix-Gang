@@ -440,6 +440,7 @@ in
         # Logs go to stdout/stderr — no volume mount needed
       ];
       extraOptions = [
+        "--network=host"
         "--add-host=host.docker.internal:host-gateway"
         "--health-cmd=kong health"
         "--health-interval=10s"

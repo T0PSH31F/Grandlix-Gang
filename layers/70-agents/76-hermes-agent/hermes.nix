@@ -337,7 +337,7 @@ in
           openrouter.request_timeout_seconds = 180;
           # FreeLLMAPI — free-tier LLM router (28 providers, 339 models)
           freellmapi = {
-            base_url = "http://127.0.0.1:3001/v1";
+            base_url = "http://127.0.0.1:3003/v1";
             api_key = ""; # Uses FreeLLMAPI's unified key; set via env
             request_timeout_seconds = 60;
           };
@@ -568,10 +568,10 @@ in
         mcp_servers = {
           himalaya = {
             command = "node";
-            args = [ "/home/t0psh31f/Projects/himalaya-mcp/dist/index.js" ];
+            args = [ "/home/t0psh31f/Projects/AI/Hermes-Agent/himalaya-mcp/dist/index.js" ];
             env = {
               HIMALAYA_ACCOUNT = "wrighterik77";
-              HIMALAYA_BINARY = "/nix/store/3nk406biw3bbhaf5pjvx6648850zjfi6-himalaya-1.2.0/bin/himalaya";
+              HIMALAYA_BINARY = "${pkgs.himalaya}/bin/himalaya";
             };
           };
 
@@ -621,20 +621,6 @@ in
             command = "codegraph";
             args = [ "serve" "--mcp" ];
             env = { };
-          };
-
-          # FreeLLMAPI MCP — query router state, switch strategies, check key health
-          freellmapi = {
-            command = "bash";
-            args = [
-              "-c"
-              "echo 'FreeLLMAPI MCP at http://127.0.0.1:3001/mcp'"
-            ];
-            env = { };
-            # Note: For Streamable HTTP MCP, configure as:
-            #   type = "http";
-            #   url = "http://127.0.0.1:3001/mcp";
-            # when Hermes supports HTTP MCP transport.
           };
         };
 

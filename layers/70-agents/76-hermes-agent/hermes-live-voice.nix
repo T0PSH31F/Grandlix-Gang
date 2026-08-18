@@ -38,9 +38,10 @@ in
       after = [ "network.target" "hermes-agent.service" ];
       wants = [ "hermes-agent.service" ];
       wantedBy = [ "multi-user.target" ];
+      path = with pkgs; [ nodejs bash git coreutils gnugrep gnutar gzip ];
 
       serviceConfig = {
-        ExecStart = "${pkgs.nodejs}/bin/npx hermes-live-voice gateway --port ${toString cfg.port}";
+        ExecStart = "${pkgs.nodejs}/bin/npx hermes-live-voice start --port ${toString cfg.port}";
         Restart = "always";
         RestartSec = 5;
         Environment = [

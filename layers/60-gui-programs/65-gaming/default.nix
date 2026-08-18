@@ -134,11 +134,12 @@ in
         dwarf-fortress
         prismlauncher
         umu-launcher
-      #  steam-run-free
         nero-umu
         protonplus
         protontricks
         steam-rom-manager
+        wineWowPackages.stable
+        bottles
       ];
 
      programs.lutris = {

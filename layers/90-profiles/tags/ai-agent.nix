@@ -1,7 +1,7 @@
-{ lib, ... }:
+{ config, lib, ... }:
 {
-  # ai-agent — coding and agent tooling only
-  # Does NOT enable LLM backends (that's ai-server)
+  # ai-agent — coding and agent tooling profile
+  # Does NOT enable LLM inference backends (that's ai-server profile)
   imports = [
     ../../70-agents
     ../../70-agents/75-mcp
@@ -13,21 +13,38 @@
     mcp.enable = lib.mkDefault true;
     claude-code.enable = lib.mkDefault true;
     gemini-cli.enable = lib.mkDefault true;
+    codegraph.enable = lib.mkDefault true;
+    kiro-cli.enable = lib.mkDefault true;
     asr-tts.enable = lib.mkDefault false;
+    ai-agent-stack.enable = lib.mkDefault true;
   };
 
   layers.layer-75.mcp.enable = lib.mkDefault true;
-
   layers.layer-76.hermes.enable = lib.mkDefault true;
-
-  layers.layer-77.herm.enable = lib.mkForce false; # DISABLED: herm-tui has fakeHash placeholders, can't build in sandbox
+  layers.layer-76.hermes.enableDesktop = lib.mkDefault true;
+  layers.layer-76.hermes-workspace.enable = lib.mkDefault true;
+  layers.layer-76.hermes-dashboard.enable = lib.mkDefault true;
+  layers.layer-76.hermes-live-voice.enable = lib.mkDefault true;
   layers.layer-77.open-skills.enable = lib.mkDefault true;
 
-  layers.layer-78.hermes-webui.enable = lib.mkDefault true;
+  # Disabled obsolete or broken agent modules
+  layers.layer-77.herm.enable = lib.mkForce false; # DISABLED: herm-tui has fakeHash placeholders
+  layers.layer-78.hermes-webui.enable = lib.mkForce false; # DISABLED: replaced by hermes-workspace (port 3000)
 
-  # Override ai-services.nix's mkDefault false to enable these opt-in services
-  services.ai-services.mission-control.enable = lib.mkForce true;
-  services.ai-services.aionui.enable = lib.mkForce true;
-  services.ai-services.paperclip.enable = lib.mkForce false; # DISABLED: npmDepsHash placeholder, no package-lock.json
-  services.ai-services.qdrant.enable = lib.mkForce false; # DISABLED: LLVM intrinsic signature mismatch with new LLVM
+  # Orchestration & control plane services
+  services.ai-services.mission-control.enable = lib.mkDefault true;
+  services.ai-services.aionui.enable = lib.mkDefault true;
+  services.ai-services.paperclip.enable = lib.mkDefault true;
+
+  # Agent productivity & messaging daemons
+  layers.layer-20.services.todo-system.enable = lib.mkDefault true;
+  layers.layer-20.services.communication.signal-cli-daemon = {
+    enable = lib.mkDefault true;
+    port = lib.mkDefault 8080;
+  };
+  layers.layer-20.services.communication.camofox-browser = {
+    enable = lib.mkDefault true;
+    port = lib.mkDefault 9377;
+    apiKey = config.sops.placeholder.camofox_api_key or "";
+  };
 }

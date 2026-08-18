@@ -57,8 +57,7 @@
   # Note: Most features are automatically enabled via machine.tags -> 90-profiles
   layers = {
     layer-10.system = {
-      # Options: "latest" | "cachyos" | "zen"
-      hardware.kernel = "zen"; # Zen is best for laptops (responsiveness without thermal/battery penalty)
+      hardware.kernel = "zen"; # Zen kernel for z0r0 laptop workstation
       peripherals.corsair.enable = true;
       peripherals.openrgb.enable = true;
       peripherals.razer.enable = lib.mkForce false; # Disabled: openrazer driver incompatible with linux 7.0.10
@@ -66,196 +65,30 @@
       mobile.ios.enable = true;
       config.impermanence.enable = true;
       virtualization.enable = true;
-      sessionResilience.enable = true; # Fixes uwsm DBus timeouts, getty GC, orphaned session cleanup
+      sessionResilience.enable = true;
     };
-
-    layer-20.services.config = {
-      ci.auto-update.enable = true;
-      ci.github-runner.enable = true;
-      adguard = {
-        enable = lib.mkForce false;  # Moved to luffy
-      };
-      monitoring = {
-        enable = true;
-        grafana.port = 3008;
-        prometheus.port = 9090;
-        loki.port = 3100;
-      };
-      hedgedoc = {
-        enable = true;
-        port = 3001;
-        domain = "z0r0.local";
-      };
-    };
-
-    # Honcho — self-hosted cross-agent memory
-    services.honcho = {
-      enable = true;
-      port = 8000;
-    };
-
-    # ntfy — push notification service
-    services.ntfy-sh = {
-      enable = true;
-      port = 8099;
-    };
-
-    # alertmanager-ntfy — Prometheus alerts to ntfy
-    services.alertmanager-ntfy = {
-      enable = true;
-      ntfyUrl = "http://localhost:8099";
-      ntfyTopic = "prometheus-alerts";
-    };
-
-    # Mopidy — music server
-    services.mopidy = {
-      enable = true;
-      port = 6680;
-      youtube.enable = true;
-      podcast.enable = true;
-      jellyfin = {
-        enable = true;
-        url = "http://localhost:8096";
-      };
-    };
-
-    layer-30.theming.themes.greeter = {
-      # Options: "sddm" | "greetd" | "noctalia-greeter"
-      type = "noctalia-greeter";
-      noctalia-greeter.session = "hyprland-uwsm";
-    };
-
-    layer-40.desktop = {
-      noctalia.backend = "hyprland";
-    };
-
-    layer-60.gui.documents.enable = true;
-
-    # Enable zellij bottom bar (CPU/RAM) via yazelix bars
-    layer-50.cli.zellij.yazelix.bars.enable = true;
-
-    # Enable rclone Google Drive mount as a user service (auto-restarts on failure)
-    layer-50.home.cli.services.rclone.enable = true;
-
-    # codegraph — semantic code intelligence for AI coding agents
-    layer-70.agent.codegraph.enable = true;
-
-    # Azure CLI — containers, AI endpoints, VMs
-    layer-50.cli.azure-cli.enable = true;
-
-    # Kiro CLI — agentic IDE command-line interface
-    layer-70.agent.kiro-cli.enable = true;
   };
 
-  # ============================================================================
-  # 03 - SERVICE SPECIFICS & OVERRIDES (Layer 20)
-  # ============================================================================
-  # Note: Most raw services are automatically enabled via machine.tags
-
-  # ============================================================================
-  # 04 - SYSTEM & PROGRAM OVERRIDES
-  # ============================================================================
-
   services = {
-    # UsePAM left at default (true) — the previous lib.mkForce false broke
-    # session management, audit, and login limits. The publickey-hostbound
-    # issue is better fixed by disabling the extension in sshd_config or
-    # by using AuthenticationMethods explicitly.
-    # openssh.settings.UsePAM = lib.mkForce false;  # REMOVED: see above
-    sillytavern-app.enable = lib.mkForce false; # Crash-looping, not needed on z0r0
-    ai-services.lmstudio.enable = lib.mkForce false; # Disabled: packaging error in unstable
-    ai-services.qdrant.enable = lib.mkForce false; # Disabled: LLVM intrinsic signature mismatch with new LLVM
-    llm-agents.enable = true;
-
-    # Brain Service — Personal Knowledge Base (PDF/EPUB/HTML/MD RAG for Hermes)
-    ai-services.brain-service = {
-      enable = true;
-      port = 8010;
-      mcpEnable = false; # Disabled temporarily: pymupdf tests fail (test_2791, test_4090 memory ratio)
-      booksDir = "/home/t0psh31f/Notes/PKB";
-      embedModel = "nomic-embed-text";
-      embedDim = 768;
-    };
+    # Machine-specific LLM Overrides (base AI services enabled via tag: ai-server & ai-agent)
     llama-cpp-server = {
       enable = true;
       host = "0.0.0.0";
       model = "/var/lib/llama-cpp/Llama3.3-8B-Instruct-Thinking-Heretic-Uncensored-Claude-4.5-Opus-High-Reasoning.i1-IQ4_XS.gguf";
       extraFlags = [ "-ngl" "99" "--ctx-size" "8192" "--parallel" "2" "--no-warmup" ];
     };
-    n8n-server.enable = false;
-    infrastructure.langfuse.enable = true;
 
-    # Kong AI Gateway — unified LLM/API gateway
-    ai-services.kong-gateway = {
-      enable = true;
-      environmentFile = config.sops.templates."kong-env".path;
-      proxyPort = 8090; # Changed from 8081 (was in use by llama-swap)
-      # Options: "omniroute" | "extreme-router"
-      routers.codingRouter = "extreme-router"; # Use ExtremeRouter (154+ providers, RTK savings)
-    };
-
-    # Upstream LLM routers behind Kong
-    ai-services.extreme-router = {
-      enable = true;
-      port = 20128;
-    };
-    ai-services.omniroute = {
-      enable = false; # Disabled — ExtremeRouter is the coding router
-    };
+    ai-services.kong-gateway.environmentFile = config.sops.templates."kong-env".path;
     ai-services.freellmpool = {
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
       port = 8082; # Avoid conflict with signal-cli on 8080
     };
-    ai-services.langgraph = {
-      enable = false; # DISABLED: langgraph.server module not in nixpkgs (needs langgraph-cli)
-      environmentFile = config.sops.templates."langgraph-env".path;
-    };
-
-    # FreeLLMAPI — free-tier LLM router for Hermes/OpenCode fallback
-    ai-services.freellmapi = {
-      enable = true;
-      port = 3003; # Avoid conflict with HedgeDoc on 3001
-    };
-
-    # Mistral MCP — Mistral AI tool server (chat, OCR, Codestral)
-    ai-services.mistral-mcp = {
-      enable = true;
-      port = 3333;
-    };
-
-    # Headroom — context compression proxy (20-95% token savings)
-    ai-services.headroom = {
-      enable = true;
-      port = 8787;
-    };
-
-    # Polyfloor — Multi-floor AI company OS
-    ai-services.polyfloor = {
-      enable = true;
-      port = 8001;
-      environmentFile = config.sops.templates."polyfloor-env".path;
-    };
+    ai-services.polyfloor.environmentFile = config.sops.templates."polyfloor-env".path;
   };
 
   # Make Langfuse accessible from LAN for cross-machine dashboard monitoring
   virtualisation.oci-containers.containers.langfuse.environment.HOSTNAME = lib.mkForce "0.0.0.0";
-
-  layers.layer-76.hermes.enableDesktop = true;
-  layers.layer-76.hermes-workspace.enable = true;
-  layers.layer-76.hermes-dashboard.enable = true;
-  layers.layer-76.hermes-live-voice.enable = true;
-
-  layers.layer-20.services.communication.signal-cli-daemon = {
-    enable = true;
-    port = 8080; # matches hermes SIGNAL_HTTP_URL
-  };
-
-  layers.layer-20.services.communication.camofox-browser = {
-    enable = true;
-    port = 9377;
-    apiKey = config.sops.placeholder.camofox_api_key;
-  };
 
   layers.layer-20.services.communication.rustdesk = {
     enable = true;

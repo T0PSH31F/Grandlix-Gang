@@ -53,12 +53,15 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
 
+      path = with pkgs; [ nodejs_24 bash git coreutils gnugrep gnutar gzip ];
+
       environment = {
         PORT = toString cfg.port;
         BACKEND_PORT = toString cfg.backendPort;
         HOST = cfg.host;
         NODE_ENV = "production";
         COMPANY_DATA_DIR = cfg.dataDir;
+        NPM_CONFIG_CACHE = "${cfg.dataDir}/.npm";
       };
 
       serviceConfig = {
@@ -71,7 +74,7 @@ in
         StateDirectory = "opencompany";
         NoNewPrivileges = true;
         PrivateTmp = true;
-        ProtectSystem = "strict";
+        ProtectSystem = "full";
         ProtectHome = true;
         ReadWritePaths = [ cfg.dataDir ];
       };

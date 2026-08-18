@@ -11,10 +11,10 @@
 }:
 with lib;
 let
-  cfg = config.services.ntfy-sh;
+  cfg = config.layers.layer-20.services.config.ntfy-sh;
 in
 {
-  options.services.ntfy-sh = {
+  options.layers.layer-20.services.config.ntfy-sh = {
     enable = mkEnableOption "ntfy.sh — push notification service";
 
     port = mkOption {

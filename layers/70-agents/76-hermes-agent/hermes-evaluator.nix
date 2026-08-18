@@ -21,54 +21,56 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    # Evaluator script and config
-    home.file.".hermes/evaluator/scripts/hermes-evaluator.py" = {
-      source = ./hermes-evaluator.py;
-      executable = true;
-    };
-
-    home.file.".hermes/evaluator/SOUL.md" = {
-      source = ./SOUL.md;
-    };
-
-    home.file.".hermes/evaluator/AGENTS.md" = {
-      source = ./AGENTS.md;
-    };
-
-    home.file.".hermes/evaluator/config.yaml" = {
-      source = ./config.yaml;
-    };
-
-    # Systemd service
-    systemd.user.services.hermes-evaluator = {
-      Unit = {
-        Description = "Hermes Evaluator — Daily Audit & Benchmarking";
-        After = [ "network.target" ];
+  home =
+    { osConfig, config, ... }:
+    lib.mkIf (osConfig.layers.layer-76.hermes-evaluator.enable or false) {
+      # Evaluator script and config
+      home.file.".hermes/evaluator/scripts/hermes-evaluator.py" = {
+        source = ./hermes-evaluator.py;
+        executable = true;
       };
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.python3}/bin/python3 ${config.home.homeDirectory}/.hermes/evaluator/scripts/hermes-evaluator.py";
-        TimeoutStartSec = 600;
-        Nice = 19;
-        IOSchedulingClass = "idle";
-      };
-    };
 
-    # Systemd timer
-    systemd.user.timers.hermes-evaluator = {
-      Unit = {
-        Description = "Hermes Evaluator — Daily Timer";
-        Requires = [ "hermes-evaluator.service" ];
+      home.file.".hermes/evaluator/SOUL.md" = {
+        source = ./SOUL.md;
       };
-      Timer = {
-        OnCalendar = cfg.schedule;
-        Persistent = true;
-        RandomizedDelaySec = 300;
+
+      home.file.".hermes/evaluator/AGENTS.md" = {
+        source = ./AGENTS.md;
       };
-      Install = {
-        WantedBy = [ "timers.target" ];
+
+      home.file.".hermes/evaluator/config.yaml" = {
+        source = ./config.yaml;
+      };
+
+      # Systemd service
+      systemd.user.services.hermes-evaluator = {
+        Unit = {
+          Description = "Hermes Evaluator — Daily Audit & Benchmarking";
+          After = [ "network.target" ];
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.python3}/bin/python3 ${config.home.homeDirectory}/.hermes/evaluator/scripts/hermes-evaluator.py";
+          TimeoutStartSec = 600;
+          Nice = 19;
+          IOSchedulingClass = "idle";
+        };
+      };
+
+      # Systemd timer
+      systemd.user.timers.hermes-evaluator = {
+        Unit = {
+          Description = "Hermes Evaluator — Daily Timer";
+          Requires = [ "hermes-evaluator.service" ];
+        };
+        Timer = {
+          OnCalendar = osConfig.layers.layer-76.hermes-evaluator.schedule or "*-*-* 04:00:00";
+          Persistent = true;
+          RandomizedDelaySec = 300;
+        };
+        Install = {
+          WantedBy = [ "timers.target" ];
+        };
       };
     };
-  };
 }
