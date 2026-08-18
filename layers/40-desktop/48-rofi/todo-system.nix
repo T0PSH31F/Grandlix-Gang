@@ -24,8 +24,8 @@ let
 
     set -euo pipefail
 
-    TODO_FILE="${TODO_FILE:-$HOME/Notes/todo.md}"
-    EDITOR="${EDITOR:-nano}"
+    TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
+    EDITOR="''${EDITOR:-nano}"
     LOCK_FILE="/tmp/rofi-todo.lock"
 
     # Prevent concurrent invocations
@@ -57,8 +57,8 @@ EOF
         fi
         if [[ "$in_tasks" -eq 1 ]]; then
           if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
-            local status="${BASH_REMATCH[1]}"
-            local desc="${BASH_REMATCH[2]}"
+            local status="''${BASH_REMATCH[1]}"
+            local desc="''${BASH_REMATCH[2]}"
             if [[ "$status" == "x" || "$status" == "X" ]]; then
               echo "✓ $desc"
             else
@@ -76,8 +76,8 @@ EOF
 
       while IFS= read -r line; do
         if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
-          local status="${BASH_REMATCH[1]}"
-          local task_desc="${BASH_REMATCH[2]}"
+          local status="''${BASH_REMATCH[1]}"
+          local task_desc="''${BASH_REMATCH[2]}"
           if [[ "$task_desc" == "$desc" ]]; then
             found=1
             if [[ "$status" == "x" || "$status" == "X" ]]; then
@@ -139,7 +139,7 @@ EOF
       menu_items+=("❌ Quit")
 
       local choice
-      choice=$(printf '%s\n' "${menu_items[@]}" | rofi -dmenu -i -p "Todo:" -theme-str 'window {width: 40%;}')
+      choice=$(printf '%s\n' "''${menu_items[@]}" | rofi -dmenu -i -p "Todo:" -theme-str 'window {width: 40%;}')
 
       [ -z "$choice" ] && exit 0
 
@@ -171,10 +171,10 @@ EOF
     #!/usr/bin/env bash
     set -euo pipefail
 
-    TODO_FILE="${TODO_FILE:-$HOME/Notes/todo.md}"
-    BREAKDOWN_FILE="${BREAKDOWN_FILE:-$HOME/Notes/todo-breakdown.md}"
-    STATE_FILE="${STATE_FILE:-$HOME/.local/share/todo-hook-state.txt}"
-    LOG_FILE="${LOG_FILE:-$HOME/.local/share/todo-hook.log}"
+    TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
+    BREAKDOWN_FILE="''${BREAKDOWN_FILE:-$HOME/Notes/todo-breakdown.md}"
+    STATE_FILE="''${STATE_FILE:-$HOME/.local/share/todo-hook-state.txt}"
+    LOG_FILE="''${LOG_FILE:-$HOME/.local/share/todo-hook.log}"
     LOCK_FILE="/tmp/todo-hermes-hook.lock"
 
     mkdir -p "$(dirname "$LOG_FILE")" "$(dirname "$STATE_FILE")"
@@ -221,8 +221,8 @@ EOF
       fi
       if [[ "$in_tasks" -eq 1 ]]; then
         if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
-          local status="${BASH_REMATCH[1]}"
-          local desc="${BASH_REMATCH[2]}"
+          local status="''${BASH_REMATCH[1]}"
+          local desc="''${BASH_REMATCH[2]}"
           if [[ "$status" != "x" && "$status" != "X" ]]; then
             new_tasks+=("$desc")
           fi
@@ -230,15 +230,15 @@ EOF
       fi
     done < "$TODO_FILE"
 
-    if [ ${#new_tasks[@]} -eq 0 ]; then
+    if [ ''${#new_tasks[@]} -eq 0 ]; then
       log "No new tasks to process"
       exit 0
     fi
 
-    log "Found ${#new_tasks[@]} new task(s) to break down"
+    log "Found ''${#new_tasks[@]} new task(s) to break down"
 
     local task_list
-    task_list=$(printf '%s\n' "${new_tasks[@]}")
+    task_list=$(printf '%s\n' "''${new_tasks[@]}")
 
     local prompt="Break down the following tasks into smaller actionable steps with rough time estimates (in minutes). Format the output as markdown with the task as a header and steps as a nested list. Only include the breakdown, no extra commentary.
 
@@ -263,7 +263,7 @@ $task_list"
       echo ""
     } >> "$BREAKDOWN_FILE"
 
-    for task in "${new_tasks[@]}"; do
+    for task in "''${new_tasks[@]}"; do
       echo "$task" >> "$STATE_FILE"
     done
 
@@ -276,10 +276,10 @@ $task_list"
     #!/usr/bin/env bash
     set -euo pipefail
 
-    TODO_FILE="${TODO_FILE:-$HOME/Notes/todo.md}"
-    BREAKDOWN_FILE="${BREAKDOWN_FILE:-$HOME/Notes/todo-breakdown.md}"
-    TTS_ENGINE="${TTS_ENGINE:-espeak}"
-    LOG_FILE="${LOG_FILE:-$HOME/.local/share/todo-hook.log}"
+    TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
+    BREAKDOWN_FILE="''${BREAKDOWN_FILE:-$HOME/Notes/todo-breakdown.md}"
+    TTS_ENGINE="''${TTS_ENGINE:-espeak}"
+    LOG_FILE="''${LOG_FILE:-$HOME/.local/share/todo-hook.log}"
 
     mkdir -p "$(dirname "$LOG_FILE")"
 
@@ -306,8 +306,8 @@ $task_list"
       fi
       if [[ "$in_tasks" -eq 1 ]]; then
         if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
-          local status="${BASH_REMATCH[1]}"
-          local desc="${BASH_REMATCH[2]}"
+          local status="''${BASH_REMATCH[1]}"
+          local desc="''${BASH_REMATCH[2]}"
           if [[ "$status" != "x" && "$status" != "X" ]]; then
             tasks+=("$desc")
           fi
@@ -316,12 +316,12 @@ $task_list"
     done < "$TODO_FILE"
 
     local summary="Good morning. Here is your task summary for today."
-    if [ ${#tasks[@]} -eq 0 ]; then
+    if [ ''${#tasks[@]} -eq 0 ]; then
       summary="$summary You have no pending tasks. Enjoy your day."
     else
-      summary="$summary You have ${#tasks[@]} pending task(s)."
+      summary="$summary You have ''${#tasks[@]} pending task(s)."
       local i=1
-      for task in "${tasks[@]}"; do
+      for task in "''${tasks[@]}"; do
         summary="$summary Task $i: $task."
         ((i++))
       done
