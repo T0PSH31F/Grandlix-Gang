@@ -33,7 +33,7 @@ in
       programs.antigravity-cli = {
         enable = true;
         settings = {
-          defaultModel = "gemini-3.1-pro";
+          defaultModel = "gemini-3.7-flash";
           routerUrl = "http://127.0.0.1:8090/v1";
         };
       };
