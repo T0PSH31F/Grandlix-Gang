@@ -145,7 +145,7 @@ in
           # Enabling this causes exec-once/exec-shutdown to fight UWSM over hyprland-session.target.
           systemd.enable = false;
           plugins = [
-            pkgs.hypr-dynamic-cursors
+            pkgs.hyprlandPlugins.hypr-dynamic-cursors
           ];
 
           settings = {
