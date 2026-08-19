@@ -1,13 +1,12 @@
 { config, lib, pkgs, osConfig ? config, ... }:
 
 let
-  cfg = config.layers.layer-40.desktop.hyprland or { enable = false; };
+  cfg = config.layers.layer-20.services.todo-system;
   user = osConfig.layers.meta.primaryUser or "t0psh31f";
   userHome = "/home/${user}";
 
   # Rofi to-do launcher
   rofi-todo = pkgs.writeShellScriptBin "rofi-todo" ''
-    #!/usr/bin/env bash
     # rofi-todo.sh — Interactive to-do list via Rofi
     # Bound to Super+Period in Hyprland.
     #
@@ -167,8 +166,7 @@ EOF
   '';
 
   # Hermes hook
-  todo-hermes-hook = pkgs.writeShellScriptBin "todo-hermes-hook" '';
-    #!/usr/bin/env bash
+  todo-hermes-hook = pkgs.writeShellScriptBin "todo-hermes-hook" ''
     set -euo pipefail
 
     TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
@@ -272,8 +270,7 @@ $task_list"
   '';
 
   # Morning roundup
-  todo-morning-roundup = pkgs.writeShellScriptBin "todo-morning-roundup" '';
-    #!/usr/bin/env bash
+  todo-morning-roundup = pkgs.writeShellScriptBin "todo-morning-roundup" ''
     set -euo pipefail
 
     TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"

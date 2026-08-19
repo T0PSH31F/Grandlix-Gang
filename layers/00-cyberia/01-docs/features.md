@@ -70,7 +70,7 @@ Text-backed task management integrated with Hyprland, Rofi, and Hermes:
 - **9:00 AM daily** voice roundup via `espeak` TTS
 - **Ideas section** in `todo.md` is preserved as-is (no auto-breakdown)
 
-**Details**: [todo-system/README.md](../20-services/27-automation/30-todo-system/README.md)
+**Details**: [todo-system/README.md](../40-desktop/48-rofi/todo-system/README.md)
 
 ## Security
 

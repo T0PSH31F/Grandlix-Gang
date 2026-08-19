@@ -145,7 +145,8 @@ in
           # Enabling this causes exec-once/exec-shutdown to fight UWSM over hyprland-session.target.
           systemd.enable = false;
           plugins = [
-            inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
+            # Disabled: hypr-dynamic-cursors broken on Hyprland 0.55 header structure (CursorManager.hpp missing)
+            # inputs.hypr-dynamic-cursors.packages.${pkgs.stdenv.hostPlatform.system}.hypr-dynamic-cursors
           ];
 
           settings = {
