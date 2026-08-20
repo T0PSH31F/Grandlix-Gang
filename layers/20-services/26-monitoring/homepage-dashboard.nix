@@ -589,7 +589,7 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -"
       "d /var/lib/homepage-dashboard/images 0755 homepage-dashboard homepage-dashboard -"
-      "L+ /var/lib/homepage-dashboard/images/robin.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Nico Robin.png}"
+      "L+ /var/lib/homepage-dashboard/images/robin.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico + "/Nico Robin.png"}"
       "L+ /var/lib/homepage-dashboard/images/vegapunk.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Stella.png}"
       "L+ /var/lib/homepage-dashboard/images/franky.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Franck.png}"
       "L+ /var/lib/homepage-dashboard/images/nami.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Nami.png}"

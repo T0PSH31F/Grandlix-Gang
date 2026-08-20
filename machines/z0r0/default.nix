@@ -87,6 +87,12 @@
     ai-services.polyfloor.environmentFile = config.sops.templates."polyfloor-env".path;
   };
 
+  layers.layer-20.services.config.homepage-dashboard = {
+    enable = true;
+    port = 8082;
+    lovable.enable = true;
+  };
+
   # Make Langfuse accessible from LAN for cross-machine dashboard monitoring
   virtualisation.oci-containers.containers.langfuse.environment.HOSTNAME = lib.mkForce "0.0.0.0";
 
