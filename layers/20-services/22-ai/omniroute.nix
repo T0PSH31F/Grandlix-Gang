@@ -119,9 +119,18 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ pkgs.podman-compose helperPkg ];
 
-    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
-      directories = [ cfg.dataDir ];
-    };
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = cfg.dataDir;
+              user = "root";
+              group = "root";
+              mode = "0700";
+            }
+          ];
+        };
 
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0700 root root -"

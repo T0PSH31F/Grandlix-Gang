@@ -149,5 +149,19 @@ in
         ReadWritePaths = [ cfg.dataDir ];
       };
     };
+
+    # Impermanence persistence support
+    environment.persistence."/persist" =
+      lib.mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = cfg.dataDir;
+              user = "freellmapi";
+              group = "freellmapi";
+              mode = "0750";
+            }
+          ];
+        };
   };
 }

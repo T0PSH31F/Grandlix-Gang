@@ -84,9 +84,18 @@ in
     };
     users.groups.freellmpool = { };
 
-    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
-      directories = [ cfg.dataDir ];
-    };
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = cfg.dataDir;
+              user = "freellmpool";
+              group = "freellmpool";
+              mode = "0750";
+            }
+          ];
+        };
 
     systemd.services.freellmpool = {
       description = "freellmpool — free-tier LLM pool";
