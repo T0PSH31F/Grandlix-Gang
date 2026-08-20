@@ -673,8 +673,8 @@ in
         # Always fix ownership — files may have been left owned by nobody/t0psh31f
         # from migration or prior DynamicUser runs, causing PermissionError at runtime.
         if [ -d "${config.services.hermes-agent.stateDir}" ]; then
-          chown -R hermes:hermes "${config.services.hermes-agent.stateDir}"
-          chmod -R u+rwX,g+rwX "${config.services.hermes-agent.stateDir}"
+          chown -R hermes:hermes "${config.services.hermes-agent.stateDir}" || true
+          chmod -R u+rwX,g+rwX "${config.services.hermes-agent.stateDir}" || true
         fi
         # Clean up any nested .hermes that may remain from the original migration
         if [ -d "${config.services.hermes-agent.stateDir}/.hermes/.hermes" ]; then
@@ -785,6 +785,7 @@ in
         # ── API Server ───────────────────────────────────────────────
         API_SERVER_KEY=${config.sops.placeholder.opencode_token}
         HERMES_API_TOKEN=${config.sops.placeholder.opencode_token}
+        HERMES_AGENT_API_SERVER_KEY=${config.sops.placeholder.opencode_token}
       '';
     };
   };

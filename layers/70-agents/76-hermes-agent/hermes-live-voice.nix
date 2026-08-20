@@ -41,15 +41,19 @@ in
       path = with pkgs; [ nodejs bash git coreutils gnugrep gnutar gzip ];
 
       serviceConfig = {
-        ExecStart = "${pkgs.nodejs}/bin/npx hermes-live-voice start --port ${toString cfg.port}";
+        ExecStart = "${pkgs.nodejs}/bin/npx hermes-live-voice serve --port ${toString cfg.port}";
         Restart = "always";
         RestartSec = 5;
+        EnvironmentFile = [ config.sops.templates."hermes-env".path ];
         Environment = [
           "HERMES_HOME=/var/lib/hermes/.hermes"
           "HERMES_LIVE_PORT=${toString cfg.port}"
           "NODE_ENV=production"
         ];
       };
+      preStart = ''
+        export HERMES_AGENT_API_SERVER_KEY="''${API_SERVER_KEY:-}"
+      '';
     };
 
     # Open firewall port

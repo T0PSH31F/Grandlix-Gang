@@ -14,7 +14,7 @@ in
 
     port = mkOption {
       type = types.port;
-      default = 8083;
+      default = 8094;
       description = "Port for ContextForge gateway";
     };
   };

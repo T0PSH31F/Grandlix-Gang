@@ -82,7 +82,7 @@
     ai-services.freellmpool = {
       enable = true;
       environmentFile = config.sops.templates."kong-env".path;
-      port = 8082; # Avoid conflict with signal-cli on 8080
+      port = 8083; # Moved off 8082 to avoid shadowing Homepage Dashboard
     };
     ai-services.polyfloor.environmentFile = config.sops.templates."polyfloor-env".path;
   };
@@ -96,29 +96,7 @@
     server.enable = false;
   };
 
-  # Open firewall ports for cross-machine dashboard monitoring (luffy → z0r0)
-  networking.firewall.allowedTCPPorts = [
-    3000 # Hermes Workspace
-    9119 # Hermes Dashboard
-    8010 # Brain Service
-    8080 # Signal CLI
-    3005 # Langfuse
-    8000 # SillyTavern
-    8081 # llama.cpp
-    9090 # Prometheus
-    3100 # Loki
-    3008 # Grafana
-    61208 # Glances for homepage cross-machine stats
-  ];
-
-  networking.firewall.trustedInterfaces = [
-    "tailscale0"
-    "podman0"
-    "zt0"
-    "wg0"
-  ];
-
-  # Enable Glances for cross-machine dashboard system stats
+  # Glances server for cross-machine system metrics
   services.glances-server.enable = true;
 
   systemd.services.rclone-gdrive-mount.enable = false;

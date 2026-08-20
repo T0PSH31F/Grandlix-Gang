@@ -1,76 +1,103 @@
 # Port Allocation Registry
 
-> **Last updated:** 2026-08-09
-> **Purpose:** Quick reference to avoid port conflicts when adding new services.
+> **Last updated:** 2026-08-20  
+> **Purpose:** Canonical reference for all network port allocations across the fleet to prevent conflicts.
 
 ## Legend
-- **z0r0** = LG laptop workstation
-- **luffy** = Intel 9th-gen homelab server
-- **Both** = deployed on both machines
+- **z0r0** = LG laptop workstation (`127.0.0.1` / Tailscale)
+- **luffy** = Intel 9th-gen homelab server (`100.80.146.120` / Tailscale)
+- **Both** = Deployed on both workstation and server
 
 ---
 
-## Port Map
+## Unified Fleet Port Registry
 
-| Port | Service | Machine | Config File | Notes |
-|------|---------|---------|-------------|-------|
-| **389** | Vaultwarden LDAP | luffy | `layers/20-services/25-data/vaultwarden.nix` | LDAP interface |
-| **465** | himalaya SMTPS | z0r0 | `layers/50-cli-tui-programs/53-tools/himalaya.nix` | Email client SMTP |
-| **993** | himalaya IMAPS | z0r0 | `layers/50-cli-tui-programs/53-tools/himalaya.nix` | Email client IMAP |
-| **3001** | HedgeDoc | z0r0 | `machines/z0r0/default.nix` | Collaborative markdown |
-| **3002** | AdGuard | luffy | `machines/luffy/default.nix` | DNS filtering |
-| **3003** | FreeLLMAPI | z0r0 | `machines/z0r0/default.nix` | Free-tier LLM router |
-| **3007** | N8N | luffy | `machines/luffy/default.nix` | Workflow automation |
-| **3008** | Grafana | both | `layers/20-services/26-monitoring/monitoring.nix` | Monitoring dashboards (default) |
-| **3100** | Loki | z0r0 | `machines/z0r0/default.nix` | Log aggregation |
-| **3333** | Mistral MCP | z0r0 | `machines/z0r0/default.nix` | Mistral AI tool server |
-| **5678** | N8N | luffy | `machines/luffy/default.nix` | Workflow automation (test port) |
-| **6334** | Qdrant gRPC | z0r0 | `layers/20-services/22-ai/qdrant.nix` | Vector database |
-| **6380** | Nextcloud | luffy | `layers/20-services/25-data/nextcloud.nix` | File sync |
-| **8008** | Matrix Synapse | luffy | `machines/luffy/default.nix` | Matrix homeserver |
-| **8010** | Brain Service | z0r0 | `machines/z0r0/default.nix` | Personal Knowledge Base |
-| **8080** | Signal CLI | z0r0 | `machines/z0r0/default.nix` | Signal messenger daemon |
-| **8081** | Kong Gateway | z0r0 | `machines/z0r0/default.nix` | Unified LLM/API gateway |
-| **8082** | FreeLLMPool | z0r0 | `machines/z0r0/default.nix` | Free-tier LLM pool |
-| **8084** | Paperless-ngx | luffy | `machines/luffy/default.nix` | Document management |
-| **8087** | Mealie | luffy | `machines/luffy/default.nix` | Recipe manager |
-| **8443** | HTTPS alt | luffy | `machines/luffy/default.nix` | Alternative HTTPS |
-| **8444** | HTTPS alt 2 | luffy | `machines/luffy/default.nix` | Alternative HTTPS |
-| **9090** | Prometheus | both | `machines/*/default.nix` | Metrics collection |
-| **9100** | Glances | z0r0 | `layers/20-services/26-monitoring/monitoring.nix` | System monitoring |
-| **9119** | Hermes Dashboard | z0r0 | `layers/70-agents/76-hermes-agent/hermes.nix` | Agent dashboard |
-| **9377** | Camofox Browser | z0r0 | `machines/z0r0/default.nix` | Anti-detection browser |
+| Port     | Service                | Host   | Config Module Location                             | Notes / Interface               |
+|:--------:|:-----------------------|:------:|:---------------------------------------------------|:--------------------------------|
+| **22**   | SSH                    | Both   | System Foundation                                  | Secure Shell access             |
+| **53**   | AdGuard DNS            | luffy  | `layers/20-services/21-networking/adguard.nix`    | DNS resolution & filtering      |
+| **389**  | Vaultwarden LDAP       | luffy  | `layers/20-services/25-data/vaultwarden.nix`      | Internal LDAP auth              |
+| **465**  | Himalaya SMTPS         | z0r0   | `layers/50-cli-tui-programs/53-tools/`             | Email client SMTP               |
+| **993**  | Himalaya IMAPS         | z0r0   | `layers/50-cli-tui-programs/53-tools/`             | Email client IMAP               |
+| **1337** | Jan AI                 | z0r0   | `layers/20-services/22-ai/jan.nix`                 | Local AI Desktop API            |
+| **3000** | Hermes Workspace       | z0r0   | `machines/z0r0/default.nix`                        | Hermes Agent Web GUI            |
+| **3001** | HedgeDoc               | z0r0   | `machines/z0r0/default.nix`                        | Collaborative Markdown Editor   |
+| **3002** | AdGuard Web            | luffy  | `machines/luffy/default.nix`                       | AdGuard Admin Dashboard         |
+| **3003** | FreeLLMAPI             | z0r0   | `machines/z0r0/default.nix`                        | Free-tier LLM API Router        |
+| **3005** | Langfuse               | z0r0   | `machines/z0r0/default.nix`                        | LLM Observability & Tracing     |
+| **3006** | AionUI                 | z0r0   | `layers/20-services/22-ai/aionui.nix`              | AI Cowork Web Interface         |
+| **3007** | N8N Web / Karakeep     | luffy  | `machines/luffy/default.nix`                       | Workflow Automation Primary     |
+| **3008** | Grafana                | Both   | `layers/20-services/26-monitoring/`                | System Observability Dashboard  |
+| **3099** | Mission Control        | z0r0   | `machines/z0r0/default.nix`                        | Container & Task Manager        |
+| **3100** | Loki                   | z0r0   | `machines/z0r0/default.nix`                        | Log Aggregation Backend         |
+| **3101** | Paperclip              | z0r0   | `layers/20-services/26-monitoring/`                | Task & Automation Agent         |
+| **3333** | Mistral MCP            | z0r0   | `machines/z0r0/default.nix`                        | Mistral AI Tool Protocol        |
+| **3457** | YourSpotify            | luffy  | `layers/20-services/24-communication/`             | Spotify Listening Analytics     |
+| **5000** | Harmonia Nix Cache     | luffy  | `layers/20-services/28-clan-services/`             | Binary Cache Server             |
+| **5050** | Kavita                 | luffy  | `layers/20-services/26-monitoring/`                | E-book & Digital Library        |
+| **5432** | PostgreSQL             | Both   | System Services                                    | Relational Database             |
+| **5678** | N8N Webhook            | luffy  | `machines/luffy/default.nix`                       | Workflow Automation Webhook     |
+| **5680** | OpenCompany UI         | luffy  | `layers/20-services/22-ai/opencompany.nix`         | AI Org Web Interface            |
+| **5681** | OpenCompany Backend    | luffy  | `layers/20-services/22-ai/opencompany.nix`         | AI Org Python Server            |
+| **6080** | Camofox VNC            | z0r0   | `layers/20-services/24-communication/`             | Browser VNC Viewport            |
+| **6333** | Qdrant HTTP            | z0r0   | `layers/20-services/22-ai/qdrant.nix`              | Vector Database REST API        |
+| **6334** | Qdrant gRPC            | z0r0   | `layers/20-services/22-ai/qdrant.nix`              | Vector Database gRPC            |
+| **6380** | Nextcloud              | luffy  | `layers/20-services/25-data/nextcloud.nix`         | Cloud File Synchronization      |
+| **6767** | Bazarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Subtitle Manager                |
+| **6800** | Aria2                  | luffy  | `layers/20-services/23-media/download-clients.nix`| Download Daemon RPC             |
+| **7878** | Radarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Movie Management                |
+| **8000** | SillyTavern            | z0r0   | `machines/z0r0/default.nix`                        | LLM Frontend Interface          |
+| **8004** | ChromaDB               | z0r0   | `layers/20-services/22-ai/chromadb.nix`            | Vector Database HTTP API        |
+| **8008** | Matrix Synapse         | luffy  | `machines/luffy/default.nix`                       | Matrix Federation & Homeserver  |
+| **8010** | Brain Service          | z0r0   | `machines/z0r0/default.nix`                        | Personal Knowledge Base API     |
+| **8080** | Signal CLI             | z0r0   | `machines/z0r0/default.nix`                        | Signal Messenger REST Daemon    |
+| **8081** | Kong Gateway           | z0r0   | `machines/z0r0/default.nix`                        | Unified LLM / API Gateway       |
+| **8082** | Homepage Dashboard     | z0r0   | `layers/20-services/26-monitoring/`                | Main Desktop Service Dashboard  |
+| **8083** | FreeLLMPool            | z0r0   | `machines/z0r0/default.nix`                        | Free-tier LLM Provider Pool     |
+| **8084** | Paperless-ngx          | luffy  | `machines/luffy/default.nix`                       | Document Archival System        |
+| **8085** | Hermes Agent Gateway   | z0r0   | `layers/70-agents/76-hermes-agent/`                | Hermes Agent MCP Control Gateway|
+| **8086** | Headscale              | luffy  | `layers/20-services/21-networking/`               | Tailscale Control Plane         |
+| **8087** | Mealie                 | luffy  | `machines/luffy/default.nix`                       | Recipe & Meal Manager           |
+| **8088** | Open WebUI             | z0r0   | `layers/20-services/22-ai/open-webui.nix`          | LLM Web Chat Interface          |
+| **8089** | Filebrowser            | luffy  | `layers/20-services/26-monitoring/`                | Web File Manager                |
+| **8093** | CalibreWeb             | luffy  | `layers/20-services/26-monitoring/`                | E-book Web Reader               |
+| **8095** | qBittorrent WebUI      | luffy  | `layers/20-services/23-media/download-clients.nix`| Torrent Client Web Interface    |
+| **8096** | Jellyfin               | luffy  | `layers/20-services/23-media/media-stack.nix`     | Media Streaming Server          |
+| **8443** | HTTPS Alt 1            | luffy  | `machines/luffy/default.nix`                       | Secondary TLS Ingress           |
+| **8444** | Element Web            | luffy  | `machines/luffy/default.nix`                       | Matrix Client Web App           |
+| **8686** | Lidarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Music Collection Manager        |
+| **8787** | Readarr                | luffy  | `layers/20-services/23-media/media-stack.nix`     | Book Collection Manager         |
+| **8788** | Hermes Standalone WebUI| z0r0   | `layers/20-services/26-monitoring/`                | Hermes Standalone Web UI        |
+| **8880** | Hermes Live Voice      | z0r0   | `layers/70-agents/76-hermes-agent/`                | Real-time Voice Control Gateway |
+| **8888** | SearXNG                | luffy  | `layers/20-services/27-automation/`               | Meta Search Engine              |
+| **8989** | Sonarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | TV Series Management            |
+| **9090** | Prometheus             | Both   | `machines/*/default.nix`                           | Metrics Collection Daemon       |
+| **9100** | Glances                | z0r0   | `layers/20-services/26-monitoring/`                | Node Hardware Stats Daemon      |
+| **9119** | Hermes Dashboard       | z0r0   | `layers/70-agents/76-hermes-agent/`                | Hermes Agent Control Center     |
+| **9377** | Camofox Browser        | z0r0   | `machines/z0r0/default.nix`                        | Anti-Detection Browser CDP      |
+| **9696** | Prowlarr               | luffy  | `layers/20-services/23-media/media-stack.nix`     | Indexer Proxy Manager           |
+| **11434**| Ollama                 | Both   | `layers/20-services/22-ai/ollama.nix`              | Local LLM Inference Engine      |
+| **21116**| RustDesk Signal        | z0r0   | `layers/20-services/24-communication/`             | Remote Desktop Signaling        |
+| **25600**| Komga                  | luffy  | `layers/20-services/26-monitoring/`                | Comic & Manga Server            |
+| **29317**| Mautrix WhatsApp       | luffy  | `layers/20-services/24-communication/`             | WhatsApp Matrix Bridge          |
+| **29318**| Mautrix Signal         | luffy  | `layers/20-services/24-communication/`             | Signal Matrix Bridge            |
+| **32768**| Spacedrive             | luffy  | `layers/20-services/26-monitoring/`                | Distributed File Manager        |
+| **32784**| MaxKB                  | luffy  | `layers/20-services/26-monitoring/`                | Knowledge Base AI System        |
+| **32790**| SimStudio              | luffy  | `machines/luffy/containers.nix`                    | Multi-agent Workflow Sandbox    |
+| **51820**| WireGuard VPN          | Both   | `clan.nix`                                         | Encrypted Mesh VPN Port         |
+| **61208**| Glances Web Stats      | z0r0   | `layers/20-services/26-monitoring/`                | Glances Web Performance Monitor |
 
 ---
 
-## Additional Ports (from service modules)
-
-| Port | Service | Machine | Config File | Notes |
-|------|---------|---------|-------------|-------|
-| **22** | SSH | both | system | Standard SSH |
-| **51820** | WireGuard | both | `layers/20-services/` | VPN tunnel |
-| **5000** | Harmonia (nix-cache) | luffy | `layers/20-services/28-clan-services/nix-cache/` | Nix binary cache |
-| **53** | AdGuard | luffy | `layers/20-services/` | DNS |
-| **3000** | Homepage Dashboard | luffy | `layers/20-services/26-monitoring/` | Service dashboard |
-| **3005** | Langfuse | z0r0 | `machines/z0r0/default.nix` | LLM observability |
-| **3006** | AionUI | z0r0 | `layers/20-services/22-ai/aionui.nix` | AI cowork web UI |
-| **3099** | Mission Control | z0r0 | `machines/z0r0/default.nix` | Container management |
-| **5680** | OpenCompany | luffy | `layers/20-services/22-ai/opencompany.nix` | AI workflow canvas |
-| **5681** | OpenCompany Backend | luffy | `layers/20-services/22-ai/opencompany.nix` | Python backend |
-| **6080** | VNC | z0r0 | `layers/20-services/24-communication/` | Camofox VNC |
-| **8000** | SillyTavern | z0r0 | `machines/z0r0/default.nix` | LLM chat UI |
-
----
-
-## Disabled Services (ports reserved but unused)
+## Reserved & Disabled Services
 
 | Port | Service | Machine | Reason |
-|------|---------|---------|--------|
-| — | Langgraph | z0r0 | Disabled: `langgraph.server` module not in nixpkgs |
+|:----:|:--------|:-------:|:-------|
+| — | Langgraph | z0r0 | Module disabled: `langgraph.server` not packaged in nixpkgs |
 
 ---
 
-## Port Conflict Rules
+## Fleet Port Rules
 
 1. **Before adding a new service**, check this file for the desired port
 2. **Default ports** (e.g., 3000, 8080, 8000) are often claimed — always verify

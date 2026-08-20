@@ -10,7 +10,7 @@ with lib;
 
     port = mkOption {
       type = types.int;
-      default = 8083;
+      default = 8093;
       description = "Calibre-Web port";
     };
 

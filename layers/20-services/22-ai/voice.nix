@@ -14,13 +14,13 @@ in
 
     sttPort = lib.mkOption {
       type = lib.types.port;
-      default = 8089;
+      default = 8097;
       description = "Port for local whisper.cpp server";
     };
 
     ttsPort = lib.mkOption {
       type = lib.types.port;
-      default = 8083;
+      default = 8098;
       description = "Port for local Piper TTS wrapper or XTTSv2 server";
     };
 

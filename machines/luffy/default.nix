@@ -421,37 +421,7 @@ in
     dockerCompat = true;
   };
 
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [
-      80
-      443
-      22
-      2019 # Caddy admin API for homepage widget
-      61208 # Glances for homepage cross-machine stats
-      8008 # Matrix Synapse direct access for hermes gateway
-      8443 # Nginx SSL proxy for Matrix/Element (bypass Caddy TLS issues)
-      8087 # Nginx HTTP proxy for Matrix (no SSL, for hermes gateway)
-      8888 # SearXNG — cross-machine dashboard search
-      51820 # WireGuard
-      9993  # ZeroTier
-      53    # DNS (AdGuard)
-      67    # DHCP
-      3099 # Mission Control — AI agent control plane
-    ];
-    allowedUDPPorts = [
-      51820 # WireGuard
-      9993  # ZeroTier
-      53    # DNS
-      67    # DHCP
-    ];
-    trustedInterfaces = [
-      "tailscale0"
-      "podman0"
-      "zt0"
-      "wg0"
-    ];
-  };
+  # Machine-specific firewall overrides (Master fleet firewall rules defined in layer-10 networking.nix)
 
   services.ollama.package = lib.mkForce pkgs.ollama;
 

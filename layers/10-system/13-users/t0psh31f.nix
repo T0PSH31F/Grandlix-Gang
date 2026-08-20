@@ -2,6 +2,7 @@
 {
   pkgs,
   lib,
+  config,
   inputs,
   ...
 }:
@@ -10,12 +11,11 @@
     zsh.enable = true;
   };
 
-  # System-level user settings not managed by Clan
+  # System-level user settings managed via Clan core users module
   users.users.t0psh31f = {
     isNormalUser = true;
     description = "t0psh31f";
     shell = pkgs.zsh;
-    hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
     extraGroups = [
       "wheel"
       "networkmanager"
@@ -25,18 +25,13 @@
       "podman"
       "libvirtd"
       "media"
-      "podman"
       "i2c"
     ];
-    # Authorized keys are also managed by clan-inventory.nix (admin-access),
-    # but we keep them here for local login consistency.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDg4e32XqA2CyYsHyl+urGN1Soiz00DLgc+dkDw/uFCw luffy@agentaflow.com"
     ];
   };
-
-  # hashedPasswordFile = lib.mkForce null;  # REMOVED: let Clan manage via vars
 
   # Home Manager configuration for t0psh31f
   # Permanent fix for backup collisions: Automatically remove old backups before activation

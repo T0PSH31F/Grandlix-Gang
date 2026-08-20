@@ -47,9 +47,9 @@ let
     signalCli = 8080;
     hermesWorkspace = 3000;
     hermesDashboard = 9119;
-    hermesWebui = 8787;
+    hermesWebui = 8788;
     aionUi = 3006;
-    paperclip = 3100;
+    paperclip = 3101;
     missionControl = 3099;
     glances = 61208;
 
@@ -61,18 +61,18 @@ let
     readarr = 8787;
     prowlarr = 9696;
     bazarr = 6767;
-    qbittorrent = 8080;
+    qbittorrent = 8095;
     aria2 = 6800;
-    calibreWeb = 8083;
+    calibreWeb = 8093;
     yourSpotify = 3457;
-    kavita = 5000;
+    kavita = 5050;
     komga = 25600;
 
     # luffy — ai
     ollama = 11434;
-    openWebui = 8082;
-    chromadb = 8000;
-    jan = 3008;
+    openWebui = 8088;
+    chromadb = 8004;
+    jan = 1337;
     maxkb = 32784;
     simStudio = 32790;
     qdrant = 6333;
@@ -82,7 +82,7 @@ let
     vaultwarden = 8222;
     headscale = 8086;
     searxng = 8888;
-    filebrowser = 8085;
+    filebrowser = 8089;
     spacedrive = 32768;
     karakeep = 3007;
 

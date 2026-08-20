@@ -121,15 +121,10 @@
   # scope the override to that single check instead of nuking everything.
   # system.checks = lib.mkForce [ ];  # REMOVED: see above
 
-  # Root password: managed by Clan vars (user-root service with prompt=true).
-  # Run `clan vars generate z0r0` to set the root password.
-  # The hardcoded hash below is a fallback only — Clan's hashedPasswordFile
-  # will take precedence when available.
+  # Root password: managed by Clan core users module
   users.users.root = {
-    hashedPassword = "$6$VRNKFZO5ZSa8uxSa$LFncLEfnLcQrIvOFJba89yRqxxavrJtuaDrO1O6Ods3uG8csVxCUpiHMQN1cwxgO/hIERux6PTAJIDYwdj77S/";
-    # hashedPasswordFile = lib.mkForce null;  # REMOVED: let Clan manage via vars
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrQr8qxQTw45PNpsDNahVE23tpV3Zap+IKr6eVkL75Z t0psh31f@grandlix.gang"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDg4e32XqA2CyYsHyl+urGN1Soiz00DLgc+dkDw/uFCw luffy@agentaflow.com"
     ];
   };

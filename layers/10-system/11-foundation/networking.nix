@@ -7,101 +7,111 @@
   networking = {
     networkmanager.enable = true;
 
-    # Comprehensive firewall configuration for all services
+    # Unified Master Fleet Firewall Configuration
     firewall = {
       enable = true;
 
+      # Master Fleet Port List (z0r0 & luffy)
       allowedTCPPorts = [
-        # Web servers
-        80 # HTTP
-        443 # HTTPS
-
-        # SSH
-        22
-
-        # AI Services (if enabled)
-        5432 # PostgreSQL (AI services, Nextcloud, Matrix)
-        6333 # Qdrant vector database
-        6334 # Qdrant gRPC
-        8000 # ChromaDB / SillyTavern
-        8080 # Open WebUI
-        8081 # LocalAI
-
-        # Matrix Synapse
-        8008 # Matrix client/federation
-        8448 # Matrix federation (standard port)
-        9000 # Matrix Prometheus metrics
-
-        # Mautrix Bridges (native)
-        29317 # Telegram bridge
-        29318 # WhatsApp bridge
-        29328 # Signal bridge
-
-        # Mautrix Bridges (container-based)
-        29319 # Facebook bridge
-        29320 # Google Chat bridge
-        29327 # Twitter bridge
-        29330 # Instagram bridge
-        29334 # Discord bridge
-        29335 # Slack bridge
-        29336 # Google Messages bridge
-
-        # Home Assistant
-        8123 # Home Assistant web interface
-
-        # Nextcloud
-        # (Uses 80/443 via Caddy/nginx)
-
-        # Immich
-        2283 # Immich web interface
-
-        # Calibre-Web
-        8083 # Calibre-Web
-
-        # Steam Remote Play (gaming.nix)
-        27036 # Steam Remote Play
-        27037 # Steam Remote Play
-
-        # Redis (various services)
-        6379 # Redis
+        22    # SSH Access
+        53    # AdGuard DNS
+        80    # HTTP
+        389   # Vaultwarden LDAP
+        443   # HTTPS
+        1337  # Jan AI
+        2019  # Caddy Admin API
+        3000  # Hermes Workspace
+        3001  # HedgeDoc
+        3002  # AdGuard Web
+        3003  # FreeLLMAPI
+        3005  # Langfuse
+        3006  # AionUI
+        3007  # N8N Primary Web
+        3008  # Grafana Observability
+        3099  # Mission Control
+        3100  # Loki
+        3101  # Paperclip
+        3333  # Mistral MCP
+        3457  # YourSpotify
+        5000  # Harmonia Nix Cache
+        5050  # Kavita
+        5432  # PostgreSQL
+        5678  # N8N Webhook
+        5680  # OpenCompany UI
+        5681  # OpenCompany Backend
+        6080  # Camofox VNC
+        6333  # Qdrant HTTP API
+        6334  # Qdrant gRPC
+        6380  # Nextcloud
+        6767  # Bazarr
+        6800  # Aria2
+        7878  # Radarr
+        8000  # SillyTavern
+        8004  # ChromaDB
+        8008  # Matrix Synapse
+        8010  # Brain Service
+        8080  # Signal CLI
+        8081  # Kong Gateway
+        8082  # Homepage Dashboard
+        8083  # FreeLLMPool
+        8084  # Paperless-ngx
+        8085  # Hermes Agent Gateway
+        8086  # Headscale
+        8087  # Mealie
+        8088  # Open WebUI
+        8089  # Filebrowser
+        8091  # llama.cpp
+        8093  # CalibreWeb
+        8095  # qBittorrent WebUI
+        8096  # Jellyfin
+        8443  # HTTPS Alt 1 / Nginx SSL
+        8444  # Element Web
+        8686  # Lidarr
+        8787  # Readarr
+        8788  # Hermes WebUI
+        8880  # Hermes Live Voice
+        8888  # SearXNG
+        8989  # Sonarr
+        9090  # Prometheus
+        9100  # Glances Node Exporter
+        9119  # Hermes Dashboard
+        9377  # Camofox Browser
+        9696  # Prowlarr
+        11434 # Ollama
+        25600 # Komga
+        29317 # Mautrix WhatsApp
+        29318 # Mautrix Signal
+        32768 # Spacedrive
+        32784 # MaxKB
+        32790 # SimStudio
+        51820 # WireGuard VPN
+        9993  # ZeroTier VPN
+        61208 # Glances Web Stats
       ];
 
       allowedUDPPorts = [
-        # QUIC for Caddy (HTTP/3)
-        443
-
-        # Steam Remote Play
-        27031 # Steam Remote Play
-        27036 # Steam Remote Play
-
-        # mDNS / Avahi (for Home Assistant and other services)
-        5353 # mDNS
-
-        # VPN / Tunneling
-        51820 # WireGuard
-        9993   # ZeroTier
+        53    # DNS
+        67    # DHCP
+        443   # QUIC / HTTP/3
+        5353  # mDNS / Avahi
+        51820 # WireGuard VPN
+        9993  # ZeroTier VPN
       ];
 
-      # Allow specific interfaces (e.g., Tailscale, Docker, VPNs)
+      # Allow full access on trusted internal VPN and container interfaces
       trustedInterfaces = [
-        "tailscale0" # Tailscale VPN
-        "podman0"    # Podman bridge
-        "zt0"        # ZeroTier
-        "wg0"        # WireGuard
+        "tailscale0" # Tailscale VPN mesh
+        "podman0"    # Podman container bridge
+        "zt0"        # ZeroTier mesh
+        "wg0"        # WireGuard tunnel
       ];
 
-      # Allow loopback
       allowPing = true;
-
-      # Log refused connections (useful for debugging)
-      logRefusedConnections = false; # Set to true for debugging
+      logRefusedConnections = false;
     };
   };
 
-  # services.tailscale.enable = true; # Moved to service-distribution.nix
-
-  # SSH Server Configuration
-  # Ensure host keys persist across reboots to prevent "host key changed" warnings
+  # OpenSSH Server Configuration
   services.openssh = {
     enable = true;
     settings = {

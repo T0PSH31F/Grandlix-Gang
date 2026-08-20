@@ -41,7 +41,7 @@ in
       enable = mkEnableOption "qBittorrent torrent client";
       port = mkOption {
         type = types.port;
-        default = 8080;
+        default = 8095;
       };
     };
   };

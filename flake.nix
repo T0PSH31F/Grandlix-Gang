@@ -327,9 +327,11 @@
         perSystem =
           {
             pkgs,
-            system,
             ...
           }:
+          let
+            system = pkgs.stdenv.hostPlatform.system;
+          in
           {
             _module.args.pkgs = import inputs.nixpkgs {
               localSystem = system;
