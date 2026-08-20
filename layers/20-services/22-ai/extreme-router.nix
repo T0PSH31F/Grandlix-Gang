@@ -87,5 +87,19 @@ in
 
     # Open firewall port
     networking.firewall.allowedTCPPorts = [ cfg.port ];
+
+    # Impermanence persistence support
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = cfg.dataDir;
+              user = "root";
+              group = "root";
+              mode = "0777";
+            }
+          ];
+        };
   };
 }
