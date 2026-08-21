@@ -1,0 +1,112 @@
+{
+  "project": "NFP",
+  "description": "NixOS fleet flake — dendritic layers, clan-core, impermanence, AI agent fleet",
+  "states": {
+    "untried": "No verified attempt yet.",
+    "in-progress": "Being actively worked; not yet verified.",
+    "blocked": "Work cannot continue until a documented blocker is resolved.",
+    "passing": "Required verification has passed and evidence is recorded."
+  },
+  "features": [
+    {
+      "id": "extreme-router-persistence",
+      "priority": 1,
+      "name": "ExtremeRouter state survives rebuild+reboot",
+      "behavior": "API keys and OAuth integrations configured in the ExtremeRouter UI persist across rebuilds and reboots",
+      "verification": [
+        "nix eval confirms environment.persistence.\"/persist\" covers the extreme-router state path",
+        "podman inspect extreme-router shows all app write paths bind-mounted from /var/lib/containers or /persist",
+        "image reference is pinned by digest (no :latest)",
+        "systemctl restart podman-extreme-router && configured providers still present"
+      ],
+      "state": "untried",
+      "evidence": []
+    },
+    {
+      "id": "aionui-persistence-and-auth",
+      "priority": 1,
+      "name": "AionUi persists data and login survives reboot",
+      "behavior": "AionUi runs as a non-root user, /var/lib/aionui is persisted, Workflows/models are saved",
+      "verification": [
+        "systemctl show aionui -p User shows non-root user",
+        "grep -q environment.persistence layers/20-services/22-ai/aionui.nix",
+        "after reboot: login works with previously created credentials"
+      ],
+      "state": "untried",
+      "evidence": []
+    },
+    {
+      "id": "mission-control-persistence",
+      "priority": 2,
+      "name": "Mission Control image pinned and data persisted",
+      "behavior": "mission-control OCI container uses a digest-pinned image and its data directory is persisted under /persist",
+      "verification": [
+        "grep '@sha256:' layers/20-services/22-ai/mission-control.nix",
+        "grep -q environment.persistence layers/20-services/22-ai/mission-control.nix"
+      ],
+      "state": "untried",
+      "evidence": []
+    },
+    {
+      "id": "agent-detection",
+      "priority": 2,
+      "name": "AionUi detects coding agents",
+      "behavior": "The aionui service environment resolves claude, codex, gemini, and opencode binaries in PATH",
+      "verification": [
+        "systemctl show aionui -p Environment contains the per-user profile path",
+        "systemd-run --pipe -p User=t0psh31f which claude codex gemini opencode exits 0"
+      ],
+      "state": "untried",
+      "evidence": []
+    },
+    {
+      "id": "declarative-skills",
+      "priority": 2,
+      "name": "Skill packs live in repo and reach both agents",
+      "behavior": "Canonical skills under layers/70-agents/skills/ are symlinked into OpenCode and Hermes config paths",
+      "verification": [
+        "ls layers/70-agents/skills/ shows at least 3 SKILL.md packs",
+        "readlink ~/.hermes/skills/harness-session-protocol resolves into the repo checkout",
+        "opencode debug config lists the skills directory"
+      ],
+      "state": "untried",
+      "evidence": []
+    },
+    {
+      "id": "tag-registry",
+      "priority": 3,
+      "name": "machine.tags validated against a registry",
+      "behavior": "Duplicate tag profiles merged (dev/development, media/media-server) and tag assignments typed",
+      "verification": [
+        "ls layers/90-profiles/tags/ shows no duplicate-purpose profiles",
+        "nix eval of a test config with a bogus tag fails with a readable message"
+      ],
+      "state": "untried",
+      "evidence": []
+    },
+    {
+      "id": "endpoint-single-source",
+      "priority": 3,
+      "name": "No hardcoded provider URLs in agent configs",
+      "behavior": "opencode.nix and antigravity.nix reference owning modules' port options instead of raw IP/port strings",
+      "verification": [
+        "! grep -rn '127.0.0.1:20128\\|127.0.0.1:8090' layers/70-agents/"
+      ],
+      "state": "untried",
+      "evidence": []
+    },
+    {
+      "id": "harness-pack",
+      "priority": 1,
+      "name": "Harness pack scaffolded and enforced",
+      "behavior": "init.sh, feature_list.json, agent-progress.md, session-handoff.md, clean-state-checklist.md, evaluator-rubric.md exist and pass basic checks",
+      "verification": [
+        "./init.sh exits 0",
+        "jq -e . feature_list.json",
+        "head -40 AGENTS.md contains 'Startup Workflow'"
+      ],
+      "state": "untried",
+      "evidence": []
+    }
+  ]
+}
