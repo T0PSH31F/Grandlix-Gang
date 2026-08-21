@@ -44,7 +44,7 @@ in
       ports = [ "${toString cfg.port}:3000" ];
       volumes = [
         "${cfg.dataDir}:/app/.data"
-        "/persist/home/t0psh31f/.agents/skills:/app/skills:ro"
+        "/home/t0psh31f/.gemini/config/skills:/app/skills:ro"
         "/var/lib/hermes:/var/lib/hermes:ro"
       ];
       environment = {

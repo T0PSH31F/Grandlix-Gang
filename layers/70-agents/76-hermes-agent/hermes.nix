@@ -255,9 +255,12 @@ in
               runHook preInstall
 
               mkdir -p $out/share/hermes-agent $out/bin
+              # Assets (skills, plugins, locales) are not installed by upstream Python wheel package default;
+              # we copy them explicitly from pinned inputs.hermes-agent (pinned in flake.lock by rev+hash).
               cp -r ${agentSrc}/skills $out/share/hermes-agent/skills
               cp -r ${agentSrc}/plugins $out/share/hermes-agent/plugins
               cp -r ${agentSrc}/locales $out/share/hermes-agent/locales
+              # web_dist and ui-tui are built locally with linuxHeaders fixes to prevent node-pty compilation failures
               cp -r ${fixedWeb} $out/share/hermes-agent/web_dist
 
               mkdir -p $out/ui-tui

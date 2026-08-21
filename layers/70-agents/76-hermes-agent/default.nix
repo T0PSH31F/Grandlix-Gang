@@ -1,9 +1,4 @@
-{ lib, ... }:
-let
-  inherit (import ../../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; })
-    mkDendriticModule
-    ;
-in
+{ lib, mkDendriticModule, ... }:
 {
   imports = [
     (mkDendriticModule "hermes" ./hermes.nix)
@@ -11,5 +6,6 @@ in
     (mkDendriticModule "hermes-dashboard" ./dashboard.nix)
     (mkDendriticModule "hermes-live-voice" ./hermes-live-voice.nix)
     (mkDendriticModule "hermes-evaluator" ./hermes-evaluator.nix)
+    (mkDendriticModule "open-skills" ./open-skills.nix)
   ];
 }

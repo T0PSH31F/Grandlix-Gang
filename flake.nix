@@ -257,6 +257,7 @@
           imports = [ ./clan.nix ];
           specialArgs = {
             inherit inputs;
+            inherit (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit (inputs.nixpkgs) lib; }) mkDendriticModule;
           };
           # Configure nixpkgs to allow unfree packages
           pkgsForSystem =
@@ -361,6 +362,11 @@
                     '';
 
                 inherit (theme-tests) plymouth-theme-builds sddm-theme-builds all-themes;
+
+                dendritic-structure-test = import ./layers/00-cyberia/05-tests/dendritic-structure-test.nix {
+                  inherit pkgs;
+                  lib = pkgs.lib;
+                };
 
                 services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);
                 n8n-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/n8n.nix);

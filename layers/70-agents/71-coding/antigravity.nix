@@ -6,14 +6,26 @@
   ...
 }:
 let
-  clanTags = osConfig.machine.tags or [ ];
+  clanTags = if (osConfig ? machine && osConfig.machine ? tags) then osConfig.machine.tags else [ ];
   cfg = config.layers.layer-70.agent.antigravity;
-  user = osConfig.layers.meta.primaryUser or "t0psh31f";
+  user = if (osConfig ? layers && osConfig.layers ? meta) then osConfig.layers.meta.primaryUser else "t0psh31f";
 in
 {
   options.layers.layer-70.agent.antigravity = {
     enable = lib.mkEnableOption "Antigravity agentic IDE & CLI" // {
-      default = builtins.elem "dev" clanTags;
+      default = builtins.elem "development" clanTags || builtins.elem "dev" clanTags;
+    };
+
+    enableIde = lib.mkOption {
+      type = lib.types.bool;
+      default = builtins.elem "desktop" clanTags;
+      description = "Install Antigravity IDE GUI application in system packages";
+    };
+
+    defaultModel = lib.mkOption {
+      type = lib.types.str;
+      default = "gemini-3.7-flash";
+      description = "Default model for Antigravity CLI";
     };
 
     enableA2A = lib.mkOption {
@@ -24,17 +36,23 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      antigravity-cli
-      antigravity-ide
+    assertions = [
+      {
+        assertion = !(osConfig ? machine) || (osConfig.machine ? tags);
+        message = "antigravity.nix requires an osConfig with machine.tags when used in NixOS context.";
+      }
     ];
+
+    environment.systemPackages = [ pkgs.antigravity-cli ]
+      ++ lib.optional cfg.enableIde pkgs.antigravity-ide;
 
     home-manager.users.${user} = { pkgs, ... }: {
       programs.antigravity-cli = {
         enable = true;
         settings = {
-          defaultModel = "gemini-3.7-flash";
-          routerUrl = "http://127.0.0.1:8090/v1";
+          defaultModel = cfg.defaultModel;
+          routerUrl = lib.mkIf (osConfig.services.ai-services.kong-gateway.enable or false)
+            "http://127.0.0.1:${toString osConfig.services.ai-services.kong-gateway.proxyPort}/v1";
         };
       };
 

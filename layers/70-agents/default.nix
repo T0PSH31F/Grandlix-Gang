@@ -1,10 +1,5 @@
 # Agents Tier Entry Point
-{ lib, ... }:
-let
-  inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; })
-    mkDendriticModule
-    ;
-in
+{ lib, mkDendriticModule, ... }:
 {
   imports = [
     (mkDendriticModule "claude-code" ./71-coding/claude-code.nix)
@@ -21,7 +16,5 @@ in
     ./74-ai-infra
     ./75-mcp
     ./76-hermes-agent
-    ./77-herm
-    ./78-hermes-webui
   ];
 }

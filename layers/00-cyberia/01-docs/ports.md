@@ -20,13 +20,13 @@
 | **389**  | Vaultwarden LDAP       | luffy  | `layers/20-services/25-data/vaultwarden.nix`      | Internal LDAP auth              |
 | **465**  | Himalaya SMTPS         | z0r0   | `layers/50-cli-tui-programs/53-tools/`             | Email client SMTP               |
 | **993**  | Himalaya IMAPS         | z0r0   | `layers/50-cli-tui-programs/53-tools/`             | Email client IMAP               |
-| **1337** | Jan AI                 | z0r0   | `layers/20-services/22-ai/jan.nix`                 | Local AI Desktop API            |
+| **1337** | Jan AI                 | z0r0   | `layers/20-services/22-ai/22-inference/jan.nix`    | Local AI Desktop API            |
 | **3000** | Hermes Workspace       | z0r0   | `machines/z0r0/default.nix`                        | Hermes Agent Web GUI            |
 | **3001** | HedgeDoc               | z0r0   | `machines/z0r0/default.nix`                        | Collaborative Markdown Editor   |
 | **3002** | AdGuard Web            | luffy  | `machines/luffy/default.nix`                       | AdGuard Admin Dashboard         |
-| **3001** | FreeLLMAPI             | z0r0   | `layers/20-services/22-ai/freellmapi.nix`          | Free-tier LLM API Router        |
+| **3001** | FreeLLMAPI             | z0r0   | `layers/20-services/22-ai/21-llm-routers/freellmapi.nix` | Free-tier LLM API Router |
 | **3005** | Langfuse               | z0r0   | `machines/z0r0/default.nix`                        | LLM Observability & Tracing     |
-| **3006** | AionUI                 | z0r0   | `layers/20-services/22-ai/aionui.nix`              | AI Cowork Web Interface         |
+| **3006** | AionUI                 | z0r0   | `layers/20-services/22-ai/24-agent-uis/aionui.nix` | AI Cowork Web Interface         |
 | **3007** | N8N Web / Karakeep     | luffy  | `machines/luffy/default.nix`                       | Workflow Automation Primary     |
 | **3008** | Grafana                | Both   | `layers/20-services/26-monitoring/`                | System Observability Dashboard  |
 | **3099** | Mission Control        | z0r0   | `machines/z0r0/default.nix`                        | Container & Task Manager        |
@@ -38,17 +38,17 @@
 | **5050** | Kavita                 | luffy  | `layers/20-services/26-monitoring/`                | E-book & Digital Library        |
 | **5432** | PostgreSQL             | Both   | System Services                                    | Relational Database             |
 | **5678** | N8N Webhook            | luffy  | `machines/luffy/default.nix`                       | Workflow Automation Webhook     |
-| **5680** | OpenCompany UI         | luffy  | `layers/20-services/22-ai/opencompany.nix`         | AI Org Web Interface            |
-| **5681** | OpenCompany Backend    | luffy  | `layers/20-services/22-ai/opencompany.nix`         | AI Org Python Server            |
+| **5680** | OpenCompany UI         | luffy  | `layers/20-services/22-ai/25-harness-control/opencompany.nix` | AI Org Web Interface   |
+| **5681** | OpenCompany Backend    | luffy  | `layers/20-services/22-ai/25-harness-control/opencompany.nix` | AI Org Python Server   |
 | **6080** | Camofox VNC            | z0r0   | `layers/20-services/24-communication/`             | Browser VNC Viewport            |
-| **6333** | Qdrant HTTP            | z0r0   | `layers/20-services/22-ai/qdrant.nix`              | Vector Database REST API        |
-| **6334** | Qdrant gRPC            | z0r0   | `layers/20-services/22-ai/qdrant.nix`              | Vector Database gRPC            |
+| **6333** | Qdrant HTTP            | z0r0   | `layers/20-services/22-ai/23-vector-db/qdrant.nix` | Vector Database REST API        |
+| **6334** | Qdrant gRPC            | z0r0   | `layers/20-services/22-ai/23-vector-db/qdrant.nix` | Vector Database gRPC            |
 | **6380** | Nextcloud              | luffy  | `layers/20-services/25-data/nextcloud.nix`         | Cloud File Synchronization      |
 | **6767** | Bazarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Subtitle Manager                |
 | **6800** | Aria2                  | luffy  | `layers/20-services/23-media/download-clients.nix`| Download Daemon RPC             |
 | **7878** | Radarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Movie Management                |
 | **8000** | SillyTavern            | z0r0   | `machines/z0r0/default.nix`                        | LLM Frontend Interface          |
-| **8004** | ChromaDB               | z0r0   | `layers/20-services/22-ai/chromadb.nix`            | Vector Database HTTP API        |
+| **8004** | ChromaDB               | z0r0   | `layers/20-services/22-ai/23-vector-db/chromadb.nix` | Vector Database HTTP API |
 | **8008** | Matrix Synapse         | luffy  | `machines/luffy/default.nix`                       | Matrix Federation & Homeserver  |
 | **8010** | Brain Service          | z0r0   | `machines/z0r0/default.nix`                        | Personal Knowledge Base API     |
 | **8080** | Signal CLI             | z0r0   | `machines/z0r0/default.nix`                        | Signal Messenger REST Daemon    |
@@ -59,7 +59,7 @@
 | **8085** | Hermes Agent Gateway   | z0r0   | `layers/70-agents/76-hermes-agent/`                | Hermes Agent MCP Control Gateway|
 | **8086** | Headscale              | luffy  | `layers/20-services/21-networking/`               | Tailscale Control Plane         |
 | **8087** | Mealie                 | luffy  | `machines/luffy/default.nix`                       | Recipe & Meal Manager           |
-| **8088** | Open WebUI             | z0r0   | `layers/20-services/22-ai/open-webui.nix`          | LLM Web Chat Interface          |
+| **8088** | Open WebUI             | z0r0   | `layers/20-services/22-ai/24-agent-uis/open-webui.nix` | LLM Web Chat Interface |
 | **8089** | Filebrowser            | luffy  | `layers/20-services/26-monitoring/`                | Web File Manager                |
 | **8093** | CalibreWeb             | luffy  | `layers/20-services/26-monitoring/`                | E-book Web Reader               |
 | **8095** | qBittorrent WebUI      | luffy  | `layers/20-services/23-media/download-clients.nix`| Torrent Client Web Interface    |

@@ -1,45 +1,11 @@
-# flake-parts/services/ai/default.nix
-# AI and LLM services
 {
   imports = [
-    ./ai-services.nix # Master switch for sub-services
-    ./ai-packages.nix # AI system packages
-    ./postgresql-vectordb.nix # PostgreSQL + pgvector
-    ./open-webui.nix # Open WebUI frontend
-    ./qdrant.nix # Qdrant vector database
-    ./chromadb.nix # ChromaDB vector database
-    ./localai.nix # LocalAI OCI container
-    ./ollama.nix # Ollama local LLM server
-    ./ollama-ui.nix # NextJS Ollama UI
-    ./lmstudio.nix # LM Studio desktop app
-    ./jan.nix # Jan AI desktop app
-    ./cherry-studio.nix # Cherry Studio desktop app
-    ./aider.nix # Aider AI pair programming
-    ./context-forge.nix # ContextForge MCP gateway
-    ./mission-control.nix # Mission Control — self-hosted AI agent control plane
-    ./aionui.nix # AionUi — AI agent Cowork web UI
-    ./paperclip.nix # Paperclip — AI agent team orchestration
-    ./brain-service.nix # FastAPI + LlamaIndex + PGVector RAG
-    ./llm-agents.nix # LLM coding agent packages
-    ./sillytavern.nix # SillyTavern AI chat frontend
-    ./voice.nix # Whisper STT + Piper TTS
-    ./wyoming.nix # Wyoming protocol services
-    ./llama-cpp.nix # llama.cpp server
-    ./litellm.nix # LiteLLM proxy
-    ./llama-swap.nix # llama-swap router
-    ./vllm.nix # vLLM inference server
-    ./lokb.nix # lokb knowledge base with MCP server
-    ./omniroute.nix # OmniRoute — coding LLM router
-    ./extreme-router.nix # ExtremeRouter — AI gateway with 154+ providers and RTK
-    ./freellmpool.nix # freellmpool — free-tier LLM pool
-    ./kong-gateway.nix # Kong AI Gateway — unified LLM/API gateway
-    ./kong-secrets.nix # Sops secrets for Kong + routers
-    ./langgraph.nix # LangGraph — multi-agent orchestration
-    ./freellmapi.nix # FreeLLMAPI — free-tier LLM router
-    ./mistral-mcp.nix # Mistral MCP server (HTTP mode)
-    ./headroom.nix # Headroom — context compression proxy for AI agents
-    ./opencompany.nix # OpenCompany — AI agent workflow canvas
-    ./polyfloor.nix # Polyfloor — Multi-floor AI company OS
-    ./polyfloor-secrets.nix # Polyfloor SOPS secrets
+    ./21-llm-routers
+    ./22-inference
+    ./23-vector-db
+    ./24-agent-uis
+    ./25-harness-control
+    ./26-voice-stt-tts
+    ./27-mcp-tools
   ];
 }

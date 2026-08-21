@@ -10,8 +10,10 @@ START_CMD=(clan machines list)        # fleet sanity check (read-only)
 echo "==> [1/5] Dependency step"
 "${INSTALL_CMD[@]}"
 
-echo "==> [2/5] Format check"
+echo "==> [2/5] Format & linter check (nixfmt, deadnix, statix)"
 nix fmt -- --check
+deadnix --fail . || echo "    (deadnix check failed or uninstalled — check files)"
+statix check . || echo "    (statix check failed or uninstalled — check files)"
 
 echo "==> [3/5] Baseline verification"
 "${VERIFY_CMD[@]}"

@@ -1,8 +1,5 @@
-{ config, lib, ... }:
+{ config, lib, mkDendriticModule, ... }:
 let
-  inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; })
-    mkDendriticModule
-    ;
   cfg = config.layers.layer-50.cli;
 in
 {

@@ -33,7 +33,7 @@ let
     };
 
   };
-  mkMachineFromTags = tags: map (tag: ./layers/90-profiles/tags/${tag}.nix) tags;
+  inherit ((import ./layers/90-profiles/tags/default.nix)) mkMachineFromTags;
 in
 {
   imports = [

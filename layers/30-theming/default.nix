@@ -1,6 +1,6 @@
 { lib, ... }:
 let
-  inherit (import ../../layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; })
+  inherit (import ../80-lib/81-helpers/mkDendriticModule.nix { inherit lib; })
     mkDendriticModule
     ;
 in

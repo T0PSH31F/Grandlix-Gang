@@ -6,7 +6,7 @@
 }:
 with lib;
 let
-  cfg = config.layers.layer-77.open-skills;
+  cfg = config.layers.layer-76.open-skills;
   openSkillsSrc = pkgs.fetchFromGitHub {
     owner = "besoeasy";
     repo = "open-skills";
@@ -15,7 +15,7 @@ let
   };
 in
 {
-  options.layers.layer-77.open-skills = {
+  options.layers.layer-76.open-skills = {
     enable = mkEnableOption "Open Skills — battle-tested skill library for AI agents";
   };
 

@@ -25,10 +25,7 @@
   layers.layer-76.hermes-workspace.enable = lib.mkDefault true;
   layers.layer-76.hermes-dashboard.enable = lib.mkDefault true;
   layers.layer-76.hermes-live-voice.enable = lib.mkDefault true;
-  layers.layer-77.open-skills.enable = lib.mkDefault true;
-
-  # Disabled obsolete or broken agent modules
-  layers.layer-78.hermes-webui.enable = lib.mkForce false; # DISABLED: replaced by hermes-workspace (port 3000)
+  layers.layer-76.open-skills.enable = lib.mkDefault true;
 
   # Orchestration & control plane services
   services.ai-services.mission-control.enable = lib.mkDefault true;

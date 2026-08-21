@@ -13,6 +13,7 @@
     ./17-app-runtimes/flatpak.nix
     ./18-peripherals
     ./19-optimizations
+    ../80-lib
     ../00-cyberia/06-scripts
   ];
 }

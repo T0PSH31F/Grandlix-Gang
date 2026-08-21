@@ -4,6 +4,11 @@
     ../../20-services
     ../../60-gui-programs
   ];
+
+  layers.layer-20.services.config = {
+    media-stack.enable = lib.mkDefault true;
+  };
+
   layers.layer-60.gui = {
     media-packages.enable = lib.mkDefault true;
     audio.enable = lib.mkDefault true;
