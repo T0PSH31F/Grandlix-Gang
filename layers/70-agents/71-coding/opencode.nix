@@ -303,6 +303,6 @@
           (pkgs.writeShellScriptBin "oh-my-opencode-slim" ''
             exec ${pkgs.nodejs}/bin/npx oh-my-opencode-slim@latest "$@"
           '')
-        ];
       };
-    }
+    };
+}
