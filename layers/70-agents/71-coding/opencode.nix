@@ -145,6 +145,9 @@
           };
           lsp = true;
 
+          # Model metadata limits (context & output limits) source URLs to verify on bumps:
+          # Google Gemini models: https://ai.google.dev/gemini-api/docs/models/experimental-models
+          # Anthropic Claude models: https://docs.anthropic.com/en/docs/about-claude/models
           provider.google.models = {
             antigravity-gemini-3-pro = {
               name = "Gemini 3 Pro (Antigravity)";
@@ -243,24 +246,17 @@
 
           # Kong AI Gateway — unified LLM provider
           # Routes to ExtremeRouter (coding), FreeLLMAPI (free), etc.
-          # OpenCode calls /v1/models to enumerate available models
-          provider.kong = {
-            baseUrl = "http://127.0.0.1:8090/v1";
+          provider.kong = lib.mkIf (osConfig.services.ai-services.kong-gateway.enable or false) {
+            baseUrl = "http://127.0.0.1:${toString osConfig.services.ai-services.kong-gateway.proxyPort}/v1";
             name = "Kong AI Gateway";
-            models = {
-              # Models are auto-discovered via /v1/models endpoint
-              # Add static model definitions here if needed
-            };
+            models = { };
           };
 
           # ExtremeRouter — 154+ providers, RTK savings, smart fallback
-          provider.extreme-router = {
-            baseUrl = "http://127.0.0.1:20128/v1";
+          provider.extreme-router = lib.mkIf (osConfig.services.ai-services.extreme-router.enable or false) {
+            baseUrl = "http://127.0.0.1:${toString osConfig.services.ai-services.extreme-router.port}/v1";
             name = "ExtremeRouter";
-            models = {
-              # Models are auto-discovered via /v1/models endpoint
-              # 154+ providers with auto-fallback
-            };
+            models = { };
           };
         };
       };
@@ -303,6 +299,6 @@
           (pkgs.writeShellScriptBin "oh-my-opencode-slim" ''
             exec ${pkgs.nodejs}/bin/npx oh-my-opencode-slim@latest "$@"
           '')
+        ];
       };
-    };
-}
+    }
