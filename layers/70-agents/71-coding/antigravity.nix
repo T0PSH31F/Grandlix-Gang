@@ -52,7 +52,7 @@ in
         settings = {
           defaultModel = cfg.defaultModel;
           routerUrl = lib.mkIf (osConfig.services.ai-services.kong-gateway.enable or false)
-            "http://127.0.0.1:${toString osConfig.services.ai-services.kong-gateway.proxyPort}/v1";
+            "http://127.0.0.1:${toString (osConfig.services.ai-services.kong-gateway.proxyPort or 8090)}/v1";
         };
       };
 

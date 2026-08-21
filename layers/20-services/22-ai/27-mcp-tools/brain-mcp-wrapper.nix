@@ -1,4 +1,4 @@
-{ pkgs, brainScript, pythonEnv }:
+{ pkgs, brainScript, pythonEnv, ... }:
 
 pkgs.writeShellScriptBin "brain-mcp" ''
   export BRAIN_MODE=mcp
