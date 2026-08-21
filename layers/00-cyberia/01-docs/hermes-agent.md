@@ -127,7 +127,7 @@ z0r0 (laptop, ai-server + ai-agent)    luffy (server 24/7, ai-server + ai-agent)
 │                                       │
 │                                       ├── Mission Control :3099
 │                                       │   (fleet control plane)
-│                                       ├── AionUi :3001
+│                                       ├── AionUi :3006
 │                                       └── Paperclip
 ```
 

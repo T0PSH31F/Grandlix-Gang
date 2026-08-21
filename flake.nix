@@ -350,18 +350,26 @@
                 };
               in
               {
-                feature-list-schema = pkgs.runCommand "check-feature-list-schema" {
-                  nativeBuildInputs = [ pkgs.jq ];
-                } ''
-                  jq -e '.features | all(has("id") and has("verification") and has("state"))' ${./feature_list.json} > /dev/null
-                  touch $out
-                '';
+                feature-list-schema =
+                  pkgs.runCommand "check-feature-list-schema"
+                    {
+                      nativeBuildInputs = [ pkgs.jq ];
+                    }
+                    ''
+                      jq -e '.features | all(has("id") and has("verification") and has("state"))' ${./feature_list.json} > /dev/null
+                      touch $out
+                    '';
 
                 inherit (theme-tests) plymouth-theme-builds sddm-theme-builds all-themes;
 
                 services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);
                 n8n-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/n8n.nix);
-                homepage-dashboard-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/homepage-dashboard.nix);
+                homepage-dashboard-test = pkgs.testers.nixosTest (
+                  import ./layers/00-cyberia/05-tests/homepage-dashboard.nix
+                );
+                ai-services-test = pkgs.testers.nixosTest (
+                  import ./layers/00-cyberia/05-tests/ai-services-tests.nix
+                );
               };
           };
       }

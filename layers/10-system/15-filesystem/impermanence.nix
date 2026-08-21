@@ -41,8 +41,10 @@ with lib;
         # Tailscale VPN identity (prevents new node key/IP on reboot)
         "/var/lib/tailscale"
 
-        # Skyvern automation data (DB, artifacts, sessions)
-        "/var/lib/skyvern"
+        # AI Services State & Databases
+        "/var/lib/aionui"          # AionUi database & auth sessions
+        "/var/lib/mission-control"  # Mission Control database & task runs
+        "/var/lib/camofox"         # Camofox persistent browser profiles & OAuth cookies
 
         # SSH host keys
         "/etc/ssh"

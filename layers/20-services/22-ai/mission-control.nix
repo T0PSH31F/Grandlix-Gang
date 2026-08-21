@@ -1,3 +1,7 @@
+# Mission Control — Self-hosted AI Agent Control Plane
+# https://github.com/builderz-labs/mission-control
+#
+# TODO: Migrate option namespace services.ai-services.mission-control to layers.layer-20.services.mission-control
 {
   config,
   lib,
@@ -26,12 +30,26 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion =
+          !(config.fileSystems."/"?fsType && config.fileSystems."/".fsType == "tmpfs")
+          || (config.layers.layer-10.system.config.impermanence.enable or false);
+        message = "services.ai-services.mission-control requires impermanence to be enabled (config.layers.layer-10.system.config.impermanence.enable = true) on machines with tmpfs root to prevent data loss on reboot.";
+      }
+    ];
+
     virtualisation.oci-containers.containers.mission-control = {
-      image = "ghcr.io/builderz-labs/mission-control:latest";
+      image = "ghcr.io/builderz-labs/mission-control@sha256:6c411ac4bfccf3e72f0cc4736dab9560ff2a5496ff38a5c797f98f758d8855d2";
       ports = [ "${toString cfg.port}:3000" ];
-      volumes = [ "${cfg.dataDir}:/app/.data" ];
+      volumes = [
+        "${cfg.dataDir}:/app/.data"
+        "/persist/home/t0psh31f/.agents/skills:/app/skills:ro"
+        "/var/lib/hermes:/var/lib/hermes:ro"
+      ];
       environment = {
         MISSION_CONTROL_DATA_DIR = "/app/.data";
+        HERMES_GATEWAY_URL = "http://127.0.0.1:8085";
       };
       extraOptions = [
         "--userns=keep-id"
@@ -43,5 +61,18 @@ in
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0777 root root -"
     ];
+
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = cfg.dataDir;
+              user = "root";
+              group = "root";
+              mode = "0777";
+            }
+          ];
+        };
   };
 }

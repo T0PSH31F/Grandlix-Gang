@@ -3,6 +3,8 @@
 #
 # Runs as an OCI container (upstream ships Docker images).
 # Can replace or complement OmniRoute — configurable via kong-gateway.routers.
+#
+# TODO: Migrate option namespace services.ai-services.extreme-router to layers.layer-20.services.extreme-router
 {
   config,
   lib,
@@ -31,7 +33,7 @@ in
 
     image = mkOption {
       type = types.str;
-      default = "docker.io/rsalmn/extremerouter:latest";
+      default = "docker.io/rsalmn/extremerouter@sha256:b710a8164939b64aebbbc3bff863a361e10367dd7b556f5159e0d81fe6b2fb3f";
       description = "Docker image for ExtremeRouter";
     };
 
@@ -49,6 +51,15 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion =
+          !(config.fileSystems."/"?fsType && config.fileSystems."/".fsType == "tmpfs")
+          || (config.layers.layer-10.system.config.impermanence.enable or false);
+        message = "services.ai-services.extreme-router requires impermanence to be enabled (config.layers.layer-10.system.config.impermanence.enable = true) on machines with tmpfs root to prevent API key loss on reboot.";
+      }
+    ];
+
     # Create data directory with open permissions for container user
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0777 root root -"

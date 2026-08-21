@@ -65,3 +65,10 @@ clan machines update z0r0     # update specific machine (e.g. z0r0, luffy)
 
 - **OpenCode**: `layers/70-agents/71-coding/opencode.nix` (skills: `./opencode/skills`, agents: `./opencode/agents`).
 - **Hermes-Agent**: `layers/70-agents/76-hermes-agent/hermes.nix` (gateway `:8085`, browser `:9377`, skills: `/var/lib/hermes/.hermes/skills/`).
+
+---
+
+## 7. Git Identity & Conventions
+
+- **Git Identity**: Ensure git commits use proper user email/name (`t0psh31f <wrighterik77@gmail.com>`) instead of placeholder defaults (`t0psh31f@example.com`).
+- **Cross-Machine Impact**: Note cross-machine impact in commit footers (shared layers affect both z0r0 and luffy).

@@ -9,6 +9,10 @@
     enable = lib.mkEnableOption "Anthropic Claude Code agentic coding tool";
   };
 
+  config = lib.mkIf config.layers.layer-70.agent.claude-code.enable {
+    environment.systemPackages = lib.optional (pkgs ? claude-code) pkgs.claude-code;
+  };
+
   home = lib.mkIf config.layers.layer-70.agent.claude-code.enable {
     programs.claude-code = {
       enable = true;

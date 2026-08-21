@@ -20,15 +20,16 @@
     let
       pluginLabel = "oh-my-opencode-slim@latest";
     in
-    lib.mkIf osConfig.layers.layer-70.agent.opencode.enable {
-      programs.opencode = {
+    {
+      config = lib.mkIf osConfig.layers.layer-70.agent.opencode.enable {
+        programs.opencode = {
         enable = true;
         enableMcpIntegration = true;
         web.enable = true;
 
         agents = ./opencode/agents;
         tools = ./opencode/tools;
-        skills = ./opencode/skills;
+        skills = config.lib.file.mkOutOfStoreSymlink "/persist/home/t0psh31f/.config/opencode/skills";
         commands = ./opencode/commands;
         context = ./opencode/rules.md;
 
@@ -36,6 +37,20 @@
           theme = lib.mkForce "noctalia";
           keybinds.command_list = "ctrl+shift+p";
         };
+      };
+
+      home.activation.initOpenCodeSkills = {
+        data = ''
+          SKILLS_DIR="/persist/home/t0psh31f/.config/opencode/skills"
+          if [ ! -d "$SKILLS_DIR" ]; then
+            $DRY_RUN_CMD mkdir -p "$SKILLS_DIR"
+            $DRY_RUN_CMD cp -r ${./opencode/skills}/* "$SKILLS_DIR"/ 2>/dev/null || true
+            $DRY_RUN_CMD chmod -R u+w "$SKILLS_DIR"
+          fi
+        '';
+        before = [ ];
+        after = [ "writeBoundary" ];
+      };
 
         settings = {
           mcp = {
@@ -289,5 +304,6 @@
             exec ${pkgs.nodejs}/bin/npx oh-my-opencode-slim@latest "$@"
           '')
         ];
+      };
     };
 }

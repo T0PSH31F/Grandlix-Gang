@@ -1,7 +1,8 @@
 # Port Allocation Registry
 
-> **Last updated:** 2026-08-20  
-> **Purpose:** Canonical reference for all network port allocations across the fleet to prevent conflicts.
+> **Last updated:** 2026-08-21  
+> **Purpose:** Canonical reference for all network port allocations across the fleet to prevent conflicts.  
+> **NOTE:** This port allocation registry MUST be regenerated/updated whenever service port assignments or module defaults change.
 
 ## Legend
 - **z0r0** = LG laptop workstation (`127.0.0.1` / Tailscale)
@@ -23,7 +24,7 @@
 | **3000** | Hermes Workspace       | z0r0   | `machines/z0r0/default.nix`                        | Hermes Agent Web GUI            |
 | **3001** | HedgeDoc               | z0r0   | `machines/z0r0/default.nix`                        | Collaborative Markdown Editor   |
 | **3002** | AdGuard Web            | luffy  | `machines/luffy/default.nix`                       | AdGuard Admin Dashboard         |
-| **3003** | FreeLLMAPI             | z0r0   | `machines/z0r0/default.nix`                        | Free-tier LLM API Router        |
+| **3001** | FreeLLMAPI             | z0r0   | `layers/20-services/22-ai/freellmapi.nix`          | Free-tier LLM API Router        |
 | **3005** | Langfuse               | z0r0   | `machines/z0r0/default.nix`                        | LLM Observability & Tracing     |
 | **3006** | AionUI                 | z0r0   | `layers/20-services/22-ai/aionui.nix`              | AI Cowork Web Interface         |
 | **3007** | N8N Web / Karakeep     | luffy  | `machines/luffy/default.nix`                       | Workflow Automation Primary     |

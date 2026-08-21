@@ -15,7 +15,7 @@
 | mistral-mcp | 3333 | ✅ Running | Mistral AI tools |
 | camofox-browser | 9377 | ✅ Running | Anti-detection browser |
 | signal-cli-daemon | 8080 | ✅ Running | Signal messaging |
-| aionui | 3001 | ✅ Running | AI Cowork web UI |
+| aionui | 3006 | ✅ Running | AI Cowork web UI |
 | langfuse | 3005 | ✅ Running | LLM observability |
 | prometheus | 9090 | ✅ Running | Metrics |
 | grafana | 3008 | ✅ Running | Dashboards |
@@ -110,6 +110,13 @@ signal-cli-daemon running on port 8080.
 Running on port 9377 with VNC on 6080.
 
 **Action**: For Google OAuth, use VNC at `http://z0r0:6080` to complete login.
+
+### 8. AionUi Setup & Credentials
+AionUi runs as a system service for user `t0psh31f` on port 3006 (`127.0.0.1:3006`).
+- **Data directory**: `/var/lib/aionui` (persisted under `/persist/var/lib/aionui`).
+- **User accounts**: Accounts created via the web UI are stored in SQLite database in `/var/lib/aionui/`.
+- **First-run setup**: On first launch, open `http://127.0.0.1:3006` to register the initial user account. Credentials and settings survive reboot and rebuild.
+- **Agent detection**: System PATH includes `/run/current-system/sw/bin` and user profile bin paths, enabling automatic detection of `claude-code`, `codex`, `gemini-cli`, and `opencode`. Skills installed by AionUi write directly to `/home/t0psh31f/.claude`, `.codex`, `.gemini`, and `.opencode`.
 
 ## Deployment Commands
 

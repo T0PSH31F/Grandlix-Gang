@@ -28,7 +28,6 @@
   layers.layer-77.open-skills.enable = lib.mkDefault true;
 
   # Disabled obsolete or broken agent modules
-  layers.layer-77.herm.enable = lib.mkForce false; # DISABLED: herm-tui has fakeHash placeholders
   layers.layer-78.hermes-webui.enable = lib.mkForce false; # DISABLED: replaced by hermes-workspace (port 3000)
 
   # Orchestration & control plane services

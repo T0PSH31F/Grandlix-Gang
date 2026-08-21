@@ -6,7 +6,6 @@ let
 in
 {
   imports = [
-    (mkDendriticModule "herm" ./herm.nix)
     (mkDendriticModule "open-skills" ./open-skills.nix)
   ];
 }

@@ -627,13 +627,13 @@ in
                 name = "official";
                 kind = "git";
                 location = "https://github.com/noctalia-dev/official-plugins";
-                auto_update = true;
+                auto_update = false;
               }
               {
                 name = "community";
                 kind = "git";
                 location = "https://github.com/noctalia-dev/community-plugins";
-                auto_update = true;
+                auto_update = false;
               }
             ];
 

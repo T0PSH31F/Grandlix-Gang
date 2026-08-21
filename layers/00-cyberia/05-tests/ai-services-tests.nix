@@ -1,0 +1,80 @@
+{
+  name = "ai-services-test";
+  nodes.machine =
+    {
+      config,
+      pkgs,
+      lib,
+      ...
+    }:
+    {
+      imports = [
+        ../../20-services/22-ai/extreme-router.nix
+        ../../20-services/22-ai/aionui.nix
+        ../../20-services/22-ai/mission-control.nix
+      ];
+
+      # Mock requirements for isolated test evaluation
+      options = {
+        layers.layer-10.system.config.impermanence.enable = lib.mkEnableOption "impermanence";
+        environment.persistence = lib.mkOption {
+          type = lib.types.attrs;
+          default = { };
+        };
+        layers.meta.primaryUser = lib.mkOption {
+          type = lib.types.str;
+          default = "t0psh31f";
+        };
+      };
+
+      config = {
+        layers.layer-10.system.config.impermanence.enable = false;
+
+        users.users.t0psh31f = {
+          isNormalUser = true;
+          home = "/home/t0psh31f";
+          group = "users";
+        };
+
+        services.ai-services.extreme-router = {
+          enable = true;
+          port = 20128;
+        };
+
+        services.ai-services.aionui = {
+          enable = true;
+          port = 3006;
+          openFirewall = true;
+        };
+
+        services.ai-services.mission-control = {
+          enable = true;
+          port = 3099;
+        };
+
+        system.stateVersion = "25.05";
+        networking.firewall.enable = true;
+      };
+    };
+
+  testScript = ''
+    start_all()
+
+    # Wait for aionui service
+    machine.wait_for_unit("aionui.service")
+    machine.wait_for_open_port(3006)
+
+    # Verify sentinel persistence across service restart
+    machine.succeed("echo 'sentinel-test' > /var/lib/aionui/sentinel.txt")
+    machine.succeed("systemctl restart aionui.service")
+    machine.wait_for_unit("aionui.service")
+    machine.succeed("grep -q 'sentinel-test' /var/lib/aionui/sentinel.txt")
+
+    # Check data directory setup for extreme-router & mission-control
+    machine.succeed("echo 'sentinel-router' > /var/lib/extreme-router/sentinel.txt")
+    machine.succeed("test -f /var/lib/extreme-router/sentinel.txt")
+
+    machine.succeed("echo 'sentinel-mc' > /var/lib/mission-control/sentinel.txt")
+    machine.succeed("test -f /var/lib/mission-control/sentinel.txt")
+  '';
+}
