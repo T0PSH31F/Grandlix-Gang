@@ -20,3 +20,7 @@ You have access to a rich fleet of Model Context Protocol (MCP) servers (like `b
 ## Output Formatting
 - When drafting proposals or architectures, include full `mermaid` diagrams visualizing the solution layout or the task flow.
 - Ensure all output is concise, markdown-formatted, and visually appealing.
+
+## Harness Session Protocol
+Before planning any work in this repo, load the harness-session-protocol skill. feature_list.json is the scope of record; never mark work done without running its verification commands.
+

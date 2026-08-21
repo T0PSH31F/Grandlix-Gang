@@ -7,10 +7,12 @@
 with lib;
 let
   cfg = config.layers.layer-77.open-skills;
-  repoUrl = "https://github.com/besoeasy/open-skills";
-  primaryUser = config.layers.meta.primaryUser or "t0psh31f";
-  homeDir = config.users.users.${primaryUser}.home;
-  skillDir = "${homeDir}/.hermes/open-skills";
+  openSkillsSrc = pkgs.fetchFromGitHub {
+    owner = "besoeasy";
+    repo = "open-skills";
+    rev = "3bc011321c9054238d207936dbb577aa4b7e0e4d";
+    hash = "sha256-Bd/2zDB4b31IvsF/YSeFwYXERBuZlG1e8cFTMnuvOlM=";
+  };
 in
 {
   options.layers.layer-77.open-skills = {
@@ -19,18 +21,9 @@ in
 
   home = { ... }: {
     config = mkIf cfg.enable {
-      home.packages = [ pkgs.git ];
-
-      home.activation.installOpenSkills = {
-        data = ''
-          if [ ! -d "${skillDir}" ]; then
-            run ${pkgs.git}/bin/git clone ${repoUrl} "${skillDir}"
-          else
-            run ${pkgs.git}/bin/git -C "${skillDir}" pull --ff-only || true
-          fi
-        '';
-        before = [ ];
-        after = [ "writeBoundary" ];
+      home.file.".hermes/open-skills" = {
+        source = openSkillsSrc;
+        recursive = true;
       };
     };
   };

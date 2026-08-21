@@ -655,6 +655,18 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/hermes/.hermes 0750 hermes hermes -"
       "d /var/lib/hermes/.hermes/hermes-agent 0750 hermes hermes -"
+      "d /var/lib/hermes/.hermes/skills 0750 hermes hermes -"
+      # Harness skill packs — symlinked from the Nix store into HERMES_HOME/skills.
+      # Upstream bundled skills ship in $out/share/hermes-agent/skills via HERMES_BUNDLED_SKILLS;
+      # repository skills linked here are additive and take precedence for custom workflows.
+      "L+ /var/lib/hermes/.hermes/skills/harness-session-protocol - hermes hermes - ${./../skills/harness-session-protocol}"
+      "L+ /var/lib/hermes/.hermes/skills/nfp-module-authoring - hermes hermes - ${./../skills/nfp-module-authoring}"
+      "L+ /var/lib/hermes/.hermes/skills/persistence-audit - hermes hermes - ${./../skills/persistence-audit}"
+      # Harness HERMES.md workspace pointer file
+      "L+ /var/lib/hermes/.hermes/HERMES.md - hermes hermes - ${pkgs.writeText "HERMES.md" ''
+        # NFP Repo Instructions for Hermes
+        In the NFP repo, follow the harness-session-protocol skill: init.sh first, one feature at a time, evidence before passing.
+      ''}"
       # Vendored custom skins — symlinked from the Nix store (flake source) into
       # HERMES_HOME so they resolve deterministically across rebuilds/reboots and
       # flake edits propagate. Source of truth: layers/70-agents/76-hermes-agent/skins/.
