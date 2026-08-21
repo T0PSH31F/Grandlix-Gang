@@ -13,7 +13,7 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 ## Entries
 - **Date / Agent:** 2026-08-21 / antigravity
 - **Feature:** harness-pack
-- **Work done:** Scaffolded harness pack from build spec.
-- **Verification:** ./init.sh green; jq validates feature_list.json
-- **State change:** in-progress
-- **Next action:** run first full harness session on extreme-router-persistence
+- **Work done:** Implemented complete NFP Agent Harness (Phases P0 - P3). Scaffolded init.sh, feature_list.json, agent-progress.md, session-handoff.md, clean-state-checklist.md, evaluator-rubric.md, skill packs, OpenCode & Hermes wiring, schema checks, and harness.md documentation.
+- **Verification:** `./init.sh` green; `jq -e . feature_list.json` valid; `head -40 AGENTS.md` verified; flake checks & machine evals passing.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** claim extreme-router-persistence in next session

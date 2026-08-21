@@ -105,8 +105,14 @@
         "jq -e . feature_list.json",
         "head -40 AGENTS.md contains 'Startup Workflow'"
       ],
-      "state": "untried",
-      "evidence": []
+      "state": "passing",
+      "evidence": [
+        "Commit 84ff12be: Scaffolded init.sh (chmod +x), feature_list.json, agent-progress.md, session-handoff.md, clean-state-checklist.md, evaluator-rubric.md, and updated AGENTS.md.",
+        "Commit 821efdf9: Created 3 canonical skill packs under layers/70-agents/skills/.",
+        "Commit 8a1e036b: Symlinked skills into opencode and hermes tmpfiles rules, pinned open-skills via fetchFromGitHub.",
+        "Commit 7d894c08: Added feature_list schema checks to deploy.yml & flake.nix, created PR template, hermes-evaluator loop, and harness.md.",
+        "Verification: jq -e . feature_list.json passed; head -40 AGENTS.md verified line 7 starts '## Startup Workflow'."
+      ]
     }
   ]
 }
