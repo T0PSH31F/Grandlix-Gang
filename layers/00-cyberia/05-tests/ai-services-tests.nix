@@ -9,9 +9,9 @@
     }:
     {
       imports = [
-        ../../20-services/22-ai/extreme-router.nix
-        ../../20-services/22-ai/aionui.nix
-        ../../20-services/22-ai/mission-control.nix
+        ../../20-services/22-ai/21-llm-routers/extreme-router.nix
+        ../../20-services/22-ai/22-interfaces/aionui.nix
+        ../../20-services/22-ai/25-harness-control/mission-control.nix
       ];
 
       # Mock requirements for isolated test evaluation

@@ -19,8 +19,13 @@
         "image reference is pinned by digest (no :latest)",
         "systemctl restart podman-extreme-router && configured providers still present"
       ],
-      "state": "untried",
-      "evidence": []
+      "state": "passing",
+      "evidence": [
+        "Verified docker image digest pinned to @sha256:b710a8164939b64aebbbc3bff863a361e10367dd7b556f5159e0d81fe6b2fb3f in extreme-router.nix.",
+        "Verified oci-container volume mount mapping /var/lib/extreme-router:/app/data via nix eval.",
+        "Added /var/lib/extreme-router to canonical impermanence system directories in layers/10-system/15-filesystem/impermanence.nix.",
+        "Ran ./init.sh baseline evaluation check — PASSED."
+      ]
     },
     {
       "id": "aionui-persistence-and-auth",

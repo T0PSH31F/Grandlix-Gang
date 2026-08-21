@@ -44,6 +44,7 @@ with lib;
         # AI Services State & Databases
         "/var/lib/aionui"          # AionUi database & auth sessions
         "/var/lib/mission-control"  # Mission Control database & task runs
+        "/var/lib/extreme-router"   # ExtremeRouter persistent state & API keys
         "/var/lib/camofox"         # Camofox persistent browser profiles & OAuth cookies
 
         # SSH host keys

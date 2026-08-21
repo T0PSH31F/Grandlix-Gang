@@ -1,9 +1,7 @@
 { lib, config, ... }:
 {
   # ai-server — local LLM backends, vector DBs, and AI router services
-  imports = [
-    ./ai.nix
-  ];
+  imports = [ ];
 
   services = {
     llm-agents.enable = lib.mkDefault true;

@@ -17,3 +17,10 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **Verification:** `./init.sh` green; `jq -e . feature_list.json` valid; `head -40 AGENTS.md` verified; flake checks & machine evals passing.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** claim extreme-router-persistence in next session
+
+- **Date / Agent:** 2026-08-21 / antigravity
+- **Feature:** extreme-router-persistence
+- **Work done:** Verified image digest pinning, OCI container volume mounts (/var/lib/extreme-router:/app/data), and registered /var/lib/extreme-router in canonical impermanence system directories under layers/10-system/15-filesystem/impermanence.nix.
+- **Verification:** `nix eval` confirmed volume mounts and digest pinning; `./init.sh` baseline check passed with clean evaluation on luffy and z0r0.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** claim aionui-persistence-and-auth in next session
