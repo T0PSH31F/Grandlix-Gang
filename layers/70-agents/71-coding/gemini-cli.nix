@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
@@ -10,5 +11,6 @@
 
   config = lib.mkIf config.layers.layer-70.agent.gemini-cli.enable {
     layers.layer-70.agent.antigravity.enable = true;
+    environment.systemPackages = lib.optional (pkgs ? gemini-cli) pkgs.gemini-cli;
   };
 }
