@@ -157,6 +157,7 @@ clan machines update <machine>
 
 ### Documentation
 All documentation is in `layers/00-cyberia/01-docs/`:
+- **[harness.md](layers/00-cyberia/01-docs/harness.md)** — agent harness specification & lifecycle
 - **[yazelix_guide.md](layers/00-cyberia/01-docs/yazelix_guide.md)** — editor setup & keybinds
 - **[hermes-agent.md](layers/00-cyberia/01-docs/hermes-agent.md)** — AI agent features
 - **[deployment.md](layers/00-cyberia/01-docs/deployment.md)** — deployment methods

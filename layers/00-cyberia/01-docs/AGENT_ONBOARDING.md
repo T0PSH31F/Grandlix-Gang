@@ -20,6 +20,7 @@ layers affect BOTH machines — be careful.
 - **Flake framework**: clan-core + flake-parts
 - **Flake location** (on z0r0): `/persist/home/t0psh31f/Clan/NFP`
 - **Kernel**: linux-zen-7.0.9 (z0r0), configurable via `layers.layer-10.system.hardware.kernel`
+- **Agent Harness**: The repository uses the NFP Agent Harness as system of record — see [`harness.md`](file:///home/t0psh31f/Clan/NFP/layers/00-cyberia/01-docs/harness.md).
 
 ---
 

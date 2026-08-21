@@ -327,17 +327,10 @@
         perSystem =
           {
             pkgs,
+            system,
             ...
           }:
-          let
-            system = pkgs.stdenv.hostPlatform.system;
-          in
           {
-            _module.args.pkgs = import inputs.nixpkgs {
-              localSystem = system;
-              config.allowUnfree = true;
-              # Overlays applied via nixpkgs.overlays in overlays.nix (single source of truth).
-            };
             packages.iso =
               (inputs.nixpkgs.lib.nixosSystem {
                 inherit system;
@@ -347,7 +340,7 @@
                 ];
               }).config.system.build.isoImage;
 
-            formatter = pkgs.nixfmt-tree;
+            formatter = pkgs.nixfmt;
 
             checks =
               let
@@ -357,6 +350,13 @@
                 };
               in
               {
+                feature-list-schema = pkgs.runCommand "check-feature-list-schema" {
+                  nativeBuildInputs = [ pkgs.jq ];
+                } ''
+                  jq -e '.features | all(has("id") and has("verification") and has("state"))' ${./feature_list.json} > /dev/null
+                  touch $out
+                '';
+
                 inherit (theme-tests) plymouth-theme-builds sddm-theme-builds all-themes;
 
                 services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);

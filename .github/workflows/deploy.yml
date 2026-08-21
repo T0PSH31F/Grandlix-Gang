@@ -25,6 +25,8 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Check flake format
         run: nix fmt -- --check
+      - name: Validate feature_list.json schema
+        run: jq -e '.features | all(has("id") and has("verification") and has("state"))' feature_list.json
       - name: Flake check
         run: nix flake check
 
