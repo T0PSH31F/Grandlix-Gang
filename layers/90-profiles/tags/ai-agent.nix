@@ -15,6 +15,7 @@
     gemini-cli.enable = lib.mkDefault true;
     codegraph.enable = lib.mkDefault true;
     kiro-cli.enable = lib.mkDefault true;
+    dsh.enable = lib.mkDefault true;
     asr-tts.enable = lib.mkDefault false;
     ai-agent-stack.enable = lib.mkDefault true;
   };

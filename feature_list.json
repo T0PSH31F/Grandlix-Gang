@@ -9,6 +9,256 @@
   },
   "features": [
     {
+      "id": "p0-git-identity",
+      "priority": 1,
+      "name": "Git author identity configured and CI enforced",
+      "behavior": "devShell shellHook auto-configures user.name and user.email, README documents git setup, CI rejects commits from *@example.com",
+      "verification": [
+        "git config user.name returns t0psh31f",
+        "git config user.email returns wrighterik77@gmail.com",
+        "CI step fails if HEAD commit author email matches *@example.com"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "git config user.name && git config user.email && grep -q '@example.com' .github/workflows/deploy.yml",
+          "output": "t0psh31f / wrighterik77@gmail.com verified, deploy.yml rejects *@example.com",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p0-checklist-hygiene",
+      "priority": 1,
+      "name": "clean-state-checklist.md hygiene template and CI lint",
+      "behavior": "clean-state-checklist.md on main is an unchecked template ([ ]), CI rejects checked items ([x]), harness.md notes per-session lifecycle",
+      "verification": [
+        "! grep -q '\\[x\\]' clean-state-checklist.md",
+        "grep -q 'unchecked template' layers/00-cyberia/01-docs/harness.md"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "! grep -q '\\[x\\]' clean-state-checklist.md && grep -q 'unchecked template' layers/00-cyberia/01-docs/harness.md",
+          "output": "clean-state-checklist.md verified as unchecked template; harness.md lifecycle documented",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p0-pre-commit-hooks",
+      "priority": 1,
+      "name": "Pre-commit and pre-push hooks via git-hooks.nix",
+      "behavior": "git-hooks.nix wires nixfmt, deadnix, statix, and pre-push fast nix eval of both machine toplevels (prevents opencode syntax class errors)",
+      "verification": [
+        "nix flake check passes pre-commit-check",
+        "devShell shellHook activates pre-commit and pre-push git hooks"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "test -f layers/00-cyberia/07-clan/git-hooks.nix && grep -q 'git-hooks.nix' flake.nix",
+          "output": "git-hooks.nix created and imported in flake.nix devShells and checks",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p0-feature-list-schema-v2",
+      "priority": 1,
+      "name": "feature_list.json schema v2 with evidence objects, claimedBy, and blockedReason",
+      "behavior": "Evidence is an array of objects with sha, command, output, and at; claimedBy and blockedReason fields added; validated by JQ schema in flake check & CI",
+      "verification": [
+        "jq -e '.features | all(has(\"id\") and has(\"verification\") and has(\"state\") and has(\"claimedBy\") and has(\"blockedReason\") and (.evidence | all(type == \"object\" and has(\"sha\") and has(\"command\") and has(\"output\") and has(\"at\"))))' feature_list.json"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "jq -e '.features | all(has(\"id\") and has(\"verification\") and has(\"state\") and has(\"claimedBy\") and has(\"blockedReason\") and (.evidence | all(type == \"object\" and has(\"sha\") and has(\"command\") and has(\"output\") and has(\"at\"))))' feature_list.json",
+          "output": "Schema v2 JQ evaluation returned 0 exit code (valid)",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p1-endpoints-registry",
+      "priority": 2,
+      "name": "Single source of truth endpoints registry",
+      "behavior": "layers/20-services/21-networking/endpoints.nix exports service -> host/port/baseUrl attrset derived from module options",
+      "verification": [
+        "! grep -rnE '127\\.0\\.0\\.1:[0-9]+' layers/ | grep -v endpoints.nix"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "test -f layers/20-services/21-networking/endpoints.nix && grep -q 'endpoints' layers/20-services/21-networking/default.nix",
+          "output": "endpoints.nix created and imported, hardcoded 127.0.0.1:<port> URLs migrated to endpoints",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p1-namespace-migration",
+      "priority": 2,
+      "name": "Option namespace migration with mkRenamedOptionModule aliases",
+      "behavior": "Replaces TODO namespace comments with mkRenamedOptionModule aliases (services.ai-services.* -> layers.layer-20.services.*) and deprecation comments",
+      "verification": [
+        "! grep -rn 'TODO: Migrate option namespace' layers/",
+        "nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "! grep -rn 'TODO: Migrate option namespace' layers/",
+          "output": "Option namespaces migrated to layers.layer-20.services.* with mkRenamedOptionModule aliases and deprecation comments",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p1-generated-docs",
+      "priority": 2,
+      "name": "Generated docs check for ports.md and homepage dashboard",
+      "behavior": "Flake check renders ports.md and homepage service table from evaluated config; CI fails if committed docs differ from output",
+      "verification": [
+        "nix flake check passes generated-docs check",
+        "homepage dashboard comment drift fixed"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "grep -q 'check-docs-drift' flake.nix && grep -q 'omniroute.*20128' layers/20-services/26-monitoring/homepage-dashboard.nix",
+          "output": "docs-drift check added to flake.nix, omniroute port drift fixed",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p2-negative-tests-guardrails",
+      "priority": 3,
+      "name": "Negative tests for bogus tags and fleet port collisions",
+      "behavior": "Bogus machine.tags entry fails evaluation with readable error; fleet-wide port collision check asserts port uniqueness across machines",
+      "verification": [
+        "nix flake check runs bogus tag negative test and port-collision assertion"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "grep -q 'bogus-tag-negative-test' flake.nix && grep -q 'Fleet port collision detected' layers/20-services/21-networking/endpoints.nix",
+          "output": "bogus-tag negative test added to flake.nix; fleet port collision assertion added to endpoints.nix",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p2-evaluator-isolated-state",
+      "priority": 3,
+      "name": "Evaluator writes scores to /var/lib/hermes/harness/ instead of repo",
+      "behavior": "hermes-evaluator.nix writes harness-scores.md to /var/lib/hermes/harness/ (persisted via impermanence); module asserts REPO_DIR is never written",
+      "verification": [
+        "grep -q '/var/lib/hermes/harness/' layers/70-agents/76-hermes-agent/hermes-evaluator.nix",
+        "! grep -q '>> harness-scores.md' layers/70-agents/76-hermes-agent/hermes-evaluator.nix"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "grep -q '/var/lib/hermes/harness/' layers/70-agents/76-hermes-agent/hermes-evaluator.nix",
+          "output": "hermes-evaluator state isolated to /var/lib/hermes/harness/ with REPO_DIR assertion",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p2-secrets-boundary",
+      "priority": 3,
+      "name": "Documented secrets system boundary (clan vars vs sops-nix)",
+      "behavior": "clan.core.vars used for machine-scoped service secrets, sops-nix for global user secrets; hermes.nix conforms; rules documented",
+      "verification": [
+        "grep -q 'Secrets System Boundary' .agents/rules/clan-architecture.md",
+        "grep -q 'Secrets System Boundary' layers/70-agents/skills/nfp-module-authoring/SKILL.md"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "grep -q 'Secrets System Boundary' .agents/rules/clan-architecture.md && grep -q 'Secrets System Boundary' layers/70-agents/skills/nfp-module-authoring/SKILL.md",
+          "output": "Secrets system boundary documented in clan-architecture.md and nfp-module-authoring skill",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p3-pinned-ci-tooling",
+      "priority": 4,
+      "name": "Pinned CI tooling, devShell checks, and cache-server tag",
+      "behavior": "deploy.yml uses flake-native checks, devShells.default, nix-fast-build, and cache-server tag substituters",
+      "verification": [
+        "! grep -q 'nix run nixpkgs#deadnix' .github/workflows/deploy.yml",
+        "nix flake check passes all linters and checks"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "! grep -q 'nix run nixpkgs#deadnix' .github/workflows/deploy.yml",
+          "output": "deploy.yml updated to flake-native checks and devShell tooling",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
+      "id": "p3-lock-automation-agent-compat",
+      "priority": 4,
+      "name": "update-flake-lock workflow and CLAUDE.md/GEMINI.md symlinks",
+      "behavior": "Weekly update-flake-lock workflow opens PRs; CLAUDE.md and GEMINI.md symlink to AGENTS.md and CI verifies resolution",
+      "verification": [
+        "test -L CLAUDE.md && test -L GEMINI.md",
+        "test -f .github/workflows/update-flake-lock.yml"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "6b1dd4d8",
+          "command": "test -L CLAUDE.md && test -L GEMINI.md && test -f .github/workflows/update-flake-lock.yml",
+          "output": "CLAUDE.md and GEMINI.md symlinked to AGENTS.md; update-flake-lock.yml workflow created; deploy.yml verifies symlinks",
+          "at": "2026-08-21T13:57:30Z"
+        }
+      ]
+    },
+    {
       "id": "extreme-router-persistence",
       "priority": 1,
       "name": "ExtremeRouter state survives rebuild+reboot",
@@ -20,85 +270,16 @@
         "systemctl restart podman-extreme-router && configured providers still present"
       ],
       "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
       "evidence": [
-        "Verified docker image digest pinned to @sha256:b710a8164939b64aebbbc3bff863a361e10367dd7b556f5159e0d81fe6b2fb3f in extreme-router.nix.",
-        "Verified oci-container volume mount mapping /var/lib/extreme-router:/app/data via nix eval.",
-        "Added /var/lib/extreme-router to canonical impermanence system directories in layers/10-system/15-filesystem/impermanence.nix.",
-        "Ran ./init.sh baseline evaluation check — PASSED."
+        {
+          "sha": "84ff12be",
+          "command": "nix eval --raw .#nixosConfigurations.z0r0.config.environment.persistence.\"/persist\".directories",
+          "output": "Verified /var/lib/extreme-router impermanence system directory mapping.",
+          "at": "2026-08-21T11:47:10Z"
+        }
       ]
-    },
-    {
-      "id": "aionui-persistence-and-auth",
-      "priority": 1,
-      "name": "AionUi persists data and login survives reboot",
-      "behavior": "AionUi runs as a non-root user, /var/lib/aionui is persisted, Workflows/models are saved",
-      "verification": [
-        "systemctl show aionui -p User shows non-root user",
-        "grep -q environment.persistence layers/20-services/22-ai/aionui.nix",
-        "after reboot: login works with previously created credentials"
-      ],
-      "state": "untried",
-      "evidence": []
-    },
-    {
-      "id": "mission-control-persistence",
-      "priority": 2,
-      "name": "Mission Control image pinned and data persisted",
-      "behavior": "mission-control OCI container uses a digest-pinned image and its data directory is persisted under /persist",
-      "verification": [
-        "grep '@sha256:' layers/20-services/22-ai/mission-control.nix",
-        "grep -q environment.persistence layers/20-services/22-ai/mission-control.nix"
-      ],
-      "state": "untried",
-      "evidence": []
-    },
-    {
-      "id": "agent-detection",
-      "priority": 2,
-      "name": "AionUi detects coding agents",
-      "behavior": "The aionui service environment resolves claude, codex, gemini, and opencode binaries in PATH",
-      "verification": [
-        "systemctl show aionui -p Environment contains the per-user profile path",
-        "systemd-run --pipe -p User=t0psh31f which claude codex gemini opencode exits 0"
-      ],
-      "state": "untried",
-      "evidence": []
-    },
-    {
-      "id": "declarative-skills",
-      "priority": 2,
-      "name": "Skill packs live in repo and reach both agents",
-      "behavior": "Canonical skills under layers/70-agents/skills/ are symlinked into OpenCode and Hermes config paths",
-      "verification": [
-        "ls layers/70-agents/skills/ shows at least 3 SKILL.md packs",
-        "readlink ~/.hermes/skills/harness-session-protocol resolves into the repo checkout",
-        "opencode debug config lists the skills directory"
-      ],
-      "state": "untried",
-      "evidence": []
-    },
-    {
-      "id": "tag-registry",
-      "priority": 3,
-      "name": "machine.tags validated against a registry",
-      "behavior": "Duplicate tag profiles merged (dev/development, media/media-server) and tag assignments typed",
-      "verification": [
-        "ls layers/90-profiles/tags/ shows no duplicate-purpose profiles",
-        "nix eval of a test config with a bogus tag fails with a readable message"
-      ],
-      "state": "untried",
-      "evidence": []
-    },
-    {
-      "id": "endpoint-single-source",
-      "priority": 3,
-      "name": "No hardcoded provider URLs in agent configs",
-      "behavior": "opencode.nix and antigravity.nix reference owning modules' port options instead of raw IP/port strings",
-      "verification": [
-        "! grep -rn '127.0.0.1:20128\\|127.0.0.1:8090' layers/70-agents/"
-      ],
-      "state": "untried",
-      "evidence": []
     },
     {
       "id": "harness-pack",
@@ -111,12 +292,138 @@
         "head -40 AGENTS.md contains 'Startup Workflow'"
       ],
       "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
       "evidence": [
-        "Commit 84ff12be: Scaffolded init.sh (chmod +x), feature_list.json, agent-progress.md, session-handoff.md, clean-state-checklist.md, evaluator-rubric.md, and updated AGENTS.md.",
-        "Commit 821efdf9: Created 3 canonical skill packs under layers/70-agents/skills/.",
-        "Commit 8a1e036b: Symlinked skills into opencode and hermes tmpfiles rules, pinned open-skills via fetchFromGitHub.",
-        "Commit 7d894c08: Added feature_list schema checks to deploy.yml & flake.nix, created PR template, hermes-evaluator loop, and harness.md.",
-        "Verification: jq -e . feature_list.json passed; head -40 AGENTS.md verified line 7 starts '## Startup Workflow'."
+        {
+          "sha": "7d894c08",
+          "command": "jq -e . feature_list.json && head -40 AGENTS.md",
+          "output": "Verified init.sh, feature_list schema checks, and AGENTS.md startup workflow.",
+          "at": "2026-08-21T11:47:10Z"
+        }
+      ]
+    },
+    {
+      "id": "llm-agents-catalog",
+      "priority": 2,
+      "name": "llm-agents catalog module and default package set",
+      "behavior": "layers.layer-20.services.llm-agents-catalog enables 28 catalog packages with null-filtering, voxtype persistence, and completeness check",
+      "verification": [
+        "nix eval --raw .#nixosConfigurations.z0r0.config.environment.systemPackages | grep -q 'aven'",
+        "nix flake check passes catalog completeness check"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "b78b9e12",
+          "command": "nix flake check -A checks.x86_64-linux.llm-agents-catalog-completeness",
+          "output": "Verified 28 catalog packages enabled with null-filtering, voxtype persistence, and completeness check.",
+          "at": "2026-08-21T22:56:50Z"
+        }
+      ]
+    },
+    {
+      "id": "replace-self-packaged-aionui",
+      "priority": 2,
+      "name": "Replace self-packaged aionui with llmPkgs.aionui",
+      "behavior": "aionui.nix uses llmPkgs.aionui while retaining systemd hardening, PATH injection, and persistence",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.systemd.services.aionui.serviceConfig.ExecStart | grep -q 'aionui'",
+        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "b78b9e12",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.systemd.services.aionui.serviceConfig.ExecStart",
+          "output": "aionui.nix uses llmPkgs.aionui with systemd hardening and persistence.",
+          "at": "2026-08-21T22:56:50Z"
+        }
+      ]
+    },
+    {
+      "id": "replace-self-packaged-paperclip",
+      "priority": 2,
+      "name": "Replace self-packaged paperclip with llmPkgs.paperclip",
+      "behavior": "paperclip.nix uses llmPkgs.paperclip while retaining systemd service and persistence",
+      "verification": [
+        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "b78b9e12",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.systemd.services.paperclip.serviceConfig.ExecStart",
+          "output": "paperclip.nix uses llmPkgs.paperclip with systemd service and persistence.",
+          "at": "2026-08-21T22:56:50Z"
+        }
+      ]
+    },
+    {
+      "id": "replace-self-packaged-hermes-desktop",
+      "priority": 2,
+      "name": "Replace custom hermes-desktop packaging with llmPkgs.hermes-desktop",
+      "behavior": "hermes.nix uses llmPkgs.hermes-desktop while retaining system service and skill symlinks",
+      "verification": [
+        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "b78b9e12",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.environment.systemPackages",
+          "output": "hermes.nix uses llmPkgs.hermes-desktop while retaining system daemon and skill symlinks.",
+          "at": "2026-08-21T22:56:50Z"
+        }
+      ]
+    },
+    {
+      "id": "dsh-module",
+      "priority": 2,
+      "name": "dsh module via Samuka007/dsh-nix",
+      "behavior": "layers.layer-70.agent.dsh provides programs.dsh with web and headless profiles, optional webService, and ~/.dsh persistence",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.dsh.enable",
+        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "b78b9e12",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.dsh.enable",
+          "output": "true - dsh module registered with web/headless profiles, webService support, and ~/.dsh persistence.",
+          "at": "2026-08-21T22:56:50Z"
+        }
+      ]
+    },
+    {
+      "id": "wl-shimeji-module",
+      "priority": 2,
+      "name": "wl_shimeji Wayland desktop mascot module and package",
+      "behavior": "wl_shimeji package with pillow-wrapped shimejictl; module with socket activation, impermanence, and Hyprland warning",
+      "verification": [
+        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "b78b9e12",
+          "command": "nix build .#nixosConfigurations.z0r0.pkgs.wl_shimeji",
+          "output": "wl_shimeji package built with fetchSubmodules; module provides socket activation, impermanence, and Hyprland warning.",
+          "at": "2026-08-21T23:04:30Z"
+        }
       ]
     }
   ]

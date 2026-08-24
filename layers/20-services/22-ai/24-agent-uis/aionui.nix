@@ -1,52 +1,31 @@
-# AionUi — AI agent Cowork web UI
-# https://github.com/iOfficeAI/AionUi
-#
-# TODO: Migrate option namespace services.ai-services.aionui to layers.layer-20.services.aionui
+# Deprecated: services.ai-services.aionui is aliased to layers.layer-20.services.aionui (removal in 2 releases, v26.11).
 {
   config,
   lib,
   pkgs,
+  inputs ? { },
   ...
 }:
 with lib;
 let
-  cfg = config.services.ai-services.aionui;
+  cfg = config.layers.layer-20.services.aionui;
   primaryUser = config.layers.meta.primaryUser or "t0psh31f";
-  version = "2.1.41";
-
-  aionuiPkg = pkgs.stdenv.mkDerivation {
-    pname = "aionui-web";
-    inherit version;
-
-    src = pkgs.fetchurl {
-      url = "https://github.com/iOfficeAI/AionUi/releases/download/v${version}/aionui-web-${version}-linux-x86_64.tar.gz";
-      hash = "sha256-eXYzrDCzj3sFNVXZ01YDAf2uwlCoGAPy7Xg85PVitXE=";
-    };
-
-    sourceRoot = ".";
-    dontBuild = true;
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/bin $out/share/aionui
-      cp -r aionui-web/* $out/share/aionui/
-      chmod +x $out/share/aionui/aionui-web
-      ln -s $out/share/aionui/aionui-web $out/bin/aionui-web
-      runHook postInstall
-    '';
-
-    passthru.updateScript = pkgs.nix-update;
-
-    meta = with lib; {
-      description = "Free, open-source Cowork app with AI Agents";
-      homepage = "https://github.com/iOfficeAI/AionUi";
-      license = licenses.asl20;
-      mainProgram = "aionui-web";
-    };
-  };
+  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
+  aionuiPkg = llmPkgs.aionui or pkgs.aionui;
 in
 {
-  options.services.ai-services.aionui = {
+  imports = [
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "aionui" "enable" ]
+      [ "layers" "layer-20" "services" "aionui" "enable" ]
+    )
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "aionui" "port" ]
+      [ "layers" "layer-20" "services" "aionui" "port" ]
+    )
+  ];
+
+  options.layers.layer-20.services.aionui = {
     enable = mkEnableOption "AionUi — AI agent Cowork web UI";
 
     port = mkOption {

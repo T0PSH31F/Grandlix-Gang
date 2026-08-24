@@ -1,9 +1,13 @@
+# 🧠 MCP Server Catalog & Gateway
 {
   config,
   lib,
   pkgs,
   ...
 }:
+let
+  cfg = config.layers.layer-75.mcp;
+in
 {
   options.layers.layer-75.mcp = {
     enable = lib.mkEnableOption "MCP server catalog and gateway";
@@ -24,71 +28,69 @@
     };
   };
 
-  config = lib.mkIf config.layers.layer-75.mcp.enable {
-    home-manager.users.t0psh31f = {
-      home.packages = with pkgs; [
-        # kilocode-cli # DISABLED: upstream kilo-console build broken (vite shebang /usr/bin/env missing in sandbox)
-        picoclaw
-        zeroclaw
-        crush
-        mcp-nixos
-        ha-mcp
-        github-mcp-server
-        perplexity-mcp
-      ];
+  nixos = { };
 
-      programs.mcp = {
-        enable = true;
-        servers = lib.recursiveUpdate {
-          browser-use = {
-            command = "npx";
-            args = [
-              "-y"
-              "@modelcontextprotocol/server-browser-use"
-            ];
-          };
-          file-manager = {
-            command = "npx";
-            args = [
-              "-y"
-              "@modelcontextprotocol/server-file-manager"
-            ];
-          };
-          sequential-thinking = {
-            command = "npx";
-            args = [
-              "-y"
-              "@modelcontextprotocol/server-sequential-thinking"
-            ];
-          };
-          mcp-registry = {
-            command = "npx";
-            args = [
-              "-y"
-              "@modelcontextprotocol/server-registry"
-            ];
-          };
-          mcp-nixos = {
-            command = lib.getExe pkgs.mcp-nixos;
-            args = [ ];
-          };
-          github = {
-            command = lib.getExe pkgs.github-mcp-server;
-            args = [ ];
-          };
-          ha-mcp = {
-            command = lib.getExe pkgs.ha-mcp;
-            args = [ ];
-          };
-          context-mode = {
-            command = "npx";
-            args = [
-              "-y"
-              "context-mode"
-            ];
-          };
-        } config.layers.layer-75.mcp.servers;
-      };
+  home = lib.mkIf cfg.enable {
+    home.packages = with pkgs; [
+      picoclaw
+      zeroclaw
+      crush
+      mcp-nixos
+      ha-mcp
+      github-mcp-server
+      perplexity-mcp
+    ];
+
+    xdg.configFile."mcp/config.json".text = builtins.toJSON {
+      mcpServers = lib.recursiveUpdate {
+        browser-use = {
+          command = "npx";
+          args = [
+            "-y"
+            "@modelcontextprotocol/server-browser-use"
+          ];
+        };
+        file-manager = {
+          command = "npx";
+          args = [
+            "-y"
+            "@modelcontextprotocol/server-file-manager"
+          ];
+        };
+        sequential-thinking = {
+          command = "npx";
+          args = [
+            "-y"
+            "@modelcontextprotocol/server-sequential-thinking"
+          ];
+        };
+        mcp-registry = {
+          command = "npx";
+          args = [
+            "-y"
+            "@modelcontextprotocol/server-registry"
+          ];
+        };
+        mcp-nixos = {
+          command = lib.getExe pkgs.mcp-nixos;
+          args = [ ];
+        };
+        github = {
+          command = lib.getExe pkgs.github-mcp-server;
+          args = [ ];
+        };
+        ha-mcp = {
+          command = lib.getExe pkgs.ha-mcp;
+          args = [ ];
+        };
+        context-mode = {
+          command = "npx";
+          args = [
+            "-y"
+            "context-mode"
+          ];
+        };
+      } cfg.servers;
     };
   };
 }

@@ -9,7 +9,7 @@
 with lib;
 let
   cfg = config.services.ai-services.kong-gateway;
-  secretsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+  secretsFile = ../../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
 
   # Helper: declare a sops secret and return its path
   mkSecret = name: {

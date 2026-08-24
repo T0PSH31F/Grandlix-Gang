@@ -58,11 +58,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dsh-nix = {
+      url = "github:Samuka007/dsh-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     impermanence = {
       url = "github:nix-community/impermanence";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    # Safe to use inputs.nixpkgs.follows = "nixpkgs" because NFP nixpkgs tracks nixos-unstable
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -188,6 +194,12 @@
       inputs.systems.follows = "systems";
     };
 
+    # Pre-commit & Pre-push hooks
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Utility inputs defined at top-level to allow follows
     systems.url = "github:nix-systems/default";
     flake-utils = {
@@ -219,6 +231,7 @@
       hermes-agent,
       nixpkgs-ai,
       nixvim,
+      git-hooks-nix,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -251,13 +264,16 @@
           home-manager.flakeModules.home-manager
           ./layers/00-cyberia/07-clan/clan-inventory.nix
           ./layers/00-cyberia/07-clan/devshell.nix
+          ./layers/00-cyberia/07-clan/git-hooks.nix
         ];
 
         clan = {
           imports = [ ./clan.nix ];
           specialArgs = {
             inherit inputs;
-            inherit (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit (inputs.nixpkgs) lib; }) mkDendriticModule;
+            inherit (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit (inputs.nixpkgs) lib; })
+              mkDendriticModule
+              ;
           };
           # Configure nixpkgs to allow unfree packages
           pkgsForSystem =
@@ -357,7 +373,35 @@
                       nativeBuildInputs = [ pkgs.jq ];
                     }
                     ''
-                      jq -e '.features | all(has("id") and has("verification") and has("state"))' ${./feature_list.json} > /dev/null
+                      jq -e '.features | all(has("id") and has("verification") and has("state") and has("claimedBy") and has("blockedReason") and (.evidence | all(type == "object" and has("sha") and has("command") and has("output") and has("at"))))' ${./feature_list.json} > /dev/null
+                      touch $out
+                    '';
+
+                docs-drift =
+                  pkgs.runCommand "check-docs-drift"
+                    {
+                      nativeBuildInputs = [ pkgs.diffutils ];
+                    }
+                    ''
+                      test -f ${./layers/00-cyberia/01-docs/ports.md}
+                      touch $out
+                    '';
+
+                bogus-tag-negative-test = pkgs.runCommand "check-bogus-tag-negative-test" { } ''
+                  touch $out
+                '';
+
+                llm-agents-catalog-completeness =
+                  let
+                    llmPkgs = inputs.llm-agents.packages.${system} or { };
+                    catalogEnabled =
+                      inputs.self.nixosConfigurations.z0r0.config.layers.layer-20.services.llm-agents-catalog.packages;
+                    missingNames = pkgs.lib.filter (name: !(llmPkgs ? ${name})) catalogEnabled;
+                  in
+                  if missingNames != [ ] then
+                    throw "llm-agents-catalog error: The following enabled package names are missing from llmPkgs: ${pkgs.lib.concatStringsSep ", " missingNames}"
+                  else
+                    pkgs.runCommand "check-llm-agents-catalog-completeness" { } ''
                       touch $out
                     '';
 

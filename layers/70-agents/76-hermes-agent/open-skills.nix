@@ -19,12 +19,12 @@ in
     enable = mkEnableOption "Open Skills — battle-tested skill library for AI agents";
   };
 
-  home = { ... }: {
-    config = mkIf cfg.enable {
-      home.file.".hermes/open-skills" = {
-        source = openSkillsSrc;
-        recursive = true;
-      };
+  nixos = { };
+
+  home = mkIf cfg.enable {
+    home.file.".hermes/open-skills" = {
+      source = openSkillsSrc;
+      recursive = true;
     };
   };
 }

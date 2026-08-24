@@ -15,6 +15,10 @@ Clan vars provide a declarative, reproducible, and type-safe way to manage gener
 - **Separation of Concerns**: Generation logic, storage (sops backend), and deployment are handled by Clan core logic.
 - **Reproducibility**: Defined once and generated consistently across deployments.
 
+### 1.1 Secrets System Boundary (Clan Vars vs SOPS-Nix)
+- **`clan.core.vars`**: Primary boundary for all machine-scoped service secrets, container API tokens, auto-generated database credentials, and machine-bound service tokens.
+- **`sops-nix`**: Reserved strictly for central legacy user secrets (`external_services.yaml`, `vicinae.yaml`, `postgres.yaml`) shared across users or legacy global endpoints. All new machine services MUST use `clan.core.vars`.
+
 ## 2. Implementing Clan Vars for Services
 When introducing a new service or migrating an existing one that requires secrets, you must declare a Clan generator inside the module configuration block. 
 

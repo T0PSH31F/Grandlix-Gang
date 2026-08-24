@@ -41,10 +41,7 @@ with lib;
         # Tailscale VPN identity (prevents new node key/IP on reboot)
         "/var/lib/tailscale"
 
-        # AI Services State & Databases
-        "/var/lib/aionui"          # AionUi database & auth sessions
-        "/var/lib/mission-control"  # Mission Control database & task runs
-        "/var/lib/extreme-router"   # ExtremeRouter persistent state & API keys
+        # AI Services State & Databases (declared modularly in respective service modules)
         "/var/lib/camofox"         # Camofox persistent browser profiles & OAuth cookies
 
         # SSH host keys

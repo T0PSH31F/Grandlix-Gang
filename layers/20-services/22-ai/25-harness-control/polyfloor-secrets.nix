@@ -9,8 +9,8 @@
 with lib;
 let
   cfg = config.services.ai-services.polyfloor;
-  secretsFile = ../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
-  postgresSecretsFile = ../../../layers/00-cyberia/03-treasure/secrets/postgres.yaml;
+  secretsFile = ../../../../layers/00-cyberia/03-treasure/secrets/external_services.yaml;
+  postgresSecretsFile = ../../../../layers/00-cyberia/03-treasure/secrets/postgres.yaml;
 in
 {
   config = mkIf cfg.enable {
@@ -41,9 +41,9 @@ in
         # API authentication
         POLYFLOOR_API_TOKEN=${config.sops.placeholder.polyfloor_api_token}
 
-        # ExtremeRouter (free model gateway — already running on z0r0:20128)
-        POLYFLOOR_EXTREMEROUTER_BASE_URL=http://127.0.0.1:20128/v1
-        POLYFLOOR_HERMES_BASE_URL=http://127.0.0.1:11434/v1
+        # ExtremeRouter (free model gateway)
+        POLYFLOOR_EXTREMEROUTER_BASE_URL=${config.layers.layer-20.endpoints.extreme-router.baseUrl}
+        POLYFLOOR_HERMES_BASE_URL=${config.layers.layer-20.endpoints.ollama.baseUrl}
         POLYFLOOR_HERMES_MODEL=hermes3
 
         # Policy

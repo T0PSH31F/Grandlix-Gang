@@ -112,7 +112,7 @@ let
     freellmapi = 3003;
     mistralMcp = 3333;
     extremeRouter = 20128;
-    omniroute = 20128; # Same port — only one active at a time
+    omniroute = 20128; # OmniRoute free model router (mutually exclusive with ExtremeRouter)
   };
 
   hostOf =

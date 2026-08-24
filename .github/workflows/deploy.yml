@@ -23,14 +23,28 @@ jobs:
             accept-flake-config = true
       - name: Setup Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Check git author identity
+        run: |
+          AUTHOR_EMAIL=$(git log -1 --format='%ae')
+          if [[ "$AUTHOR_EMAIL" =~ .*@example\.com$ ]]; then
+            echo "Error: HEAD commit author email uses placeholder @example.com: $AUTHOR_EMAIL"
+            exit 1
+          fi
+      - name: Check clean-state-checklist.md hygiene
+        run: |
+          if grep -q '\[x\]' clean-state-checklist.md; then
+            echo "Error: clean-state-checklist.md on main contains checked items [x]! It must remain an unchecked template on main."
+            exit 1
+          fi
       - name: Check flake format
         run: nix fmt -- --check
-      - name: Deadnix lint check
-        run: nix run nixpkgs#deadnix -- --fail .
-      - name: Statix lint check
-        run: nix run nixpkgs#statix -- check
-      - name: Validate feature_list.json schema
-        run: jq -e '.features | all(has("id") and has("verification") and has("state"))' feature_list.json
+      - name: Check agent alias symlinks
+        run: |
+          test -L CLAUDE.md && test -L GEMINI.md
+          test "$(readlink CLAUDE.md)" = "AGENTS.md"
+          test "$(readlink GEMINI.md)" = "AGENTS.md"
+      - name: Validate feature_list.json schema v2
+        run: jq -e '.features | all(has("id") and has("verification") and has("state") and has("claimedBy") and has("blockedReason") and (.evidence | all(type == "object" and has("sha") and has("command") and has("output") and has("at"))))' feature_list.json
       - name: Flake check
         run: nix flake check
 

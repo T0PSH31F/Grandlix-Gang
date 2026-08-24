@@ -2,6 +2,7 @@
 {
   perSystem =
     {
+      config,
       pkgs,
       ...
     }:
@@ -30,6 +31,14 @@
         ];
 
         shellHook = ''
+          ${config.checks.pre-commit-check.shellHook or ""}
+
+          # Ensure repository git identity is properly configured
+          if [ -d .git ]; then
+            git config --local user.name "t0psh31f"
+            git config --local user.email "wrighterik77@gmail.com"
+          fi
+
           # Colorize the ASCII art with lolcat
           ${pkgs.lolcat}/bin/lolcat -f ${../02-assets/devshell-banner.txt}
 

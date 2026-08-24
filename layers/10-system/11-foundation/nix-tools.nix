@@ -188,31 +188,33 @@ with lib;
 
     # Helpful shell aliases for home-manager users
     home-manager.users.t0psh31f = {
-      programs = {
-        nix-your-shell = {
-          enable = true;
-          enableZshIntegration = true;
-          nix-output-monitor.enable = true;
+      config = {
+        programs = {
+          nix-your-shell = {
+            enable = true;
+            enableZshIntegration = true;
+            nix-output-monitor.enable = true;
+          };
+          nix-init.enable = true;
         };
-        nix-init.enable = true;
-      };
-      home.shellAliases = {
-        cunt = "clan machines update nami";
-        cumz = "clan machines update z0r0";
-        cum = "clan machines update";
-        # NH shortcuts
-        nos = "nh os switch";
-        nob = "nh os boot";
-        not = "nh os test";
-        noc = "nh clean all";
+        home.shellAliases = {
+          cunt = "clan machines update nami";
+          cumz = "clan machines update z0r0";
+          cum = "clan machines update";
+          # NH shortcuts
+          nos = "nh os switch";
+          nob = "nh os boot";
+          not = "nh os test";
+          noc = "nh clean all";
 
-        # Nom shortcuts
-        nb = "nom build";
-        ndev = "nom develop";
+          # Nom shortcuts
+          nb = "nom build";
+          ndev = "nom develop";
 
-        # Nix helpers
-        ndiff = "nvd diff /run/current-system result";
-        ntree = "nix-tree";
+          # Nix helpers
+          ndiff = "nvd diff /run/current-system result";
+          ntree = "nix-tree";
+        };
       };
     };
   };

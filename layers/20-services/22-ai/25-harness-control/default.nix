@@ -7,6 +7,7 @@
     ./context-forge.nix
     ./langgraph.nix
     ./llm-agents.nix
+    ./llm-agents-catalog.nix
     ./mission-control.nix
     ./opencompany.nix
     ./paperclip.nix

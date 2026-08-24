@@ -1,7 +1,4 @@
-# Mission Control — Self-hosted AI Agent Control Plane
-# https://github.com/builderz-labs/mission-control
-#
-# TODO: Migrate option namespace services.ai-services.mission-control to layers.layer-20.services.mission-control
+# Deprecated: services.ai-services.mission-control is aliased to layers.layer-20.services.mission-control (removal in 2 releases, v26.11).
 {
   config,
   lib,
@@ -10,10 +7,21 @@
 }:
 with lib;
 let
-  cfg = config.services.ai-services.mission-control;
+  cfg = config.layers.layer-20.services.mission-control;
 in
 {
-  options.services.ai-services.mission-control = {
+  imports = [
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "mission-control" "enable" ]
+      [ "layers" "layer-20" "services" "mission-control" "enable" ]
+    )
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "mission-control" "port" ]
+      [ "layers" "layer-20" "services" "mission-control" "port" ]
+    )
+  ];
+
+  options.layers.layer-20.services.mission-control = {
     enable = mkEnableOption "Mission Control — self-hosted AI agent control plane";
 
     port = mkOption {
@@ -49,7 +57,7 @@ in
       ];
       environment = {
         MISSION_CONTROL_DATA_DIR = "/app/.data";
-        HERMES_GATEWAY_URL = "http://127.0.0.1:8085";
+        HERMES_GATEWAY_URL = config.layers.layer-20.endpoints.hermes-gateway.baseUrl;
       };
       extraOptions = [
         "--userns=keep-id"

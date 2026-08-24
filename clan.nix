@@ -71,10 +71,10 @@ in
         roles = {
           controller.machines.luffy = {
             settings = {
-              public = true;  # Allow open membership for easy device joining
+              public = true; # Allow open membership for easy device joining
             };
           };
-          peer.tags.all = { };  # All machines are peers
+          peer.tags.all = { }; # All machines are peers
         };
       };
 
@@ -138,7 +138,6 @@ in
           };
         };
       };
-
 
     };
   };

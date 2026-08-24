@@ -13,70 +13,70 @@
 
       # Master Fleet Port List (z0r0 & luffy)
       allowedTCPPorts = [
-        22    # SSH Access
-        53    # AdGuard DNS
-        80    # HTTP
-        389   # Vaultwarden LDAP
-        443   # HTTPS
-        1337  # Jan AI
-        2019  # Caddy Admin API
-        3000  # Hermes Workspace
-        3001  # HedgeDoc
-        3002  # AdGuard Web
-        3003  # FreeLLMAPI
-        3005  # Langfuse
-        3006  # AionUI
-        3007  # N8N Primary Web
-        3008  # Grafana Observability
-        3099  # Mission Control
-        3100  # Loki
-        3101  # Paperclip
-        3333  # Mistral MCP
-        3457  # YourSpotify
-        5000  # Harmonia Nix Cache
-        5050  # Kavita
-        5432  # PostgreSQL
-        5678  # N8N Webhook
-        5680  # OpenCompany UI
-        5681  # OpenCompany Backend
-        6080  # Camofox VNC
-        6333  # Qdrant HTTP API
-        6334  # Qdrant gRPC
-        6380  # Nextcloud
-        6767  # Bazarr
-        6800  # Aria2
-        7878  # Radarr
-        8000  # SillyTavern
-        8004  # ChromaDB
-        8008  # Matrix Synapse
-        8010  # Brain Service
-        8080  # Signal CLI
-        8081  # Kong Gateway
-        8082  # Homepage Dashboard
-        8083  # FreeLLMPool
-        8084  # Paperless-ngx
-        8085  # Hermes Agent Gateway
-        8086  # Headscale
-        8087  # Mealie
-        8088  # Open WebUI
-        8089  # Filebrowser
-        8091  # llama.cpp
-        8093  # CalibreWeb
-        8095  # qBittorrent WebUI
-        8096  # Jellyfin
-        8443  # HTTPS Alt 1 / Nginx SSL
-        8444  # Element Web
-        8686  # Lidarr
-        8787  # Readarr
-        8788  # Hermes WebUI
-        8880  # Hermes Live Voice
-        8888  # SearXNG
-        8989  # Sonarr
-        9090  # Prometheus
-        9100  # Glances Node Exporter
-        9119  # Hermes Dashboard
-        9377  # Camofox Browser
-        9696  # Prowlarr
+        22 # SSH Access
+        53 # AdGuard DNS
+        80 # HTTP
+        389 # Vaultwarden LDAP
+        443 # HTTPS
+        1337 # Jan AI
+        2019 # Caddy Admin API
+        3000 # Hermes Workspace
+        3001 # HedgeDoc
+        3002 # AdGuard Web
+        3003 # FreeLLMAPI
+        3005 # Langfuse
+        3006 # AionUI
+        3007 # N8N Primary Web
+        3008 # Grafana Observability
+        3099 # Mission Control
+        3100 # Loki
+        3101 # Paperclip
+        3333 # Mistral MCP
+        3457 # YourSpotify
+        5000 # Harmonia Nix Cache
+        5050 # Kavita
+        5432 # PostgreSQL
+        5678 # N8N Webhook
+        5680 # OpenCompany UI
+        5681 # OpenCompany Backend
+        6080 # Camofox VNC
+        6333 # Qdrant HTTP API
+        6334 # Qdrant gRPC
+        6380 # Nextcloud
+        6767 # Bazarr
+        6800 # Aria2
+        7878 # Radarr
+        8000 # SillyTavern
+        8004 # ChromaDB
+        8008 # Matrix Synapse
+        8010 # Brain Service
+        8080 # Signal CLI
+        8081 # Kong Gateway
+        8082 # Homepage Dashboard
+        8083 # FreeLLMPool
+        8084 # Paperless-ngx
+        8085 # Hermes Agent Gateway
+        8086 # Headscale
+        8087 # Mealie
+        8088 # Open WebUI
+        8089 # Filebrowser
+        8091 # llama.cpp
+        8093 # CalibreWeb
+        8095 # qBittorrent WebUI
+        8096 # Jellyfin
+        8443 # HTTPS Alt 1 / Nginx SSL
+        8444 # Element Web
+        8686 # Lidarr
+        8787 # Readarr
+        8788 # Hermes WebUI
+        8880 # Hermes Live Voice
+        8888 # SearXNG
+        8989 # Sonarr
+        9090 # Prometheus
+        9100 # Glances Node Exporter
+        9119 # Hermes Dashboard
+        9377 # Camofox Browser
+        9696 # Prowlarr
         11434 # Ollama
         25600 # Komga
         29317 # Mautrix WhatsApp
@@ -85,25 +85,25 @@
         32784 # MaxKB
         32790 # SimStudio
         51820 # WireGuard VPN
-        9993  # ZeroTier VPN
+        9993 # ZeroTier VPN
         61208 # Glances Web Stats
       ];
 
       allowedUDPPorts = [
-        53    # DNS
-        67    # DHCP
-        443   # QUIC / HTTP/3
-        5353  # mDNS / Avahi
+        53 # DNS
+        67 # DHCP
+        443 # QUIC / HTTP/3
+        5353 # mDNS / Avahi
         51820 # WireGuard VPN
-        9993  # ZeroTier VPN
+        9993 # ZeroTier VPN
       ];
 
       # Allow full access on trusted internal VPN and container interfaces
       trustedInterfaces = [
         "tailscale0" # Tailscale VPN mesh
-        "podman0"    # Podman container bridge
-        "zt0"        # ZeroTier mesh
-        "wg0"        # WireGuard tunnel
+        "podman0" # Podman container bridge
+        "zt0" # ZeroTier mesh
+        "wg0" # WireGuard tunnel
       ];
 
       allowPing = true;

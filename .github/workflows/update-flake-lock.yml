@@ -1,0 +1,18 @@
+name: Update Flake Lock
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  update-flake-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/update-flake-lock@main
+        with:
+          pr-title: "build(deps): update flake.lock"
+          pr-assignees: "t0psh31f"
+          git-author-name: "t0psh31f"
+          git-author-email: "wrighterik77@gmail.com"

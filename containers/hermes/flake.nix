@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -33,7 +39,12 @@
             cacert
             entrypoint
           ];
-          pathsToLink = [ "/bin" "/lib" "/etc" "/libexec" ];
+          pathsToLink = [
+            "/bin"
+            "/lib"
+            "/etc"
+            "/libexec"
+          ];
           ignoreCollisions = true;
         };
 
@@ -81,7 +92,8 @@
             ];
           };
         };
-      in {
+      in
+      {
         packages.hermes-container = containerImage;
         packages.default = containerImage;
 
@@ -94,5 +106,6 @@
           name = "hermes-container-dev";
           buildInputs = with pkgs; [ dockerTools ];
         };
-      });
+      }
+    );
 }

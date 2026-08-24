@@ -132,7 +132,7 @@ in
 
         # Ensure screenshots directory exists
         systemd.user.tmpfiles.rules = [
-          "d ${config.home.homeDirectory}/Pictures/Screenshots 0755 - - -"
+          "d %h/Pictures/Screenshots 0755 - - -"
         ];
 
         wayland.windowManager.hyprland = {

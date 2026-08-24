@@ -21,5 +21,6 @@
     };
     layer-50.cli.terminal-toys.enable = lib.mkDefault true;
     layer-60.gui.documents.enable = lib.mkDefault true;
+    layer-60.gui.wl_shimeji.enable = lib.mkDefault true;
   };
 }

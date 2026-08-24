@@ -51,40 +51,40 @@ in
     };
   };
 
-  home =
-    { osConfig, config, ... }:
-    lib.mkIf (osConfig.layers.layer-76.hermes-evaluator.enable or false) {
-      home.packages = [ evaluatorScript ];
+  nixos = { };
 
-      # Systemd service
-      systemd.user.services.hermes-evaluator = {
-        Unit = {
-          Description = "Hermes Evaluator — Daily Audit & Benchmarking";
-          After = [ "network.target" ];
-        };
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${evaluatorScript}/bin/hermes-evaluator-harness";
-          TimeoutStartSec = 600;
-          Nice = 19;
-          IOSchedulingClass = "idle";
-        };
+  home = mkIf cfg.enable {
+    home.packages = [ evaluatorScript ];
+
+    # Systemd service
+    systemd.user.services.hermes-evaluator = {
+      Unit = {
+        Description = "Hermes Evaluator — Daily Audit & Benchmarking";
+        After = [ "network.target" ];
       };
-
-      # Systemd timer
-      systemd.user.timers.hermes-evaluator = {
-        Unit = {
-          Description = "Hermes Evaluator — Daily Timer";
-          Requires = [ "hermes-evaluator.service" ];
-        };
-        Timer = {
-          OnCalendar = osConfig.layers.layer-76.hermes-evaluator.schedule or "*-*-* 04:00:00";
-          Persistent = true;
-          RandomizedDelaySec = 300;
-        };
-        Install = {
-          WantedBy = [ "timers.target" ];
-        };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${evaluatorScript}/bin/hermes-evaluator-harness";
+        TimeoutStartSec = 600;
+        Nice = 19;
+        IOSchedulingClass = "idle";
       };
     };
+
+    # Systemd timer
+    systemd.user.timers.hermes-evaluator = {
+      Unit = {
+        Description = "Hermes Evaluator — Daily Timer";
+        Requires = [ "hermes-evaluator.service" ];
+      };
+      Timer = {
+        OnCalendar = cfg.schedule;
+        Persistent = true;
+        RandomizedDelaySec = 300;
+      };
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+    };
+  };
 }

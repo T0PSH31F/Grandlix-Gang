@@ -24,13 +24,15 @@ in
 
       programs.git = {
         enable = true;
-        includes =
-          (lib.optionals matugenEnabled [
-            { path = "~/.config/delta/matugen-theme.gitconfig"; }
-          ])
-          ++ [
-            { path = config.sops.templates."git-config".path; }
-          ];
+        # NOTE: the sops-templated git-config include (name/email) lives in
+        # layers/10-system/13-users/t0psh31f.nix, alongside the template
+        # definition itself. It cannot be set here: this "home" block is
+        # pre-evaluated by mkDendriticModule using the outer NixOS config,
+        # which has no `sops.templates` of its own (that only exists in the
+        # real home-manager submodule scope where the template is defined).
+        includes = lib.optionals matugenEnabled [
+          { path = "~/.config/delta/matugen-theme.gitconfig"; }
+        ];
 
         settings = {
           init.defaultBranch = "main";

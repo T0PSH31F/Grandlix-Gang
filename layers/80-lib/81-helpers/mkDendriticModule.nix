@@ -13,11 +13,29 @@ let
       ...
     }@args:
     let
+      inputs = args.inputs or { };
+      hmLib = lib.extend (
+        final: prev: {
+          hm = inputs.home-manager.lib.hm or prev.hm or { };
+        }
+      );
+      primaryUser = config.layers.meta.primaryUser or "t0psh31f";
+      evalArgs = args // {
+        lib = hmLib;
+        osConfig = config;
+        config = config // {
+          home = config.home or {
+            homeDirectory = "/home/${primaryUser}";
+            username = primaryUser;
+          };
+        };
+      };
+
       # If module is a path, import it first
       raw = if builtins.isPath module then import module else module;
 
-      # Evaluate the raw module with all arguments provided by Nix, plus osConfig
-      evaluated = if builtins.isFunction raw then raw (args // { osConfig = config; }) else raw;
+      # Evaluate the raw module with all arguments provided by Nix, plus osConfig and hmLib
+      evaluated = if builtins.isFunction raw then raw evalArgs else raw;
 
       # Detect if it's a multi-class module
       isMultiClass = builtins.hasAttr "nixos" evaluated || builtins.hasAttr "home" evaluated;
@@ -37,20 +55,58 @@ let
       imports = evaluated.imports or [ ];
 
       # Detection logic for NixOS vs Home Manager
-      isNixOS = builtins.hasAttr "modulesPath" args;
+      isNixOS =
+        builtins.hasAttr "modulesPath" args
+        || builtins.hasAttr "environment" (args.options or { })
+        || builtins.hasAttr "system" (args.options or { });
 
       # Safely evaluate functions only when the context matches
       wrappedNixosConf =
         if isNixOS && builtins.isFunction nixosConf then
-          nixosConf (args // { osConfig = config; })
+          nixosConf evalArgs
         else
           nixosConf;
 
       wrappedHomeConf =
-        if (!isNixOS) && builtins.isFunction homeConf then
-          homeConf (args // { osConfig = config; })
+        if builtins.isFunction homeConf then
+          homeConf evalArgs
         else
           homeConf;
+
+      # Sanitize homeConf for Home-Manager module system
+      # Home-Manager requires all option definitions (including _module) to be under 'config' whenever module keys ('imports', 'options') are present.
+      sanitizeHM =
+        m:
+        if !builtins.isAttrs m then
+          m
+        else if (m._type or "") == "if" then
+          lib.mkIf m.condition (sanitizeHM m.content)
+        else
+          let
+            knownModuleKeys = [
+              "imports"
+              "options"
+              "disabledModules"
+              "meta"
+              "_file"
+              "_class"
+              "_type"
+            ];
+            moduleMeta = builtins.intersectAttrs (lib.genAttrs knownModuleKeys (k: null)) m;
+            inlineConfig = removeAttrs m (knownModuleKeys ++ [ "config" ]);
+            existingConfig = m.config or { };
+            mergedConfig =
+              if inlineConfig == { } then
+                existingConfig
+              else
+                lib.mkMerge [
+                  existingConfig
+                  inlineConfig
+                ];
+          in
+          moduleMeta // { config = mergedConfig; };
+
+      sanitizedHomeConf = sanitizeHM wrappedHomeConf;
 
       # Predicate for non-empty config (purely structural, never forces content evaluation)
       hasHomeConfig = builtins.hasAttr "home" evaluated;
@@ -64,11 +120,11 @@ let
           lib.mkMerge [
             wrappedNixosConf
             (lib.mkIf hasHomeConfig {
-              home-manager.users.${config.layers.meta.primaryUser or "t0psh31f"} = wrappedHomeConf;
+              home-manager.users.${config.layers.meta.primaryUser or "t0psh31f"} = sanitizedHomeConf;
             })
           ]
         else
-          wrappedHomeConf;
+          sanitizedHomeConf;
     };
 in
 {

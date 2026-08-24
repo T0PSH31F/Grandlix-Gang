@@ -17,11 +17,13 @@ in
       udisks
     ];
 
-    home-manager.users.${config.layers.meta.primaryUser} = lib.mkIf cfg.useUdiskie {
-      services.udiskie = {
-        enable = true;
-        tray = "auto";
-        notify = true;
+    home-manager.users.${config.layers.meta.primaryUser} = {
+      config = lib.mkIf cfg.useUdiskie {
+        services.udiskie = {
+          enable = true;
+          tray = "auto";
+          notify = true;
+        };
       };
     };
   };

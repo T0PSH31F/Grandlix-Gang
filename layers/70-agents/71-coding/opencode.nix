@@ -29,7 +29,7 @@
 
         agents = ./opencode/agents;
         tools = ./opencode/tools;
-        skills = config.lib.file.mkOutOfStoreSymlink "/persist/home/t0psh31f/.config/opencode/skills";
+        skills = { outPath = "/persist/home/t0psh31f/.config/opencode/skills"; };
         commands = ./opencode/commands;
         context = ./opencode/rules.md;
 
@@ -52,7 +52,7 @@
         after = [ "writeBoundary" ];
       };
 
-        settings = {
+        programs.opencode.settings = {
           mcp = {
             # ── CodeGraph: Semantic code intelligence ─────────────────
             codegraph = {
@@ -268,8 +268,14 @@
             showDescriptionInToast = true;
           };
         };
+        # NOTE: not using home-manager's `config.lib.file.mkOutOfStoreSymlink` here
+        # because this "home" block is pre-evaluated by mkDendriticModule using
+        # the outer NixOS config, which has no `lib.file` (that's a real
+        # home-manager module-scope helper). Replicate it directly instead.
         "opencode/themes/noctalia.json".source =
-          config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json";
+          pkgs.runCommandLocal "opencode-noctalia-theme-symlink" { } ''
+            ln -s ${lib.escapeShellArg "${config.home.homeDirectory}/.config/noctalia/templates/opencode-theme.json"} $out
+          '';
         "opencode/oh-my-opencode-slim.json".source = ./opencode/oh-my-opencode-slim.json;
 
         # Context-capture plugin — automatic session persistence to context-mode FTS5

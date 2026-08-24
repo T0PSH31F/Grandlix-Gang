@@ -1,10 +1,4 @@
-# ExtremeRouter — AI Gateway with 154+ providers, RTK token savings, smart fallback
-# https://github.com/rsalmn/ExtremeRouter
-#
-# Runs as an OCI container (upstream ships Docker images).
-# Can replace or complement OmniRoute — configurable via kong-gateway.routers.
-#
-# TODO: Migrate option namespace services.ai-services.extreme-router to layers.layer-20.services.extreme-router
+# Deprecated: services.ai-services.extreme-router is aliased to layers.layer-20.services.extreme-router (removal in 2 releases, v26.11).
 {
   config,
   lib,
@@ -13,10 +7,21 @@
 }:
 with lib;
 let
-  cfg = config.services.ai-services.extreme-router;
+  cfg = config.layers.layer-20.services.extreme-router;
 in
 {
-  options.services.ai-services.extreme-router = {
+  imports = [
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "extreme-router" "enable" ]
+      [ "layers" "layer-20" "services" "extreme-router" "enable" ]
+    )
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "extreme-router" "port" ]
+      [ "layers" "layer-20" "services" "extreme-router" "port" ]
+    )
+  ];
+
+  options.layers.layer-20.services.extreme-router = {
     enable = mkEnableOption "ExtremeRouter — AI gateway with 154+ providers and RTK token savings";
 
     port = mkOption {

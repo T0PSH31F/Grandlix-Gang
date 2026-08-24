@@ -39,10 +39,8 @@ in
   };
 
   # Home Manager pointerCursor settings
-  home =
-    { config, lib, ... }:
-    lib.mkIf cfg.enable {
-      home.packages = with pkgs; [
+  home = lib.mkIf cfg.enable {
+    home.packages = with pkgs; [
         hyprcursor
         sonic-hyprcursor
       ];

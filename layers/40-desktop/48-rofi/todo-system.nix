@@ -404,14 +404,16 @@ in
     };
 
     home-manager.users.${user} = { pkgs, ... }: {
-      xdg.dataFile."todo-template.md".text = todoTemplate;
+      config = {
+        xdg.dataFile."todo-template.md".text = todoTemplate;
 
-      wayland.windowManager.hyprland = {
-        enable = true;
-        settings = {
-          bind = [
-            "$mod, period, exec, ${rofi-todo}/bin/rofi-todo"
-          ];
+        wayland.windowManager.hyprland = {
+          enable = true;
+          settings = {
+            bind = [
+              "$mod, period, exec, ${rofi-todo}/bin/rofi-todo"
+            ];
+          };
         };
       };
     };

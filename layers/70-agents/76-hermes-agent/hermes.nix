@@ -87,75 +87,12 @@ let
     "xiaomi_mimo_api_key_wright"
   ];
 
-  # Hermes-desktop (Electron app) built with linuxHeaders fix for node-pty.
-  # The upstream desktop.nix's renderer is a `let` binding using the hermes-agent
-  # flake's own pkgs (without linuxHeaders), so we rebuild it here using NFP's
-  # pkgs.buildNpmPackage with linuxHeaders injected.
-  hermesDesktopPkg =
-    let
-      sys = pkgs.stdenv.hostPlatform.system;
-      hermesNpmLib = inputs.hermes-agent.packages.${sys}.default.passthru.hermesNpmLib;
-      npm = hermesNpmLib.mkNpmPassthru {
-        dirs = [
-          "apps/desktop"
-          "apps/shared"
-        ];
-      };
-      packageJson = builtins.fromJSON (builtins.readFile (npm.src + "/apps/desktop/package.json"));
-      version = packageJson.version;
-      renderer = pkgs.buildNpmPackage (
-        npm
-        // {
-          pname = "hermes-desktop-renderer";
-          inherit version;
-          doCheck = false;
-          buildInputs = [ pkgs.linuxHeaders ];
-          NIX_CFLAGS_COMPILE = "-isystem ${pkgs.linuxHeaders}/include";
-          buildPhase = ''
-            runHook preBuild
-            mkdir -p apps/desktop/build
-            echo '{"schemaVersion":1,"commit":"nix","branch":"nix","dirty":false,"source":"nix"}' > apps/desktop/build/install-stamp.json
-            patchShebangs .
-            pushd apps/desktop
-              npm rebuild node-pty --build-from-source
-              npm exec vite build
-              node scripts/bundle-electron-main.mjs
-              node scripts/stage-native-deps.mjs
-            popd
-            runHook postBuild
-          '';
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out
-            # vite build → dist/ (renderer), bundle-electron-main → dist/ (electron main + preload),
-            # stage-native-deps → dist/node_modules/node-pty/
-            cp -rn apps/desktop/dist $out/
-            cp -n apps/desktop/build/install-stamp.json $out/
-            runHook postInstall
-          '';
-        }
-      );
-    in
-    pkgs.stdenv.mkDerivation {
-      pname = "hermes-desktop";
-      inherit version;
-      dontUnpack = true;
-      dontBuild = true;
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      installPhase = ''
-        runHook preInstall
-        mkdir -p $out/share/hermes-desktop $out/bin
-        cp -r ${renderer}/* $out/share/hermes-desktop/
-        substituteInPlace $out/share/hermes-desktop/dist/electron-main.mjs \
-          --replace-fail "process.resourcesPath" "'$out/share/hermes-desktop'"
-        makeWrapper ${pkgs.lib.getExe pkgs.electron} $out/bin/hermes-desktop \
-          --add-flags "$out/share/hermes-desktop" \
-          --set HERMES_DESKTOP_HERMES "${config.services.hermes-agent.package}/bin/hermes" \
-          --set ELECTRON_IS_DEV 0
-        runHook postInstall
-      '';
-      meta.mainProgram = "hermes-desktop";
-    };
+  # Replaced custom Electron build with llmPkgs.hermes-desktop.
+  # Note: llmPkgs.hermes-one is an all-in-one desktop+gateway bundle; we select
+  # llmPkgs.hermes-desktop because NFP already manages the Hermes gateway systemd
+  # service, skills, and plugins natively in hermes.nix.
+  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
+  hermesDesktopPkg = llmPkgs.hermes-desktop or pkgs.hermes-desktop;
 in
 {
   imports = [

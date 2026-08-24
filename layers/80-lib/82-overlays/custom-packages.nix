@@ -472,4 +472,6 @@ final: prev: {
       platforms = [ "x86_64-linux" ];
     };
   };
+
+  wl_shimeji = final.callPackage ../83-packages/wl_shimeji/default.nix { };
 }

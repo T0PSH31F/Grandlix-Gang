@@ -50,21 +50,28 @@
   ''}";
   home-manager.extraSpecialArgs = { inherit inputs; };
   home-manager.users.t0psh31f =
+    let
+      # Captured from the outer NixOS config (the top-level `config` of this
+      # file), before it's shadowed below by the home-manager submodule's
+      # own `config` argument.
+      cliEnabled = config.layers.layer-50.cli.enable or true;
+    in
     { config, lib, ... }:
     {
-      _module.args.lib = lib.extend (
-        final: prev: {
-          hm = inputs.home-manager.lib.hm;
-        }
-      );
-
       imports = [
         ../../80-lib/81-helpers/hm-bridge.nix
         inputs.sops-nix.homeManagerModules.sops
         inputs.vicinae.homeManagerModules.default
       ];
 
-      sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
+      config = {
+        _module.args.lib = lib.extend (
+          final: prev: {
+            hm = inputs.home-manager.lib.hm;
+          }
+        );
+
+        sops.age.keyFile = "/home/t0psh31f/.config/sops/age/keys.txt";
 
       sops.secrets.git_name = {
         sopsFile = ../../../layers/00-cyberia/03-treasure/secrets/git.yaml;
@@ -330,6 +337,13 @@
           email = ${config.sops.secrets.git_email.path}
       '';
 
+      # Include the sops-templated git identity here (not in
+      # layers/50-cli-tui-programs/53-tools/git.nix), because this is the
+      # actual home-manager submodule scope where `sops.templates` exists.
+      programs.git.includes = [
+        { path = config.sops.templates."git-config".path; }
+      ];
+
       # Global .env file on Desktop for projects
       sops.templates."desktop-env" = {
         path = "${config.home.homeDirectory}/Desktop/.env";
@@ -377,6 +391,69 @@
         GEMINI_API_KEY = "$(cat ${config.sops.secrets.gemini_api_key.path})";
         OPENROUTER_API_KEY = "$(cat ${config.sops.secrets.openrouter_api_key.path})";
       };
+
+      # Himalaya email client config (see layers/50-cli-tui-programs/53-tools/himalaya.nix
+      # for the package install). Lives here because it needs this home-manager
+      # submodule's own `config.sops.secrets`, not the outer NixOS config.
+      xdg.configFile."himalaya/config.toml".text = lib.mkIf cliEnabled (
+        let
+          wrighterik77Pass = config.sops.secrets.gmail_app_password_wrighterik77.path;
+          lovelainautomationsPass = config.sops.secrets.gmail_app_password_lovelainautomations.path;
+        in
+        ''
+          # Himalaya email client configuration
+          # Multi-account Gmail setup for OpenCode + Hermes shared pipeline
+          # Format: himalaya v1.2.0
+          #
+          # Passwords are managed via SOPS secrets — /run/secrets/ equivalents
+          # deployed by sops-nix home-manager module.
+
+          # ==============================================================================
+          # Account: wrighterik77 (default)
+          # ==============================================================================
+          [accounts.wrighterik77]
+          email = "wrighterik77@gmail.com"
+          default = true
+
+          backend.type = "imap"
+          backend.host = "imap.gmail.com"
+          backend.port = 993
+          backend.encryption.type = "tls"
+          backend.login = "wrighterik77@gmail.com"
+          backend.auth.type = "password"
+          backend.auth.cmd = "cat ${wrighterik77Pass}"
+
+          message.send.backend.type = "smtp"
+          message.send.backend.host = "smtp.gmail.com"
+          message.send.backend.port = 465
+          message.send.backend.encryption.type = "tls"
+          message.send.backend.login = "wrighterik77@gmail.com"
+          message.send.backend.auth.type = "password"
+          message.send.backend.auth.cmd = "cat ${wrighterik77Pass}"
+
+          # ==============================================================================
+          # Account: lovelainautomations
+          # ==============================================================================
+          [accounts.lovelainautomations]
+          email = "lovelainautomations@gmail.com"
+
+          backend.type = "imap"
+          backend.host = "imap.gmail.com"
+          backend.port = 993
+          backend.encryption.type = "tls"
+          backend.login = "lovelainautomations@gmail.com"
+          backend.auth.type = "password"
+          backend.auth.cmd = "cat ${lovelainautomationsPass}"
+
+          message.send.backend.type = "smtp"
+          message.send.backend.host = "smtp.gmail.com"
+          message.send.backend.port = 465
+          message.send.backend.encryption.type = "tls"
+          message.send.backend.login = "lovelainautomations@gmail.com"
+          message.send.backend.auth.type = "password"
+          message.send.backend.auth.cmd = "cat ${lovelainautomationsPass}"
+        ''
+      );
 
       home.stateVersion = "25.05";
       home.username = "t0psh31f";
@@ -439,5 +516,5 @@
         flake_reference = "nixpkgs#nix-shell"
       '';
     };
-
+  };
 }

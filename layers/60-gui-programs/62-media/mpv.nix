@@ -21,7 +21,7 @@ in
       xdg.desktopEntries.mvi = {
         name = "MVI";
         genericName = "Image Viewer";
-        exec = "${pkgs.mpv}/bin/mpv --config-dir=${config.xdg.configHome}/mvi %F";
+        exec = "${pkgs.mpv}/bin/mpv --config-dir=$HOME/.config/mvi %F";
         icon = "mpv";
         terminal = false;
         categories = [
@@ -76,7 +76,7 @@ in
         radiant-player
       ];
 
-      home.shellAliases.mvi = "mpv --config-dir=${config.xdg.configHome}/mvi";
+      home.shellAliases.mvi = "mpv --config-dir=$HOME/.config/mvi";
 
       xdg.configFile."mvi/mpv.conf".text = ''
         ## IMAGE

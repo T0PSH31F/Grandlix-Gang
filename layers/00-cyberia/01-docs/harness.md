@@ -12,7 +12,7 @@ The NFP Agent Harness transforms the repository into the single system of record
 | `feature_list.json` | Live feature registry tracking IDs, priorities, behaviors, verification steps, states (`untried`, `in-progress`, `blocked`, `passing`), and evidence logs. |
 | `agent-progress.md` | Append-only historical session log recording agent actions, verification commands, state changes, and next steps. |
 | `session-handoff.md` | Overwritten compact state file summarizing the active feature, last verified green status, and immediate next commands. |
-| `clean-state-checklist.md` | End-of-session verification checklist ensuring clean formatting, evaluation, documentation, and git state. |
+| `clean-state-checklist.md` | End-of-session verification checklist ensuring clean formatting, evaluation, documentation, and git state. On `main`, this file MUST remain an unchecked template (`[ ]`). Agents copy or reset it per session. |
 | `evaluator-rubric.md` | 6-category evaluation rubric (Correctness, Verification, Convention, Persistence, Secrets, Docs) scored 0–2. |
 
 ---

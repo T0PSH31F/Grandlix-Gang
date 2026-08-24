@@ -1,4 +1,4 @@
-{ ... }:
+{ mkDendriticModule, ... }:
 {
   imports = [
     ./music-production.nix
@@ -7,5 +7,6 @@
     ./recording.nix
     ./3d-modeling.nix
     ./pentesting
+    (mkDendriticModule "wl_shimeji" ./wl_shimeji.nix)
   ];
 }

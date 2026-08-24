@@ -1,15 +1,30 @@
+# Deprecated: services.ai-services.paperclip is aliased to layers.layer-20.services.paperclip (removal in 2 releases, v26.11).
 {
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
 let
-  cfg = config.services.ai-services.paperclip;
+  cfg = config.layers.layer-20.services.paperclip;
+  llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
+  paperclipPkg = llmPkgs.paperclip or pkgs.paperclip;
 in
 {
-  options.services.ai-services.paperclip = {
+  imports = [
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "paperclip" "enable" ]
+      [ "layers" "layer-20" "services" "paperclip" "enable" ]
+    )
+    (lib.mkRenamedOptionModule
+      [ "services" "ai-services" "paperclip" "port" ]
+      [ "layers" "layer-20" "services" "paperclip" "port" ]
+    )
+  ];
+
+  options.layers.layer-20.services.paperclip = {
     enable = mkEnableOption "Paperclip — orchestrate AI agent teams";
 
     port = mkOption {
@@ -38,30 +53,48 @@ in
   };
 
   config = mkIf cfg.enable {
-    virtualisation.oci-containers.containers.paperclip = {
-      image = "ghcr.io/paperclipai/paperclip:latest";
-      ports = [ "127.0.0.1:${toString cfg.port}:3100" ];
-      environment = {
-        PORT = "3100";
-        NODE_ENV = "production";
-        SERVE_UI = "true";
-        DATABASE_URL = cfg.databaseUrl;
-        BETTER_AUTH_SECRET = cfg.authSecret;
-        PAPERCLIP_DEPLOYMENT_MODE = "authenticated";
-        PAPERCLIP_DEPLOYMENT_EXPOSURE = "private";
-        PAPERCLIP_PUBLIC_URL = "http://localhost:${toString cfg.port}";
-      };
-      volumes = [
-        "${cfg.dataDir}:/app/data"
-      ];
-      extraOptions = [ "--network=host" ];
-      autoStart = true;
-    };
-
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0755 root root -"
     ];
 
+    systemd.services.paperclip = {
+      description = "Paperclip — orchestrate AI agent teams";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        User = "root";
+        Group = "root";
+        ExecStart = "${lib.getExe paperclipPkg}";
+        Restart = "always";
+        RestartSec = 5;
+        WorkingDirectory = cfg.dataDir;
+        Environment = [
+          "PORT=${toString cfg.port}"
+          "NODE_ENV=production"
+          "SERVE_UI=true"
+          "DATABASE_URL=${cfg.databaseUrl}"
+          "BETTER_AUTH_SECRET=${cfg.authSecret}"
+          "PAPERCLIP_DEPLOYMENT_MODE=authenticated"
+          "PAPERCLIP_DEPLOYMENT_EXPOSURE=private"
+          "PAPERCLIP_PUBLIC_URL=http://localhost:${toString cfg.port}"
+        ];
+      };
+    };
+
     networking.firewall.allowedTCPPorts = [ cfg.port ];
+
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            {
+              directory = cfg.dataDir;
+              user = "root";
+              group = "root";
+              mode = "0755";
+            }
+          ];
+        };
   };
 }

@@ -68,7 +68,6 @@ in
           filter (p: p != null) [
             (llmPkgs.claude-code or pkgs.claude-code or null)
             (llmPkgs.goose-cli or null)
-            (llmPkgs.jules or null)
             (llmPkgs.opencode or pkgs.opencode or null)
             (llmPkgs.pi or null)
             (llmPkgs.ccusage or null)
