@@ -5,9 +5,11 @@
     ./ai-services.nix
     ./brain-service.nix
     ./context-forge.nix
+    ./everos.nix
     ./langgraph.nix
     ./llm-agents.nix
     ./llm-agents-catalog.nix
+    ./memory-vault.nix
     ./mission-control.nix
     ./opencompany.nix
     ./paperclip.nix

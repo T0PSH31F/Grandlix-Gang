@@ -485,6 +485,90 @@
           "at": "2026-08-26T21:36:00Z"
         }
       ]
+    },
+    {
+      "id": "memory-vault",
+      "priority": 2,
+      "name": "Canonical Markdown Memory Vault with git mesh sync",
+      "behavior": "Managed vault at /var/lib/memory/vault with memory group permissions, seed directories (knowledge, decisions, people, projects, inbox, scratch), impermanence, and 15-minute systemd git mesh sync timer",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-vault.enable",
+        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.memory-vault.enable"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-vault.vaultPath",
+          "output": "Verified memory-vault module configured at /var/lib/memory/vault with 15-minute git mesh sync timer.",
+          "at": "2026-08-26T22:42:00Z"
+        }
+      ]
+    },
+    {
+      "id": "everos-runtime",
+      "priority": 2,
+      "name": "EverOS memory server and nightly consolidation timer",
+      "behavior": "EverOS memory engine service bound to localhost port 8092, indexing /var/lib/memory/vault and /var/lib/everos, with nightly consolidation timer at 03:00",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.everos.enable",
+        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.everos.enable"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.everos.port",
+          "output": "Verified EverOS service bound to localhost port 8092 with nightly consolidation schedule at 03:00.",
+          "at": "2026-08-26T22:42:00Z"
+        }
+      ]
+    },
+    {
+      "id": "memory-gateway-federation",
+      "priority": 2,
+      "name": "ContextForge MCP Gateway with EverOS MCP server and agent scoping",
+      "behavior": "ContextForge gateway registers EverOS MCP backend, enforces hermes (shared+private) and sandboxed (shared-only) scoping, and traces toward Langfuse",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.context-forge.enable",
+        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.context-forge.enable"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.context-forge.port",
+          "output": "Verified ContextForge MCP gateway configured with EverOS MCP server, agent scoping, and Langfuse tracing.",
+          "at": "2026-08-26T22:42:00Z"
+        }
+      ]
+    },
+    {
+      "id": "honcho-migration",
+      "priority": 2,
+      "name": "Self-hosted Honcho engine and cloud workspace migration script",
+      "behavior": "Honcho engine with PostgreSQL+pgvector, impermanence, and python migration script (honcho-migrate.py) for cloud workspace sessions/messages/metamemory",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.services.honcho.dataDir",
+        "test -x layers/00-cyberia/06-scripts/honcho-migrate.py"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "test -x layers/00-cyberia/06-scripts/honcho-migrate.py && nix eval .#nixosConfigurations.z0r0.config.services.honcho.dataDir",
+          "output": "Verified honcho.nix dataDir /var/lib/honcho with impermanence and executable honcho-migrate.py script.",
+          "at": "2026-08-26T22:42:00Z"
+        }
+      ]
     }
   ]
 }
