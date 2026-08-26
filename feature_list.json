@@ -569,6 +569,112 @@
           "at": "2026-08-26T22:42:00Z"
         }
       ]
+    },
+    {
+      "id": "kong-consumer-per-agent",
+      "priority": 3,
+      "name": "Kong consumer per agent governance and credential isolation",
+      "behavior": "Provision individual Kong consumers and API key credentials for each AI agent runtime (hermes, opencode, claude-code, codex, cursor, deerflow, polyfloor, paperclip, opencompany, dsh) with rate limits and metrics",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.kong-gateway.consumers",
+        "nix eval .#nixosConfigurations.luffy.config.services.ai-services.kong-gateway.consumers"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.kong-gateway.consumers && nix eval .#nixosConfigurations.luffy.config.services.ai-services.kong-gateway.consumers",
+          "output": "Verified 10 dedicated agent consumers (hermes, opencode, claude-code, codex, cursor, deerflow, polyfloor, paperclip, opencompany, dsh) evaluated cleanly on both z0r0 and luffy.",
+          "at": "2026-08-26T23:11:50Z"
+        }
+      ]
+    },
+    {
+      "id": "polyfloor-registry",
+      "priority": 3,
+      "name": "Polyfloor multi-floor AI agent OS registry module integration",
+      "behavior": "Polyfloor AI agent floor & skill/agent registry module integrated with NFP flake, endpoints registry (endpoints.nix), PostgreSQL DB setup, impermanence, and sops/clan secret integration",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.polyfloor.enable",
+        "nix eval .#nixosConfigurations.luffy.config.services.ai-services.polyfloor.enable"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.polyfloor.enable && nix eval .#nixosConfigurations.luffy.config.services.ai-services.polyfloor.enable",
+          "output": "Verified polyfloor service option enabled and evaluated to true on both z0r0 and luffy.",
+          "at": "2026-08-26T23:12:03Z"
+        }
+      ]
+    },
+    {
+      "id": "agent-sandbox-images",
+      "priority": 3,
+      "name": "Agent sandbox image specs and container execution policies",
+      "behavior": "OCI container sandbox definitions and security profiles (bubblewrap/nspawn/podman) for isolated agent workspace executions with network/filesystem policy restrictions in agent-sandbox.nix",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-70.agent.sandbox.enable",
+        "nix eval .#nixosConfigurations.luffy.config.layers.layer-70.agent.sandbox.enable"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-70.agent.sandbox.enable && nix eval .#nixosConfigurations.luffy.config.layers.layer-70.agent.sandbox.enable",
+          "output": "Verified agent sandbox module option enabled and evaluated to true on both z0r0 and luffy.",
+          "at": "2026-08-26T23:12:03Z"
+        }
+      ]
+    },
+    {
+      "id": "control-surface-adr",
+      "priority": 3,
+      "name": "NFP Control Surface & Agent Swarm Governance ADR",
+      "behavior": "Formal Architectural Decision Record (ADR) documenting NFP Control Surface & Agent Swarm Governance architecture (Kong consumer per agent, Polyfloor agent floors, sandbox container isolation, memory governance plane, ContextForge MCP gateway, EverOS memory chassis)",
+      "verification": [
+        "test -f layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md",
+        "grep -q 'Control Surface' layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "test -f layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md && grep -q 'Control Surface' layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md",
+          "output": "Verified ADR-0001 documentation file exists and contains canonical Control Surface architecture text.",
+          "at": "2026-08-26T23:12:03Z"
+        }
+      ]
+    },
+    {
+      "id": "memory-governance-plane",
+      "priority": 3,
+      "name": "Memory Governance Plane and agent memory access policies",
+      "behavior": "Policy enforcement module for memory access control separating shared memory vault (/var/lib/memory/vault) vs agent-private memory stores (/var/lib/hermes/, /var/lib/opencode/), enforcing ACL scopes via ContextForge & EverOS",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-governance.enable",
+        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.memory-governance.enable"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-governance.enable && nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.memory-governance.enable",
+          "output": "Verified memory governance plane module option enabled and evaluated to true on both z0r0 and luffy.",
+          "at": "2026-08-26T23:12:03Z"
+        }
+      ]
     }
   ]
 }
+

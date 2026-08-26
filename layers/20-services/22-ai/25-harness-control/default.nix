@@ -10,6 +10,7 @@
     ./llm-agents.nix
     ./llm-agents-catalog.nix
     ./memory-vault.nix
+    ./memory-governance.nix
     ./mission-control.nix
     ./opencompany.nix
     ./paperclip.nix

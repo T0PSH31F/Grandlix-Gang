@@ -55,5 +55,10 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **Work done:** Implemented Phase 2 Memory Chassis: created `memory-vault.nix` with canonical vault at `/var/lib/memory/vault`, `memory` group ownership, seed directory structure, impermanence, and 15-min git mesh sync timer; created `everos.nix` EverOS memory server (port 8092) with nightly 03:00 consolidation timer; updated `context-forge.nix` with EverOS MCP server registration, agent memory scoping (`hermes` shared+private, sandboxed shared-only), and Langfuse tracing; updated `honcho.nix` with pgvector & impermanence; created `honcho-migrate.py` cloud workspace migration script.
 - **Verification:** Evaluated all 4 module options cleanly on both `z0r0` and `luffy`; validated schema v2 in `feature_list.json`; opened PR #8 (https://github.com/T0PSH31F/NFP/pull/8).
 - **State change:** passing (evidence recorded in feature_list.json and PR https://github.com/T0PSH31F/NFP/pull/8)
-- **Next action:** Proceed to Phase 3 (kong-consumer-per-agent, polyfloor-registry, agent-sandbox-images, control-surface-adr, memory-governance-plane) in the next thread.
+- **Date / Agent:** 2026-08-26 / antigravity
+- **Feature:** kong-consumer-per-agent, polyfloor-registry, agent-sandbox-images, control-surface-adr, memory-governance-plane
+- **Work done:** Implemented Phase 3 Governance + Swarm: expanded `kong-gateway.nix` and `kong-secrets.nix` with 10 dedicated agent consumers and keyauth credentials (`hermes`, `opencode`, `claude-code`, `codex`, `cursor`, `deerflow`, `polyfloor`, `paperclip`, `opencompany`, `dsh`); integrated Polyfloor backend with endpoints registry and PostgreSQL DB; created `agent-sandbox.nix` for isolated Podman/Bubblewrap container executions; authored `0001-control-surface-swarm-governance.md` ADR; implemented `memory-governance.nix` for ACL scope enforcement across shared and private agent memory stores.
+- **Verification:** Evaluated `kong-gateway.consumers`, `polyfloor.enable`, `agent.sandbox.enable`, `memory-governance.enable` cleanly on both `z0r0` and `luffy`; verified ADR file existence and content; validated schema v2 in `feature_list.json`.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Execute fleet deployment via `clan machines update z0r0` / `clan machines update luffy`.
 

@@ -37,6 +37,8 @@
   layers.layer-20.services.memory-vault.enable = lib.mkDefault true;
   layers.layer-20.services.everos.enable = lib.mkDefault true;
   layers.layer-20.services.context-forge.enable = lib.mkDefault true;
+  layers.layer-20.services.memory-governance.enable = lib.mkDefault true;
+  layers.layer-70.agent.sandbox.enable = lib.mkDefault true;
 
   # Agent productivity & messaging daemons
   layers.layer-20.services.todo-system.enable = lib.mkDefault true;

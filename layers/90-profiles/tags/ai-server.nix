@@ -65,4 +65,6 @@
 
     infrastructure.langfuse.enable = lib.mkDefault true;
   };
+
+  layers.layer-20.services.memory-governance.enable = lib.mkDefault true;
 }

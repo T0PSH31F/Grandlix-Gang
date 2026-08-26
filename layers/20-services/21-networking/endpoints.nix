@@ -33,11 +33,13 @@ in
       freellmapi = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.freellmapi.port or 3003) "/v1";
       ollama = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.ollama.port or 11434) "/v1";
       hermes-gateway = mkEndpoint "127.0.0.1" (config.layers.layer-76.hermes.gatewayPort or 8085) "";
-      context-forge = mkEndpoint "127.0.0.1" 8083 "/mcp";
+      context-forge = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.context-forge.port or 8094
+      ) "/mcp";
       camofox = mkEndpoint "127.0.0.1" 9377 "";
       signal = mkEndpoint "127.0.0.1" 8080 "";
       langfuse = mkEndpoint "127.0.0.1" 3005 "";
       matrix = mkEndpoint "matrix.local" 8008 "";
+      polyfloor = mkEndpoint "127.0.0.1" (config.services.ai-services.polyfloor.port or 8001) "";
     };
     description = "Central registry for service network endpoints across the fleet.";
   };

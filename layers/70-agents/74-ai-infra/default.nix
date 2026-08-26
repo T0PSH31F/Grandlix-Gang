@@ -36,6 +36,7 @@ let
 in
 {
   imports = [
+    ./agent-sandbox.nix
     ../../20-services/22-ai
     ../../20-services/25-data/langfuse.nix
   ];

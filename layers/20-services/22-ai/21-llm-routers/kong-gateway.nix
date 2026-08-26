@@ -484,6 +484,10 @@ in
         "codex"
         "cursor"
         "deerflow"
+        "polyfloor"
+        "paperclip"
+        "opencompany"
+        "dsh"
       ];
       description = "List of consumer usernames. Each gets a keyauth credential.";
     };

@@ -48,6 +48,10 @@ in
       kong_key_codex = mkSecret "kong_key_codex";
       kong_key_cursor = mkSecret "kong_key_cursor";
       kong_key_deerflow = mkSecret "kong_key_deerflow";
+      kong_key_polyfloor = mkSecret "kong_key_polyfloor";
+      kong_key_paperclip = mkSecret "kong_key_paperclip";
+      kong_key_opencompany = mkSecret "kong_key_opencompany";
+      kong_key_dsh = mkSecret "kong_key_dsh";
     };
 
     # ── Environment file template for Kong ──────────────────────────
@@ -76,6 +80,10 @@ in
         KONG_KEY_CODEX=${config.sops.placeholder.kong_key_codex}
         KONG_KEY_CURSOR=${config.sops.placeholder.kong_key_cursor}
         KONG_KEY_DEERFLOW=${config.sops.placeholder.kong_key_deerflow}
+        KONG_KEY_POLYFLOOR=${config.sops.placeholder.kong_key_polyfloor}
+        KONG_KEY_PAPERCLIP=${config.sops.placeholder.kong_key_paperclip}
+        KONG_KEY_OPENCOMPANY=${config.sops.placeholder.kong_key_opencompany}
+        KONG_KEY_DSH=${config.sops.placeholder.kong_key_dsh}
       '';
       owner = "root";
       group = "root";
