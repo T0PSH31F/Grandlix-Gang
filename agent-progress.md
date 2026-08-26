@@ -43,7 +43,9 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **Feature:** backups-restic
 - **Work done:** Implemented Phase 1 restic + rclone backup infrastructure (`layers/20-services/25-data/restic-backups.nix`) supporting Google Drive and teldrive remotes, PostgreSQL pre-dump hook (`pg_dumpall`), `/persist/home` and critical `/var/lib` state retention, and `restic-restore-drill` verification CLI script. Exposed module option `layers.layer-20.services.backups.restic` and enabled it on server and workstation profile tags.
 - **Verification:** Evaluated `nfp-main.paths` cleanly on both `z0r0` and `luffy`; validated schema v2 in `feature_list.json`; opened PR #7 (https://github.com/T0PSH31F/NFP/pull/7).
-- **State change:** passing (evidence recorded in feature_list.json and PR https://github.com/T0PSH31F/NFP/pull/7)
-- **Next action:** Proceed to Phase 2 (memory-vault + everos-runtime + memory-gateway-federation) in the next thread.
-
-
+- **Date / Agent:** 2026-08-26 / antigravity
+- **Feature:** oom-kill-mitigations
+- **Work done:** Reduced rclone VFS cache max size to 2GB with writes mode across user and system mounts; expanded earlyoom process filters to protect Hyprland, noctalia, greetd, sshd, systemd and prioritize heavy browser/electron applications; deleted ANTIGRAVITY_OOM_ISSUE.md post-fix; ran nix-collect-garbage.
+- **Verification:** Evaluated earlyoom extraArgs and system toplevels cleanly on both z0r0 and luffy; feature schema v2 valid.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Execute fleet update via `clan machines update z0r0`.

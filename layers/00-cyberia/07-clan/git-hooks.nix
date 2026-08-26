@@ -1,8 +1,13 @@
 # Git Pre-commit & Pre-push Hooks
-# Delegates all Nix formatting/linting to the single treefmt-nix wrapper defined in
-# flake.nix (nixfmt + deadnix + statix + nixf-diagnose + shfmt) so there is exactly
-# one source of truth for "how do we format this repo" — see flake.nix's
-# perSystem.treefmt. Fast nix eval of both machine toplevels guards pre-push.
+#
+# treefmt runs in --fail-on-change (lint) mode — it CHECKS formatting but
+# never auto-rewrites files during a commit. This prevents the hook from
+# mass-reformatting unrelated files mid-commit and forcing --no-verify bypasses.
+#
+# For deliberate formatting: run `nix fmt` manually.
+# init.sh also runs `nix fmt -- --fail-on-change` as step [2/5].
+#
+# Fast nix eval of both machine toplevels guards pre-push.
 { inputs, ... }:
 {
   perSystem =
@@ -19,6 +24,10 @@
           treefmt = {
             enable = true;
             package = config.treefmt.build.wrapper;
+            # --fail-on-change: lint mode — exits non-zero if any file would be
+            # reformatted, without modifying files. Prevents silent mass-reformat
+            # of the entire project tree on every commit.
+            settings.fail-on-change = true;
           };
           nix-eval-toplevels = {
             enable = true;

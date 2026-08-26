@@ -463,6 +463,28 @@
       "claimedBy": "t0psh31f",
       "blockedReason": null,
       "evidence": []
+    },
+    {
+      "id": "oom-kill-mitigations",
+      "priority": 1,
+      "name": "EarlyOOM kill chain and rclone VFS cache mitigations",
+      "behavior": "rclone VFS cache restricted to 2GB with writes mode; earlyoom --avoid regex includes Hyprland, noctalia, greetd, sshd, systemd; --prefer includes heavy electron/browsers",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.services.earlyoom.extraArgs",
+        "nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null",
+        "nix eval .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath > /dev/null"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.services.earlyoom.extraArgs && nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath && nix eval .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath",
+          "output": "Verified earlyoom extraArgs prefer/avoid filters and evaluated system top levels for z0r0 and luffy cleanly.",
+          "at": "2026-08-26T21:36:00Z"
+        }
+      ]
     }
   ]
 }

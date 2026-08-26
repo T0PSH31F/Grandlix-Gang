@@ -2,9 +2,10 @@
 
 > Compact state for the next session. Overwrite entirely at the end of each session.
 
-- **Active feature:** backups-restic — passing (PR #7 opened: https://github.com/T0PSH31F/NFP/pull/7)
-- **Last verified green:** `backups-restic` module (`layers/20-services/25-data/restic-backups.nix`), PostgreSQL `pg_dumpall` pre-hook, `/persist/home` + critical `/var/lib` state retention, `restic-restore-drill` verification CLI script, and profile tag integration (`luffy`, `z0r0`), 2026-08-26
+- **Active feature:** oom-kill-mitigations — passing
+- **Last verified green:** rclone VFS cache max size lowered to 2GB with writes mode (`rclone.nix`, `google-drive.nix`); earlyoom process filters updated (`optimization.nix`); system toplevels evaluated on z0r0 and luffy, 2026-08-26
 - **Blockers:** none
-- **Exact next command:** Start new thread for Phase 2: `memory-vault + everos-runtime + memory-gateway-federation`
+- **Exact next command:** Deploy updated configuration via `clan machines update z0r0`
 - **Do not touch:** `clean-state-checklist.md` on main (must remain an unchecked template)
+
 
