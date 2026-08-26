@@ -33,7 +33,7 @@ in
       openFirewall = true;
       settings = {
         server = {
-          port = cfg.port;
+          inherit (cfg) port;
         };
       };
     };

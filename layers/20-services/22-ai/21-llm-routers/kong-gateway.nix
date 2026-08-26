@@ -26,30 +26,46 @@ let
         (optional cfg.routers.manifest.enable {
           name = "manifest-llm";
           url = "http://127.0.0.1:${toString cfg.routers.manifest.port}/v1";
-          tags = [ "llm" "frontier" ];
+          tags = [
+            "llm"
+            "frontier"
+          ];
         })
         # FreeLLMAPI — free+paid aggregated pool
         ++ (optional cfg.routers.freellmapi.enable {
           name = "freellmapi-llm";
           url = "http://127.0.0.1:${toString cfg.routers.freellmapi.port}/v1";
-          tags = [ "llm" "free-first" ];
+          tags = [
+            "llm"
+            "free-first"
+          ];
         })
         # freellmpool — pure free-tier pool
         ++ (optional cfg.routers.freellmpool.enable {
           name = "freellmpool-llm";
           url = "http://127.0.0.1:${toString cfg.routers.freellmpool.port}/v1";
-          tags = [ "llm" "free-only" ];
+          tags = [
+            "llm"
+            "free-only"
+          ];
         })
         # Coding router — mutually exclusive (omniroute or extreme-router)
         ++ (optional (cfg.routers.codingRouter == "omniroute") {
           name = "omniroute-llm";
           url = "http://127.0.0.1:${toString cfg.routers.omniroute.port}/v1";
-          tags = [ "llm" "coding" ];
+          tags = [
+            "llm"
+            "coding"
+          ];
         })
         ++ (optional (cfg.routers.codingRouter == "extreme-router") {
           name = "extremerouter-llm";
           url = "http://127.0.0.1:${toString cfg.routers.extreme-router.port}/v1";
-          tags = [ "llm" "coding" "extreme" ];
+          tags = [
+            "llm"
+            "coding"
+            "extreme"
+          ];
         });
 
       # ── Routes ───────────────────────────────────────────────────
@@ -58,21 +74,27 @@ let
         [
           {
             name = "llm-chat";
-            service = { name = "freellmapi-llm"; };
+            service = {
+              name = "freellmapi-llm";
+            };
             paths = [ "/llm/v1/chat/completions" ];
             methods = [ "POST" ];
             tags = [ "llm" ];
           }
           {
             name = "llm-completions";
-            service = { name = "freellmapi-llm"; };
+            service = {
+              name = "freellmapi-llm";
+            };
             paths = [ "/llm/v1/completions" ];
             methods = [ "POST" ];
             tags = [ "llm" ];
           }
           {
             name = "llm-embeddings";
-            service = { name = "freellmapi-llm"; };
+            service = {
+              name = "freellmapi-llm";
+            };
             paths = [ "/llm/v1/embeddings" ];
             methods = [ "POST" ];
             tags = [ "llm" ];
@@ -80,42 +102,72 @@ let
           # Frontier traffic → Manifest
           {
             name = "llm-frontier";
-            service = { name = "manifest-llm"; };
+            service = {
+              name = "manifest-llm";
+            };
             paths = [ "/llm/frontier/v1/chat/completions" ];
             methods = [ "POST" ];
-            tags = [ "llm" "frontier" ];
+            tags = [
+              "llm"
+              "frontier"
+            ];
           }
           # Coding traffic → OmniRoute or ExtremeRouter (mutually exclusive)
           {
             name = "llm-coding";
-            service = { name = if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm"; };
+            service = {
+              name =
+                if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+            };
             paths = [ "/llm/coding/v1/chat/completions" ];
             methods = [ "POST" ];
-            tags = [ "llm" "coding" ];
+            tags = [
+              "llm"
+              "coding"
+            ];
           }
           # Free pool → freellmpool
           {
             name = "llm-free";
-            service = { name = "freellmpool-llm"; };
+            service = {
+              name = "freellmpool-llm";
+            };
             paths = [ "/llm/free/v1/chat/completions" ];
             methods = [ "POST" ];
-            tags = [ "llm" "free" ];
+            tags = [
+              "llm"
+              "free"
+            ];
           }
           # Model discovery → coding router (ExtremeRouter or OmniRoute)
           # OpenCode/Hermes call /v1/models to enumerate available models
           {
             name = "llm-models";
-            service = { name = if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm"; };
-            paths = [ "/v1/models" "/llm/v1/models" ];
+            service = {
+              name =
+                if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+            };
+            paths = [
+              "/v1/models"
+              "/llm/v1/models"
+            ];
             methods = [ "GET" ];
-            tags = [ "llm" "models" ];
+            tags = [
+              "llm"
+              "models"
+            ];
           }
           # MCP gateway
           {
             name = "mcp-gateway";
-            service = { name = "freellmapi-llm"; };
+            service = {
+              name = "freellmapi-llm";
+            };
             paths = [ "/mcp" ];
-            methods = [ "GET" "POST" ];
+            methods = [
+              "GET"
+              "POST"
+            ];
             tags = [ "mcp" ];
           }
           # Health check
@@ -151,8 +203,12 @@ let
             active = {
               type = "http";
               http_path = "/api/v1/health";
-              healthy = { interval = 10; };
-              unhealthy = { interval = 5; };
+              healthy = {
+                interval = 10;
+              };
+              unhealthy = {
+                interval = 5;
+              };
             };
           };
         })
@@ -168,8 +224,12 @@ let
             active = {
               type = "http";
               http_path = "/health";
-              healthy = { interval = 10; };
-              unhealthy = { interval = 5; };
+              healthy = {
+                interval = 10;
+              };
+              unhealthy = {
+                interval = 5;
+              };
             };
           };
         })
@@ -185,8 +245,12 @@ let
             active = {
               type = "http";
               http_path = "/health";
-              healthy = { interval = 10; };
-              unhealthy = { interval = 5; };
+              healthy = {
+                interval = 10;
+              };
+              unhealthy = {
+                interval = 5;
+              };
             };
           };
         })
@@ -202,8 +266,12 @@ let
             active = {
               type = "http";
               http_path = "/api/health";
-              healthy = { interval = 10; };
-              unhealthy = { interval = 5; };
+              healthy = {
+                interval = 10;
+              };
+              unhealthy = {
+                interval = 5;
+              };
             };
           };
         })
@@ -219,8 +287,12 @@ let
             active = {
               type = "http";
               http_path = "/api/health";
-              healthy = { interval = 10; };
-              unhealthy = { interval = 5; };
+              healthy = {
+                interval = 10;
+              };
+              unhealthy = {
+                interval = 5;
+              };
             };
           };
         });
@@ -237,7 +309,10 @@ let
         {
           name = "key-auth";
           config = {
-            key_names = [ "apikey" "Authorization" ];
+            key_names = [
+              "apikey"
+              "Authorization"
+            ];
             hide_credentials = true;
           };
           tags = [ "auth" ];
@@ -279,8 +354,17 @@ let
           name = "cors";
           config = {
             origins = [ "*" ];
-            methods = [ "GET" "POST" "OPTIONS" ];
-            headers = [ "Accept" "Authorization" "Content-Type" "apikey" ];
+            methods = [
+              "GET"
+              "POST"
+              "OPTIONS"
+            ];
+            headers = [
+              "Accept"
+              "Authorization"
+              "Content-Type"
+              "apikey"
+            ];
             exposed_headers = [ "X-Auth-Token" ];
             credentials = true;
             max_age = 3600;
@@ -334,21 +418,39 @@ in
     # ── Upstream router endpoints ──────────────────────────────────
     routers = {
       manifest = {
-        enable = mkEnableOption "Route traffic to Manifest" // { default = true; };
-        port = mkOption { type = types.port; default = 2099; };
+        enable = mkEnableOption "Route traffic to Manifest" // {
+          default = true;
+        };
+        port = mkOption {
+          type = types.port;
+          default = 2099;
+        };
       };
       freellmapi = {
-        enable = mkEnableOption "Route traffic to FreeLLMAPI" // { default = true; };
-        port = mkOption { type = types.port; default = 3001; };
+        enable = mkEnableOption "Route traffic to FreeLLMAPI" // {
+          default = true;
+        };
+        port = mkOption {
+          type = types.port;
+          default = 3001;
+        };
       };
       freellmpool = {
-        enable = mkEnableOption "Route traffic to freellmpool" // { default = true; };
-        port = mkOption { type = types.port; default = 8080; };
+        enable = mkEnableOption "Route traffic to freellmpool" // {
+          default = true;
+        };
+        port = mkOption {
+          type = types.port;
+          default = 8080;
+        };
       };
 
       # Coding router — mutually exclusive. Only one can be active.
       codingRouter = mkOption {
-        type = types.enum [ "omniroute" "extreme-router" ];
+        type = types.enum [
+          "omniroute"
+          "extreme-router"
+        ];
         default = "extreme-router";
         description = ''
           Which coding LLM router to use for /llm/coding/* traffic.
@@ -359,17 +461,30 @@ in
       };
 
       omniroute = {
-        port = mkOption { type = types.port; default = 20128; };
+        port = mkOption {
+          type = types.port;
+          default = 20128;
+        };
       };
       extreme-router = {
-        port = mkOption { type = types.port; default = 20128; };
+        port = mkOption {
+          type = types.port;
+          default = 20128;
+        };
       };
     };
 
     # ── Consumers (clients with API keys) ──────────────────────────
     consumers = mkOption {
       type = types.listOf types.str;
-      default = [ "hermes" "opencode" "claude-code" "codex" "cursor" "deerflow" ];
+      default = [
+        "hermes"
+        "opencode"
+        "claude-code"
+        "codex"
+        "cursor"
+        "deerflow"
+      ];
       description = "List of consumer usernames. Each gets a keyauth credential.";
     };
 
@@ -405,7 +520,7 @@ in
     #   2. consumers.yml  — API keys rendered by sops (never enters the store)
     # Kong merges both at startup via colon-separated KONG_DECLARATIVE_CONFIG.
     virtualisation.oci-containers.containers.kong = {
-      image = cfg.image;
+      inherit (cfg) image;
       ports = [
         "${toString cfg.proxyPort}:8000"
         "${toString cfg.proxySslPort}:8443"
@@ -490,7 +605,10 @@ in
       '')
       (pkgs.writeShellApplication {
         name = "kong-admin";
-        runtimeInputs = [ pkgs.curl pkgs.jq ];
+        runtimeInputs = [
+          pkgs.curl
+          pkgs.jq
+        ];
         text = ''
           ADMIN_URL="http://127.0.0.1:${toString cfg.adminPort}"
           case "''${1:-help}" in

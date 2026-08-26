@@ -12,7 +12,7 @@ WEBUI_HOST="${HERMES_WEBUI_HOST:-0.0.0.0}"
 mkdir -p "$HERMES_HOME"
 
 if [ ! -f "$HERMES_CONFIG" ]; then
-  cat > "$HERMES_CONFIG" <<- 'EOF'
+  cat >"$HERMES_CONFIG" <<-'EOF'
 _config_version: 29
 terminal:
   backend: local

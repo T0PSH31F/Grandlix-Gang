@@ -1,6 +1,5 @@
 # flake-parts/features/home/cli/theming/themes.nix
-{ ... }:
-{
+_: {
   "Catppuccin Lavender" = {
     primary = "#b58fff";
     secondary = "#f5c2e7";

@@ -34,11 +34,11 @@ read -rs LUKS_PASS_CONFIRM
 echo ""
 
 if [ "$LUKS_PASS" != "$LUKS_PASS_CONFIRM" ]; then
-    echo "ERROR: Passwords don't match!"
-    exit 1
+  echo "ERROR: Passwords don't match!"
+  exit 1
 fi
 
-echo -n "$LUKS_PASS" > /tmp/secret.key
+echo -n "$LUKS_PASS" >/tmp/secret.key
 chmod 600 /tmp/secret.key
 
 # =============================================================================

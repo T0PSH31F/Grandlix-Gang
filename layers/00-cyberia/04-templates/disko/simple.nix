@@ -1,8 +1,7 @@
 # Simple Disko Template
 # 1GB FAT32 boot + ext4 root (100%)
 # No encryption - for simple/testing setups
-{ ... }:
-{
+_: {
   disko.devices = {
     disk.main = {
       type = "disk";

@@ -35,8 +35,8 @@ in
     # 1. Native NixOS llama-swap service
     services.llama-swap = {
       enable = true;
-      port = cfg.port;
-      settings = cfg.settings;
+      inherit (cfg) port;
+      inherit (cfg) settings;
     };
 
     # llama-swap needs access to /proc/meminfo for system stats,

@@ -51,7 +51,7 @@ in
     assertions = [
       {
         assertion =
-          !(config.fileSystems."/"?fsType && config.fileSystems."/".fsType == "tmpfs")
+          !(config.fileSystems."/" ? fsType && config.fileSystems."/".fsType == "tmpfs")
           || (config.layers.layer-10.system.config.impermanence.enable or false);
         message = "services.ai-services.aionui requires impermanence to be enabled (config.layers.layer-10.system.config.impermanence.enable = true) on machines with tmpfs root to prevent credential loss on reboot.";
       }

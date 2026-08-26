@@ -1,30 +1,35 @@
 # Git Pre-commit & Pre-push Hooks
-# Wire nixfmt, deadnix, statix for pre-commit and fast nix eval of both machine toplevels for pre-push.
-# Prevents pushed syntax failures (opencode brace class of errors).
+# Delegates all Nix formatting/linting to the single treefmt-nix wrapper defined in
+# flake.nix (nixfmt + deadnix + statix + nixf-diagnose + shfmt) so there is exactly
+# one source of truth for "how do we format this repo" — see flake.nix's
+# perSystem.treefmt. Fast nix eval of both machine toplevels guards pre-push.
 { inputs, ... }:
 {
   perSystem =
-    { pkgs, system, ... }:
+    {
+      pkgs,
+      system,
+      config,
+      ...
+    }:
     {
       checks.pre-commit-check = inputs.git-hooks-nix.lib.${system}.run {
         src = ../../../.;
         hooks = {
-          nixfmt-rfc-style = {
+          treefmt = {
             enable = true;
-            package = pkgs.nixfmt;
-          };
-          deadnix = {
-            enable = true;
-            package = pkgs.deadnix;
-          };
-          statix = {
-            enable = true;
-            package = pkgs.statix;
+            package = config.treefmt.build.wrapper;
           };
           nix-eval-toplevels = {
             enable = true;
             name = "Fast nix eval of machine toplevels";
-            entry = "nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath > /dev/null && nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null";
+            entry = toString (
+              pkgs.writeShellScript "nix-eval-toplevels" ''
+                set -euo pipefail
+                nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath > /dev/null
+                nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null
+              ''
+            );
             stages = [ "pre-push" ];
             pass_filenames = false;
           };

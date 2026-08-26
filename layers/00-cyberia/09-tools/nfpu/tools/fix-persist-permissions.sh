@@ -56,17 +56,17 @@ fix_perms "/persist/var/lib/n8n" "n8n" "n8n" "0700"
 
 echo "=== Restarting impacted services ==="
 systemctl restart adguardhome.service \
-                  filebrowser.service \
-                  ollama.service \
-                  qdrant.service \
-                  sillytavern.service \
-                  headscale.service \
-                  backup-vaultwarden.service \
-                  nextjs-ollama-llm-ui.service \
-                  chromadb.service \
-                  phpfpm-nextcloud.service \
-                  n8n.service \
-                  nginx.service \
-                  caddy.service || true
+  filebrowser.service \
+  ollama.service \
+  qdrant.service \
+  sillytavern.service \
+  headscale.service \
+  backup-vaultwarden.service \
+  nextjs-ollama-llm-ui.service \
+  chromadb.service \
+  phpfpm-nextcloud.service \
+  n8n.service \
+  nginx.service \
+  caddy.service || true
 
 echo "=== Done ==="

@@ -112,7 +112,7 @@ with lib;
           libappindicator-gtk3
           libcaca
           libcanberra
-          libcanberra-gtk3  # canberra-gtk-play for warcraft-notifications plugin audio (force rebuild 2026-07-09)
+          libcanberra-gtk3 # canberra-gtk-play for warcraft-notifications plugin audio (force rebuild 2026-07-09)
           libcap
           libdbusmenu-gtk2
           libdrm
@@ -176,7 +176,7 @@ with lib;
           libxcb
           libxshmfence
           zlib
-          wayland  # Required by oh-my-opencode-slim companion (Wayland GUI overlay)
+          wayland # Required by oh-my-opencode-slim companion (Wayland GUI overlay)
           portaudio # Required by hermes-agent sounddevice Voice mode
         ];
       };

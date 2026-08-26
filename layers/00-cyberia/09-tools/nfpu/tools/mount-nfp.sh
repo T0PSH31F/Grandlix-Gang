@@ -4,31 +4,31 @@
 
 MACHINE=$1
 
-if [[ -z "$MACHINE" ]]; then
-    echo "Usage: $0 <luffy|z0r0>"
-    exit 1
+if [[ -z $MACHINE ]]; then
+  echo "Usage: $0 <luffy|z0r0>"
+  exit 1
 fi
 
 case $MACHINE in
-    luffy)
-        UUID="c62695ca-f48c-4296-8e27-62f27a32c7e1"
-        BOOT_UUID="8F18-74D6"
-        ;;
-    z0r0)
-        UUID="458b615c-3ac2-4cff-98a2-c8e266bae90f"
-        BOOT_UUID="3824-3E8C"
-        ;;
-    *)
-        echo "Unknown machine: $MACHINE"
-        exit 1
-        ;;
+luffy)
+  UUID="c62695ca-f48c-4296-8e27-62f27a32c7e1"
+  BOOT_UUID="8F18-74D6"
+  ;;
+z0r0)
+  UUID="458b615c-3ac2-4cff-98a2-c8e266bae90f"
+  BOOT_UUID="3824-3E8C"
+  ;;
+*)
+  echo "Unknown machine: $MACHINE"
+  exit 1
+  ;;
 esac
 
 echo "--- LUKS Unlock ---"
 if [[ ! -e /dev/mapper/crypted ]]; then
-    sudo cryptsetup open /dev/disk/by-uuid/$UUID crypted
+  sudo cryptsetup open /dev/disk/by-uuid/$UUID crypted
 else
-    echo "LUKs device already open at /dev/mapper/crypted"
+  echo "LUKs device already open at /dev/mapper/crypted"
 fi
 
 echo "--- Mounting Subvolumes ---"

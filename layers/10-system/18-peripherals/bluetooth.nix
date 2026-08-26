@@ -64,16 +64,18 @@ in
       partOf = [ "bluetooth.service" ];
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = let
-          autoConnectScript = pkgs.writeShellScript "bluetooth-auto-connect" ''
-            set -euo pipefail
-            # Get all trusted Bluetooth devices and connect each
-            ${pkgs.bluez}/bin/bluetoothctl devices Trusted | while read -r _ mac name; do
-              echo "Connecting to $name ($mac)..."
-              ${pkgs.coreutils}/bin/timeout 10 ${pkgs.bluez}/bin/bluetoothctl connect "$mac" 2>/dev/null || true
-            done
-          '';
-        in "${autoConnectScript}";
+        ExecStart =
+          let
+            autoConnectScript = pkgs.writeShellScript "bluetooth-auto-connect" ''
+              set -euo pipefail
+              # Get all trusted Bluetooth devices and connect each
+              ${pkgs.bluez}/bin/bluetoothctl devices Trusted | while read -r _ mac name; do
+                echo "Connecting to $name ($mac)..."
+                ${pkgs.coreutils}/bin/timeout 10 ${pkgs.bluez}/bin/bluetoothctl connect "$mac" 2>/dev/null || true
+              done
+            '';
+          in
+          "${autoConnectScript}";
         RemainAfterExit = true;
       };
       wantedBy = [ "default.target" ];

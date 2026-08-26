@@ -14,14 +14,7 @@ let
           evalRes = builtins.tryEval val.value;
           desc =
             if val ? description then
-              (
-                if builtins.isString val.description then
-                  val.description
-                else if val.description ? text then
-                  val.description.text
-                else
-                  ""
-              )
+              (if builtins.isString val.description then val.description else val.description.text or "")
             else
               "";
         in
@@ -39,7 +32,7 @@ let
         { }
     ) opts;
 
-  extractMachineConfig = name: machine: {
+  extractMachineConfig = _name: machine: {
     options = extractEnables "" (machine.options.layers or { });
   };
 

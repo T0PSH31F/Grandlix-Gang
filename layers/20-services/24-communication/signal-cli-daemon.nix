@@ -28,7 +28,7 @@ in
       home = signalDataDir;
       createHome = true;
     };
-    users.groups.signal-cli = {};
+    users.groups.signal-cli = { };
 
     systemd.tmpfiles.rules = [
       "d ${signalDataDir} 0700 signal-cli signal-cli -"

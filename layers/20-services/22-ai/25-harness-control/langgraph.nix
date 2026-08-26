@@ -11,15 +11,17 @@ let
   cfg = config.services.ai-services.langgraph;
 
   # Python environment with LangGraph + LangChain
-  langgraphEnv = pkgs.python3.withPackages (ps: with ps; [
-    langgraph
-    langchain-core
-    langchain-community
-    httpx
-    pydantic
-    python-dotenv
-    prometheus-client
-  ]);
+  langgraphEnv = pkgs.python3.withPackages (
+    ps: with ps; [
+      langgraph
+      langchain-core
+      langchain-community
+      httpx
+      pydantic
+      python-dotenv
+      prometheus-client
+    ]
+  );
 
   # Budget config — maps agent names to monthly token budgets
   budgetConfig = pkgs.writeText "langgraph-budgets.json" (
@@ -30,8 +32,8 @@ let
         default = {
           monthly_token_budget = 500000;
           frontier_threshold = 0.8; # Use frontier until 80% budget consumed
-          cheap_threshold = 0.95;   # Switch to cheap at 95%
-          free_threshold = 1.0;     # Free only at 100%
+          cheap_threshold = 0.95; # Switch to cheap at 95%
+          free_threshold = 1.0; # Free only at 100%
         };
         hermes = {
           monthly_token_budget = 2000000;
@@ -133,7 +135,10 @@ in
     # The actual workflow graphs are defined in Python code under dataDir/workflows/
     systemd.services.langgraph = {
       description = "LangGraph — multi-agent orchestration";
-      after = [ "network.target" "kong.service" ];
+      after = [
+        "network.target"
+        "kong.service"
+      ];
       wants = [ "kong.service" ];
       wantedBy = [ "multi-user.target" ];
 
@@ -147,7 +152,8 @@ in
         OPENAI_API_KEY = cfg.kongApiKey;
         # Prometheus metrics
         PROMETHEUS_PORT = toString cfg.port;
-      } // cfg.extraEnv;
+      }
+      // cfg.extraEnv;
 
       serviceConfig = {
         Type = "simple";

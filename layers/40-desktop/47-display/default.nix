@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   home = {
     imports = [
       ./nwg-displays.nix

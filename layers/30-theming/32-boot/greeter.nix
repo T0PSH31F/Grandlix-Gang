@@ -17,7 +17,11 @@ in
   options.layers.layer-30.theming.themes.greeter = {
     # Greeter selection — mutually exclusive. Only one can be active.
     type = mkOption {
-      type = types.enum [ "sddm" "greetd" "noctalia-greeter" ];
+      type = types.enum [
+        "sddm"
+        "greetd"
+        "noctalia-greeter"
+      ];
       default = "noctalia-greeter";
       description = ''
         Which login greeter to use:
@@ -80,7 +84,7 @@ in
         enable = true;
         settings = {
           background = {
-            path = builtins.toString cfg.greetd.background;
+            path = toString cfg.greetd.background;
             fit = "Cover";
           };
           GTK = lib.mkDefault {
@@ -97,20 +101,22 @@ in
         isSystemUser = true;
         group = "greeter";
       };
-      users.groups.greeter = {};
+      users.groups.greeter = { };
 
       services.greetd.settings.default_session.user = "greeter";
 
       programs.noctalia-greeter = {
         enable = true;
-        package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
-          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ pkgs.linuxHeaders ];
-          buildInputs = (old.buildInputs or []) ++ [
-            pkgs.linuxHeaders
-            pkgs.util-linux.lib
-            (lib.getLib pkgs.libselinux)
-          ];
-        });
+        package =
+          inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+            (old: {
+              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
+              buildInputs = (old.buildInputs or [ ]) ++ [
+                pkgs.linuxHeaders
+                pkgs.util-linux.lib
+                (lib.getLib pkgs.libselinux)
+              ];
+            });
         greeter-args = "--session ${cfg.noctalia-greeter.session}";
         settings = {
           cursor = {

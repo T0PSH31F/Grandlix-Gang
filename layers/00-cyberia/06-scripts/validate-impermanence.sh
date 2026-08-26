@@ -23,42 +23,42 @@ echo ""
 
 echo -e "${YELLOW}Checking ~/.config ...${NC}"
 find ~/.config -maxdepth 1 -type d | sort | while read -r dir; do
-    base=$(basename "$dir")
-    if [[ "$base" == ".config" ]]; then continue; fi
-    
-    # Check if this directory is in our known persistence list (manual check based on current config)
-    # This list must be kept in sync with impermanence.nix
-    case "$base" in
-        ghostty|sops|Signal|TelegramDesktop|Antigravity|mcp|Bitwarden|obs-studio|vesktop|discord|spicetify|kdeconnect|google-chrome|chromium)
-            echo -e "${GREEN}✓ PERSISTED:${NC} .config/$base"
-            ;;
-        *)
-            echo -e "${RED}⚠ WILL BE WIPED:${NC} .config/$base"
-            ;;
-    esac
+  base=$(basename "$dir")
+  if [[ $base == ".config" ]]; then continue; fi
+
+  # Check if this directory is in our known persistence list (manual check based on current config)
+  # This list must be kept in sync with impermanence.nix
+  case "$base" in
+  ghostty | sops | Signal | TelegramDesktop | Antigravity | mcp | Bitwarden | obs-studio | vesktop | discord | spicetify | kdeconnect | google-chrome | chromium)
+    echo -e "${GREEN}✓ PERSISTED:${NC} .config/$base"
+    ;;
+  *)
+    echo -e "${RED}⚠ WILL BE WIPED:${NC} .config/$base"
+    ;;
+  esac
 done
 
 echo ""
 echo -e "${YELLOW}Checking ~/.local/share ...${NC}"
 if [[ -d ~/.local/share ]]; then
-    find ~/.local/share -maxdepth 1 -type d | sort | while read -r dir; do
-        base=$(basename "$dir")
-        if [[ "$base" == "share" ]]; then continue; fi
-        
-        # Check against persistence list
-        case "$base" in
-            icons|themes|cursors|applications|fonts|keyrings|kwalletd) 
-                # Some of these might be re-generated or standard
-                echo -e "${GREEN}✓ SAFE/STANDARD:${NC} .local/share/$base" 
-                ;;
-            Flatpaks|Appimages|Games|Notes)
-                echo -e "${GREEN}✓ PERSISTED:${NC} .local/share/$base"
-                ;;
-            *)
-                 echo -e "${RED}⚠ WILL BE WIPED:${NC} .local/share/$base"
-                 ;;
-        esac
-    done
+  find ~/.local/share -maxdepth 1 -type d | sort | while read -r dir; do
+    base=$(basename "$dir")
+    if [[ $base == "share" ]]; then continue; fi
+
+    # Check against persistence list
+    case "$base" in
+    icons | themes | cursors | applications | fonts | keyrings | kwalletd)
+      # Some of these might be re-generated or standard
+      echo -e "${GREEN}✓ SAFE/STANDARD:${NC} .local/share/$base"
+      ;;
+    Flatpaks | Appimages | Games | Notes)
+      echo -e "${GREEN}✓ PERSISTED:${NC} .local/share/$base"
+      ;;
+    *)
+      echo -e "${RED}⚠ WILL BE WIPED:${NC} .local/share/$base"
+      ;;
+    esac
+  done
 fi
 
 echo ""

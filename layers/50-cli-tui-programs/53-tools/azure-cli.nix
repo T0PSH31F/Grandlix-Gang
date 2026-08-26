@@ -1,5 +1,10 @@
 # Azure CLI with extensions for containers, AI, and VMs
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -17,7 +22,7 @@ in
 
       # Extensions — add more as needed after verifying they build
       azure-cli-extensions.aks-preview # Azure Kubernetes Service
-      azure-cli-extensions.nsp         # Network Security Perimeter
+      azure-cli-extensions.nsp # Network Security Perimeter
     ];
   };
 }

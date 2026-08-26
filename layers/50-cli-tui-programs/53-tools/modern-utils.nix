@@ -20,11 +20,12 @@ in
       btop = {
         enable = true;
         settings.color_theme =
-          if osConfig.layers.layer-40.desktop.noctalia.enable or false
-          then "noctalia"
-          else if cfg.theming.enable
-          then "matugen"
-          else "default";
+          if osConfig.layers.layer-40.desktop.noctalia.enable or false then
+            "noctalia"
+          else if cfg.theming.enable then
+            "matugen"
+          else
+            "default";
       };
       eza = {
         enable = true;

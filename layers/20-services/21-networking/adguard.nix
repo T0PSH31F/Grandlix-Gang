@@ -58,7 +58,10 @@ in
 
     dhcpRange = mkOption {
       type = types.listOf types.str;
-      default = [ "192.168.1.100" "192.168.1.250" ];
+      default = [
+        "192.168.1.100"
+        "192.168.1.250"
+      ];
       description = "DHCP lease range (only used if dhcp = true)";
     };
   };
@@ -74,7 +77,7 @@ in
     services.adguardhome = {
       enable = true;
       openFirewall = true;
-      port = cfg.port;
+      inherit (cfg) port;
       mutableSettings = true;
       allowDHCP = cfg.dhcp;
       settings = {
@@ -92,14 +95,33 @@ in
         };
         filtering = {
           rewrites = [
-            { domain = "*.lovelain.duckdns.org"; answer = cfg.gatewayIp; }
+            {
+              domain = "*.lovelain.duckdns.org";
+              answer = cfg.gatewayIp;
+            }
           ];
         };
         filters = [
-          { enabled = true; url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_9.txt"; name = "AdGuard DNS filter"; }
-          { enabled = true; url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt"; name = "AdGuard DNS filter (mobile)"; }
-          { enabled = true; url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt"; name = "AdGuard Base filter"; }
-          { enabled = true; url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt"; name = "AdGuard Base filter (mobile)"; }
+          {
+            enabled = true;
+            url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_9.txt";
+            name = "AdGuard DNS filter";
+          }
+          {
+            enabled = true;
+            url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt";
+            name = "AdGuard DNS filter (mobile)";
+          }
+          {
+            enabled = true;
+            url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt";
+            name = "AdGuard Base filter";
+          }
+          {
+            enabled = true;
+            url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt";
+            name = "AdGuard Base filter (mobile)";
+          }
         ];
         dhcp = mkIf cfg.dhcp {
           enabled = true;

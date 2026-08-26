@@ -117,7 +117,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.podman-compose helperPkg ];
+    environment.systemPackages = [
+      pkgs.podman-compose
+      helperPkg
+    ];
 
     environment.persistence."/persist" =
       mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
@@ -138,11 +141,18 @@ in
 
     systemd.services.omniroute = {
       description = "OmniRoute — AI gateway with RTK compression";
-      after = [ "network-online.target" "podman.service" ];
+      after = [
+        "network-online.target"
+        "podman.service"
+      ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
-      path = with pkgs; [ podman-compose podman coreutils ];
+      path = with pkgs; [
+        podman-compose
+        podman
+        coreutils
+      ];
 
       script = ''
         ${helperPkg}/bin/omniroute-ctl up

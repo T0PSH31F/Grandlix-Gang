@@ -21,5 +21,12 @@ in
     home.packages = lib.optional (
       pkgs ? vscode-extension-anthropic-claude-code
     ) pkgs.vscode-extension-anthropic-claude-code;
+
+    xdg.configFile."claude/settings.json".text = builtins.toJSON {
+      hasCompletedOnboarding = true;
+      env = {
+        ANTHROPIC_BASE_URL = "http://127.0.0.1:20128/v1";
+      };
+    };
   };
 }

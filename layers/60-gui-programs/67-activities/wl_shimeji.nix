@@ -35,9 +35,9 @@ in
   nixos = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
 
-    warnings = optional (
-      (config.programs.hyprland.enable or false)
-    ) "wl_shimeji: Hyprland detected. If mascot animations stutter or get tiled, ensure `windowrulev2 = float, class:^(wl_shimeji)$` and `windowrulev2 = noanim, class:^(wl_shimeji)$` are set in your Hyprland configuration.";
+    warnings =
+      optional (config.programs.hyprland.enable or false)
+        "wl_shimeji: Hyprland detected. If mascot animations stutter or get tiled, ensure `windowrulev2 = float, class:^(wl_shimeji)$` and `windowrulev2 = noanim, class:^(wl_shimeji)$` are set in your Hyprland configuration.";
 
     environment.persistence."/persist" =
       mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
@@ -76,8 +76,7 @@ in
       Service = {
         Type = "simple";
         ExecStart =
-          "${cfg.package}/bin/wl_shimeji"
-          + (if cfg.theme != null then " --theme ${cfg.theme}" else "");
+          "${cfg.package}/bin/wl_shimeji" + (if cfg.theme != null then " --theme ${cfg.theme}" else "");
         Restart = "on-failure";
         RestartSec = "5s";
       };

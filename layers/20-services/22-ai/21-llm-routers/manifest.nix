@@ -112,7 +112,7 @@ let
 
   # ── Seeded env defaults (from Nix options, overridden by runtime .env) ─
   envDefaults = concatStringsSep "\n" (
-    optional (cfg.authSecret != "")  "MANIFEST_AUTH_SECRET=${cfg.authSecret}"
+    optional (cfg.authSecret != "") "MANIFEST_AUTH_SECRET=${cfg.authSecret}"
     ++ optional (cfg.encryptionKey != "") "MANIFEST_ENCRYPTION_KEY=${cfg.encryptionKey}"
     ++ optional (cfg.dbPassword != "") "MANIFEST_DB_PASSWORD=${cfg.dbPassword}"
   );
@@ -219,7 +219,10 @@ in
 
   config = mkIf cfg.enable {
     # Ensure podman-compose is available
-    environment.systemPackages = [ pkgs.podman-compose helperPkg ];
+    environment.systemPackages = [
+      pkgs.podman-compose
+      helperPkg
+    ];
 
     # Persist manifest data across reboots (includes .env with secrets)
     environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
@@ -232,11 +235,21 @@ in
 
     systemd.services.manifest = {
       description = "Manifest LLM Gateway — multi-provider LLM router";
-      after = [ "network-online.target" "podman.service" ];
+      after = [
+        "network-online.target"
+        "podman.service"
+      ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
-      path = with pkgs; [ podman-compose podman openssl coreutils gnutar gzip ];
+      path = with pkgs; [
+        podman-compose
+        podman
+        openssl
+        coreutils
+        gnutar
+        gzip
+      ];
 
       script = ''
         ${helperPkg}/bin/manifest-ctl up

@@ -52,6 +52,8 @@ in
         Environment = [
           "HEADROOM_PORT=${toString cfg.port}"
           "HEADROOM_HOST=127.0.0.1"
+          "OPENAI_BASE_URL=http://127.0.0.1:20128/v1"
+          "EXTREMEROUTER_BASE_URL=http://127.0.0.1:20128/v1"
         ];
       };
     };

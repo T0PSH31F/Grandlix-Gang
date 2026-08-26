@@ -1,4 +1,9 @@
-{ config, lib, mkDendriticModule, ... }:
+{
+  config,
+  lib,
+  mkDendriticModule,
+  ...
+}:
 let
   cfg = config.layers.layer-50.cli;
 in
@@ -142,7 +147,7 @@ in
         programs.cli-environment = {
           enable = true;
           theming.enable = cfg.theming.enable;
-          headless = cfg.headless;
+          inherit (cfg) headless;
         };
       };
     };

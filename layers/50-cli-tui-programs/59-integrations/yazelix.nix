@@ -13,7 +13,7 @@ in
 
   home = lib.mkIf cfg.enable {
     _module.args.lib = lib.extend (
-      final: prev: {
+      _final: _prev: {
         hm = inputs.home-manager.lib.hm;
       }
     );

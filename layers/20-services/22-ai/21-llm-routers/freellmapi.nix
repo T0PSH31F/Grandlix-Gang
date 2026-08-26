@@ -22,7 +22,12 @@ let
     npmDepsHash = "sha256-7W55aNLi6BlWg8wksG1a+jmWmAdJ3DRW8tq5coFH0H8=";
 
     # Node.js >= 20.18 required
-    nativeBuildInputs = [ pkgs.nodejs_24 pkgs.python3 pkgs.gcc pkgs.pkg-config ];
+    nativeBuildInputs = [
+      pkgs.nodejs_24
+      pkgs.python3
+      pkgs.gcc
+      pkgs.pkg-config
+    ];
     # better-sqlite3 native module needs kernel headers
     buildInputs = [ pkgs.linuxHeaders ];
 
@@ -101,7 +106,7 @@ in
 
     extraEnv = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
-      default = {};
+      default = { };
       description = "Additional environment variables";
     };
   };
@@ -116,7 +121,7 @@ in
       group = "freellmapi";
       description = "FreeLLMAPI service user";
     };
-    users.groups.freellmapi = {};
+    users.groups.freellmapi = { };
 
     systemd.services.freellmapi = {
       description = "FreeLLMAPI — free-tier LLM router";
@@ -129,9 +134,11 @@ in
         FREEAPI_DB_PATH = "${cfg.dataDir}/freeapi.db";
         NODE_ENV = "production";
         ENCRYPTION_KEY = "cf3e9ec63ddfe6ad03ef3488d2e159ead1ae60eb34cbd48569199c2b830eedeb";
-      } // lib.optionalAttrs (cfg.configFile != null) {
+      }
+      // lib.optionalAttrs (cfg.configFile != null) {
         FREEAPI_CONFIG_PATH = cfg.configFile;
-      } // cfg.extraEnv;
+      }
+      // cfg.extraEnv;
 
       serviceConfig = {
         ExecStart = "${pkgs.nodejs_24}/bin/node ${freellmapiPkg}/share/freellmapi/dist/index.js";

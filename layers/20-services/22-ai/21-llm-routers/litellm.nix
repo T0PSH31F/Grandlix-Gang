@@ -43,9 +43,9 @@ in
     # 1. Native NixOS LiteLLM service
     services.litellm = {
       enable = true;
-      port = cfg.port;
-      host = cfg.host;
-      settings = cfg.settings;
+      inherit (cfg) port;
+      inherit (cfg) host;
+      inherit (cfg) settings;
     };
 
     # 2. Firewall

@@ -79,7 +79,7 @@ in
   };
 
   home =
-    { ... }:
+    _:
     mkIf (cfg.enable or false) {
       imports = [
         inputs.dsh-nix.homeManagerModules.dsh
@@ -88,8 +88,8 @@ in
       config = {
         programs.dsh = {
           enable = true;
-          package = cfg.package;
-          profiles = mapAttrs (n: v: { inherit (v) plugins; }) cfg.profiles;
+          inherit (cfg) package;
+          profiles = mapAttrs (_n: v: { inherit (v) plugins; }) cfg.profiles;
         };
 
         systemd.user.services.dsh-web = mkIf (cfg.webService.enable or false) {

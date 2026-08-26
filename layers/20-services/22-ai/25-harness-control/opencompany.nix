@@ -46,14 +46,22 @@ in
       group = "opencompany";
       description = "OpenCompany service user";
     };
-    users.groups.opencompany = {};
+    users.groups.opencompany = { };
 
     systemd.services.opencompany = {
       description = "OpenCompany — AI agent workflow canvas";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
 
-      path = with pkgs; [ nodejs_24 bash git coreutils gnugrep gnutar gzip ];
+      path = with pkgs; [
+        nodejs_24
+        bash
+        git
+        coreutils
+        gnugrep
+        gnutar
+        gzip
+      ];
 
       environment = {
         PORT = toString cfg.port;

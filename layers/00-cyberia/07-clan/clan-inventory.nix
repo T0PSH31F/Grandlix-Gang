@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   # Clan Inventory - Service Instance Definitions
   # Using official clan-core modules for standardized deployment
 

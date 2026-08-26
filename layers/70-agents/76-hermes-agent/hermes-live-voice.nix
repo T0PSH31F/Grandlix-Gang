@@ -35,10 +35,21 @@ in
     # Run hermes-live gateway as a systemd service
     systemd.services.hermes-live-gateway = {
       description = "Hermes Live Voice gateway";
-      after = [ "network.target" "hermes-agent.service" ];
+      after = [
+        "network.target"
+        "hermes-agent.service"
+      ];
       wants = [ "hermes-agent.service" ];
       wantedBy = [ "multi-user.target" ];
-      path = with pkgs; [ nodejs bash git coreutils gnugrep gnutar gzip ];
+      path = with pkgs; [
+        nodejs
+        bash
+        git
+        coreutils
+        gnugrep
+        gnutar
+        gzip
+      ];
 
       serviceConfig = {
         ExecStart = "${pkgs.nodejs}/bin/npx hermes-live-voice serve --port ${toString cfg.port}";

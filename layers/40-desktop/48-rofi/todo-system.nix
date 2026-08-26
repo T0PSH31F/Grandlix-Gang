@@ -1,4 +1,10 @@
-{ config, lib, pkgs, osConfig ? config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  osConfig ? config,
+  ...
+}:
 
 let
   cfg = config.layers.layer-20.services.todo-system;
@@ -7,266 +13,266 @@ let
 
   # Rofi to-do launcher
   rofi-todo = pkgs.writeShellScriptBin "rofi-todo" ''
-    # rofi-todo.sh — Interactive to-do list via Rofi
-    # Bound to Super+Period in Hyprland.
-    #
-    # Reads ~/Notes/todo.md, shows tasks in a rofi menu.
-    # Actions:
-    #   - Select a task to toggle completion
-    #   - Type "add:" to add a new task
-    #   - Type "edit" to open the file in $EDITOR
-    #
-    # Assumptions:
-    #   - rofi is installed
-    #   - todo.md exists at ~/Notes/todo.md
-    #   - $EDITOR is set (defaults to nano)
+        # rofi-todo.sh — Interactive to-do list via Rofi
+        # Bound to Super+Period in Hyprland.
+        #
+        # Reads ~/Notes/todo.md, shows tasks in a rofi menu.
+        # Actions:
+        #   - Select a task to toggle completion
+        #   - Type "add:" to add a new task
+        #   - Type "edit" to open the file in $EDITOR
+        #
+        # Assumptions:
+        #   - rofi is installed
+        #   - todo.md exists at ~/Notes/todo.md
+        #   - $EDITOR is set (defaults to nano)
 
-    set -euo pipefail
+        set -euo pipefail
 
-    TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
-    EDITOR="''${EDITOR:-nano}"
-    LOCK_FILE="/tmp/rofi-todo.lock"
+        TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
+        EDITOR="''${EDITOR:-nano}"
+        LOCK_FILE="/tmp/rofi-todo.lock"
 
-    # Prevent concurrent invocations
-    exec 200>"$LOCK_FILE"
-    flock -n 200 || exit 0
+        # Prevent concurrent invocations
+        exec 200>"$LOCK_FILE"
+        flock -n 200 || exit 0
 
-    # Ensure file exists
-    if [ ! -f "$TODO_FILE" ]; then
-      mkdir -p "$(dirname "$TODO_FILE")"
-      cat > "$TODO_FILE" <<'EOF'
-# Tasks
+        # Ensure file exists
+        if [ ! -f "$TODO_FILE" ]; then
+          mkdir -p "$(dirname "$TODO_FILE")"
+          cat > "$TODO_FILE" <<'EOF'
+    # Tasks
 
-# Ideas
+    # Ideas
 
-EOF
-    fi
-
-    # Parse tasks from the Tasks section
-    parse_tasks() {
-      local in_tasks=0
-      while IFS= read -r line; do
-        if [[ "$line" =~ ^#\ *Ideas ]]; then
-          in_tasks=0
-          continue
+    EOF
         fi
-        if [[ "$line" =~ ^#\ *Tasks ]]; then
-          in_tasks=1
-          continue
-        fi
-        if [[ "$in_tasks" -eq 1 ]]; then
-          if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
-            local status="''${BASH_REMATCH[1]}"
-            local desc="''${BASH_REMATCH[2]}"
-            if [[ "$status" == "x" || "$status" == "X" ]]; then
-              echo "✓ $desc"
-            else
-              echo "  $desc"
+
+        # Parse tasks from the Tasks section
+        parse_tasks() {
+          local in_tasks=0
+          while IFS= read -r line; do
+            if [[ "$line" =~ ^#\ *Ideas ]]; then
+              in_tasks=0
+              continue
             fi
-          fi
-        fi
-      done < "$TODO_FILE"
-    }
-
-    toggle_task() {
-      local desc="$1"
-      local found=0
-      local tmp_file=$(mktemp)
-
-      while IFS= read -r line; do
-        if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
-          local status="''${BASH_REMATCH[1]}"
-          local task_desc="''${BASH_REMATCH[2]}"
-          if [[ "$task_desc" == "$desc" ]]; then
-            found=1
-            if [[ "$status" == "x" || "$status" == "X" ]]; then
-              echo "- [ ] $task_desc"
-            else
-              echo "- [x] $task_desc"
+            if [[ "$line" =~ ^#\ *Tasks ]]; then
+              in_tasks=1
+              continue
             fi
+            if [[ "$in_tasks" -eq 1 ]]; then
+              if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
+                local status="''${BASH_REMATCH[1]}"
+                local desc="''${BASH_REMATCH[2]}"
+                if [[ "$status" == "x" || "$status" == "X" ]]; then
+                  echo "✓ $desc"
+                else
+                  echo "  $desc"
+                fi
+              fi
+            fi
+          done < "$TODO_FILE"
+        }
+
+        toggle_task() {
+          local desc="$1"
+          local found=0
+          local tmp_file=$(mktemp)
+
+          while IFS= read -r line; do
+            if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
+              local status="''${BASH_REMATCH[1]}"
+              local task_desc="''${BASH_REMATCH[2]}"
+              if [[ "$task_desc" == "$desc" ]]; then
+                found=1
+                if [[ "$status" == "x" || "$status" == "X" ]]; then
+                  echo "- [ ] $task_desc"
+                else
+                  echo "- [x] $task_desc"
+                fi
+              else
+                echo "$line"
+              fi
+            else
+              echo "$line"
+            fi
+          done < "$TODO_FILE" > "$tmp_file"
+
+          if [ "$found" -eq 1 ]; then
+            mv "$tmp_file" "$TODO_FILE"
           else
-            echo "$line"
+            rm -f "$tmp_file"
           fi
-        else
-          echo "$line"
-        fi
-      done < "$TODO_FILE" > "$tmp_file"
+        }
 
-      if [ "$found" -eq 1 ]; then
-        mv "$tmp_file" "$TODO_FILE"
-      else
-        rm -f "$tmp_file"
-      fi
-    }
+        add_task() {
+          local desc="$1"
+          local tmp_file=$(mktemp)
+          local in_tasks=0
+          local added=0
 
-    add_task() {
-      local desc="$1"
-      local tmp_file=$(mktemp)
-      local in_tasks=0
-      local added=0
+          while IFS= read -r line; do
+            if [[ "$line" =~ ^#\ *Ideas ]]; then
+              if [ "$added" -eq 0 ]; then
+                echo "- [ ] $desc"
+                added=1
+              fi
+              echo "$line"
+            elif [[ "$line" =~ ^#\ *Tasks ]]; then
+              in_tasks=1
+              echo "$line"
+            else
+              echo "$line"
+            fi
+          done < "$TODO_FILE" > "$tmp_file"
 
-      while IFS= read -r line; do
-        if [[ "$line" =~ ^#\ *Ideas ]]; then
-          if [ "$added" -eq 0 ]; then
-            echo "- [ ] $desc"
-            added=1
+          mv "$tmp_file" "$TODO_FILE"
+        }
+
+        while true; do
+          local tasks
+          tasks=$(parse_tasks)
+
+          local menu_items=()
+          if [ -n "$tasks" ]; then
+            while IFS= read -r t; do
+              menu_items+=("$t")
+            done <<< "$tasks"
           fi
-          echo "$line"
-        elif [[ "$line" =~ ^#\ *Tasks ]]; then
-          in_tasks=1
-          echo "$line"
-        else
-          echo "$line"
-        fi
-      done < "$TODO_FILE" > "$tmp_file"
+          menu_items+=("➕ Add new task")
+          menu_items+=("📝 Edit file")
+          menu_items+=("❌ Quit")
 
-      mv "$tmp_file" "$TODO_FILE"
-    }
+          local choice
+          choice=$(printf '%s\n' "''${menu_items[@]}" | rofi -dmenu -i -p "Todo:" -theme-str 'window {width: 40%;}')
 
-    while true; do
-      local tasks
-      tasks=$(parse_tasks)
+          [ -z "$choice" ] && exit 0
 
-      local menu_items=()
-      if [ -n "$tasks" ]; then
-        while IFS= read -r t; do
-          menu_items+=("$t")
-        done <<< "$tasks"
-      fi
-      menu_items+=("➕ Add new task")
-      menu_items+=("📝 Edit file")
-      menu_items+=("❌ Quit")
-
-      local choice
-      choice=$(printf '%s\n' "''${menu_items[@]}" | rofi -dmenu -i -p "Todo:" -theme-str 'window {width: 40%;}')
-
-      [ -z "$choice" ] && exit 0
-
-      case "$choice" in
-        "➕ Add new task")
-          local new_task
-          new_task=$(rofi -dmenu -i -p "New task:" -theme-str 'window {width: 40%;}')
-          [ -n "$new_task" ] && add_task "$new_task"
-          ;;
-        "📝 Edit file")
-          exec "$EDITOR" "$TODO_FILE"
-          ;;
-        "❌ Quit")
-          exit 0
-          ;;
-        *)
-          local desc
-          desc=$(echo "$choice" | sed 's/^✓ //; s/^  //')
-          if [ -n "$desc" ]; then
-            toggle_task "$desc"
-          fi
-          ;;
-      esac
-    done
+          case "$choice" in
+            "➕ Add new task")
+              local new_task
+              new_task=$(rofi -dmenu -i -p "New task:" -theme-str 'window {width: 40%;}')
+              [ -n "$new_task" ] && add_task "$new_task"
+              ;;
+            "📝 Edit file")
+              exec "$EDITOR" "$TODO_FILE"
+              ;;
+            "❌ Quit")
+              exit 0
+              ;;
+            *)
+              local desc
+              desc=$(echo "$choice" | sed 's/^✓ //; s/^  //')
+              if [ -n "$desc" ]; then
+                toggle_task "$desc"
+              fi
+              ;;
+          esac
+        done
   '';
 
   # Hermes hook
   todo-hermes-hook = pkgs.writeShellScriptBin "todo-hermes-hook" ''
-    set -euo pipefail
+        set -euo pipefail
 
-    TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
-    BREAKDOWN_FILE="''${BREAKDOWN_FILE:-$HOME/Notes/todo-breakdown.md}"
-    STATE_FILE="''${STATE_FILE:-$HOME/.local/share/todo-hook-state.txt}"
-    LOG_FILE="''${LOG_FILE:-$HOME/.local/share/todo-hook.log}"
-    LOCK_FILE="/tmp/todo-hermes-hook.lock"
+        TODO_FILE="''${TODO_FILE:-$HOME/Notes/todo.md}"
+        BREAKDOWN_FILE="''${BREAKDOWN_FILE:-$HOME/Notes/todo-breakdown.md}"
+        STATE_FILE="''${STATE_FILE:-$HOME/.local/share/todo-hook-state.txt}"
+        LOG_FILE="''${LOG_FILE:-$HOME/.local/share/todo-hook.log}"
+        LOCK_FILE="/tmp/todo-hermes-hook.lock"
 
-    mkdir -p "$(dirname "$LOG_FILE")" "$(dirname "$STATE_FILE")"
+        mkdir -p "$(dirname "$LOG_FILE")" "$(dirname "$STATE_FILE")"
 
-    log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG_FILE"; }
+        log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG_FILE"; }
 
-    exec 200>"$LOCK_FILE"
-    flock -n 200 || { log "Hook already running, skipping"; exit 0; }
+        exec 200>"$LOCK_FILE"
+        flock -n 200 || { log "Hook already running, skipping"; exit 0; }
 
-    log "=== Hook triggered ==="
+        log "=== Hook triggered ==="
 
-    if [ ! -f "$TODO_FILE" ]; then
-      log "todo.md not found, creating template"
-      mkdir -p "$(dirname "$TODO_FILE")"
-      cat > "$TODO_FILE" <<'EOF'
-# Tasks
+        if [ ! -f "$TODO_FILE" ]; then
+          log "todo.md not found, creating template"
+          mkdir -p "$(dirname "$TODO_FILE")"
+          cat > "$TODO_FILE" <<'EOF'
+    # Tasks
 
-# Ideas
+    # Ideas
 
-EOF
-    fi
-
-    if [ ! -f "$BREAKDOWN_FILE" ]; then
-      cat > "$BREAKDOWN_FILE" <<'EOF'
-# Task Breakdowns
-
-EOF
-    fi
-
-    if [ ! -f "$STATE_FILE" ]; then
-      touch "$STATE_FILE"
-    fi
-
-    local new_tasks=()
-    local in_tasks=0
-    while IFS= read -r line; do
-      if [[ "$line" =~ ^#\ *Ideas ]]; then
-        in_tasks=0
-        continue
-      fi
-      if [[ "$line" =~ ^#\ *Tasks ]]; then
-        in_tasks=1
-        continue
-      fi
-      if [[ "$in_tasks" -eq 1 ]]; then
-        if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
-          local status="''${BASH_REMATCH[1]}"
-          local desc="''${BASH_REMATCH[2]}"
-          if [[ "$status" != "x" && "$status" != "X" ]]; then
-            new_tasks+=("$desc")
-          fi
+    EOF
         fi
-      fi
-    done < "$TODO_FILE"
 
-    if [ ''${#new_tasks[@]} -eq 0 ]; then
-      log "No new tasks to process"
-      exit 0
-    fi
+        if [ ! -f "$BREAKDOWN_FILE" ]; then
+          cat > "$BREAKDOWN_FILE" <<'EOF'
+    # Task Breakdowns
 
-    log "Found ''${#new_tasks[@]} new task(s) to break down"
+    EOF
+        fi
 
-    local task_list
-    task_list=$(printf '%s\n' "''${new_tasks[@]}")
+        if [ ! -f "$STATE_FILE" ]; then
+          touch "$STATE_FILE"
+        fi
 
-    local prompt="Break down the following tasks into smaller actionable steps with rough time estimates (in minutes). Format the output as markdown with the task as a header and steps as a nested list. Only include the breakdown, no extra commentary.
+        local new_tasks=()
+        local in_tasks=0
+        while IFS= read -r line; do
+          if [[ "$line" =~ ^#\ *Ideas ]]; then
+            in_tasks=0
+            continue
+          fi
+          if [[ "$line" =~ ^#\ *Tasks ]]; then
+            in_tasks=1
+            continue
+          fi
+          if [[ "$in_tasks" -eq 1 ]]; then
+            if [[ "$line" =~ ^-\ \[([ xX])\]\ (.+)$ ]]; then
+              local status="''${BASH_REMATCH[1]}"
+              local desc="''${BASH_REMATCH[2]}"
+              if [[ "$status" != "x" && "$status" != "X" ]]; then
+                new_tasks+=("$desc")
+              fi
+            fi
+          fi
+        done < "$TODO_FILE"
 
-Tasks:
-$task_list"
+        if [ ''${#new_tasks[@]} -eq 0 ]; then
+          log "No new tasks to process"
+          exit 0
+        fi
 
-    log "Sending to Hermes: $prompt"
+        log "Found ''${#new_tasks[@]} new task(s) to break down"
 
-    local hermes_output
-    hermes_output=$(hermes-studio cli --prompt "$prompt" 2>&1) || {
-      log "ERROR: Hermes CLI failed: $hermes_output"
-      exit 1
-    }
+        local task_list
+        task_list=$(printf '%s\n' "''${new_tasks[@]}")
 
-    log "Hermes response received"
+        local prompt="Break down the following tasks into smaller actionable steps with rough time estimates (in minutes). Format the output as markdown with the task as a header and steps as a nested list. Only include the breakdown, no extra commentary.
 
-    {
-      echo ""
-      echo "## Breakdown generated: $(date '+%Y-%m-%d %H:%M:%S')"
-      echo ""
-      echo "$hermes_output"
-      echo ""
-    } >> "$BREAKDOWN_FILE"
+    Tasks:
+    $task_list"
 
-    for task in "''${new_tasks[@]}"; do
-      echo "$task" >> "$STATE_FILE"
-    done
+        log "Sending to Hermes: $prompt"
 
-    log "Breakdown written to $BREAKDOWN_FILE"
-    log "=== Hook complete ==="
+        local hermes_output
+        hermes_output=$(hermes-studio cli --prompt "$prompt" 2>&1) || {
+          log "ERROR: Hermes CLI failed: $hermes_output"
+          exit 1
+        }
+
+        log "Hermes response received"
+
+        {
+          echo ""
+          echo "## Breakdown generated: $(date '+%Y-%m-%d %H:%M:%S')"
+          echo ""
+          echo "$hermes_output"
+          echo ""
+        } >> "$BREAKDOWN_FILE"
+
+        for task in "''${new_tasks[@]}"; do
+          echo "$task" >> "$STATE_FILE"
+        done
+
+        log "Breakdown written to $BREAKDOWN_FILE"
+        log "=== Hook complete ==="
   '';
 
   # Morning roundup

@@ -19,7 +19,8 @@ let
 
   mkMachineFromTags =
     tags:
-    map (tag:
+    map (
+      tag:
       if builtins.elem tag validTags then
         ./${tag}.nix
       else

@@ -48,10 +48,11 @@ with lib;
       ];
 
       # Extra python packages for optional integrations
-      extraPackages = ps: with ps; [
-        gtts
-        aiohue
-      ];
+      extraPackages =
+        ps: with ps; [
+          gtts
+          aiohue
+        ];
 
       config = {
         default_config = { };

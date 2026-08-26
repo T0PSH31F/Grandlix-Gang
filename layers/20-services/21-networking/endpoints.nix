@@ -6,12 +6,10 @@
 { config, lib, ... }:
 with lib;
 let
-  mkEndpoint =
-    host: port: path:
-    {
-      inherit host port path;
-      baseUrl = "http://${host}:${toString port}${path}";
-    };
+  mkEndpoint = host: port: path: {
+    inherit host port path;
+    baseUrl = "http://${host}:${toString port}${path}";
+  };
 in
 {
   options.layers.layer-20.endpoints = mkOption {
@@ -29,7 +27,9 @@ in
       }
     );
     default = {
-      extreme-router = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.extreme-router.port or 20128) "/v1";
+      extreme-router = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.extreme-router.port
+        or 20128
+      ) "/v1";
       freellmapi = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.freellmapi.port or 3003) "/v1";
       ollama = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.ollama.port or 11434) "/v1";
       hermes-gateway = mkEndpoint "127.0.0.1" (config.layers.layer-76.hermes.gatewayPort or 8085) "";
@@ -48,7 +48,7 @@ in
         assertion =
           let
             endpointsList = builtins.attrValues config.layers.layer-20.endpoints;
-            portsList = builtins.map (e: e.port) endpointsList;
+            portsList = map (e: e.port) endpointsList;
             uniquePortsList = lib.unique portsList;
           in
           builtins.length portsList == builtins.length uniquePortsList;

@@ -142,7 +142,7 @@ let
     {
       ${serviceName} = {
         inherit icon description;
-        href = href;
+        inherit href;
         siteMonitor = if siteMonitor != null then siteMonitor else href;
       }
       // optionalAttrs (widget != null) { inherit widget; };
@@ -228,7 +228,9 @@ let
       (zSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
       (zSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
       (zSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
-      (zSrv "ExtremeRouter" "extremeRouter" "mdi-router-network" "AI Gateway — 154+ Providers, RTK Savings")
+      (zSrv "ExtremeRouter" "extremeRouter" "mdi-router-network"
+        "AI Gateway — 154+ Providers, RTK Savings"
+      )
       (zSrv "FreeLLMPool" "freellmpool" "mdi-pool" "Free-Tier LLM Pool")
       (zSrv "FreeLLMAPI" "freellmapi" "mdi-api" "Free-Tier LLM Router")
       (zSrv "Mistral MCP" "mistralMcp" "mdi-brain" "Mistral AI Tool Server")
@@ -452,16 +454,56 @@ in
           bookmarks = [
             {
               Bookmarks = [
-                { "search.nixos.org" = { href = "https://search.nixos.org"; }; }
-                { "docs.clan.lol" = { href = "https://docs.clan.lol"; }; }
-                { "GitHub" = { href = "https://github.com"; }; }
-                { "YouTube" = { href = "https://youtube.com"; }; }
-                { "Agentaflow" = { href = "https://agentaflow.space"; }; }
-                { "wco.tv" = { href = "https://wco.tv"; }; }
-                { "Searchix" = { href = "https://searchix.ovh"; }; }
-                { "EverythingMoe" = { href = "https://everythingmoe.com"; }; }
-                { "TorrentSeeker" = { href = "https://torrentseeker.com"; }; }
-                { "AI Studio" = { href = "https://aistudio.google.com"; }; }
+                {
+                  "search.nixos.org" = {
+                    href = "https://search.nixos.org";
+                  };
+                }
+                {
+                  "docs.clan.lol" = {
+                    href = "https://docs.clan.lol";
+                  };
+                }
+                {
+                  "GitHub" = {
+                    href = "https://github.com";
+                  };
+                }
+                {
+                  "YouTube" = {
+                    href = "https://youtube.com";
+                  };
+                }
+                {
+                  "Agentaflow" = {
+                    href = "https://agentaflow.space";
+                  };
+                }
+                {
+                  "wco.tv" = {
+                    href = "https://wco.tv";
+                  };
+                }
+                {
+                  "Searchix" = {
+                    href = "https://searchix.ovh";
+                  };
+                }
+                {
+                  "EverythingMoe" = {
+                    href = "https://everythingmoe.com";
+                  };
+                }
+                {
+                  "TorrentSeeker" = {
+                    href = "https://torrentseeker.com";
+                  };
+                }
+                {
+                  "AI Studio" = {
+                    href = "https://aistudio.google.com";
+                  };
+                }
               ];
             }
           ];

@@ -88,7 +88,8 @@ in
 
       environment = {
         LOKB_DATA_DIR = cfg.dataDir;
-      } // optionalAttrs (cfg.threads != null) {
+      }
+      // optionalAttrs (cfg.threads != null) {
         LOKB_THREADS = toString cfg.threads;
       };
 

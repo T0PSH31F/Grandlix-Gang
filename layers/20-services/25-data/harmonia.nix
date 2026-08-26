@@ -1,6 +1,4 @@
-{
-  ...
-}:
+_:
 
 {
   # services.harmonia configuration removed to avoid conflict with service-distribution.nix

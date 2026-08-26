@@ -7,7 +7,10 @@
 let
   cfg = config.layers.layer-76.hermes-workspace;
   hermesState = "${config.services.hermes-agent.stateDir}/.hermes";
-  webuiPython = pkgs.python3.withPackages (ps: [ ps.pyyaml ps.cryptography ]);
+  webuiPython = pkgs.python3.withPackages (ps: [
+    ps.pyyaml
+    ps.cryptography
+  ]);
 in
 {
   options.layers.layer-76.hermes-workspace = {
@@ -36,7 +39,10 @@ in
     systemd.services.hermes-workspace = {
       description = "Hermes WebUI — nesquena/hermes-webui";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" "hermes-agent.service" ];
+      after = [
+        "network.target"
+        "hermes-agent.service"
+      ];
 
       environment = {
         HERMES_WEBUI_PORT = toString cfg.port;

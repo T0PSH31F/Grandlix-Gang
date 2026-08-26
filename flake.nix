@@ -43,6 +43,8 @@
       inputs.systems.follows = "systems";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
+    # Reuse the treefmt-nix already locked by clan-core instead of adding a new input.
+    treefmt-nix.follows = "clan-core/treefmt-nix";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -240,28 +242,11 @@
         inputs,
         ...
       }:
-      let
-        # Reusable overlay: swap selected packages to the AI channel
-        # Note: system pkgsForSystem uses inputs.nixpkgs (nixos-unstable) below,
-        # overlaid with aiPkgOverlay which swaps select packages from the
-        # nixpkgs-ai input for fresher AI-tool versions.
-        aiPkgOverlay = final: prev: {
-          # nixpkgs-ai provides bleeding-edge AI packages not yet in nixos-unstable.
-          # To update: `nix flake update nixpkgs-ai` in this directory.
-          # Single import to avoid triple-evaluation of nixpkgs-ai.
-          _aiPkgs = import inputs.nixpkgs-ai {
-            inherit (final) system;
-            config.allowUnfree = true;
-          };
-          opencode = final._aiPkgs.opencode;
-          opencode-desktop = final._aiPkgs.opencode-desktop;
-          ollama = final._aiPkgs.ollama;
-        };
-      in
       {
         imports = [
           clan-core.flakeModules.default
           home-manager.flakeModules.home-manager
+          inputs.treefmt-nix.flakeModule
           ./layers/00-cyberia/07-clan/clan-inventory.nix
           ./layers/00-cyberia/07-clan/devshell.nix
           ./layers/00-cyberia/07-clan/git-hooks.nix
@@ -298,16 +283,16 @@
         flake.nfpuRegistry =
           let
             extractMachineConfig =
-              name: machine:
+              _name: machine:
               let
                 cfg = machine.config;
                 layer20Services = cfg.layers.layer-20.services.config or { };
-                services = builtins.mapAttrs (sName: sCfg: {
+                services = builtins.mapAttrs (_sName: sCfg: {
                   enable = sCfg.enable or false;
                 }) layer20Services;
               in
               {
-                services = services;
+                inherit services;
                 layer10 = cfg.layers.layer-10.system or { };
               };
           in
@@ -351,19 +336,58 @@
             packages.iso =
               (inputs.nixpkgs.lib.nixosSystem {
                 inherit system;
-                specialArgs = { inherit inputs; };
+                specialArgs = {
+                  inherit inputs;
+                  inherit (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit (inputs.nixpkgs) lib; })
+                    mkDendriticModule
+                    ;
+                };
                 modules = [
                   ./layers/00-cyberia/04-templates/iso/default.nix
                 ];
               }).config.system.build.isoImage;
 
-            formatter = pkgs.nixfmt;
+            # Multi-tool Nix formatting/linting: nix fmt / nix flake check run nixfmt,
+            # deadnix, statix, and nixf-diagnose together via treefmt. See
+            # https://github.com/numtide/treefmt-nix
+            treefmt = {
+              projectRootFile = "flake.nix";
+              programs.nixfmt.enable = true;
+              # This codebase relies heavily on `{ ... }@args:` capture-all
+              # dendritic module patterns, and on `with pkgs;` blocks, where
+              # named args (e.g. `pkgs`) look statically unused to deadnix but
+              # are forwarded wholesale via `args` or used via dynamic scope.
+              # Removing them (deadnix's default `--edit` behavior) breaks
+              # evaluation, so pattern-name checking is disabled.
+              programs.deadnix.no-lambda-pattern-names = true;
+              programs.deadnix.enable = true;
+              programs.statix.enable = true;
+              programs.nixf-diagnose.enable = true;
+              programs.shfmt.enable = true;
+              # The dendritic module convention here destructures
+              # `{ config, lib, pkgs, inputs, osConfig, ... }` for consistency
+              # even when a given file doesn't use every name; nixf-diagnose
+              # treats that as a hard failure (not just a warning), which
+              # would make nearly every module "fail" formatting.
+              programs.nixf-diagnose.ignore = [
+                "sema-unused-def-lambda-noarg-formal"
+                "sema-unused-def-lambda-witharg-formal"
+              ];
+              # nixf-diagnose's static builtin database doesn't know about
+              # `builtins.getFlake` (flakes are still an experimental Nix
+              # feature) and hard-errors instead of warning; these two files
+              # use it deliberately.
+              settings.formatter.nixf-diagnose.excludes = [
+                "layers/00-cyberia/05-tests/test-radios.nix"
+                "layers/00-cyberia/09-tools/nfpu/eval-registry.nix"
+              ];
+            };
 
             checks =
               let
                 theme-tests = import ./layers/00-cyberia/05-tests/themes.nix {
                   inherit pkgs;
-                  lib = pkgs.lib;
+                  inherit (pkgs) lib;
                 };
               in
               {
@@ -409,7 +433,7 @@
 
                 dendritic-structure-test = import ./layers/00-cyberia/05-tests/dendritic-structure-test.nix {
                   inherit pkgs;
-                  lib = pkgs.lib;
+                  inherit (pkgs) lib;
                 };
 
                 services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);

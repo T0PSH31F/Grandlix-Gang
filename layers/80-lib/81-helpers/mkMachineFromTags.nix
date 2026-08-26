@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   /*
     Resolves tags from clan-core machine definitions into profile imports.
     If a machine has tags = [ "desktop" "workstation" ], this returns

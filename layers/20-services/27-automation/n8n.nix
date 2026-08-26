@@ -47,7 +47,7 @@ in
     # Use the built-in n8n NixOS module
     services.n8n = {
       enable = true;
-      openFirewall = cfg.openFirewall;
+      inherit (cfg) openFirewall;
 
       environment = {
         # Server configuration

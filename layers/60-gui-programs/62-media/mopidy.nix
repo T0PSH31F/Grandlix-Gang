@@ -92,7 +92,10 @@ in
     # Mopidy service
     systemd.services.mopidy = {
       description = "Mopidy music server";
-      after = [ "network.target" "sound.target" ];
+      after = [
+        "network.target"
+        "sound.target"
+      ];
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
@@ -186,7 +189,7 @@ in
       home = cfg.dataDir;
       createHome = true;
     };
-    users.groups.mopidy = {};
+    users.groups.mopidy = { };
 
     # Data directory
     systemd.tmpfiles.rules = [
@@ -196,21 +199,24 @@ in
 
     # Open firewall ports
     networking.firewall.allowedTCPPorts = [
-      cfg.port   # HTTP API
-      6600       # MPD protocol
+      cfg.port # HTTP API
+      6600 # MPD protocol
     ];
 
     # Install extensions
-    environment.systemPackages = with pkgs; [
-      mopidy
-      mopidy-iris
-      mopidy-local
-      mopidy-mpd
-      mopidy-mpris
-      mopidy-notify
-      mopidy-podcast
-      mopidy-argos
-    ] ++ optionals cfg.spotify.enable [ pkgs.mopidy-spotify ]
+    environment.systemPackages =
+      with pkgs;
+      [
+        mopidy
+        mopidy-iris
+        mopidy-local
+        mopidy-mpd
+        mopidy-mpris
+        mopidy-notify
+        mopidy-podcast
+        mopidy-argos
+      ]
+      ++ optionals cfg.spotify.enable [ pkgs.mopidy-spotify ]
       ++ optionals cfg.soundcloud.enable [ pkgs.mopidy-soundcloud ]
       ++ optionals cfg.tidal.enable [ pkgs.mopidy-tidal ]
       ++ optionals cfg.youtube.enable [ pkgs.mopidy-youtube ]

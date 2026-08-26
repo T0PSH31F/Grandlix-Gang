@@ -14,7 +14,7 @@
 let
   pythonEnv = python3.withPackages (ps: [ ps.pillow ]);
 in
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "wl_shimeji";
   version = "0.1.0-unstable-2026-08-13";
 
@@ -25,6 +25,11 @@ stdenv.mkDerivation rec {
     hash = "sha256-WXvjsLAdcWozy0LS0h1/915v/sqxVp0Z5Pa9XYagFvc=";
     fetchSubmodules = true;
   };
+
+  postPatch = ''
+    substituteInPlace Makefile \
+      --replace-fail "scripts/py-compose.py" "${python3}/bin/python3 scripts/py-compose.py"
+  '';
 
   nativeBuildInputs = [
     pkg-config

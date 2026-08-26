@@ -59,7 +59,7 @@ with lib;
 
       virtualHosts =
         let
-          baseVirtualHosts = mapAttrs (name: value: {
+          baseVirtualHosts = mapAttrs (_name: value: {
             inherit (value) extraConfig useACMEHost serverAliases;
           }) config.services.caddy-server.virtualHosts;
 

@@ -1,5 +1,11 @@
 # Kiro CLI — Command-line interface for Kiro agentic IDE
-{ config, lib, pkgs, osConfig ? config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  osConfig ? config,
+  ...
+}:
 
 with lib;
 

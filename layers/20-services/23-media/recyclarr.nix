@@ -74,8 +74,8 @@ in
       directories = [
         {
           directory = "/var/lib/recyclarr";
-          user = mediaCfg.user;
-          group = mediaCfg.group;
+          inherit (mediaCfg) user;
+          inherit (mediaCfg) group;
           mode = "0750";
         }
       ];

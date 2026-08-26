@@ -122,18 +122,22 @@ in
       enable = true;
       port = 3002;
       bindHosts = [
-        "127.0.0.1"       # Localhost for Caddy reverse proxy
-        "192.168.1.54"    # LAN IP for network clients
+        "127.0.0.1" # Localhost for Caddy reverse proxy
+        "192.168.1.54" # LAN IP for network clients
       ];
-      dhcp = false;  # Spectrum router handles DHCP
-      gatewayIp = "192.168.1.54";  # Luffy's reserved LAN IP
+      dhcp = false; # Spectrum router handles DHCP
+      gatewayIp = "192.168.1.54"; # Luffy's reserved LAN IP
       subnet = "192.168.1.0/24";
     };
     gateway = {
       enable = true;
-      wanInterface = "eth0";  # Connected to Spectrum router
-      vpnInterfaces = [ "tailscale0" "wg0" "zt0" ];
-      lanIp = "192.168.1.54";  # Must match IP reservation on Spectrum router
+      wanInterface = "eth0"; # Connected to Spectrum router
+      vpnInterfaces = [
+        "tailscale0"
+        "wg0"
+        "zt0"
+      ];
+      lanIp = "192.168.1.54"; # Must match IP reservation on Spectrum router
     };
   };
 
@@ -251,7 +255,6 @@ in
         ROCKET_ADDRESS = lib.mkForce "127.0.0.1";
       };
     };
-
 
     # Moved from Nami
     n8n-server.enable = true;
@@ -493,8 +496,14 @@ in
       tls = false;
       x_forwarded = true;
       resources = [
-        { names = [ "client" ]; compress = true; }
-        { names = [ "federation" ]; compress = false; }
+        {
+          names = [ "client" ];
+          compress = true;
+        }
+        {
+          names = [ "federation" ];
+          compress = false;
+        }
       ];
     }
   ];
@@ -550,7 +559,7 @@ in
   };
 
   # Provide a safe-gc convenience script
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     (pkgs.writeShellScriptBin "nix-safe-gc" ''
       echo "Running safe garbage collection (deleting generations older than ''${1:-14d})..."
       ${pkgs.nix}/bin/nix-collect-garbage --delete-older-than "''${1:-14d}"

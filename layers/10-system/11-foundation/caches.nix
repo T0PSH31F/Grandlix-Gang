@@ -3,8 +3,7 @@
 # - Centralize binary cache configuration (substituters and trusted keys)
 # - Ensure extra-trusted-substituters are correctly pulled in for all users
 
-{ ... }:
-{
+_: {
   nix = {
     sshServe = {
       enable = true;

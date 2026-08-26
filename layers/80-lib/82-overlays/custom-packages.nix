@@ -20,15 +20,17 @@ final: prev: {
       # Intercept callPackage: when buildFHSEnv.nix is called, call the ORIGINAL
       # file (with ORIGINAL pkgs, no glib override) but wrap the result to add
       # util-linuxMinimal to nativeBuildInputs of the rootfs derivation.
-      interceptCallPackage = file: overrides:
-        if builtins.isPath file && builtins.baseNameOf file == "buildFHSEnv.nix" then
+      interceptCallPackage =
+        file: overrides:
+        if builtins.isPath file && baseNameOf file == "buildFHSEnv.nix" then
           let
             originalBuildFHSEnv = prev.lib.callPackageWith prev.pkgs file overrides;
           in
           # Return a wrapper: call original, then add util-linuxMinimal to
           # the rootfs derivation's nativeBuildInputs so libmount.so.1 is
           # available when glib-compile-schemas runs in the build sandbox.
-          args: (originalBuildFHSEnv args).overrideAttrs (old: {
+          args:
+          (originalBuildFHSEnv args).overrideAttrs (old: {
             nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
               prev.util-linuxMinimal
             ];
@@ -36,9 +38,9 @@ final: prev: {
         else
           prev.callPackage file overrides;
     in
-    prev.lib.callPackageWith prev.pkgs
-      (prev.path + "/pkgs/build-support/build-fhsenv-bubblewrap/default.nix")
-      { callPackage = interceptCallPackage; };
+    prev.lib.callPackageWith prev.pkgs (
+      prev.path + "/pkgs/build-support/build-fhsenv-bubblewrap/default.nix"
+    ) { callPackage = interceptCallPackage; };
 
   # Yazelix Zellij Orchestrator
   yazelix-orchestrator = final.stdenv.mkDerivation {
@@ -221,7 +223,7 @@ final: prev: {
   # VNC watcher paths (NOVNC_DIR, websockify, awk) fixed via systemd PATH + tmpfiles
   # in layers/20-services/24-communication/camofox-browser.nix — no derivation patch needed.
   jo-camofox-browser =
-    (prev.jo-camofox-browser.override { camoufox = final.camoufox; }).overrideAttrs
+    (prev.jo-camofox-browser.override { inherit (final) camoufox; }).overrideAttrs
       (old: {
         nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
           final.linuxHeaders
@@ -341,7 +343,7 @@ final: prev: {
   # ── lazyskills: TUI for managing agent skills ────────────────────
   # Blazing-fast terminal UI for managing agent skills across all agents.
   # https://github.com/alvinunreal/lazyskills
-  lazyskills = final.buildGoModule rec {
+  lazyskills = final.buildGoModule {
     pname = "lazyskills";
     version = "0.1.0-unstable-2026-08-08";
 
@@ -394,33 +396,35 @@ final: prev: {
     };
   };
 
-  agentburn = with final.python3Packages; buildPythonPackage rec {
-    pname = "agentburn";
-    version = "0.1.0-unstable-2026-08-06";
-    format = "pyproject";
+  agentburn =
+    with final.python3Packages;
+    buildPythonPackage {
+      pname = "agentburn";
+      version = "0.1.0-unstable-2026-08-06";
+      format = "pyproject";
 
-    # Not on PyPI — distributed via GitHub + uvx. Fetch from GitHub instead.
-    # No version tag exists on the repo — use main branch with current hash.
-    # If hash drifts again, update hash from build error message.
-    src = final.fetchFromGitHub {
-      owner = "Socialpranker";
-      repo = "agentburn";
-      rev = "main";
-      hash = "sha256-7aR7WoS8dh7e59KfYfldw5htlPCs82Q/dfUdx5ObsBw=";
+      # Not on PyPI — distributed via GitHub + uvx. Fetch from GitHub instead.
+      # No version tag exists on the repo — use main branch with current hash.
+      # If hash drifts again, update hash from build error message.
+      src = final.fetchFromGitHub {
+        owner = "Socialpranker";
+        repo = "agentburn";
+        rev = "main";
+        hash = "sha256-7aR7WoS8dh7e59KfYfldw5htlPCs82Q/dfUdx5ObsBw=";
+      };
+
+      # pyproject.toml requires setuptools>=68 as build backend
+      nativeBuildInputs = [ setuptools ];
+
+      doCheck = false;
+
+      meta = with final.lib; {
+        description = "Local profiler for AI agent spend";
+        homepage = "https://github.com/Socialpranker/agentburn";
+        license = licenses.mit;
+        mainProgram = "agentburn";
+      };
     };
-
-    # pyproject.toml requires setuptools>=68 as build backend
-    nativeBuildInputs = [ setuptools ];
-
-    doCheck = false;
-
-    meta = with final.lib; {
-      description = "Local profiler for AI agent spend";
-      homepage = "https://github.com/Socialpranker/agentburn";
-      license = licenses.mit;
-      mainProgram = "agentburn";
-    };
-  };
 
   # REMOVED (2026-08-07): hermes-paperclip-adapter — buildNpmPackage with
   # placeholder hashes (sha256-AAAA...) that never got filled in. Referenced
@@ -446,7 +450,7 @@ final: prev: {
     ];
 
     pythonRelaxDeps = true;
-    pythonRemoveDeps = [ "ast-grep-cli" ];  # Not available in nixpkgs, optional for code compression
+    pythonRemoveDeps = [ "ast-grep-cli" ]; # Not available in nixpkgs, optional for code compression
 
     propagatedBuildInputs = with final.python3Packages; [
       fastapi

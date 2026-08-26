@@ -15,7 +15,7 @@
 let
   hasTag = tag: builtins.elem tag (config.machine.tags or [ ]);
 
-  themeOverlay = final: prev: { };
+  themeOverlay = _final: _prev: { };
 
   # Load overlays from the modular structure
   customOverlay = import ../../80-lib/82-overlays/custom-packages.nix;
@@ -25,7 +25,7 @@ let
   camoufoxOverlay = inputs.camoufox-nix.overlays.default;
 
   # AI package overlay — single import to avoid triple-evaluation.
-  aiPkgOverlay = final: prev: {
+  aiPkgOverlay = final: _prev: {
     _aiPkgs = import inputs.nixpkgs-ai {
       inherit (final) system;
       config.allowUnfree = true;

@@ -11,7 +11,7 @@ let
   # Polyfloor FastAPI backend — built from the pinned source (convention matches
   # freellmpool.nix: buildPythonApplication + fetchFromGitHub). The backend lives
   # in the repo's `backend/` subdir (hatchling package `polyfloor`).
-  polyfloorPkg = pkgs.python3Packages.buildPythonApplication rec {
+  polyfloorPkg = pkgs.python3Packages.buildPythonApplication {
     pname = "polyfloor";
     version = "0.1.0";
 
@@ -88,7 +88,13 @@ in
     };
 
     logLevel = mkOption {
-      type = types.enum [ "debug" "info" "warning" "error" "critical" ];
+      type = types.enum [
+        "debug"
+        "info"
+        "warning"
+        "error"
+        "critical"
+      ];
       default = "info";
       description = "Backend log level";
     };
@@ -167,7 +173,10 @@ in
         StateDirectory = "polyfloor";
 
         # Network — bind to loopback only
-        IPAddressAllow = [ "127.0.0.1" "::1" ];
+        IPAddressAllow = [
+          "127.0.0.1"
+          "::1"
+        ];
 
         # Capabilities
         CapabilityBoundingSet = "";

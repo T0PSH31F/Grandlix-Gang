@@ -39,7 +39,11 @@ in
     # alertmanager-ntfy service
     systemd.services.alertmanager-ntfy = {
       description = "alertmanager-ntfy — Prometheus alerts to ntfy";
-      after = [ "network.target" "alertmanager.service" "ntfy-sh.service" ];
+      after = [
+        "network.target"
+        "alertmanager.service"
+        "ntfy-sh.service"
+      ];
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {

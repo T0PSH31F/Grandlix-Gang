@@ -206,11 +206,7 @@ in
     environment.systemPackages = resolvedPackages;
 
     environment.persistence."/persist" =
-      mkIf
-        (
-          voxtypeEnabled
-          && (config.layers.layer-10.system.config.impermanence.enable or false)
-        )
+      mkIf (voxtypeEnabled && (config.layers.layer-10.system.config.impermanence.enable or false))
         {
           users.${primaryUser}.directories = [
             ".config/voxtype"

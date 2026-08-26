@@ -9,7 +9,7 @@
 
   # Trust ZeroTier interfaces (pattern matches zt* interfaces)
   networking.firewall.trustedInterfaces = [
-    "zt0"       # common ZeroTier interface name
-    "ztnull"    # null route interface
+    "zt0" # common ZeroTier interface name
+    "ztnull" # null route interface
   ];
 }

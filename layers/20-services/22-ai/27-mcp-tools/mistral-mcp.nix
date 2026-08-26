@@ -24,7 +24,12 @@ in
     };
 
     profile = lib.mkOption {
-      type = lib.types.enum [ "core" "admin" "workflows" "metier-docs" ];
+      type = lib.types.enum [
+        "core"
+        "admin"
+        "workflows"
+        "metier-docs"
+      ];
       default = "core";
       description = "MCP profile controlling how many tools are exposed";
     };
@@ -43,7 +48,7 @@ in
       wantedBy = [ "multi-user.target" ];
 
       environment = {
-        HOME = "/tmp";  # npx needs writable HOME for cache (DynamicUser defaults HOME=/)
+        HOME = "/tmp"; # npx needs writable HOME for cache (DynamicUser defaults HOME=/)
         MCP_TRANSPORT = "http";
         MCP_HTTP_PORT = toString cfg.port;
         MCP_HTTP_HOST = cfg.host;
@@ -63,7 +68,10 @@ in
       };
 
       # npx needs sh and node in PATH for downloaded packages
-      path = [ pkgs.bash pkgs.nodejs_22 ];
+      path = [
+        pkgs.bash
+        pkgs.nodejs_22
+      ];
     };
   };
 }

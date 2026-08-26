@@ -32,7 +32,10 @@ in
     systemd.services.hermes-dashboard = {
       description = "Hermes Agent Web Dashboard";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" "hermes-agent.service" ];
+      after = [
+        "network.target"
+        "hermes-agent.service"
+      ];
 
       environment = {
         HERMES_HOME = hermesState;

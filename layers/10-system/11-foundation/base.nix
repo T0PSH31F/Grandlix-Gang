@@ -29,7 +29,7 @@
   _module.args.osConfig = config;
 
   _module.args.lib = lib.extend (
-    final: prev: {
+    _final: _prev: {
       hm = inputs.home-manager.lib.hm;
     }
   );

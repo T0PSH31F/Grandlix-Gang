@@ -38,24 +38,27 @@ let
   motdPkg =
     let
       # Compute the proper library path from chafa's runtime closure.
-      runtimePath = lib.makeLibraryPath (with pkgs; [
-        util-linux
-        libselinux
-        pcre2
-        fontconfig
-        glib
-        cairo
-        librsvg
-        gdk-pixbuf
-        libjpeg_turbo
-        libtiff
-        libjxl
-        libavif
-        freetype
-        bzip2
-        libpng
-        brotli
-      ]);
+      runtimePath = lib.makeLibraryPath (
+        with pkgs;
+        [
+          util-linux
+          libselinux
+          pcre2
+          fontconfig
+          glib
+          cairo
+          librsvg
+          gdk-pixbuf
+          libjpeg_turbo
+          libtiff
+          libjxl
+          libavif
+          freetype
+          bzip2
+          libpng
+          brotli
+        ]
+      );
     in
     pkgs.runCommand "nixos-motd-${hostName}"
       {
@@ -65,7 +68,8 @@ let
           pkgs.lolcat
           pkgs.coreutils
         ];
-      } ''
+      }
+      ''
         mkdir -p $out
         # Make all of chafa's runtime libraries resolvable in the build sandbox.
         export LD_LIBRARY_PATH="${runtimePath}''${LD_LIBRARY_PATH:+:''${LD_LIBRARY_PATH}}"

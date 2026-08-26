@@ -559,7 +559,10 @@ in
           # CodeGraph — semantic code intelligence (Rust-powered code graph)
           codegraph = {
             command = "codegraph";
-            args = [ "serve" "--mcp" ];
+            args = [
+              "serve"
+              "--mcp"
+            ];
             env = { };
           };
         };
@@ -610,7 +613,8 @@ in
       # Vendored custom skins — symlinked from the Nix store (flake source) into
       # HERMES_HOME so they resolve deterministically across rebuilds/reboots and
       # flake edits propagate. Source of truth: layers/70-agents/76-hermes-agent/skins/.
-    ] ++ lib.concatMap (name: [
+    ]
+    ++ lib.concatMap (name: [
       "L /var/lib/hermes/.hermes/skins/${name}.yaml - hermes hermes - ${./skins}/${name}.yaml"
     ]) skinFiles;
 
@@ -637,7 +641,10 @@ in
 
     users.users.t0psh31f.extraGroups = [ "hermes" ];
 
-    environment.systemPackages = lib.optional cfg.enableDesktop hermesDesktopPkg ++ [ pkgs.uni-pet pkgs.agentburn ];
+    environment.systemPackages = lib.optional cfg.enableDesktop hermesDesktopPkg ++ [
+      pkgs.uni-pet
+      pkgs.agentburn
+    ];
 
     sops.templates."hermes-env" = {
       path = "/run/secrets/hermes-env";
@@ -674,8 +681,12 @@ in
         GOOGLE_AI_API_KEY=${config.sops.placeholder.gemini_api_key_we77}
         OLLAMA_API_KEY=${config.sops.placeholder.ollama_api_key}
         ANTHROPIC_API_KEY=${config.sops.placeholder.anthropic_api_key}
-        NVIDIA_API_KEY=${config.sops.placeholder.nvidia_api_key}
-        XIAOMI_MIMO_API_KEY=${config.sops.placeholder.xiaomi_mimo_api_key_wright}
+        # ExtremeRouter integration
+        OPENAI_API_KEY=${config.sops.placeholder.openrouter_api_key_2}
+        EXTREMEROUTER_API_KEY=${config.sops.placeholder.openrouter_api_key_2}
+        EXTREMEROUTER_BASE_URL=http://127.0.0.1:20128/v1
+        OPENAI_BASE_URL=http://127.0.0.1:20128/v1
+
         # Kong AI Gateway — unified LLM routing (routes to ExtremeRouter, FreeLLMAPI, etc.)
         KONG_API_KEY=placeholder-set-via-sops
 

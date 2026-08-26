@@ -10,7 +10,7 @@ let
   camofoxPkg = pkgs.jo-camofox-browser;
   camoufoxBin = pkgs.camoufox;
 
-  runtimePath = lib.makeBinPath ([
+  runtimePath = lib.makeBinPath [
     pkgs.xvfb
     pkgs.x11vnc
     pkgs.novnc
@@ -22,7 +22,7 @@ let
     pkgs.gnused
     pkgs.gnugrep
     pkgs.bash
-  ]);
+  ];
 
 in
 {
@@ -61,7 +61,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ camofoxPkg camoufoxBin pkgs.xvfb pkgs.x11vnc pkgs.novnc ];
+    environment.systemPackages = [
+      camofoxPkg
+      camoufoxBin
+      pkgs.xvfb
+      pkgs.x11vnc
+      pkgs.novnc
+    ];
     environment.variables.CAMOUFOX_EXECUTABLE = lib.getExe camoufoxBin;
 
     systemd.tmpfiles.rules = [
@@ -79,65 +85,69 @@ in
       home = cfg.dataDir;
       createHome = true;
     };
-    users.groups.camofox = {};
+    users.groups.camofox = { };
 
-    systemd.services.camofox-browser = let
-      startScript = pkgs.writeShellScript "camofox-start" ''
-        # Load SOPS-managed secrets from systemd LoadCredential
-        if [ -f "''${CREDENTIALS_DIRECTORY:-}/camofox_api_key" ]; then
-          export CAMOFOX_API_KEY="$(cat "''${CREDENTIALS_DIRECTORY}/camofox_api_key")"
-        fi
-        if [ -f "''${CREDENTIALS_DIRECTORY:-}/camofox_access_key" ]; then
-          export CAMOFOX_ACCESS_KEY="$(cat "''${CREDENTIALS_DIRECTORY}/camofox_access_key")"
-        fi
-        exec ${camofoxPkg}/bin/jo-camofox-browser
-      '';
-    in {
-      description = "Camofox anti-detection browser server (jo-inc fork)";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      path = [
-        pkgs.xvfb
-        pkgs.x11vnc
-        pkgs.novnc
-        pkgs.python3Packages.websockify
-        pkgs.gawk
-        pkgs.gnugrep
-        pkgs.gnused
-        pkgs.which
-        pkgs.nettools
-        pkgs.procps
-      ];
-      serviceConfig = {
-        Type = "simple";
-        User = "camofox";
-        Group = "camofox";
-        ExecStart = startScript;
-        Restart = "on-failure";
-        RestartSec = 5;
-        StateDirectory = "camofox";
-        StateDirectoryMode = "0755";
-        Environment = [
-          "PATH=${runtimePath}"
-          "CAMOFOX_PORT=${toString cfg.port}"
-          "CAMOFOX_DATA_DIR=${cfg.dataDir}"
-          "CAMOFOX_PROFILE_DIR=${cfg.dataDir}/profiles"
-          "CAMOFOX_COOKIES_DIR=${cfg.dataDir}/cookies"
-          "CAMOFOX_TRACES_DIR=${cfg.dataDir}/traces"
-          "BROWSER_IDLE_TIMEOUT_MS=300000"
-          "MAX_SESSIONS=50"
-          "CAMOFOX_CRASH_REPORT_ENABLED=false"
-          "CAMOUFOX_EXECUTABLE=${lib.getExe camoufoxBin}"
-          "ENABLE_VNC=1"
-          "NOVNC_PORT=${toString cfg.vncPort}"
+    systemd.services.camofox-browser =
+      let
+        startScript = pkgs.writeShellScript "camofox-start" ''
+          # Load SOPS-managed secrets from systemd LoadCredential
+          if [ -f "''${CREDENTIALS_DIRECTORY:-}/camofox_api_key" ]; then
+            export CAMOFOX_API_KEY="$(cat "''${CREDENTIALS_DIRECTORY}/camofox_api_key")"
+          fi
+          if [ -f "''${CREDENTIALS_DIRECTORY:-}/camofox_access_key" ]; then
+            export CAMOFOX_ACCESS_KEY="$(cat "''${CREDENTIALS_DIRECTORY}/camofox_access_key")"
+          fi
+          exec ${camofoxPkg}/bin/jo-camofox-browser
+        '';
+      in
+      {
+        description = "Camofox anti-detection browser server (jo-inc fork)";
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
+        path = [
+          pkgs.xvfb
+          pkgs.x11vnc
+          pkgs.novnc
+          pkgs.python3Packages.websockify
+          pkgs.gawk
+          pkgs.gnugrep
+          pkgs.gnused
+          pkgs.which
+          pkgs.nettools
+          pkgs.procps
         ];
-        LoadCredential = lib.optionals (cfg.apiKey != "") [
-          "camofox_api_key:${cfg.apiKey}"
-        ] ++ lib.optionals (cfg.accessKey != "") [
-          "camofox_access_key:${cfg.accessKey}"
-        ];
+        serviceConfig = {
+          Type = "simple";
+          User = "camofox";
+          Group = "camofox";
+          ExecStart = startScript;
+          Restart = "on-failure";
+          RestartSec = 5;
+          StateDirectory = "camofox";
+          StateDirectoryMode = "0755";
+          Environment = [
+            "PATH=${runtimePath}"
+            "CAMOFOX_PORT=${toString cfg.port}"
+            "CAMOFOX_DATA_DIR=${cfg.dataDir}"
+            "CAMOFOX_PROFILE_DIR=${cfg.dataDir}/profiles"
+            "CAMOFOX_COOKIES_DIR=${cfg.dataDir}/cookies"
+            "CAMOFOX_TRACES_DIR=${cfg.dataDir}/traces"
+            "BROWSER_IDLE_TIMEOUT_MS=300000"
+            "MAX_SESSIONS=50"
+            "CAMOFOX_CRASH_REPORT_ENABLED=false"
+            "CAMOUFOX_EXECUTABLE=${lib.getExe camoufoxBin}"
+            "ENABLE_VNC=1"
+            "NOVNC_PORT=${toString cfg.vncPort}"
+          ];
+          LoadCredential =
+            lib.optionals (cfg.apiKey != "") [
+              "camofox_api_key:${cfg.apiKey}"
+            ]
+            ++ lib.optionals (cfg.accessKey != "") [
+              "camofox_access_key:${cfg.accessKey}"
+            ];
+        };
       };
-    };
 
     # VNC bridge: disabled — x11vnc can't attach to Xvfb's MIT-SHM segments
     # (camofox user lacks shared memory access). noVNC websockify runs on :6080
@@ -148,7 +158,7 @@ in
     systemd.services.camofox-vnc = {
       description = "VNC bridge for Camofox (x11vnc attached to Xvfb) — DISABLED";
       after = [ "camofox-browser.service" ];
-      wantedBy = lib.mkForce [];
+      wantedBy = lib.mkForce [ ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${pkgs.coreutils}/bin/true";
@@ -156,6 +166,9 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = mkIf cfg.openFirewall [ cfg.port cfg.vncPort ];
+    networking.firewall.allowedTCPPorts = mkIf cfg.openFirewall [
+      cfg.port
+      cfg.vncPort
+    ];
   };
 }

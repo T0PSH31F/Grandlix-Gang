@@ -41,7 +41,10 @@ in
     systemd.services.whisper-server = {
       description = "Local STT Server using whisper.cpp";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.target" "nss-lookup.target" ];
+      after = [
+        "network-online.target"
+        "nss-lookup.target"
+      ];
       wants = [ "network-online.target" ];
       serviceConfig = {
         ExecStart = "${pkgs.whisper-cpp}/bin/whisper-server -m /var/lib/whisper/ggml-base.en.bin --port ${toString cfg.sttPort}";

@@ -36,8 +36,10 @@ in
   };
 
   nixos = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.antigravity-cli ]
-      ++ lib.optional cfg.enableIde pkgs.antigravity-ide;
+    environment.systemPackages = [
+      pkgs.antigravity-cli
+    ]
+    ++ lib.optional cfg.enableIde pkgs.antigravity-ide;
   };
 
   home = lib.mkIf cfg.enable {

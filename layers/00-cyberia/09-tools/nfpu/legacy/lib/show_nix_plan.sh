@@ -6,10 +6,10 @@ set -euo pipefail
 MACHINES=("luffy" "z0r0")
 
 for m in "${MACHINES[@]}"; do
-    echo "🔧  Machine: $m"
-    nix build ".#nixosConfigurations.${m}.config.system.build.toplevel" \
-        --no-link --dry-run --keep-going \
-        | { grep -E 'building|reusing' || true; } \
-        | sed -E 's/^(building|reusing)/   • \1/'
-    echo ""
- done
+  echo "🔧  Machine: $m"
+  nix build ".#nixosConfigurations.${m}.config.system.build.toplevel" \
+    --no-link --dry-run --keep-going |
+    { grep -E 'building|reusing' || true; } |
+    sed -E 's/^(building|reusing)/   • \1/'
+  echo ""
+done

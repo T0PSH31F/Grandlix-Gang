@@ -1,7 +1,8 @@
 let
   lib = import <nixpkgs/lib>;
-  mkDendriticModule =
-    (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; }).mkDendriticModule;
+  inherit ((import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit lib; }))
+    mkDendriticModule
+    ;
 
   mockModule =
     {
@@ -22,7 +23,7 @@ let
 
   result = mkDendriticModule "test" mockModule {
     config = { };
-    lib = lib;
+    inherit lib;
     pkgs = { };
   };
 in

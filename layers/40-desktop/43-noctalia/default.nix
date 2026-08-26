@@ -126,7 +126,7 @@ in
         programs.noctalia = {
           enable = true;
           systemd.enable = true;
-          package = cfg.package;
+          inherit (cfg) package;
           validateConfig = true;
 
           settings = {
@@ -223,7 +223,10 @@ in
               fill_color = "surface";
               directory = "$HOME/.background/4k Background";
               directory_dark = "$HOME/.background/4k Background";
-              transition = [ "random" "honeycomb" ];
+              transition = [
+                "random"
+                "honeycomb"
+              ];
               transition_duration = 17600;
               transition_on_startup = true;
             };
@@ -239,18 +242,28 @@ in
               path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg";
             };
             wallpaper.monitor = {
-              "eDP-1" = { directory = "$HOME/.background/4k Background"; };
-              "DP-1" = { directory = "$HOME/.background/4k Background"; };
-              "HDMI-A-1" = { directory = "$HOME/.background/4k Background"; };
+              "eDP-1" = {
+                directory = "$HOME/.background/4k Background";
+              };
+              "DP-1" = {
+                directory = "$HOME/.background/4k Background";
+              };
+              "HDMI-A-1" = {
+                directory = "$HOME/.background/4k Background";
+              };
             };
             wallpaper.monitors = {
-              "eDP-1" = { path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"; };
-              "DP-2" = { path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg"; };
+              "eDP-1" = {
+                path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg";
+              };
+              "DP-2" = {
+                path = "/home/t0psh31f/.background/4k Background/blue-one-piece-zoro-4k-82429jb4apj2vznp.jpg";
+              };
             };
 
             # ── Backdrop ─────────────────────────────────────────────
             backdrop = {
-              enabled = false;  # Disabled: oversized blur regions behind notifications/dock/OSD
+              enabled = false; # Disabled: oversized blur regions behind notifications/dock/OSD
               blur_intensity = 0.4;
               tint_intensity = 0.6;
             };
@@ -284,7 +297,10 @@ in
               capsule = true;
               capsule_border = "primary";
               capsule_opacity = 0.0;
-              center = [ "media" "cat" ];
+              center = [
+                "media"
+                "cat"
+              ];
               color = "primary";
               contact_shadow = true;
               end = [
@@ -434,7 +450,10 @@ in
               launcher_position = "start";
               launcher_custom_image = "/home/t0psh31f/.icons/Anime/1P/one-piece-jolly-roger-icons-by-crountch/png/256x256/Zoro.png";
               margin_edge = 2;
-              monitors = [ "eDP-1" "DP-2" ];
+              monitors = [
+                "eDP-1"
+                "DP-2"
+              ];
               pinned = [ "Brave" ];
               radius = 23;
               reserve_space = false;
@@ -479,10 +498,22 @@ in
             # ── Keybinds ─────────────────────────────────────────────
             keybinds = {
               cancel = [ "Escape" ];
-              up = [ "Up" "Alt+j" ];
-              down = [ "Down" "Alt+k" ];
-              left = [ "Left" "Alt+h" ];
-              right = [ "Right" "Alt+l" ];
+              up = [
+                "Up"
+                "Alt+j"
+              ];
+              down = [
+                "Down"
+                "Alt+k"
+              ];
+              left = [
+                "Left"
+                "Alt+h"
+              ];
+              right = [
+                "Right"
+                "Alt+l"
+              ];
             };
 
             # ── Location ──────────────────────────────────────────────
@@ -495,7 +526,10 @@ in
             lockscreen_widgets = {
               enabled = true;
               schema_version = 2;
-              widget_order = [ "lockscreen-login-box@DP-2" "lockscreen-login-box@eDP-1" ];
+              widget_order = [
+                "lockscreen-login-box@DP-2"
+                "lockscreen-login-box@eDP-1"
+              ];
             };
             lockscreen_widgets.grid = {
               cell_size = 16;
@@ -825,14 +859,19 @@ in
         systemd.user.services.noctalia-colors-sync = {
           Unit = {
             Description = "Sync Noctalia colors to Hyprland and Zellij";
-            After = [ "graphical-session.target" "noctalia.service" ];
+            After = [
+              "graphical-session.target"
+              "noctalia.service"
+            ];
             Requires = [ "noctalia.service" ];
           };
           Service = {
             Type = "oneshot";
             ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 3 && noctalia-hypr-reload'";
           };
-          Install = { WantedBy = [ "graphical-session.target" ]; };
+          Install = {
+            WantedBy = [ "graphical-session.target" ];
+          };
         };
 
         # Re-sync colors every 15 min (wallpaper auto-regenerates on this cycle)
@@ -845,7 +884,9 @@ in
             OnUnitActiveSec = "15min";
             Unit = "noctalia-colors-sync.service";
           };
-          Install = { WantedBy = [ "timers.target" ]; };
+          Install = {
+            WantedBy = [ "timers.target" ];
+          };
         };
       };
     };

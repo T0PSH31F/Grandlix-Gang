@@ -45,8 +45,8 @@ in
     services.sabnzbd = mkIf cfg.sabnzbd.enable {
       enable = true;
       configFile = null;
-      user = mediaCfg.user;
-      group = mediaCfg.group;
+      inherit (mediaCfg) user;
+      inherit (mediaCfg) group;
     };
 
     systemd.services.sabnzbd = mkIf cfg.sabnzbd.enable {
@@ -56,8 +56,8 @@ in
     # NZBGet
     services.nzbget = mkIf cfg.nzbget.enable {
       enable = true;
-      user = mediaCfg.user;
-      group = mediaCfg.group;
+      inherit (mediaCfg) user;
+      inherit (mediaCfg) group;
     };
 
     # NZBHydra2
@@ -94,20 +94,20 @@ in
       directories =
         (optional cfg.nzbget.enable {
           directory = "/var/lib/nzbget";
-          user = mediaCfg.user;
-          group = mediaCfg.group;
+          inherit (mediaCfg) user;
+          inherit (mediaCfg) group;
           mode = "0750";
         })
         ++ (optional cfg.sabnzbd.enable {
           directory = "/var/lib/sabnzbd";
-          user = mediaCfg.user;
-          group = mediaCfg.group;
+          inherit (mediaCfg) user;
+          inherit (mediaCfg) group;
           mode = "0750";
         })
         ++ (optional cfg.nzbhydra2.enable {
           directory = "/var/lib/nzbhydra2";
-          user = mediaCfg.user;
-          group = mediaCfg.group;
+          inherit (mediaCfg) user;
+          inherit (mediaCfg) group;
           mode = "0750";
         });
     };

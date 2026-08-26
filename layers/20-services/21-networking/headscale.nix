@@ -15,7 +15,7 @@ in
   config = mkIf cfg.enable {
     services.headscale = {
       enable = true;
-      port = cfg.port;
+      inherit (cfg) port;
       address = "0.0.0.0";
       settings = {
         dns = {
@@ -23,8 +23,8 @@ in
           base_domain = "grandlix.net";
           nameservers = {
             global = [
-              "127.0.0.1"  # AdGuard Home on luffy (local)
-              "1.1.1.1"    # Fallback
+              "127.0.0.1" # AdGuard Home on luffy (local)
+              "1.1.1.1" # Fallback
             ];
           };
         };

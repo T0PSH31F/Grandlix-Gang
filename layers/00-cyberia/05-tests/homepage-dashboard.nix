@@ -1,8 +1,5 @@
 # Module evaluation check — verifies homepage-dashboard module evaluates correctly
 { pkgs, ... }:
-let
-  inherit (import ../../. { }) nixos-lib;
-in
 pkgs.testers.nixosTest {
   name = "homepage-dashboard-module";
   nodes.machine = { config, lib, ... }: {

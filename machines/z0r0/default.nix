@@ -75,7 +75,15 @@
       enable = true;
       host = "0.0.0.0";
       model = "/var/lib/llama-cpp/Llama3.3-8B-Instruct-Thinking-Heretic-Uncensored-Claude-4.5-Opus-High-Reasoning.i1-IQ4_XS.gguf";
-      extraFlags = [ "-ngl" "99" "--ctx-size" "8192" "--parallel" "2" "--no-warmup" ];
+      extraFlags = [
+        "-ngl"
+        "99"
+        "--ctx-size"
+        "8192"
+        "--parallel"
+        "2"
+        "--no-warmup"
+      ];
     };
 
     ai-services.kong-gateway.environmentFile = config.sops.templates."kong-env".path;
@@ -187,7 +195,7 @@
 
   # Provide a safe-gc convenience script so the user doesn't reach for
   # the dangerous `nix-store --gc` out of habit.
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     (pkgs.writeShellScriptBin "nix-safe-gc" ''
       echo "Running safe garbage collection (deleting generations older than ''${1:-14d})..."
       ${pkgs.nix}/bin/nix-collect-garbage --delete-older-than "''${1:-14d}"

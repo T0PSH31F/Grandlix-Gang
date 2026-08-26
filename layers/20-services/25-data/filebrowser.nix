@@ -21,7 +21,7 @@ in
       enable = true;
       openFirewall = true;
       settings = {
-        port = cfg.port;
+        inherit (cfg) port;
         address = "0.0.0.0";
         root = cfg.rootDir;
         database = "/var/lib/filebrowser/data/filebrowser.db";

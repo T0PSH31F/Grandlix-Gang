@@ -1,7 +1,12 @@
 # Session Resilience Module
 # Fixes: uwsm DBus timeouts, getty GC, orphaned session cleanup
 # Addresses the recurring issue where sessions crash and lock out the user
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.layers.layer-10.system.sessionResilience;
@@ -55,30 +60,6 @@ let
   # Pre-start script for uwsm env-preloader that waits for the user
   # D-Bus session bus to be responsive, preventing the NoReply timeout
   # that crashes the entire session.
-  uwsm-dbus-wait-script = pkgs.writeShellScript "uwsm-dbus-wait" ''
-    set -euo pipefail
-
-    log() { echo "uwsm-dbus-wait: $1" | systemd-cat -t uwsm-dbus-wait 2>/dev/null || true; }
-
-    # Wait up to 20s for the user D-Bus session bus
-    for i in $(seq 1 40); do
-      if busctl --user status >/dev/null 2>&1; then
-        log "D-Bus session bus ready after $((i * 500))ms"
-        exit 0
-      fi
-      # busctl itself might not exist yet; try DBUS_SESSION_BUS_ADDRESS
-      if [ -n "''${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
-        if busctl --user >/dev/null 2>&1; then
-          log "D-Bus session bus ready after $((i * 500))ms"
-          exit 0
-        fi
-      fi
-      sleep 0.5
-    done
-
-    log "WARNING: D-Bus session bus not ready after 20s, proceeding anyway"
-    exit 0  # Don't block — let uwsm try and handle its own errors
-  '';
 
   # ── Per-user session recovery check ─────────────────────────────────
   # Checks if the current boot's uwsm services are in a broken state

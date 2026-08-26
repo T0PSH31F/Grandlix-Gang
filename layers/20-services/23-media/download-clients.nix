@@ -51,7 +51,7 @@ in
       files."authFile" = {
         secret = true;
         owner = mediaCfg.user;
-        group = mediaCfg.group;
+        inherit (mediaCfg) group;
       };
       script = ''
         PASSWORD=$(${pkgs.openssl}/bin/openssl rand -hex 16)
@@ -79,8 +79,8 @@ in
         enc_prefer_rc4 = true;
         enc_level = 1;
       };
-      user = mediaCfg.user;
-      group = mediaCfg.group;
+      inherit (mediaCfg) user;
+      inherit (mediaCfg) group;
     };
 
     systemd.services.deluged = mkIf cfg.deluge.enable {
@@ -97,8 +97,8 @@ in
     services.transmission = mkIf cfg.transmission.enable {
       enable = true;
       package = pkgs.transmission_4;
-      user = mediaCfg.user;
-      group = mediaCfg.group;
+      inherit (mediaCfg) user;
+      inherit (mediaCfg) group;
       settings = {
         rpc-bind-address = "0.0.0.0";
         rpc-port = cfg.transmission.port;
@@ -142,8 +142,8 @@ in
     # qBittorrent
     services.qbittorrent = mkIf cfg.qbittorrent.enable {
       enable = true;
-      user = mediaCfg.user;
-      group = mediaCfg.group;
+      inherit (mediaCfg) user;
+      inherit (mediaCfg) group;
       webuiPort = cfg.qbittorrent.port;
       openFirewall = true;
       serverConfig = {
@@ -165,7 +165,7 @@ in
       files."rpc_secret" = {
         secret = true;
         owner = mediaCfg.user;
-        group = mediaCfg.group;
+        inherit (mediaCfg) group;
       };
       prompts."rpc_secret" = {
         type = "hidden";
@@ -208,8 +208,8 @@ in
       directories =
         (optional cfg.deluge.enable {
           directory = "/var/lib/deluge";
-          user = mediaCfg.user;
-          group = mediaCfg.group;
+          inherit (mediaCfg) user;
+          inherit (mediaCfg) group;
           mode = "0750";
         })
         ++ (optional cfg.transmission.enable "/var/lib/transmission")
@@ -217,8 +217,8 @@ in
         ++ (optionals cfg.qbittorrent.enable [
           {
             directory = "/var/lib/qBittorrent";
-            user = mediaCfg.user;
-            group = mediaCfg.group;
+            inherit (mediaCfg) user;
+            inherit (mediaCfg) group;
             mode = "0750";
           }
         ]);

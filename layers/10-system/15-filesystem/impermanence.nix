@@ -32,7 +32,7 @@ with lib;
         # System directories
         "/var/lib/systemd"
         "/var/lib/nixos"
-        "/var/lib/hermes"          # Hermes agent session DB + state
+        "/var/lib/hermes" # Hermes agent session DB + state
 
         # Network configuration
         "/etc/NetworkManager/system-connections"
@@ -42,7 +42,7 @@ with lib;
         "/var/lib/tailscale"
 
         # AI Services State & Databases (declared modularly in respective service modules)
-        "/var/lib/camofox"         # Camofox persistent browser profiles & OAuth cookies
+        "/var/lib/camofox" # Camofox persistent browser profiles & OAuth cookies
 
         # SSH host keys
         "/etc/ssh"
@@ -98,12 +98,12 @@ with lib;
           ".antigravity"
           ".gemini"
           ".hermes"
-          ".claude"           # Claude Code transcripts + skills
-          ".codex"            # Codex CLI state
-          ".opencode"         # OpenCode local plugin data
-          ".zeroclaw"         # ZeroClaw logs + skills
-          ".openclaw"         # OpenClaw logs + skills
-          ".kilocode"         # KiloCode CLI state
+          ".claude" # Claude Code transcripts + skills
+          ".codex" # Codex CLI state
+          ".opencode" # OpenCode local plugin data
+          ".zeroclaw" # ZeroClaw logs + skills
+          ".openclaw" # OpenClaw logs + skills
+          ".kilocode" # KiloCode CLI state
           ".kodi"
           ".var/app"
           ".authsome"

@@ -14,7 +14,7 @@ in
   # has no `sops.secrets` of its own — those only exist in the real
   # home-manager submodule scope where the secrets are declared.
   home =
-    { ... }:
+    _:
     lib.mkIf cfg.enable {
       home.packages = with pkgs; [
         himalaya

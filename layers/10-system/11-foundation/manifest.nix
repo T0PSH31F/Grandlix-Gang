@@ -8,7 +8,7 @@
         hostname = config.networking.hostName;
         tags = config.machine.tags or [ ];
       };
-      enabledLayers = lib.filterAttrsRecursive (n: v: v != false && v != { } && v != null) config.layers;
+      enabledLayers = lib.filterAttrsRecursive (_n: v: v != false && v != { } && v != null) config.layers;
     };
     description = "Read-only manifest of enabled features for this machine";
   };

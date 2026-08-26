@@ -88,7 +88,8 @@ in
         CACHE_URL = "redis://localhost:6379";
         AUTH_USE_AUTH = "false";
         METRICS_ENABLED = "true";
-      } // optionalAttrs (cfg.llmBaseUrl != "") {
+      }
+      // optionalAttrs (cfg.llmBaseUrl != "") {
         DERIVER_MODEL_CONFIG__OVERRIDES__BASE_URL = cfg.llmBaseUrl;
         DIALECTIC_MODEL_CONFIG__OVERRIDES__BASE_URL = cfg.llmBaseUrl;
         SUMMARY_MODEL_CONFIG__OVERRIDES__BASE_URL = cfg.llmBaseUrl;
@@ -103,12 +104,19 @@ in
     # Honcho deriver (background worker for memory processing)
     virtualisation.oci-containers.containers.honcho-deriver = mkIf cfg.enableDeriver {
       image = "ghcr.io/nicepkg/honcho:latest";
-      cmd = [ "uv" "run" "python" "-m" "honcho.deriver" ];
+      cmd = [
+        "uv"
+        "run"
+        "python"
+        "-m"
+        "honcho.deriver"
+      ];
       environment = {
         DATABASE_URL = cfg.databaseUrl;
         CACHE_ENABLED = "true";
         CACHE_URL = "redis://localhost:6379";
-      } // optionalAttrs (cfg.llmBaseUrl != "") {
+      }
+      // optionalAttrs (cfg.llmBaseUrl != "") {
         DERIVER_MODEL_CONFIG__OVERRIDES__BASE_URL = cfg.llmBaseUrl;
       };
       volumes = [

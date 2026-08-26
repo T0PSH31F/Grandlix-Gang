@@ -1,11 +1,11 @@
-{ ... }:
+_:
 /*
   Wrapper for dendritic multi-class modules.
   Handles both multi-class (nixos/home/options) and standard modules.
 */
 let
   mkDendriticModule =
-    name: module:
+    _name: module:
     {
       config,
       lib,
@@ -15,7 +15,7 @@ let
     let
       inputs = args.inputs or { };
       hmLib = lib.extend (
-        final: prev: {
+        _final: prev: {
           hm = inputs.home-manager.lib.hm or prev.hm or { };
         }
       );
@@ -24,10 +24,11 @@ let
         lib = hmLib;
         osConfig = config;
         config = config // {
-          home = config.home or {
-            homeDirectory = "/home/${primaryUser}";
-            username = primaryUser;
-          };
+          home =
+            config.home or {
+              homeDirectory = "/home/${primaryUser}";
+              username = primaryUser;
+            };
         };
       };
 
@@ -62,16 +63,9 @@ let
 
       # Safely evaluate functions only when the context matches
       wrappedNixosConf =
-        if isNixOS && builtins.isFunction nixosConf then
-          nixosConf evalArgs
-        else
-          nixosConf;
+        if isNixOS && builtins.isFunction nixosConf then nixosConf evalArgs else nixosConf;
 
-      wrappedHomeConf =
-        if builtins.isFunction homeConf then
-          homeConf evalArgs
-        else
-          homeConf;
+      wrappedHomeConf = if builtins.isFunction homeConf then homeConf evalArgs else homeConf;
 
       # Sanitize homeConf for Home-Manager module system
       # Home-Manager requires all option definitions (including _module) to be under 'config' whenever module keys ('imports', 'options') are present.
@@ -92,7 +86,7 @@ let
               "_class"
               "_type"
             ];
-            moduleMeta = builtins.intersectAttrs (lib.genAttrs knownModuleKeys (k: null)) m;
+            moduleMeta = builtins.intersectAttrs (lib.genAttrs knownModuleKeys (_k: null)) m;
             inlineConfig = removeAttrs m (knownModuleKeys ++ [ "config" ]);
             existingConfig = m.config or { };
             mergedConfig =
@@ -113,7 +107,7 @@ let
 
     in
     {
-      imports = imports;
+      inherit imports;
       options = opts;
       config =
         if isNixOS then

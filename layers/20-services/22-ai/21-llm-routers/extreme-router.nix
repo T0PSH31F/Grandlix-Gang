@@ -59,7 +59,7 @@ in
     assertions = [
       {
         assertion =
-          !(config.fileSystems."/"?fsType && config.fileSystems."/".fsType == "tmpfs")
+          !(config.fileSystems."/" ? fsType && config.fileSystems."/".fsType == "tmpfs")
           || (config.layers.layer-10.system.config.impermanence.enable or false);
         message = "services.ai-services.extreme-router requires impermanence to be enabled (config.layers.layer-10.system.config.impermanence.enable = true) on machines with tmpfs root to prevent API key loss on reboot.";
       }
@@ -72,7 +72,7 @@ in
 
     # OCI container via podman
     virtualisation.oci-containers.containers.extreme-router = {
-      image = cfg.image;
+      inherit (cfg) image;
       ports = [
         "127.0.0.1:${toString cfg.port}:20128"
       ];
@@ -82,7 +82,8 @@ in
         HOSTNAME = "0.0.0.0";
         DATA_DIR = "/app/data";
         NEXT_PUBLIC_BASE_URL = "http://localhost:${toString cfg.port}";
-      } // cfg.extraEnvironment;
+      }
+      // cfg.extraEnvironment;
       volumes = [
         "${cfg.dataDir}:/app/data"
       ];

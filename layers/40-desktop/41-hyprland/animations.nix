@@ -29,7 +29,7 @@ in
           contrast = 0.89;
           vibrancy = 0.1696;
           vibrancy_darkness = 0.5;
-           popups = false;
+          popups = false;
           popups_ignorealpha = 0.6;
           input_methods = true;
           input_methods_ignorealpha = 0.8;

@@ -2,7 +2,7 @@
 { pkgs, lib }:
 let
   tagRegistry = import ../../90-profiles/tags/default.nix;
-  validTags = tagRegistry.validTags;
+  inherit (tagRegistry) validTags;
 
   tagFiles = builtins.attrNames (
     lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".nix" name) (

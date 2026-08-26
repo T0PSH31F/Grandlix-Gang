@@ -87,7 +87,7 @@ in
       };
 
       spotifySecretFile = mkDefault cfg.spotifySecretFile;
-      nginxVirtualHost = cfg.nginxVirtualHost;
+      inherit (cfg) nginxVirtualHost;
     };
 
     # MongoDB Container (SSPL licensed, avoids local compilation)

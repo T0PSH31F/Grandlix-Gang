@@ -12,7 +12,7 @@ with lib;
 let
   cfg = config.services.ai-services.freellmpool;
 
-  freellmpoolPkg = pkgs.python3Packages.buildPythonApplication rec {
+  freellmpoolPkg = pkgs.python3Packages.buildPythonApplication {
     pname = "freellmpool";
     version = "0.11.4";
     pyproject = true;
@@ -104,7 +104,8 @@ in
 
       environment = {
         FREELLMPOOL_DATA_DIR = cfg.dataDir;
-      } // cfg.extraEnv;
+      }
+      // cfg.extraEnv;
 
       serviceConfig = {
         ExecStart = "${freellmpoolPkg}/bin/freellmpool proxy --host ${cfg.host} --port ${toString cfg.port}";

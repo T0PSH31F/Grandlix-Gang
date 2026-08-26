@@ -8,17 +8,14 @@
 let
   cfg = osConfig.layers.layer-40.desktop.hyprland;
   sfxCfg =
-    if osConfig ? layers.layer-30.theming.sfx then
-      osConfig.layers.layer-30.theming.sfx
-    else
-      {
-        sounds = {
-          switchFocus = "switch-focus.wav";
-          moveWindow = "move-window.wav";
-          openWindow = "open-window.wav";
-          closeWindow = "close-window.wav";
-        };
+    osConfig.layers.layer-30.theming.sfx or {
+      sounds = {
+        switchFocus = "switch-focus.wav";
+        moveWindow = "move-window.wav";
+        openWindow = "open-window.wav";
+        closeWindow = "close-window.wav";
       };
+    };
 
   # ── IPC Audio Feedback Daemon ────────────────────────────────────
   hypr-sfx = pkgs.writeShellScriptBin "hypr-sfx" ''
