@@ -58,7 +58,8 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **Date / Agent:** 2026-08-26 / antigravity
 - **Feature:** kong-consumer-per-agent, polyfloor-registry, agent-sandbox-images, control-surface-adr, memory-governance-plane
 - **Work done:** Implemented Phase 3 Governance + Swarm: expanded `kong-gateway.nix` and `kong-secrets.nix` with 10 dedicated agent consumers and keyauth credentials (`hermes`, `opencode`, `claude-code`, `codex`, `cursor`, `deerflow`, `polyfloor`, `paperclip`, `opencompany`, `dsh`); integrated Polyfloor backend with endpoints registry and PostgreSQL DB; created `agent-sandbox.nix` for isolated Podman/Bubblewrap container executions; authored `0001-control-surface-swarm-governance.md` ADR; implemented `memory-governance.nix` for ACL scope enforcement across shared and private agent memory stores.
-- **Verification:** Evaluated `kong-gateway.consumers`, `polyfloor.enable`, `agent.sandbox.enable`, `memory-governance.enable` cleanly on both `z0r0` and `luffy`; verified ADR file existence and content; validated schema v2 in `feature_list.json`.
-- **State change:** passing (evidence recorded in feature_list.json)
-- **Next action:** Execute fleet deployment via `clan machines update z0r0` / `clan machines update luffy`.
+- **Verification:** Evaluated `kong-gateway.consumers`, `polyfloor.enable`, `agent.sandbox.enable`, `memory-governance.enable` cleanly on both `z0r0` and `luffy`; verified ADR file existence and content; validated schema v2 in `feature_list.json`; opened PR #9 (https://github.com/T0PSH31F/NFP/pull/9).
+- **State change:** passing (evidence recorded in feature_list.json and PR https://github.com/T0PSH31F/NFP/pull/9)
+- **Next action:** Proceed to Phase 4 (zellij-persistence-bars, homepage-rewrite) in the next thread.
+
 
