@@ -142,6 +142,15 @@ in
       "d ${cfg.dataDir}/redis 0755 root root -"
     ];
 
+    # Impermanence persistence
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+        {
+          directories = [
+            cfg.dataDir
+          ];
+        };
+
     # Open firewall port
     networking.firewall.allowedTCPPorts = [ cfg.port ];
   };

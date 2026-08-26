@@ -33,6 +33,11 @@
   services.ai-services.aionui.enable = lib.mkDefault true;
   services.ai-services.paperclip.enable = lib.mkDefault true;
 
+  # Memory chassis & gateway services
+  layers.layer-20.services.memory-vault.enable = lib.mkDefault true;
+  layers.layer-20.services.everos.enable = lib.mkDefault true;
+  layers.layer-20.services.context-forge.enable = lib.mkDefault true;
+
   # Agent productivity & messaging daemons
   layers.layer-20.services.todo-system.enable = lib.mkDefault true;
   layers.layer-20.services.communication.signal-cli-daemon = {
