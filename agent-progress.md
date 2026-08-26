@@ -49,3 +49,11 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **Verification:** Evaluated earlyoom extraArgs and system toplevels cleanly on both z0r0 and luffy; feature schema v2 valid.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Execute fleet update via `clan machines update z0r0`.
+
+- **Date / Agent:** 2026-08-26 / antigravity
+- **Feature:** memory-vault, everos-runtime, memory-gateway-federation, honcho-migration
+- **Work done:** Implemented Phase 2 Memory Chassis: created `memory-vault.nix` with canonical vault at `/var/lib/memory/vault`, `memory` group ownership, seed directory structure, impermanence, and 15-min git mesh sync timer; created `everos.nix` EverOS memory server (port 8092) with nightly 03:00 consolidation timer; updated `context-forge.nix` with EverOS MCP server registration, agent memory scoping (`hermes` shared+private, sandboxed shared-only), and Langfuse tracing; updated `honcho.nix` with pgvector & impermanence; created `honcho-migrate.py` cloud workspace migration script.
+- **Verification:** Evaluated all 4 module options cleanly on both `z0r0` and `luffy`; validated schema v2 in `feature_list.json`; opened PR #8 (https://github.com/T0PSH31F/NFP/pull/8).
+- **State change:** passing (evidence recorded in feature_list.json and PR https://github.com/T0PSH31F/NFP/pull/8)
+- **Next action:** Proceed to Phase 3 (kong-consumer-per-agent, polyfloor-registry, agent-sandbox-images, control-surface-adr, memory-governance-plane) in the next thread.
+
