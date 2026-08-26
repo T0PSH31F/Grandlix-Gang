@@ -10,4 +10,6 @@
     monitoring.enable = lib.mkDefault true;
     tailscale.enable = lib.mkDefault true;
   };
+
+  layers.layer-20.services.backups.restic.enable = lib.mkDefault true;
 }

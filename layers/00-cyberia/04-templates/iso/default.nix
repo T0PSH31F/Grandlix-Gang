@@ -56,10 +56,7 @@
   # ============================================================================
   # THEMES
   # ============================================================================
-  layers.layer-30.theming.themes.greeter = {
-    sddm.enable = true;
-    greetd.enable = false;
-  };
+  layers.layer-30.theming.themes.greeter.type = "sddm";
   layers.layer-30.theming.themes.plymouth-hellonavi.enable = true;
   layers.layer-40.desktop.hyprland.enable = true;
 

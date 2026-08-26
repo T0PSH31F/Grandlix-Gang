@@ -425,6 +425,28 @@
           "at": "2026-08-21T23:04:30Z"
         }
       ]
+    },
+    {
+      "id": "backups-restic",
+      "priority": 1,
+      "name": "Restic + rclone fleet backups with Google Drive & teldrive remotes",
+      "behavior": "Automated restic backups of /persist/home and /var/lib state with PostgreSQL pre-dump hook and restic-restore-drill verification script",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.services.restic.backups.nfp-main.paths",
+        "nix eval .#nixosConfigurations.luffy.config.services.restic.backups.nfp-main.paths",
+        "./init.sh"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.services.restic.backups.nfp-main.paths && nix eval .#nixosConfigurations.luffy.config.services.restic.backups.nfp-main.paths",
+          "output": "Verified restic backup paths evaluated to [ \"/persist/home\" \"/var/lib/postgresql\" \"/var/lib/n8n\" \"/var/lib/hermes\" \"/var/lib/extreme-router\" \"/var/lib/vaultwarden\" ] on both z0r0 and luffy.",
+          "at": "2026-08-26T18:50:33Z"
+        }
+      ]
     }
   ]
 }

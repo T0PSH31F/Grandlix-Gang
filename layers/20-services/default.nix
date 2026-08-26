@@ -11,6 +11,7 @@
     ./25-data/harmonia.nix
     ./25-data/honcho.nix
     ./25-data/langfuse.nix
+    ./25-data/restic-backups.nix
     ./25-data/vaultwarden.nix
     ./26-monitoring/alertmanager-ntfy.nix
     ./26-monitoring/glances.nix

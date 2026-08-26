@@ -22,6 +22,7 @@
       };
 
       config = {
+        nixpkgs.config.allowUnfree = true;
         layers.layer-10.system.config.impermanence.enable = false;
 
         # Enable n8n

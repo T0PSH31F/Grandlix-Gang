@@ -23,6 +23,7 @@
       tailscale.enable = lib.mkDefault true;
       monitoring.enable = lib.mkDefault true;
     };
+    layer-20.services.backups.restic.enable = lib.mkDefault true;
   };
 
   services.ssh-agent.enable = lib.mkDefault true;
