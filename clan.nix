@@ -7,7 +7,6 @@ let
         "development"
         "gaming"
         "laptop"
-        "media"
         "ai-server"
         "ai-agent"
         "intel-12th-gen"

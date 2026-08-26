@@ -141,7 +141,6 @@ in
       after = [
         "postgresql.service"
         "postgresql-extensions.service"
-        "ollama.service"
       ];
       requires = [ "postgresql.service" ];
 

@@ -25,9 +25,9 @@
     enableNotifications = true;
     extraArgs = [
       "--prefer"
-      "^(Web Content|chromium|firefox|electron)$"
+      "^(Web Content|chromium|firefox|electron|aionui|brave)$"
       "--avoid"
-      "^(Hyprland|noctalia|sshd|systemd)$"
+      "^(Hyprland|hyprland|noctalia|Noctalia|sshd|systemd|greetd)$"
     ];
   };
 

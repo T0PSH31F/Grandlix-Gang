@@ -70,29 +70,25 @@
   };
 
   services = {
-    # Machine-specific LLM Overrides (base AI services enabled via tag: ai-server & ai-agent)
-    llama-cpp-server = {
-      enable = true;
-      host = "0.0.0.0";
-      model = "/var/lib/llama-cpp/Llama3.3-8B-Instruct-Thinking-Heretic-Uncensored-Claude-4.5-Opus-High-Reasoning.i1-IQ4_XS.gguf";
-      extraFlags = [
-        "-ngl"
-        "99"
-        "--ctx-size"
-        "8192"
-        "--parallel"
-        "2"
-        "--no-warmup"
-      ];
-    };
+    # Disable heavy workstation inference & UIs (routed via extreme-router/kong)
+    llama-cpp-server.enable = lib.mkForce false;
+    llama-swap.enable = lib.mkForce false;
+    wyoming-services.enable = lib.mkForce false;
 
-    ai-services.kong-gateway.environmentFile = config.sops.templates."kong-env".path;
-    ai-services.freellmpool = {
-      enable = true;
-      environmentFile = config.sops.templates."kong-env".path;
-      port = 8083; # Moved off 8082 to avoid shadowing Homepage Dashboard
+    ai-services = {
+      ollama.enable = lib.mkForce false;
+      open-webui.enable = lib.mkForce false;
+      ollama-ui.enable = lib.mkForce false;
+      localai.enable = lib.mkForce false;
+
+      kong-gateway.environmentFile = config.sops.templates."kong-env".path;
+      freellmpool = {
+        enable = true;
+        environmentFile = config.sops.templates."kong-env".path;
+        port = 8083; # Moved off 8082 to avoid shadowing Homepage Dashboard
+      };
+      polyfloor.environmentFile = config.sops.templates."polyfloor-env".path;
     };
-    ai-services.polyfloor.environmentFile = config.sops.templates."polyfloor-env".path;
   };
 
   layers.layer-20.services.config.homepage-dashboard = {
