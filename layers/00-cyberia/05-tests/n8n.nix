@@ -22,7 +22,7 @@
       };
 
       config = {
-        nixpkgs.config.allowUnfree = true;
+        nixpkgs.pkgs = pkgs;
         layers.layer-10.system.config.impermanence.enable = false;
 
         # Enable n8n

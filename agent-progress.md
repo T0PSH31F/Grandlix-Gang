@@ -39,3 +39,11 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Proceed with fleet deployment via clan machines update z0r0.
 
+- **Date / Agent:** 2026-08-26 / antigravity
+- **Feature:** backups-restic
+- **Work done:** Implemented Phase 1 restic + rclone backup infrastructure (`layers/20-services/25-data/restic-backups.nix`) supporting Google Drive and teldrive remotes, PostgreSQL pre-dump hook (`pg_dumpall`), `/persist/home` and critical `/var/lib` state retention, and `restic-restore-drill` verification CLI script. Exposed module option `layers.layer-20.services.backups.restic` and enabled it on server and workstation profile tags.
+- **Verification:** Evaluated `nfp-main.paths` cleanly on both `z0r0` and `luffy`; validated schema v2 in `feature_list.json`; opened PR #7 (https://github.com/T0PSH31F/NFP/pull/7).
+- **State change:** passing (evidence recorded in feature_list.json and PR https://github.com/T0PSH31F/NFP/pull/7)
+- **Next action:** Proceed to Phase 2 (memory-vault + everos-runtime + memory-gateway-federation) in the next thread.
+
+

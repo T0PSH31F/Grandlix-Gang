@@ -447,6 +447,22 @@
           "at": "2026-08-26T18:50:33Z"
         }
       ]
+    },
+    {
+      "id": "repair-git-hooks",
+      "priority": 1,
+      "name": "Fix pre-commit treefmt hook to lint mode (--fail-on-change)",
+      "behavior": "git-hooks.nix treefmt hook runs in --fail-on-change mode so it never auto-reformats unrelated files mid-commit; nix-eval-toplevels pre-push hook retained; init.sh nix fmt step validates formatting separately",
+      "verification": [
+        "grep -q 'fail-on-change' layers/00-cyberia/07-clan/git-hooks.nix",
+        "nix flake check -A checks.x86_64-linux.pre-commit-check 2>&1 | grep -v '^error' | head -5",
+        "nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null",
+        "nix eval .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath > /dev/null"
+      ],
+      "state": "in-progress",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": []
     }
   ]
 }
