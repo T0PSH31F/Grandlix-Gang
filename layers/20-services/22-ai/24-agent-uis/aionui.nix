@@ -59,6 +59,10 @@ in
 
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0755 ${primaryUser} users -"
+      "d /home/${primaryUser}/.claude 0755 ${primaryUser} users -"
+      "d /home/${primaryUser}/.codex 0755 ${primaryUser} users -"
+      "d /home/${primaryUser}/.gemini 0755 ${primaryUser} users -"
+      "d /home/${primaryUser}/.opencode 0755 ${primaryUser} users -"
     ];
 
     systemd.services.aionui = {
@@ -87,10 +91,10 @@ in
         WorkingDirectory = "${cfg.dataDir}";
         ReadWritePaths = [
           cfg.dataDir
-          "/home/${primaryUser}/.claude"
-          "/home/${primaryUser}/.codex"
-          "/home/${primaryUser}/.gemini"
-          "/home/${primaryUser}/.opencode"
+          "-/home/${primaryUser}/.claude"
+          "-/home/${primaryUser}/.codex"
+          "-/home/${primaryUser}/.gemini"
+          "-/home/${primaryUser}/.opencode"
         ];
       };
     };
