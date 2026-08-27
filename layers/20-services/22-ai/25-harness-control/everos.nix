@@ -24,12 +24,10 @@ let
         ];
       }
       ''
-        import os
         import json
-        import glob
+        import os
         from pathlib import Path
         from fastapi import FastAPI, HTTPException
-        from pydantic import BaseModel
         import uvicorn
 
         app = FastAPI(title="EverOS Memory Engine", version="1.0.0")
@@ -41,9 +39,15 @@ let
         os.makedirs(DATA_DIR, exist_ok=True)
         INDEX_FILE = os.path.join(DATA_DIR, "index.json")
 
+
         @app.get("/health")
         def health():
-            return {"status": "ok", "service": "EverOS Memory Engine", "vault": VAULT_PATH}
+            return {
+                "status": "ok",
+                "service": "EverOS Memory Engine",
+                "vault": VAULT_PATH,
+            }
+
 
         @app.post("/api/v1/consolidate")
         def consolidate():
@@ -56,15 +60,20 @@ let
                         memories.append({
                             "file": str(filepath.relative_to(vault)),
                             "content": content[:1000],
-                            "mtime": filepath.stat().st_mtime
+                            "mtime": filepath.stat().st_mtime,
                         })
                     except Exception:
                         pass
 
             with open(INDEX_FILE, "w", encoding="utf-8") as f:
-                json.dump({"total": len(memories), "memories": memories}, f, indent=2)
+                json.dump(
+                    {"total": len(memories), "memories": memories},
+                    f,
+                    indent=2,
+                )
 
             return {"status": "consolidated", "indexed_files": len(memories)}
+
 
         @app.get("/api/v1/memory/search")
         def search(q: str = ""):
@@ -73,10 +82,20 @@ let
             try:
                 with open(INDEX_FILE, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                results = [m for m in data.get("memories", []) if q.lower() in m["content"].lower() or q.lower() in m["file"].lower()]
-                return {"query": q, "count": len(results), "results": results[:20]}
+                q_lower = q.lower()
+                results = [
+                    m for m in data.get("memories", [])
+                    if q_lower in m["content"].lower()
+                    or q_lower in m["file"].lower()
+                ]
+                return {
+                    "query": q,
+                    "count": len(results),
+                    "results": results[:20],
+                }
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
+
 
         if __name__ == "__main__":
             uvicorn.run(app, host="127.0.0.1", port=PORT)

@@ -727,6 +727,62 @@
           "at": "2026-08-27T00:10:31Z"
         }
       ]
+    },
+    {
+      "id": "clan-fleet-update",
+      "priority": 1,
+      "name": "Fleet Deployment via Clan Machine Updates",
+      "behavior": "Execute live machine updates (clan machines update z0r0 and clan machines update luffy) to deploy the unified Phase 1–5 stack to hardware",
+      "verification": [
+        "clan machines update z0r0",
+        "clan machines update luffy"
+      ],
+      "state": "in-progress",
+      "claimedBy": "antigravity",
+      "blockedReason": null,
+      "evidence": []
+    },
+    {
+      "id": "agent-swarm-telemetry",
+      "priority": 2,
+      "name": "Live Swarm Invocation and Telemetry Verification",
+      "behavior": "Verify live AI agent invocation (hermes, opencode, dsh) through the Kong Gateway (:8090), ContextForge MCP Gateway (:8094), and EverOS Memory Engine (:8092)",
+      "verification": [
+        "curl -s http://127.0.0.1:8090/status || curl -s http://127.0.0.1:8090/",
+        "curl -s http://127.0.0.1:8094/health || curl -s http://127.0.0.1:8094/",
+        "curl -s http://127.0.0.1:8092/health || curl -s http://127.0.0.1:8092/"
+      ],
+      "state": "untried",
+      "claimedBy": null,
+      "blockedReason": null,
+      "evidence": []
+    },
+    {
+      "id": "homepage-zellij-live-audit",
+      "priority": 3,
+      "name": "Live UX & Dashboard Audit",
+      "behavior": "Verify live Homepage Dashboard rendering on :8082 from LAN/mobile devices (zero card ballooning) and verify Zellij Noctalia status bar sync",
+      "verification": [
+        "curl -s http://127.0.0.1:8082/",
+        "systemctl --user is-active zellij-colors-sync || true"
+      ],
+      "state": "untried",
+      "claimedBy": null,
+      "blockedReason": null,
+      "evidence": []
+    },
+    {
+      "id": "harness-scores-telemetry",
+      "priority": 4,
+      "name": "Harness Evaluation Telemetry",
+      "behavior": "Score system execution against evaluator-rubric.md and persist evidence to /var/lib/hermes/harness/harness-scores.md",
+      "verification": [
+        "test -f /var/lib/hermes/harness/harness-scores.md || test -d /var/lib/hermes/harness"
+      ],
+      "state": "untried",
+      "claimedBy": null,
+      "blockedReason": null,
+      "evidence": []
     }
   ]
 }

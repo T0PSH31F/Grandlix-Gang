@@ -59,6 +59,7 @@ in
 
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0755 ${primaryUser} users -"
+      "d /home/${primaryUser} 0755 ${primaryUser} users -"
       "d /home/${primaryUser}/.claude 0755 ${primaryUser} users -"
       "d /home/${primaryUser}/.codex 0755 ${primaryUser} users -"
       "d /home/${primaryUser}/.gemini 0755 ${primaryUser} users -"
