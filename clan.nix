@@ -32,7 +32,6 @@ let
     };
 
   };
-  inherit ((import ./layers/90-profiles/tags/default.nix)) mkMachineFromTags;
 in
 {
   imports = [
@@ -141,21 +140,23 @@ in
     };
   };
 
+  # Tags-as-data: ALL layers + tag profiles imported unconditionally.
+  # Tags control enablement via lib.mkIf guards, not import-site control flow.
   machines = {
     z0r0 = {
       machine.tags = machinesInventory.z0r0.tags;
       imports = [
         ./machines/z0r0/default.nix
-      ]
-      ++ mkMachineFromTags machinesInventory.z0r0.tags;
+        ./all-layers.nix
+      ];
     };
 
     luffy = {
       machine.tags = machinesInventory.luffy.tags;
       imports = [
         ./machines/luffy/default.nix
-      ]
-      ++ mkMachineFromTags machinesInventory.luffy.tags;
+        ./all-layers.nix
+      ];
     };
 
   };

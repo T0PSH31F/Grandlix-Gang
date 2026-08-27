@@ -74,27 +74,21 @@ let
         [
           {
             name = "llm-chat";
-            service = {
-              name = "freellmapi-llm";
-            };
+            service = "freellmapi-llm";
             paths = [ "/llm/v1/chat/completions" ];
             methods = [ "POST" ];
             tags = [ "llm" ];
           }
           {
             name = "llm-completions";
-            service = {
-              name = "freellmapi-llm";
-            };
+            service = "freellmapi-llm";
             paths = [ "/llm/v1/completions" ];
             methods = [ "POST" ];
             tags = [ "llm" ];
           }
           {
             name = "llm-embeddings";
-            service = {
-              name = "freellmapi-llm";
-            };
+            service = "freellmapi-llm";
             paths = [ "/llm/v1/embeddings" ];
             methods = [ "POST" ];
             tags = [ "llm" ];
@@ -102,9 +96,7 @@ let
           # Frontier traffic → Manifest
           {
             name = "llm-frontier";
-            service = {
-              name = "manifest-llm";
-            };
+            service = "manifest-llm";
             paths = [ "/llm/frontier/v1/chat/completions" ];
             methods = [ "POST" ];
             tags = [
@@ -115,10 +107,8 @@ let
           # Coding traffic → OmniRoute or ExtremeRouter (mutually exclusive)
           {
             name = "llm-coding";
-            service = {
-              name =
-                if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
-            };
+            service =
+              if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
             paths = [ "/llm/coding/v1/chat/completions" ];
             methods = [ "POST" ];
             tags = [
@@ -129,9 +119,7 @@ let
           # Free pool → freellmpool
           {
             name = "llm-free";
-            service = {
-              name = "freellmpool-llm";
-            };
+            service = "freellmpool-llm";
             paths = [ "/llm/free/v1/chat/completions" ];
             methods = [ "POST" ];
             tags = [
@@ -143,10 +131,8 @@ let
           # OpenCode/Hermes call /v1/models to enumerate available models
           {
             name = "llm-models";
-            service = {
-              name =
-                if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
-            };
+            service =
+              if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
             paths = [
               "/v1/models"
               "/llm/v1/models"
@@ -160,9 +146,7 @@ let
           # MCP gateway
           {
             name = "mcp-gateway";
-            service = {
-              name = "freellmapi-llm";
-            };
+            service = "freellmapi-llm";
             paths = [ "/mcp" ];
             methods = [
               "GET"
@@ -381,7 +365,7 @@ in
 
     proxyPort = mkOption {
       type = types.port;
-      default = 8000;
+      default = 8090;
       description = "Kong proxy port (API traffic)";
     };
 
@@ -393,19 +377,19 @@ in
 
     adminPort = mkOption {
       type = types.port;
-      default = 8001;
+      default = 8091;
       description = "Kong Admin API port";
     };
 
     adminSslPort = mkOption {
       type = types.port;
-      default = 8444;
+      default = 8445;
       description = "Kong Admin API SSL port";
     };
 
     managerPort = mkOption {
       type = types.port;
-      default = 8002;
+      default = 8093;
       description = "Kong Manager GUI port";
     };
 
@@ -527,7 +511,9 @@ in
           set -euo pipefail
           mkdir -p ${cfg.dataDir}
           if [ -f "${config.sops.templates."kong-consumers".path}" ]; then
-            ${pkgs.jq}/bin/jq -s '.[0] * .[1]' ${kongYml} "${config.sops.templates."kong-consumers".path}" > ${cfg.dataDir}/declarative.json
+            ${pkgs.jq}/bin/jq -s '.[0] * .[1]' ${kongYml} "${
+              config.sops.templates."kong-consumers".path
+            }" > ${cfg.dataDir}/declarative.json
           else
             cp ${kongYml} ${cfg.dataDir}/declarative.json
           fi
@@ -548,11 +534,11 @@ in
       environment = {
         KONG_DATABASE = "off";
         KONG_DECLARATIVE_CONFIG = "/etc/kong/declarative.json";
-        KONG_PROXY_LISTEN = "0.0.0.0:8000";
-        KONG_PROXY_LISTEN_SSL = "0.0.0.0:8443";
-        KONG_ADMIN_LISTEN = "0.0.0.0:8001";
-        KONG_ADMIN_LISTEN_SSL = "0.0.0.0:8444";
-        KONG_MANAGER_LISTEN = "0.0.0.0:8002";
+        KONG_PROXY_LISTEN = "0.0.0.0:${toString cfg.proxyPort}";
+        KONG_PROXY_LISTEN_SSL = "0.0.0.0:${toString cfg.proxySslPort}";
+        KONG_ADMIN_LISTEN = "127.0.0.1:${toString cfg.adminPort}";
+        KONG_ADMIN_LISTEN_SSL = "127.0.0.1:${toString cfg.adminSslPort}";
+        KONG_MANAGER_LISTEN = "127.0.0.1:${toString cfg.managerPort}";
         KONG_LOG_LEVEL = "info";
         KONG_PROXY_ACCESS_LOG = "/dev/stdout";
         KONG_ADMIN_ACCESS_LOG = "/dev/stdout";

@@ -1,7 +1,8 @@
-{ lib, ... }:
+# gaming — Steam, GameMode, emulators
+# Tags-as-data: all config gated by tag membership.
+{ config, lib, ... }:
 {
-  imports = [
-    ../../60-gui-programs
-  ];
-  layers.layer-60.gui.gaming.enable = lib.mkDefault true;
+  config = lib.mkIf (builtins.elem "gaming" config.machine.tags) {
+    layers.layer-60.gui.gaming.enable = lib.mkDefault true;
+  };
 }

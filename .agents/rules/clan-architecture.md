@@ -1,16 +1,16 @@
 ---
+trigger: always_on
 description: Clan Architecture and Variables Rule Set
-trigger: "When managing secrets, passwords, tokens, API keys, or creating new services in the Clan/Flake-parts architecture."
 ---
 
 # 🛡️ Clan Architecture & Variables Strategy
 
 ## 1. The Golden Rule of Secrets & Variables
-**NEVER** hardcode secrets, API keys, passwords, or sensitive environment variables directly into Nix files or use `pkgs.writeText` to bypass evaluation errors. 
+**NEVER** hardcode secrets, API keys, passwords, or sensitive environment variables directly into Nix files or use `pkgs.writeText` to bypass evaluation errors.
 **ALWAYS** use the `clan.core.vars` framework as the sole preference for any sensitive data injection.
 
 ### Why Clan Vars?
-Clan vars provide a declarative, reproducible, and type-safe way to manage generated files. 
+Clan vars provide a declarative, reproducible, and type-safe way to manage generated files.
 - **Type Safety**: The vars system distinguishes between secret files (accessible via `.path`, deployed to `/run/secrets/` and NEVER stored in the Nix store) and public files (accessible via `.value`).
 - **Separation of Concerns**: Generation logic, storage (sops backend), and deployment are handled by Clan core logic.
 - **Reproducibility**: Defined once and generated consistently across deployments.
@@ -20,7 +20,7 @@ Clan vars provide a declarative, reproducible, and type-safe way to manage gener
 - **`sops-nix`**: Reserved strictly for central legacy user secrets (`external_services.yaml`, `vicinae.yaml`, `postgres.yaml`) shared across users or legacy global endpoints. All new machine services MUST use `clan.core.vars`.
 
 ## 2. Implementing Clan Vars for Services
-When introducing a new service or migrating an existing one that requires secrets, you must declare a Clan generator inside the module configuration block. 
+When introducing a new service or migrating an existing one that requires secrets, you must declare a Clan generator inside the module configuration block.
 
 ### Implementation Pattern:
 ```nix

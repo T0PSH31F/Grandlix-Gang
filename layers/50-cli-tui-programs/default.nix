@@ -9,39 +9,16 @@ let
 in
 {
   imports = [
-    # Multi-class modules (wrapped)
-    (mkDendriticModule "fallbacks" ./52-editors/fallbacks.nix)
-    (mkDendriticModule "nixvim" ./52-editors/nixvim)
-    (mkDendriticModule "helix" ./52-editors/helix.nix)
-    (mkDendriticModule "gedit" ./52-editors/gedit.nix)
-    (mkDendriticModule "alternatives" ./56-file-managers/alternatives.nix)
-    (mkDendriticModule "superfile" ./56-file-managers/superfile.nix)
-    (mkDendriticModule "yazi" ./56-file-managers/yazi.nix)
-    (mkDendriticModule "keybindings" ./59-integrations/keybindings.nix)
-    (mkDendriticModule "yazelix-style" ./59-integrations/yazelix-style.nix)
-    (mkDendriticModule "zellij" ./54-multiplexers/zellij.nix)
-    (mkDendriticModule "tmux" ./54-multiplexers/tmux.nix)
-    (mkDendriticModule "starship" ./55-prompt/starship.nix)
-    (mkDendriticModule "bash" ./51-shells/bash.nix)
-    (mkDendriticModule "common-shell" ./51-shells/common.nix)
-    (mkDendriticModule "zsh" ./51-shells/zsh.nix)
-    (mkDendriticModule "matugen" ./58-theming/matugen.nix)
-    (mkDendriticModule "fzf" ./53-tools/fzf.nix)
-    (mkDendriticModule "git" ./53-tools/git.nix)
-    (mkDendriticModule "himalaya" ./53-tools/himalaya.nix)
-    (mkDendriticModule "gpg" ./53-tools/gpg.nix)
-    (mkDendriticModule "modern-utils" ./53-tools/modern-utils.nix)
-    (mkDendriticModule "nix-tools" ./53-tools/nix-tools.nix)
-    (mkDendriticModule "python" ./53-tools/python.nix)
-    (mkDendriticModule "system-utils" ./53-tools/system-utils.nix)
-    (mkDendriticModule "azure-cli" ./53-tools/azure-cli.nix)
-    (mkDendriticModule "yazelix" ./59-integrations/yazelix.nix)
-    (mkDendriticModule "vivid" ./58-theming/vivid.nix)
-    (mkDendriticModule "terminal-toys" ./58-theming/terminal-toys.nix)
-    ./packages-dev.nix
-
-    # Tiered sub-entry points
+    ./51-shells
+    ./52-editors
+    ./53-tools
+    ./54-multiplexers
+    ./55-prompt
+    ./56-file-managers
     ./57-services
+    ./58-theming
+    ./59-integrations
+    ./packages-dev.nix
   ];
 
   options.layers.layer-50.cli = {

@@ -259,6 +259,9 @@
             inherit (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit (inputs.nixpkgs) lib; })
               mkDendriticModule
               ;
+            inherit (import ./layers/80-lib/81-helpers/mkDendriticTree.nix { inherit (inputs.nixpkgs) lib; })
+              mkDendriticTree
+              ;
           };
           # Configure nixpkgs to allow unfree packages
           pkgsForSystem =
@@ -340,6 +343,9 @@
                   inherit inputs;
                   inherit (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit (inputs.nixpkgs) lib; })
                     mkDendriticModule
+                    ;
+                  inherit (import ./layers/80-lib/81-helpers/mkDendriticTree.nix { inherit (inputs.nixpkgs) lib; })
+                    mkDendriticTree
                     ;
                 };
                 modules = [

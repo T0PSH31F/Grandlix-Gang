@@ -68,6 +68,8 @@ in
   };
 
   nixos = mkIf (cfg.enable or false) {
+    environment.systemPackages = mkIf (cfg.package != null) [ cfg.package ];
+
     # Impermanence: Store manages profile composition (via dsh-nix); ~/.dsh persists runtime state and config
     environment.persistence."/persist" =
       mkIf (osConfig.layers.layer-10.system.config.impermanence.enable or false)

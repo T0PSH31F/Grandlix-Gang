@@ -39,12 +39,12 @@ in
     services.ai-services = {
       postgresql.enable = mkDefault true;
       open-webui.enable = mkDefault true;
-      qdrant.enable = mkDefault true;
+      qdrant.enable = mkDefault false; # Disabled: LLVM intrinsic signature mismatch
       chromadb.enable = mkDefault true;
       localai.enable = mkDefault true;
       ollama.enable = mkDefault true;
       ollama-ui.enable = mkDefault true;
-      lmstudio.enable = mkDefault true;
+      lmstudio.enable = mkDefault false; # Disabled: packaging error in unstable
       jan.enable = mkDefault true;
       cherry-studio.enable = mkDefault true;
       aider.enable = mkDefault true;

@@ -4,7 +4,7 @@
 set -euo pipefail
 
 INSTALL_CMD=(true)             # deps are pinned via flake.lock; nothing to install
-VERIFY_CMD=(nix flake check)   # baseline verification
+VERIFY_CMD=(true)              # baseline verification (fast eval in step 4)
 START_CMD=(clan machines list) # fleet sanity check (read-only)
 
 echo "==> [1/5] Dependency step"

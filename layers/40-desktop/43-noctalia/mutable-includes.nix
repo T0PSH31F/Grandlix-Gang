@@ -19,6 +19,18 @@ in
 {
   config = lib.mkIf cfg.enable {
 
+    # ── Hyprland Experience Includes ─────────────────────────────
+    xdg.configFile."hypr/experiences/noctalia-hyprland.conf".text = ''
+      # Noctalia Hyprland Experience Includes
+      source = ${config.home.homeDirectory}/.config/hypr/noctalia.conf
+      source = ${config.home.homeDirectory}/.config/hypr/hyprtoolkit.conf
+      source = ${config.home.homeDirectory}/.cache/noctalia/HVE/overlay.conf
+    '';
+    xdg.configFile."hypr/experiences/active-experience.conf".text = ''
+      # Active Desktop Experience (Noctalia Hyprland)
+      source = ${config.home.homeDirectory}/.config/hypr/experiences/noctalia-hyprland.conf
+    '';
+
     # ── Kitty ──────────────────────────────────────────────────────────
     # Noctalia's built-in kitty template generates to:
     #   ~/.config/kitty/themes/noctalia.conf (and symlinks to current-theme.conf)

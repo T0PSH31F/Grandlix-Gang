@@ -38,17 +38,17 @@
           group = "users";
         };
 
-        services.ai-services.extreme-router = {
+        layers.layer-20.services.extreme-router = {
           enable = true;
           port = 20128;
         };
 
-        services.ai-services.aionui = {
+        layers.layer-20.services.aionui = {
           enable = true;
           port = 3006;
         };
 
-        services.ai-services.mission-control = {
+        layers.layer-20.services.mission-control = {
           enable = true;
           port = 3099;
         };

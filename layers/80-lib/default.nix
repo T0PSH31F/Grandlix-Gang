@@ -1,4 +1,4 @@
-# 80-lib entry point
+# 80-lib Tier Entry Point — imports lib sub-tiers
 { ... }:
 {
   imports = [

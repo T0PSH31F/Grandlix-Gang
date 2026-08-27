@@ -34,7 +34,7 @@ in
           }
           (lib.mkIf cfg.headless (
             let
-              allThemes = import ../58-theming/themes.nix { inherit lib; };
+              allThemes = import ../58-theming/_themes.nix { inherit lib; };
               selectedThemeName = cfg.theming.theme or "tokyo-night";
               themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";
             in

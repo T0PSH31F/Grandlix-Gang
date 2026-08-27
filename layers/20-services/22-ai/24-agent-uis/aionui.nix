@@ -12,8 +12,10 @@ let
   primaryUser = config.layers.meta.primaryUser or "t0psh31f";
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
   aionuiPkg =
-    llmPkgs.aionui or (pkgs.aionui
-      or (pkgs.writeShellScriptBin "aionui" "exec ${pkgs.python3}/bin/python3 -m http.server \${AIONUI_PORT:-3006}")
+    llmPkgs.aionui or (pkgs.aionui or (pkgs.writeShellScriptBin "aionui" ''
+      PORT="''${AIONUI_PORT:-''${PORT:-3006}}"
+      exec ${pkgs.python3}/bin/python3 -m http.server "$PORT" --bind 127.0.0.1
+    '')
     );
 in
 {

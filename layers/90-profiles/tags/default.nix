@@ -1,4 +1,16 @@
-# Tag Profile Registry and Machine Tag Resolver
+# Tag Profile Registry — Tags as Pure Data
+#
+# All tag profiles are always imported. Each profile gates its config
+# with lib.mkIf (builtins.elem "tag" config.machine.tags).
+# Tags are pure data — they don't control whether options exist.
+#
+# Invalid tags fail eval with a readable assertion error.
+{
+  config,
+  lib,
+  mkDendriticModule,
+  ...
+}:
 let
   validTags = [
     "ai-agent"
@@ -17,16 +29,33 @@ let
     "workstation"
   ];
 
-  mkMachineFromTags =
-    tags:
-    map (
-      tag:
-      if builtins.elem tag validTags then
-        ./${tag}.nix
-      else
-        throw "Invalid machine tag '${tag}'! Must be one of: ${builtins.concatStringsSep ", " validTags}"
-    ) tags;
+  machineTags = config.machine.tags or [ ];
+  invalidTags = builtins.filter (tag: !(builtins.elem tag validTags)) machineTags;
 in
 {
-  inherit validTags mkMachineFromTags;
+  imports = [
+    (mkDendriticModule "ai-agent" ./ai-agent.nix)
+    (mkDendriticModule "ai-server" ./ai-server.nix)
+    (mkDendriticModule "cache-server" ./cache-server.nix)
+    (mkDendriticModule "desktop" ./desktop.nix)
+    (mkDendriticModule "development" ./development.nix)
+    (mkDendriticModule "gaming" ./gaming.nix)
+    (mkDendriticModule "gpu-compute" ./gpu-compute.nix)
+    (mkDendriticModule "homelab" ./homelab.nix)
+    (mkDendriticModule "intel-12th-gen" ./intel-12th-gen.nix)
+    (mkDendriticModule "intel-9th-gen" ./intel-9th-gen.nix)
+    (mkDendriticModule "laptop" ./laptop.nix)
+    (mkDendriticModule "media" ./media.nix)
+    (mkDendriticModule "server" ./server.nix)
+    (mkDendriticModule "workstation" ./workstation.nix)
+  ];
+
+  config = {
+    assertions = [
+      {
+        assertion = invalidTags == [ ];
+        message = "Invalid machine tag(s): ${builtins.concatStringsSep ", " invalidTags}. Valid tags: ${builtins.concatStringsSep ", " validTags}";
+      }
+    ];
+  };
 }

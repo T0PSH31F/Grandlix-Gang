@@ -89,6 +89,12 @@ in
           PORT = toString cfg.port;
           CONFIG_FILE = "/app/config.json";
           LANGFUSE_HOST = cfg.langfuseEndpoint;
+          JWT_SECRET_KEY = "nfp-context-forge-secret-key-32charslong!!";
+          MCPGATEWAY_JWT_SECRET_KEY = "nfp-context-forge-secret-key-32charslong!!";
+          SESSION_SECRET_KEY = "nfp-context-forge-secret-key-32charslong!!";
+          AUTH_SECRET_KEY = "nfp-context-forge-secret-key-32charslong!!";
+          SECURITY_KEY = "nfp-context-forge-secret-key-32charslong!!";
+          ENVIRONMENT = "development";
         };
         volumes = [
           "${configFile}:/app/config.json"

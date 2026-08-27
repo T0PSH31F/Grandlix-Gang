@@ -1,19 +1,15 @@
-# System Tier Entry Point
+# System Tier Entry Point — imports system sub-tiers
 { ... }:
 {
   imports = [
     ./11-foundation
     ./12-processor
     ./13-users
-    ./14-virtualization/virtualization.nix
-    ./15-filesystem/impermanence.nix
-    ./15-filesystem/google-drive.nix
+    ./14-virtualization
+    ./15-filesystem
     ./16-mobile
-    ./17-app-runtimes/appimage.nix
-    ./17-app-runtimes/flatpak.nix
+    ./17-app-runtimes
     ./18-peripherals
     ./19-optimizations
-    ../80-lib
-    ../00-cyberia/06-scripts
   ];
 }

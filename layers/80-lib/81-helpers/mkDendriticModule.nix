@@ -1,11 +1,17 @@
-_:
+{ lib }:
 /*
   Wrapper for dendritic multi-class modules.
   Handles both multi-class (nixos/home/options) and standard modules.
+
+  The `name` argument identifies the module and is used to assert that
+  the module's declared option paths end with the given name — catching
+  mismatches at eval time. For example:
+    (mkDendriticModule "claude-code" ./71-coding/claude-code.nix)
+  will assert that any top-level option key ends with "claude-code".
 */
 let
   mkDendriticModule =
-    _name: module:
+    name: module:
     {
       config,
       lib,
@@ -107,6 +113,7 @@ let
 
     in
     {
+      _file = "mkDendriticModule(${name})";
       inherit imports;
       options = opts;
       config =

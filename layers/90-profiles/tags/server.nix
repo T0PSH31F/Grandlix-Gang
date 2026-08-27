@@ -1,15 +1,14 @@
-{ lib, ... }:
+# server — adguard, monitoring, tailscale, restic
+# Tags-as-data: all config gated by tag membership.
+{ config, lib, ... }:
 {
-  imports = [
-    ../../10-system/11-foundation
-    ../../20-services
-  ];
+  config = lib.mkIf (builtins.elem "server" config.machine.tags) {
+    layers.layer-20.services.config = {
+      adguard.enable = lib.mkDefault true;
+      monitoring.enable = lib.mkDefault true;
+      tailscale.enable = lib.mkDefault true;
+    };
 
-  layers.layer-20.services.config = {
-    adguard.enable = lib.mkDefault true;
-    monitoring.enable = lib.mkDefault true;
-    tailscale.enable = lib.mkDefault true;
+    layers.layer-20.services.backups.restic.enable = lib.mkDefault true;
   };
-
-  layers.layer-20.services.backups.restic.enable = lib.mkDefault true;
 }
