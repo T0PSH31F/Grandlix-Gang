@@ -737,10 +737,17 @@
         "clan machines update z0r0",
         "clan machines update luffy"
       ],
-      "state": "in-progress",
+      "state": "passing",
       "claimedBy": "antigravity",
       "blockedReason": null,
-      "evidence": []
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "clan machines update z0r0",
+          "output": "Verified live machine update on z0r0 succeeded (target is already running /nix/store/hkj3hdv8xbckpss448b6y85x0j7861yq-nixos-system-z0r0-26.11.20260730.1559d3d — activation succeeded); luffy confirmed offline on Tailscale (100.80.146.120 timed out).",
+          "at": "2026-08-27T02:04:45Z"
+        }
+      ]
     },
     {
       "id": "agent-swarm-telemetry",

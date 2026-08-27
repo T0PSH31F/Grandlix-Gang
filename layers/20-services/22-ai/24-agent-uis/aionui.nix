@@ -11,7 +11,10 @@ let
   cfg = config.layers.layer-20.services.aionui;
   primaryUser = config.layers.meta.primaryUser or "t0psh31f";
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
-  aionuiPkg = llmPkgs.aionui or (pkgs.aionui or (pkgs.writeShellScriptBin "aionui" "echo aionui"));
+  aionuiPkg =
+    llmPkgs.aionui or (pkgs.aionui
+      or (pkgs.writeShellScriptBin "aionui" "exec ${pkgs.python3}/bin/python3 -m http.server \${AIONUI_PORT:-3006}")
+    );
 in
 {
   imports = [

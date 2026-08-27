@@ -519,10 +519,23 @@ in
     };
 
     # ── Kong container ────────────────────────────────────────────
-    # DB-less mode with TWO declarative config files:
-    #   1. kong.base.yml  — structural (services, routes, plugins) from Nix store
-    #   2. consumers.yml  — API keys rendered by sops (never enters the store)
-    # Kong merges both at startup via colon-separated KONG_DECLARATIVE_CONFIG.
+    # DB-less mode with merged declarative config file:
+    # ExecStartPre merges structural kongYml + sops-rendered consumers into /var/lib/kong/declarative.json
+    systemd.services.podman-kong = {
+      serviceConfig.ExecStartPre = [
+        "+${pkgs.writeShellScript "kong-merge-declarative-config" ''
+          set -euo pipefail
+          mkdir -p ${cfg.dataDir}
+          if [ -f "${config.sops.templates."kong-consumers".path}" ]; then
+            ${pkgs.jq}/bin/jq -s '.[0] * .[1]' ${kongYml} "${config.sops.templates."kong-consumers".path}" > ${cfg.dataDir}/declarative.json
+          else
+            cp ${kongYml} ${cfg.dataDir}/declarative.json
+          fi
+          chmod 0644 ${cfg.dataDir}/declarative.json
+        ''}"
+      ];
+    };
+
     virtualisation.oci-containers.containers.kong = {
       inherit (cfg) image;
       ports = [
@@ -534,8 +547,7 @@ in
       ];
       environment = {
         KONG_DATABASE = "off";
-        # Colon-separated: base structural config + sops-rendered consumers
-        KONG_DECLARATIVE_CONFIG = "/etc/kong/kong.base.yml:/etc/kong/consumers.yml";
+        KONG_DECLARATIVE_CONFIG = "/etc/kong/declarative.json";
         KONG_PROXY_LISTEN = "0.0.0.0:8000";
         KONG_PROXY_LISTEN_SSL = "0.0.0.0:8443";
         KONG_ADMIN_LISTEN = "0.0.0.0:8001";
@@ -554,8 +566,7 @@ in
         KONG_DNS_HOSTS = "host.docker.internal";
       };
       volumes = [
-        "${kongYml}:/etc/kong/kong.base.yml:ro"
-        "${config.sops.templates."kong-consumers".path}:/etc/kong/consumers.yml:ro"
+        "${cfg.dataDir}/declarative.json:/etc/kong/declarative.json:ro"
         # Logs go to stdout/stderr — no volume mount needed
       ];
       extraOptions = [
