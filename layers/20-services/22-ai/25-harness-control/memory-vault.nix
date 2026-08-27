@@ -11,6 +11,7 @@
 with lib;
 let
   cfg = config.layers.layer-20.services.memory-vault;
+  primaryUser = config.layers.meta.primaryUser or "t0psh31f";
 
   syncScript = pkgs.writeShellApplication {
     name = "memory-vault-sync";
@@ -79,7 +80,7 @@ in
 
     vaultPath = mkOption {
       type = types.str;
-      default = "/var/lib/memory/vault";
+      default = "/home/t0psh31f/Notes/EverOS";
       description = "Path to the canonical markdown memory vault";
     };
 
@@ -107,13 +108,13 @@ in
 
     # Systemd tmpfiles rule to create vault and seed directories with correct group permissions
     systemd.tmpfiles.rules = [
-      "d ${cfg.vaultPath} 0775 root memory -"
-      "d ${cfg.vaultPath}/knowledge 0775 root memory -"
-      "d ${cfg.vaultPath}/decisions 0775 root memory -"
-      "d ${cfg.vaultPath}/people 0775 root memory -"
-      "d ${cfg.vaultPath}/projects 0775 root memory -"
-      "d ${cfg.vaultPath}/inbox 0775 root memory -"
-      "d ${cfg.vaultPath}/scratch 0775 root memory -"
+      "d ${cfg.vaultPath} 0775 ${primaryUser} users -"
+      "d ${cfg.vaultPath}/knowledge 0775 ${primaryUser} users -"
+      "d ${cfg.vaultPath}/decisions 0775 ${primaryUser} users -"
+      "d ${cfg.vaultPath}/people 0775 ${primaryUser} users -"
+      "d ${cfg.vaultPath}/projects 0775 ${primaryUser} users -"
+      "d ${cfg.vaultPath}/inbox 0775 ${primaryUser} users -"
+      "d ${cfg.vaultPath}/scratch 0775 ${primaryUser} users -"
     ];
 
     # Impermanence persistence for memory vault
@@ -137,8 +138,8 @@ in
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${syncScript}/bin/memory-vault-sync";
-        User = "root";
-        Group = "memory";
+        User = primaryUser;
+        Group = "users";
         UMask = "0002";
       };
     };

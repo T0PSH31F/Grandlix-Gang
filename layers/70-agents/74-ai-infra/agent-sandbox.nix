@@ -27,16 +27,18 @@ let
 
       mkdir -p "$DATA_DIR/workspaces" "$DATA_DIR/tmp"
 
+      SANDBOX_IMAGE="${cfg.sandboxImage}"
+
       case "$BACKEND" in
         podman)
-          echo "[agent-sandbox] Launching isolated container using Podman ($cfg.sandboxImage)..."
+          echo "[agent-sandbox] Launching isolated container using Podman ($SANDBOX_IMAGE)..."
           exec podman run --rm -it \
             --name "agent-sandbox-$(date +%s)" \
             --read-only \
             --tmpfs /tmp:rw,noexec,nosuid,size=1g \
             --network "${if cfg.networkPolicy == "none" then "none" else "bridge"}" \
             -v "$DATA_DIR/workspaces:/workspace:rw" \
-            "${cfg.sandboxImage}" "$@"
+            "$SANDBOX_IMAGE" "$@"
           ;;
         bubblewrap)
           echo "[agent-sandbox] Launching isolated environment using Bubblewrap..."

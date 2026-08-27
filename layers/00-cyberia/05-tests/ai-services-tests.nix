@@ -9,8 +9,9 @@
     }:
     {
       imports = [
+        ../../20-services/21-networking/endpoints.nix
         ../../20-services/22-ai/21-llm-routers/extreme-router.nix
-        ../../20-services/22-ai/22-interfaces/aionui.nix
+        ../../20-services/22-ai/24-agent-uis/aionui.nix
         ../../20-services/22-ai/25-harness-control/mission-control.nix
       ];
 
@@ -28,6 +29,7 @@
       };
 
       config = {
+        _module.args.inputs = { };
         layers.layer-10.system.config.impermanence.enable = false;
 
         users.users.t0psh31f = {
@@ -44,7 +46,6 @@
         services.ai-services.aionui = {
           enable = true;
           port = 3006;
-          openFirewall = true;
         };
 
         services.ai-services.mission-control = {

@@ -5,8 +5,9 @@ with lib;
 let
   cfg = config.layers.layer-20.services.config.homepage-dashboard;
   hostName = config.networking.hostName or "unknown";
+  hasEnv = cfg.environmentFile != null;
 
-  # Custom CSS for gradient effects — works on both machines
+  # Custom CSS for gradient effects & strict card height stabilization to prevent error ballooning
   gradientCSS = ''
     .greeting-text {
       background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
@@ -21,14 +22,47 @@ let
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
+    /* Card Height & Layout Stabilization — Prevents ballooning on error */
+    .service-card, .card, div[class*="card"] {
+      max-height: 180px !important;
+      overflow: hidden !important;
+      contain: content !important;
+    }
+
+    /* Compact API error pill styling */
+    .service-widget-error, .widget-error, [class*="widget-error"], [class*="Error"] {
+      max-height: 24px !important;
+      overflow: hidden !important;
+      padding: 2px 6px !important;
+      font-size: 0.7rem !important;
+      background: rgba(239, 68, 68, 0.12) !important;
+      border: 1px solid rgba(239, 68, 68, 0.25) !important;
+      border-radius: 4px !important;
+      color: #fca5a5 !important;
+    }
+
+    .service-widget-error *, .widget-error * {
+      font-size: 0.7rem !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+    }
+
+    /* Prevent giant background decorative circles from overflowing cards */
+    div[class*="rounded-full"] {
+      max-width: 100% !important;
+      max-height: 100% !important;
+      opacity: 0.15 !important;
+    }
   '';
 
   # ---------------------------------------------------------------------------
-  # Address constants — Tailscale IPs for cross-machine access
-  # (LAN IPs don't work: luffy on Ethernet can't initiate to z0r0 on WiFi)
+  # Address constants — mDNS / Tailscale hostnames for multi-device LAN access
   # ---------------------------------------------------------------------------
-  z0r0 = "100.87.170.11";
-  luffy = "100.72.46.75";
+  z0r0 = "z0r0.local";
+  luffy = "luffy.local";
 
   # The "other" machine — for glances remote stats widget
   remoteMachine = if hostName == "z0r0" then "luffy" else "z0r0";
@@ -106,23 +140,19 @@ let
     # luffy — new services
     opencompany = 5680;
 
-    # z0r0 — AI routers
+    # z0r0 — AI routers & control plane
     kongGateway = 8090;
     freellmpool = 8082;
     freellmapi = 3003;
     mistralMcp = 3333;
     extremeRouter = 20128;
-    omniroute = 20128; # OmniRoute free model router (mutually exclusive with ExtremeRouter)
+    omniroute = 20128;
+    polyfloor = 8001;
+    everos = 8092;
+    contextForge = 8094;
   };
 
-  hostOf =
-    machine:
-    if machine == hostName then
-      "127.0.0.1"
-    else if machine == "z0r0" then
-      z0r0
-    else
-      luffy;
+  hostOf = machine: if machine == "z0r0" then z0r0 else luffy;
 
   mkService =
     name:
@@ -145,7 +175,7 @@ let
         inherit href;
         siteMonitor = if siteMonitor != null then siteMonitor else href;
       }
-      // optionalAttrs (widget != null) { inherit widget; };
+      // optionalAttrs (hasEnv && widget != null) { inherit widget; };
     };
 
   zSrv =
@@ -185,10 +215,23 @@ let
     };
 
   # ---------------------------------------------------------------------------
-  # Service groups  —  Observability at top, then AI, Infra, Comms, Media, Auto
-  # Icons: use si- (Simple Icons), mdi- (Material Design), or dashboard-icons names
+  # Service groups  —  Speeddial at top, then Observability, AI, Infra, Comms, Media, Auto
   # ---------------------------------------------------------------------------
   groups = {
+    Speeddial = [
+      (zSrv "Hermes Workspace" "hermesWorkspace" "mdi-robot-outline" "Agent Command Center")
+      (lSrv "Open WebUI" "openWebui" "open-webui.png" "Local LLM Chat")
+      (lSrv "SearXNG" "searxng" "searxng.png" "Meta Search Engine")
+      (zSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
+      (zSrvW "Grafana" "grafana" "grafana.png" "Dashboards & Visualization" {
+        type = "grafana";
+        url = "http://${hostOf "z0r0"}:${toString ports.grafana}";
+        username = "admin";
+        password = "admin";
+      })
+      (lSrv "Vaultwarden" "vaultwarden" "vaultwarden.png" "Password Manager")
+    ];
+
     Observability = [
       (zSrvW "Prometheus" "prometheus" "prometheus.png" "Metrics Collection" {
         type = "prometheus";
@@ -235,6 +278,9 @@ let
       (zSrv "FreeLLMAPI" "freellmapi" "mdi-api" "Free-Tier LLM Router")
       (zSrv "Mistral MCP" "mistralMcp" "mdi-brain" "Mistral AI Tool Server")
       (lSrv "OpenCompany" "opencompany" "mdi-office-building" "AI Workflow Canvas")
+      (zSrv "Polyfloor OS" "polyfloor" "mdi-layers-triple" "Multi-floor AI Agent OS")
+      (zSrv "EverOS Memory Engine" "everos" "mdi-brain-freeze" "Memory Chassis & Engine")
+      (zSrv "ContextForge Gateway" "contextForge" "mdi-router-wireless" "MCP Context Gateway")
     ];
 
     Infrastructure = [
@@ -249,7 +295,6 @@ let
       (lSrv "FileBrowser" "filebrowser" "filebrowser.png" "Web File Manager")
       (lSrv "Spacedrive" "spacedrive" "si-spacedrive" "Virtual File System")
       (lSrv "Karakeep" "karakeep" "mdi-bookmark-multiple" "Bookmark Manager")
-      # Caddy reverse proxy stats — admin API on port 2019, no key needed
       (lSrvW "Caddy" "caddyAdmin" "caddy.png" "Reverse Proxy" {
         type = "caddy";
         url = "http://${hostOf "luffy"}:${toString ports.caddyAdmin}";
@@ -363,15 +408,6 @@ in
         description = "Path to Lovable JS effects";
       };
     };
-    # Environment file for widget API keys — create with:
-    #   HOMEPAGE_JELLYFIN_KEY=...
-    #   HOMEPAGE_SONARR_KEY=...
-    #   HOMEPAGE_RADARR_KEY=...
-    #   HOMEPAGE_PROWLARR_KEY=...
-    #   HOMEPAGE_HASS_KEY=...
-    #   HOMEPAGE_HEADSCALE_KEY=...
-    #   HOMEPAGE_HEADSCALE_NODE_ID=...
-    #   HOMEPAGE_SPOTIFY_KEY=...
     environmentFile = mkOption {
       type = types.nullOr types.path;
       default = null;
@@ -391,11 +427,16 @@ in
           favicon = "https://raw.githubusercontent.com/gethomepage/homepage/main/public/homepage.png";
           theme = "dark";
           color = "slate";
-          # Use CSS gradient background instead of remote image for faster load
           background = {
             opacity = 0;
           };
           layout = {
+            Speeddial = {
+              style = "row";
+              columns = 6;
+              icon = "mdi-lightning-bolt-circle";
+              header = true;
+            };
             Observability = {
               style = "row";
               columns = 5;
@@ -437,15 +478,10 @@ in
           cardBlur = "sm";
           hideVersion = true;
           language = "en-GB";
-          # Visual up/down status indicators for all services
           statusStyle = "dot";
-          # Clean icon style for mdi/si prefixed icons
           iconStyle = "theme";
-          # Consistent card heights — prevents widgets from ballooning
           useEqualHeights = true;
-          # Disable update check for faster load and privacy
           disableUpdateCheck = true;
-          # Quick launch — search services by typing
           quicklaunch = {
             searchDescriptions = true;
             hideInternetSearch = false;
@@ -453,56 +489,113 @@ in
           };
           bookmarks = [
             {
-              Bookmarks = [
+              "Developer Tools" = [
                 {
-                  "search.nixos.org" = {
-                    href = "https://search.nixos.org";
-                  };
+                  "NixOS Package Search" = [
+                    {
+                      abbr = "NIX";
+                      href = "https://search.nixos.org";
+                      description = "NixOS package and option search";
+                    }
+                  ];
                 }
                 {
-                  "docs.clan.lol" = {
-                    href = "https://docs.clan.lol";
-                  };
+                  "Clan Documentation" = [
+                    {
+                      abbr = "CLN";
+                      href = "https://docs.clan.lol";
+                      description = "Clan core flake management docs";
+                    }
+                  ];
                 }
                 {
-                  "GitHub" = {
-                    href = "https://github.com";
-                  };
+                  "GitHub" = [
+                    {
+                      abbr = "GH";
+                      href = "https://github.com";
+                      description = "Code hosting & pull requests";
+                    }
+                  ];
                 }
                 {
-                  "YouTube" = {
-                    href = "https://youtube.com";
-                  };
+                  "Searchix" = [
+                    {
+                      abbr = "SIX";
+                      href = "https://searchix.ovh";
+                      description = "Nix, Home Manager & Flake options search";
+                    }
+                  ];
                 }
                 {
-                  "Agentaflow" = {
-                    href = "https://agentaflow.space";
-                  };
+                  "Agentaflow" = [
+                    {
+                      abbr = "AF";
+                      href = "https://agentaflow.space";
+                      description = "AI Agent workflow engine";
+                    }
+                  ];
+                }
+              ];
+            }
+            {
+              "AI & Intelligence" = [
+                {
+                  "Google AI Studio" = [
+                    {
+                      abbr = "GIS";
+                      href = "https://aistudio.google.com";
+                      description = "Gemini API developer portal";
+                    }
+                  ];
                 }
                 {
-                  "wco.tv" = {
-                    href = "https://wco.tv";
-                  };
+                  "Perplexity AI" = [
+                    {
+                      abbr = "PPL";
+                      href = "https://www.perplexity.ai";
+                      description = "AI Search & Research engine";
+                    }
+                  ];
+                }
+              ];
+            }
+            {
+              "Media & Entertainment" = [
+                {
+                  "YouTube" = [
+                    {
+                      abbr = "YT";
+                      href = "https://youtube.com";
+                      description = "Video streaming";
+                    }
+                  ];
                 }
                 {
-                  "Searchix" = {
-                    href = "https://searchix.ovh";
-                  };
+                  "wco.tv" = [
+                    {
+                      abbr = "WCO";
+                      href = "https://wco.tv";
+                      description = "Anime & Animation streaming";
+                    }
+                  ];
                 }
                 {
-                  "EverythingMoe" = {
-                    href = "https://everythingmoe.com";
-                  };
+                  "EverythingMoe" = [
+                    {
+                      abbr = "EM";
+                      href = "https://everythingmoe.com";
+                      description = "Anime index & resources";
+                    }
+                  ];
                 }
                 {
-                  "TorrentSeeker" = {
-                    href = "https://torrentseeker.com";
-                  };
-                }
-                {
-                  "AI Studio" = {
-                    href = "https://aistudio.google.com";
-                  };
+                  "TorrentSeeker" = [
+                    {
+                      abbr = "TS";
+                      href = "https://torrentseeker.com";
+                      description = "Meta torrent search";
+                    }
+                  ];
                 }
               ];
             }
@@ -535,14 +628,15 @@ in
               showSearchSuggestions = true;
             };
           }
-          # ── Weather — OpenWeather (set HOMEPAGE_OPENWEATHER_KEY) ──
-          {
-            weather = {
-              provider = "openweather";
-              apiKey = "\${HOMEPAGE_OPENWEATHER_KEY}";
-              units = "metric";
-            };
-          }
+        ]
+        ++ optional hasEnv {
+          weather = {
+            provider = "openweather";
+            apiKey = "\${HOMEPAGE_OPENWEATHER_KEY}";
+            units = "metric";
+          };
+        }
+        ++ [
           # ── Local system resources (expanded) ──
           {
             resources = {
@@ -605,16 +699,18 @@ in
     users.groups.homepage-dashboard = { };
 
     # Impermanence support
-    environment.persistence."/persist" = mkIf config.layers.layer-10.system.config.impermanence.enable {
-      directories = [
+    environment.persistence."/persist" =
+      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
         {
-          directory = "/var/lib/homepage-dashboard";
-          user = "homepage-dashboard";
-          group = "homepage-dashboard";
-          mode = "0700";
-        }
-      ];
-    };
+          directories = [
+            {
+              directory = "/var/lib/homepage-dashboard";
+              user = "homepage-dashboard";
+              group = "homepage-dashboard";
+              mode = "0700";
+            }
+          ];
+        };
 
     # Systemd — fix StateDirectory clash with impermanence
     systemd.services.homepage-dashboard = {
@@ -640,6 +736,7 @@ in
       "L+ /var/lib/homepage-dashboard/images/luffy.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Lufy.png}"
       "L+ /var/lib/homepage-dashboard/images/zoro.png - - - - ${../../../layers/00-cyberia/02-assets/png-ico/Zoro.png}"
     ]
-    ++ optional config.layers.layer-10.system.config.impermanence.enable "d /persist/var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -";
+    ++ optional (config.layers.layer-10.system.config.impermanence.enable or false
+    ) "d /persist/var/lib/homepage-dashboard 0700 homepage-dashboard homepage-dashboard -";
   };
 }

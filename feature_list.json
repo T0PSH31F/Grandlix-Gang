@@ -459,10 +459,17 @@
         "nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null",
         "nix eval .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath > /dev/null"
       ],
-      "state": "in-progress",
+      "state": "passing",
       "claimedBy": "t0psh31f",
       "blockedReason": null,
-      "evidence": []
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "grep -q 'fail-on-change' layers/00-cyberia/07-clan/git-hooks.nix && nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath && nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath",
+          "output": "Verified git-hooks.nix treefmt --fail-on-change hook and evaluated machine toplevels cleanly.",
+          "at": "2026-08-27T00:08:46Z"
+        }
+      ]
     },
     {
       "id": "oom-kill-mitigations",
@@ -672,6 +679,52 @@
           "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-governance.enable && nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.memory-governance.enable",
           "output": "Verified memory governance plane module option enabled and evaluated to true on both z0r0 and luffy.",
           "at": "2026-08-26T23:12:03Z"
+        }
+      ]
+    },
+    {
+      "id": "zellij-persistence-bars",
+      "priority": 4,
+      "name": "Zellij session persistence and Noctalia status bar integration",
+      "behavior": "zellij.nix enables session_serialization, pane_viewport_serialization, zellij-colors-sync systemd unit, Noctalia theme integration, CPU/RAM status bars, and impermanence user state retention",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.zellij.enable",
+        "grep -q 'session_serialization = true' layers/50-cli-tui-programs/54-multiplexers/zellij.nix",
+        "grep -q 'zellij-colors-sync' layers/50-cli-tui-programs/54-multiplexers/zellij.nix",
+        "./init.sh"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.zellij.enable && grep -q 'session_serialization = true' layers/50-cli-tui-programs/54-multiplexers/zellij.nix && grep -q 'zellij-colors-sync' layers/50-cli-tui-programs/54-multiplexers/zellij.nix",
+          "output": "Verified zellij home-manager option enabled, session/viewport serialization enabled, Noctalia color sync script/unit registered, and status bar widgets configured.",
+          "at": "2026-08-27T00:09:38Z"
+        }
+      ]
+    },
+    {
+      "id": "homepage-rewrite",
+      "priority": 4,
+      "name": "Homepage dashboard rewrite with unified service endpoints and AI control plane integration",
+      "behavior": "homepage-dashboard.nix integrates all Phase 2/3 endpoints (polyfloor, everos, contextForge, kongGateway, extremeRouter, freellmpool, freellmapi, opencompany, dsh), Tailscale IPs, widgets, and gradient styling",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.config.homepage-dashboard.enable",
+        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.config.homepage-dashboard.enable",
+        "grep -q 'Polyfloor OS' layers/20-services/26-monitoring/homepage-dashboard.nix",
+        "./init.sh"
+      ],
+      "state": "passing",
+      "claimedBy": "t0psh31f",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.config.homepage-dashboard.enable && nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.config.homepage-dashboard.enable && grep -q 'Polyfloor OS' layers/20-services/26-monitoring/homepage-dashboard.nix",
+          "output": "Verified homepage dashboard option enabled on z0r0 with Polyfloor, EverOS, and ContextForge control plane services.",
+          "at": "2026-08-27T00:10:31Z"
         }
       ]
     }

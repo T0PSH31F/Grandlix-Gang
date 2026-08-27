@@ -60,6 +60,9 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **Work done:** Implemented Phase 3 Governance + Swarm: expanded `kong-gateway.nix` and `kong-secrets.nix` with 10 dedicated agent consumers and keyauth credentials (`hermes`, `opencode`, `claude-code`, `codex`, `cursor`, `deerflow`, `polyfloor`, `paperclip`, `opencompany`, `dsh`); integrated Polyfloor backend with endpoints registry and PostgreSQL DB; created `agent-sandbox.nix` for isolated Podman/Bubblewrap container executions; authored `0001-control-surface-swarm-governance.md` ADR; implemented `memory-governance.nix` for ACL scope enforcement across shared and private agent memory stores.
 - **Verification:** Evaluated `kong-gateway.consumers`, `polyfloor.enable`, `agent.sandbox.enable`, `memory-governance.enable` cleanly on both `z0r0` and `luffy`; verified ADR file existence and content; validated schema v2 in `feature_list.json`; opened PR #9 (https://github.com/T0PSH31F/NFP/pull/9).
 - **State change:** passing (evidence recorded in feature_list.json and PR https://github.com/T0PSH31F/NFP/pull/9)
-- **Next action:** Proceed to Phase 4 (zellij-persistence-bars, homepage-rewrite) in the next thread.
-
-
+- **Date / Agent:** 2026-08-27 / antigravity
+- **Feature:** zellij-persistence-bars, homepage-rewrite
+- **Work done:** Implemented Phase 4/5 UX & Dashboard refinement: updated `zellij.nix` with session/pane viewport serialization, Noctalia theme color sync, status bar widgets, and impermanence; completely rewritten `homepage-dashboard.nix`, `homepage-theme.css`, and `homepage-theme.js` adding Speeddial grid, rich categorized Bookmarks, mDNS LAN host resolution (`z0r0.local`, `luffy.local`), API widget secret gating (`hasEnv`), and strict CSS height caps to eliminate widget error ballooning.
+- **Verification:** `./init.sh` green; `homepage-dashboard-test` evaluated cleanly (`/nix/store/...-vm-test-run-homepage-dashboard-module.drv`); `nix eval` on z0r0 and luffy toplevels clean.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Proceed to Phase 6 (Fleet Deployment & Live Swarm Telemetry).

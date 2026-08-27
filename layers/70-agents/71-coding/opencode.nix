@@ -421,11 +421,18 @@
           };
 
           # ExtremeRouter — 154+ providers, RTK savings, smart fallback
-          provider.extreme-router = lib.mkIf (osConfig.services.ai-services.extreme-router.enable or false) {
-            baseUrl = "http://127.0.0.1:${toString osConfig.services.ai-services.extreme-router.port}/v1";
-            name = "ExtremeRouter";
-            models = { };
-          };
+          provider.extreme-router =
+            lib.mkIf
+              (osConfig.layers.layer-20.services.extreme-router.enable
+                or osConfig.services.ai-services.extreme-router.enable or false
+              )
+              {
+                baseUrl = "http://127.0.0.1:${
+                  toString (osConfig.layers.layer-20.services.extreme-router.port or 20128)
+                }/v1";
+                name = "ExtremeRouter";
+                models = { };
+              };
         };
       };
 

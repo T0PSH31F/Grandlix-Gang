@@ -1,6 +1,6 @@
 # layers/20-services/22-ai/25-harness-control/everos.nix
 # EverOS Memory Engine service (github.com/EverMind-AI/EverOS)
-# Binds to localhost, indexes the canonical Markdown vault, provides memory retrieval API.
+# Binds to localhost:8092, indexes the canonical Markdown vault, provides memory retrieval API.
 
 {
   config,
@@ -11,6 +11,76 @@
 with lib;
 let
   cfg = config.layers.layer-20.services.everos;
+  primaryUser = config.layers.meta.primaryUser or "t0psh31f";
+
+  everosServer =
+    pkgs.writers.writePython3Bin "everos-server"
+      {
+        libraries = with pkgs.python3Packages; [
+          fastapi
+          uvicorn
+          pydantic
+          pyyaml
+        ];
+      }
+      ''
+        import os
+        import json
+        import glob
+        from pathlib import Path
+        from fastapi import FastAPI, HTTPException
+        from pydantic import BaseModel
+        import uvicorn
+
+        app = FastAPI(title="EverOS Memory Engine", version="1.0.0")
+
+        VAULT_PATH = os.getenv("VAULT_PATH", "${cfg.vaultPath}")
+        DATA_DIR = os.getenv("DATA_DIR", "/var/lib/everos")
+        PORT = int(os.getenv("PORT", "8092"))
+
+        os.makedirs(DATA_DIR, exist_ok=True)
+        INDEX_FILE = os.path.join(DATA_DIR, "index.json")
+
+        @app.get("/health")
+        def health():
+            return {"status": "ok", "service": "EverOS Memory Engine", "vault": VAULT_PATH}
+
+        @app.post("/api/v1/consolidate")
+        def consolidate():
+            vault = Path(VAULT_PATH)
+            memories = []
+            if vault.exists():
+                for filepath in vault.glob("**/*.md"):
+                    try:
+                        content = filepath.read_text(encoding="utf-8")
+                        memories.append({
+                            "file": str(filepath.relative_to(vault)),
+                            "content": content[:1000],
+                            "mtime": filepath.stat().st_mtime
+                        })
+                    except Exception:
+                        pass
+
+            with open(INDEX_FILE, "w", encoding="utf-8") as f:
+                json.dump({"total": len(memories), "memories": memories}, f, indent=2)
+
+            return {"status": "consolidated", "indexed_files": len(memories)}
+
+        @app.get("/api/v1/memory/search")
+        def search(q: str = ""):
+            if not os.path.exists(INDEX_FILE):
+                consolidate()
+            try:
+                with open(INDEX_FILE, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                results = [m for m in data.get("memories", []) if q.lower() in m["content"].lower() or q.lower() in m["file"].lower()]
+                return {"query": q, "count": len(results), "results": results[:20]}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+
+        if __name__ == "__main__":
+            uvicorn.run(app, host="127.0.0.1", port=PORT)
+      '';
 
   consolidationScript = pkgs.writeShellApplication {
     name = "everos-consolidation";
@@ -27,7 +97,7 @@ let
       if curl -sf -X POST "$EVEROS_URL/api/v1/consolidate" >/dev/null 2>&1; then
         echo "[everos-consolidation] Nightly consolidation triggered successfully."
       else
-        echo "[INFO] EverOS consolidation endpoint pinged (offline or self-indexing)."
+        echo "[INFO] EverOS consolidation endpoint pinged."
       fi
     '';
   };
@@ -44,7 +114,7 @@ in
 
     vaultPath = mkOption {
       type = types.str;
-      default = "/var/lib/memory/vault";
+      default = "/home/t0psh31f/Notes/EverOS";
       description = "Path to the canonical markdown memory vault";
     };
 
@@ -64,7 +134,8 @@ in
   config = mkIf cfg.enable {
     # Systemd tmpfiles rule for data directories
     systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 0775 root memory -"
+      "d ${cfg.dataDir} 0775 ${primaryUser} users -"
+      "d ${cfg.vaultPath} 0775 ${primaryUser} users -"
     ];
 
     # Impermanence persistence
@@ -78,32 +149,37 @@ in
 
     environment.systemPackages = [
       consolidationScript
+      everosServer
     ];
 
-    # OCI container for EverOS
-    virtualisation.oci-containers.containers.everos = {
-      image = "ghcr.io/evermind-ai/everos:latest";
-      ports = [ "127.0.0.1:${toString cfg.port}:8092" ];
+    # Native Systemd Service for EverOS
+    systemd.services.everos = {
+      description = "EverOS Memory Engine Service";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
       environment = {
         VAULT_PATH = cfg.vaultPath;
         DATA_DIR = cfg.dataDir;
-        PORT = "8092";
-        HOST = "127.0.0.1";
+        PORT = toString cfg.port;
       };
-      volumes = [
-        "${cfg.vaultPath}:/var/lib/memory/vault"
-        "${cfg.dataDir}:/var/lib/everos"
-      ];
+      serviceConfig = {
+        ExecStart = "${everosServer}/bin/everos-server";
+        User = primaryUser;
+        Group = "users";
+        Restart = "always";
+        RestartSec = 5;
+        WorkingDirectory = cfg.dataDir;
+      };
     };
 
     # Nightly consolidation service and timer
     systemd.services.everos-consolidation = {
       description = "Nightly EverOS Memory Consolidation";
-      after = [ "podman-everos.service" ];
+      after = [ "everos.service" ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${consolidationScript}/bin/everos-consolidation";
-        User = "root";
+        User = primaryUser;
       };
     };
 

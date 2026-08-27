@@ -437,7 +437,7 @@
                 };
 
                 services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);
-                n8n-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/n8n.nix);
+                n8n-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/n8n.nix { inherit pkgs; });
                 homepage-dashboard-test = pkgs.testers.nixosTest (
                   import ./layers/00-cyberia/05-tests/homepage-dashboard.nix
                 );

@@ -2,9 +2,8 @@
 
 > Compact state for the next session. Overwrite entirely at the end of each session.
 
-- **Active feature:** kong-consumer-per-agent, polyfloor-registry, agent-sandbox-images, control-surface-adr, memory-governance-plane — passing (PR #9 opened: https://github.com/T0PSH31F/NFP/pull/9)
-- **Last verified green:** Phase 3 Governance + Swarm (`kong-gateway.nix`, `kong-secrets.nix`, `polyfloor.nix`, `agent-sandbox.nix`, `0001-control-surface-swarm-governance.md`, `memory-governance.nix`) implemented and verified with clean Nix evaluations on `z0r0` and `luffy`, 2026-08-26
+- **Active feature:** zellij-persistence-bars, homepage-rewrite — passing (all features in `feature_list.json` passing)
+- **Last verified green:** Phase 4/5 UX & Dashboard refinement (`zellij.nix`, `homepage-dashboard.nix`, `homepage-theme.css`, `homepage-theme.js`), 2026-08-27
 - **Blockers:** none
-- **Exact next command:** Start new thread for Phase 4: `Zellij + homepage` (`zellij-persistence-bars`, `homepage-rewrite`)
+- **Exact next command:** Proceed to Phase 6: Fleet Deployment & Live Swarm Verification (`clan machines update z0r0`, `clan machines update luffy`)
 - **Do not touch:** `clean-state-checklist.md` on main (must remain an unchecked template)
-

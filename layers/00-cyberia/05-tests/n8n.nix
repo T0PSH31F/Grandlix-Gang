@@ -1,12 +1,8 @@
+{ pkgs, ... }:
 {
   name = "n8n-test";
   nodes.machine =
-    {
-      config,
-      pkgs,
-      lib,
-      ...
-    }:
+    { config, lib, ... }:
     {
       imports = [
         ../../20-services/27-automation/n8n.nix
@@ -22,8 +18,10 @@
       };
 
       config = {
-        nixpkgs.hostPlatform = pkgs.stdenv.hostPlatform.system;
-        nixpkgs.config.allowUnfree = true;
+        nixpkgs.pkgs = import pkgs.path {
+          system = pkgs.stdenv.hostPlatform.system;
+          config.allowUnfree = true;
+        };
         layers.layer-10.system.config.impermanence.enable = false;
 
         # Enable n8n

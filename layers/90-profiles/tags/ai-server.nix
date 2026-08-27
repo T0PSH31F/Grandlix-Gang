@@ -28,11 +28,6 @@
         routers.codingRouter = lib.mkDefault "extreme-router";
       };
 
-      extreme-router = {
-        enable = lib.mkDefault true;
-        port = lib.mkDefault 20128;
-      };
-
       freellmapi = {
         enable = lib.mkDefault true;
         port = lib.mkDefault 3003;
@@ -64,6 +59,11 @@
     };
 
     infrastructure.langfuse.enable = lib.mkDefault true;
+  };
+
+  layers.layer-20.services.extreme-router = {
+    enable = lib.mkDefault true;
+    port = lib.mkDefault 20128;
   };
 
   layers.layer-20.services.memory-governance.enable = lib.mkDefault true;

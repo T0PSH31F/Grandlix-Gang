@@ -21,7 +21,7 @@ in
       xdg.desktopEntries.mvi = {
         name = "MVI";
         genericName = "Image Viewer";
-        exec = "${pkgs.mpv}/bin/mpv --config-dir=~/.config/mvi %F";
+        exec = "${pkgs.writeShellScript "mvi-launch" ''${pkgs.mpv}/bin/mpv --config-dir="$HOME/.config/mvi" "$@"''} %F";
         icon = "mpv";
         terminal = false;
         categories = [

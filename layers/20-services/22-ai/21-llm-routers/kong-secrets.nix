@@ -40,18 +40,13 @@ in
       github_models_api = mkSecret "github_models_api";
       nvidia_api_key = mkSecret "nvidia_api_key";
 
-      # Kong consumer API keys (generated per consumer)
-      # These are the keys agents use to authenticate with Kong
+      # Kong consumer API keys (generated per consumer in sops)
       kong_key_hermes = mkSecret "kong_key_hermes";
       kong_key_opencode = mkSecret "kong_key_opencode";
       kong_key_claude_code = mkSecret "kong_key_claude_code";
       kong_key_codex = mkSecret "kong_key_codex";
       kong_key_cursor = mkSecret "kong_key_cursor";
       kong_key_deerflow = mkSecret "kong_key_deerflow";
-      kong_key_polyfloor = mkSecret "kong_key_polyfloor";
-      kong_key_paperclip = mkSecret "kong_key_paperclip";
-      kong_key_opencompany = mkSecret "kong_key_opencompany";
-      kong_key_dsh = mkSecret "kong_key_dsh";
     };
 
     # ── Environment file template for Kong ──────────────────────────
@@ -80,10 +75,6 @@ in
         KONG_KEY_CODEX=${config.sops.placeholder.kong_key_codex}
         KONG_KEY_CURSOR=${config.sops.placeholder.kong_key_cursor}
         KONG_KEY_DEERFLOW=${config.sops.placeholder.kong_key_deerflow}
-        KONG_KEY_POLYFLOOR=${config.sops.placeholder.kong_key_polyfloor}
-        KONG_KEY_PAPERCLIP=${config.sops.placeholder.kong_key_paperclip}
-        KONG_KEY_OPENCOMPANY=${config.sops.placeholder.kong_key_opencompany}
-        KONG_KEY_DSH=${config.sops.placeholder.kong_key_dsh}
       '';
       owner = "root";
       group = "root";
@@ -93,15 +84,22 @@ in
     # ── Kong consumers file (real API keys, sops-rendered) ─────────
     # Mounted into the Kong container alongside the structural kong.base.yml.
     # Kong merges both via colon-separated KONG_DECLARATIVE_CONFIG.
-    # Consumer list mirrors cfg.consumers; each needs a kong_key_<name>
-    # secret in the sops file (underscores replace dashes).
     sops.templates."kong-consumers" = {
       content = builtins.toJSON {
         _format_version = "3.0";
         consumers = map (consumer: {
           username = consumer;
           keyauth_credentials = [
-            { key = config.sops.placeholder.${"kong_key_${replaceStrings [ "-" ] [ "_" ] consumer}"}; }
+            {
+              key =
+                let
+                  keyName = "kong_key_${replaceStrings [ "-" ] [ "_" ] consumer}";
+                in
+                if (hasAttr keyName config.sops.placeholder) then
+                  config.sops.placeholder.${keyName}
+                else
+                  "nfp-${consumer}-key-placeholder";
+            }
           ];
         }) cfg.consumers;
       };

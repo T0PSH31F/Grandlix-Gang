@@ -71,9 +71,9 @@ h1, h2, h3, h4, h5, h6, .title {
 }
 
 /* ============================================================
-   SERVICE CARDS
+   SERVICE CARDS — Ballooning Containment Fix
    ============================================================ */
-.service-card, .services-group .service {
+.service-card, .services-group .service, .card {
   background-color: hsla(240, 50%, 10%, 0.7) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(12px);
@@ -81,7 +81,9 @@ h1, h2, h3, h4, h5, h6, .title {
   transition: all 0.3s ease;
   clip-path: polygon(0 0, 98% 0, 100% 3%, 100% 97%, 99% 100%, 2% 100%, 0 98%, 0 2%);
   position: relative;
-  overflow: hidden;
+  max-height: 180px !important;
+  overflow: hidden !important;
+  contain: paint content !important;
 }
 
 .service-card:hover, .services-group .service:hover {
@@ -112,6 +114,34 @@ h1, h2, h3, h4, h5, h6, .title {
 .service-card:hover::before, .services-group .service:hover::before {
   left: 100%;
   transition: 0.5s;
+}
+
+/* Restrain decorative circles & background elements inside card boundaries */
+.service-card::after, .card::after, .service::after,
+div[class*="rounded-full"] {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Compact API Error Box styling to prevent visual card explosions */
+.service-widget-error, .widget-error, [class*="widget-error"], [class*="ErrorInformation"] {
+  max-height: 26px !important;
+  overflow: hidden !important;
+  padding: 2px 6px !important;
+  font-size: 0.7rem !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  border-radius: 4px !important;
+  color: #fca5a5 !important;
+}
+
+.service-widget-error *, .widget-error *, [class*="ErrorInformation"] * {
+  font-size: 0.7rem !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  margin: 0 !important;
 }
 
 /* ============================================================
@@ -175,6 +205,7 @@ h1, h2, h3, h4, h5, h6, .title {
 .services-group:nth-of-type(4) { animation-delay: 0.4s; }
 .services-group:nth-of-type(5) { animation-delay: 0.5s; }
 .services-group:nth-of-type(6) { animation-delay: 0.6s; }
+.services-group:nth-of-type(7) { animation-delay: 0.7s; }
 
 @keyframes group-fade-in {
   from {
@@ -199,43 +230,49 @@ h1, h2, h3, h4, h5, h6, .title {
   opacity: 0.6;
 }
 
-.services-group:nth-of-type(1)::before { background: var(--group-obs); box-shadow: 0 0 10px var(--group-obs); }
-.services-group:nth-of-type(2)::before { background: var(--group-ai); box-shadow: 0 0 10px var(--group-ai); }
-.services-group:nth-of-type(3)::before { background: var(--group-infra); box-shadow: 0 0 10px var(--group-infra); }
-.services-group:nth-of-type(4)::before { background: var(--group-comms); box-shadow: 0 0 10px var(--group-comms); }
-.services-group:nth-of-type(5)::before { background: var(--group-media); box-shadow: 0 0 10px var(--group-media); }
-.services-group:nth-of-type(6)::before { background: var(--group-auto); box-shadow: 0 0 10px var(--group-auto); }
+.services-group:nth-of-type(1)::before { background: var(--group-speeddial); box-shadow: 0 0 10px var(--group-speeddial); }
+.services-group:nth-of-type(2)::before { background: var(--group-obs); box-shadow: 0 0 10px var(--group-obs); }
+.services-group:nth-of-type(3)::before { background: var(--group-ai); box-shadow: 0 0 10px var(--group-ai); }
+.services-group:nth-of-type(4)::before { background: var(--group-infra); box-shadow: 0 0 10px var(--group-infra); }
+.services-group:nth-of-type(5)::before { background: var(--group-comms); box-shadow: 0 0 10px var(--group-comms); }
+.services-group:nth-of-type(6)::before { background: var(--group-media); box-shadow: 0 0 10px var(--group-media); }
+.services-group:nth-of-type(7)::before { background: var(--group-auto); box-shadow: 0 0 10px var(--group-auto); }
 
 /* ============================================================
    GROUP TITLES  —  One Piece crew colors by position
    ============================================================ */
 .services-group:nth-of-type(1) .group-title,
 .services-group:nth-of-type(1) h2 {
-  color: var(--group-obs) !important;
-  text-shadow: 0 0 12px hsla(190, 100%, 50%, 0.4);
+  color: var(--group-speeddial) !important;
+  text-shadow: 0 0 12px hsla(340, 100%, 50%, 0.4);
 }
 .services-group:nth-of-type(2) .group-title,
 .services-group:nth-of-type(2) h2 {
-  color: var(--group-ai) !important;
-  text-shadow: 0 0 12px hsla(280, 100%, 50%, 0.4);
+  color: var(--group-obs) !important;
+  text-shadow: 0 0 12px hsla(190, 100%, 50%, 0.4);
 }
 .services-group:nth-of-type(3) .group-title,
 .services-group:nth-of-type(3) h2 {
-  color: var(--group-infra) !important;
-  text-shadow: 0 0 12px hsla(220, 100%, 60%, 0.4);
+  color: var(--group-ai) !important;
+  text-shadow: 0 0 12px hsla(280, 100%, 50%, 0.4);
 }
 .services-group:nth-of-type(4) .group-title,
 .services-group:nth-of-type(4) h2 {
-  color: var(--group-comms) !important;
-  text-shadow: 0 0 12px hsla(110, 100%, 54%, 0.4);
+  color: var(--group-infra) !important;
+  text-shadow: 0 0 12px hsla(220, 100%, 60%, 0.4);
 }
 .services-group:nth-of-type(5) .group-title,
 .services-group:nth-of-type(5) h2 {
-  color: var(--group-media) !important;
-  text-shadow: 0 0 12px hsla(340, 100%, 50%, 0.4);
+  color: var(--group-comms) !important;
+  text-shadow: 0 0 12px hsla(110, 100%, 54%, 0.4);
 }
 .services-group:nth-of-type(6) .group-title,
 .services-group:nth-of-type(6) h2 {
+  color: var(--group-media) !important;
+  text-shadow: 0 0 12px hsla(340, 100%, 50%, 0.4);
+}
+.services-group:nth-of-type(7) .group-title,
+.services-group:nth-of-type(7) h2 {
   color: var(--group-auto) !important;
   text-shadow: 0 0 12px hsla(35, 100%, 50%, 0.4);
 }

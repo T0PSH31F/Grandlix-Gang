@@ -29,9 +29,9 @@
   layers.layer-76.open-skills.enable = lib.mkDefault true;
 
   # Orchestration & control plane services
-  services.ai-services.mission-control.enable = lib.mkDefault true;
-  services.ai-services.aionui.enable = lib.mkDefault true;
-  services.ai-services.paperclip.enable = lib.mkDefault true;
+  layers.layer-20.services.mission-control.enable = lib.mkDefault true;
+  layers.layer-20.services.aionui.enable = lib.mkDefault true;
+  layers.layer-20.services.paperclip.enable = lib.mkDefault true;
 
   # Memory chassis & gateway services
   layers.layer-20.services.memory-vault.enable = lib.mkDefault true;

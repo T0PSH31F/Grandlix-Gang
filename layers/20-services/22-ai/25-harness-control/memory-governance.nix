@@ -49,7 +49,7 @@ in
 
     sharedVaultPath = mkOption {
       type = types.str;
-      default = "/var/lib/memory/vault";
+      default = "/home/t0psh31f/Notes/EverOS";
       description = "Canonical shared markdown memory vault path";
     };
 

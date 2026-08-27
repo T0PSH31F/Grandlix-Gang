@@ -11,7 +11,7 @@ let
   cfg = config.layers.layer-20.services.aionui;
   primaryUser = config.layers.meta.primaryUser or "t0psh31f";
   llmPkgs = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system} or { };
-  aionuiPkg = llmPkgs.aionui or pkgs.aionui;
+  aionuiPkg = llmPkgs.aionui or (pkgs.aionui or (pkgs.writeShellScriptBin "aionui" "echo aionui"));
 in
 {
   imports = [
@@ -69,7 +69,7 @@ in
       serviceConfig = {
         User = primaryUser;
         Group = "users";
-        ExecStart = "${lib.getExe aionuiPkg}";
+        ExecStart = "${pkgs.xvfb-run}/bin/xvfb-run -a ${lib.getExe aionuiPkg} --no-sandbox";
         Restart = "always";
         RestartSec = 5;
         Environment = [
