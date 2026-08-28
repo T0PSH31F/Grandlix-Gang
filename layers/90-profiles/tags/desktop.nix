@@ -7,7 +7,7 @@
       layer-10.system = {
         flatpak.enable = lib.mkDefault true;
         appimage.enable = lib.mkDefault true;
-        peripherals = { 
+        peripherals = {
           automount.enable = lib.mkDefault true;
           bluetooth.enable = lib.mkDefault true;
         };
