@@ -6,15 +6,11 @@
 }:
 with lib;
 let
-  cfg = config.services.ai-services.lmstudio;
+  cfg = config.layers.layer-20.services.ai.lmstudio;
 in
 {
-  options.services.ai-services.lmstudio = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Install LM Studio desktop application";
-    };
+  options.layers.layer-20.services.ai.lmstudio = {
+    enable = mkEnableOption "LM Studio desktop local LLM inference application";
   };
 
   config = mkIf cfg.enable {

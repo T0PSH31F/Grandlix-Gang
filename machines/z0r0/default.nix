@@ -30,6 +30,7 @@
     #  efiSupport = true;
     #  useOSProber = true;
   };
+  boot.kernelParams = [ "i915.enable_psr=0" ];
 
   # ----------------------------------------------------------------------------
   # AVAILABLE PROFILES / TAGS
@@ -80,6 +81,9 @@
       open-webui.enable = lib.mkForce false;
       ollama-ui.enable = lib.mkForce false;
       localai.enable = lib.mkForce false;
+      jan.enable = lib.mkForce false;
+      aider.enable = lib.mkForce false;
+      chromadb.enable = lib.mkForce false;
 
       kong-gateway.environmentFile = config.sops.templates."kong-env".path;
       freellmpool = {

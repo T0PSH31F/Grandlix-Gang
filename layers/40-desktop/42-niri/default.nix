@@ -53,5 +53,23 @@
         swappy
       ]
     );
+
+    programs.niri.settings.spawn-at-startup = lib.mkIf osConfig.layers.layer-40.desktop.niri.enable [
+      {
+        command = [
+          "dbus-update-activation-environment"
+          "--systemd"
+          "--all"
+        ];
+      }
+      {
+        command = [
+          "systemctl"
+          "--user"
+          "import-environment"
+          "PATH"
+        ];
+      }
+    ];
   };
 }

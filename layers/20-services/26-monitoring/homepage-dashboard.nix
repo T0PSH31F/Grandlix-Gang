@@ -433,6 +433,12 @@ in
         listenPort = cfg.port;
         environmentFiles = optional (cfg.environmentFile != null) cfg.environmentFile;
 
+        docker = {
+          local = {
+            socket = "/run/podman/podman.sock";
+          };
+        };
+
         settings = {
           title = "Nix Flake Pirates";
           favicon = "https://raw.githubusercontent.com/gethomepage/homepage/main/public/homepage.png";
@@ -681,6 +687,14 @@ in
                 hour12 = false;
               };
               locale = "en-GB";
+            };
+          }
+          # ── Grafana Observability Kiosk ──
+          {
+            iframe = {
+              title = "Grafana Observability Kiosk";
+              src = "http://${hostOf "z0r0"}:${toString ports.grafana}/d/hermes-activity?kiosk";
+              height = "350";
             };
           }
         ];

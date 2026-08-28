@@ -26,16 +26,22 @@ HEALTHCHECK_SCRIPT="${HEALTHCHECK_SCRIPT:-$(dirname "$0")/nixos-healthcheck.sh}"
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --no-health) RUN_HEALTH=0 ;;
-    --target-host) TARGET_HOST="$2"; shift ;;
-    -*) echo "Unknown option: $1" >&2; exit 1 ;;
-    *)
-      if [ -z "$MACHINE" ]; then
-        MACHINE="$1"
-      elif [ "$FLAKE" = "." ]; then
-        FLAKE="$1"
-      fi
-      ;;
+  --no-health) RUN_HEALTH=0 ;;
+  --target-host)
+    TARGET_HOST="$2"
+    shift
+    ;;
+  -*)
+    echo "Unknown option: $1" >&2
+    exit 1
+    ;;
+  *)
+    if [ -z "$MACHINE" ]; then
+      MACHINE="$1"
+    elif [ "$FLAKE" = "." ]; then
+      FLAKE="$1"
+    fi
+    ;;
   esac
   shift
 done
@@ -45,8 +51,14 @@ if [ -z "$MACHINE" ]; then
   exit 1
 fi
 
-BLU=$'\033[34m'; GRN=$'\033[32m'; YEL=$'\033[33m'; RST=$'\033[0m'
-section() { echo ""; echo "${BLU}==== $* ====${RST}"; }
+BLU=$'\033[34m'
+GRN=$'\033[32m'
+YEL=$'\033[33m'
+RST=$'\033[0m'
+section() {
+  echo ""
+  echo "${BLU}==== $* ====${RST}"
+}
 
 have() { command -v "$1" >/dev/null 2>&1; }
 nom_run() {
@@ -84,7 +96,7 @@ if [ "$RUN_HEALTH" -eq 1 ]; then
   if [ -n "$HEALTHCHECK_SCRIPT" ] && [ -f "$HEALTHCHECK_SCRIPT" ]; then
     if [ -n "$TARGET_HOST" ]; then
       echo "Running health check remotely on $TARGET_HOST ..."
-      ssh "$TARGET_HOST" 'bash -s' -- --bench-off < "$HEALTHCHECK_SCRIPT" || true
+      ssh "$TARGET_HOST" 'bash -s' -- --bench-off <"$HEALTHCHECK_SCRIPT" || true
     else
       echo "No target host resolved; running health check locally (assumes this IS the machine)."
       bash "$HEALTHCHECK_SCRIPT" || true

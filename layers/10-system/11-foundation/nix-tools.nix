@@ -217,5 +217,12 @@ with lib;
         };
       };
     };
+
+    # Systemd resource limits for nix-daemon to prevent memory exhaustion
+    systemd.services.nix-daemon.serviceConfig = {
+      MemoryMax = "6G";
+      MemoryHigh = "5.5G";
+      OOMScoreAdjust = 500;
+    };
   };
 }

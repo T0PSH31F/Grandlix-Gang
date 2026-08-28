@@ -105,6 +105,9 @@ in
     # Open firewall port
     networking.firewall.allowedTCPPorts = [ cfg.port ];
 
+    # MITM proxy root CA certificate trust
+    security.pki.certificateFiles = lib.optional (builtins.pathExists "${cfg.dataDir}/ca.crt") "${cfg.dataDir}/ca.crt";
+
     # Impermanence persistence support
     environment.persistence."/persist" =
       mkIf (config.layers.layer-10.system.config.impermanence.enable or false)

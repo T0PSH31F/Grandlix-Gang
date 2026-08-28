@@ -12,5 +12,6 @@
     ./recyclarr.nix
     ./sonarr.nix
     ./usenet.nix
+    ./romm.nix
   ];
 }

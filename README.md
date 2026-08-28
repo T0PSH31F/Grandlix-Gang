@@ -11,7 +11,7 @@
 
 > **"Wealth, fame, power. Gold Roger, the King of the Pirates, attained this and everything else the world had to offer."**
 
-Welcome to the **Nix Flake Pirates (NFP)** NixOS configuration repository. This system is a highly modular, declarative, and reproducible infrastructure based on **Clan-Core**, designed for high-performance creative workflows, AI development, and secure operations.
+Welcome to the **Nix Flake Pirates (NFP)** NixOS configuration repository. This system is a highly modular, declarative, and reproducible infrastructure built on **Clan-Core** and `flake-parts`, featuring a 10-layer dendritic module architecture, self-hosted AI agent swarm control plane, and zero-trust impermanence persistence.
 
 ---
 
@@ -19,179 +19,84 @@ Welcome to the **Nix Flake Pirates (NFP)** NixOS configuration repository. This 
 
 | Character | Machine | Role | Specs & Tags | State |
 | :---: | :---: | :---: | :---: | :---: |
-| ![Zoro](assets/machines/zoro.png) | **Z0r0** | Media & Build Server | **Laptop**: LG Gram 17z90q, **CPU**: i7-1260P, **RAM**: 16GB, **Tags**: Media-Server, AI-Server, Laptop | 🟢 Active |
-| ![Luffy](assets/machines/luffy.png) | **Luffy** | Primary Workstation & AI | **Desktop**: Custom, **CPU**: i7-9700F, **RAM**: 24GB, **Tags**: Workstation, Desktop, AI-Server, Homelab | 🟢 Active |
+| ![Zoro](assets/machines/zoro.png) | **z0r0** | Workstation & AI Hub | **Workstation**: LG Gram 17, **CPU**: i7-1260P, **RAM**: 16GB, **Tags**: `desktop`, `workstation`, `ai-server` | 🟢 Active |
+| ![Luffy](assets/machines/luffy.png) | **luffy** | Homelab & Control Plane | **Server**: Custom Desktop, **CPU**: i7-9700F, **RAM**: 24GB, **Tags**: `server`, `homelab`, `ai-control` | 🟢 Active |
 
 ---
 
-## 🗺️ Fleet Services & Navigation
+## 🏛️ Dendritic Layer Architecture (v2)
 
-| Service | Machine | Port | Public URL | Role |
-| :--- | :--- | :--- | :--- | :--- |
-| **n8n** | Luffy | 5678 | `n8n.lovelain.duckdns.org` | Workflow Automation |
-| **Open WebUI** | Luffy | 3004 | `chat.lovelain.duckdns.org` | AI Chat Interface |
-| **Ollama** | Luffy | 11434 | `ollama.lovelain.duckdns.org` | AI Model Backend |
-| **Nextcloud** | Luffy | 8080 | `nextcloud.lovelain.duckdns.org` | Cloud Storage & Files |
-| **Immich** | Luffy | 2283 | `immich.lovelain.duckdns.org` | Photo Management |
-| **Vaultwarden** | Luffy | 8222 | `vault.lovelain.duckdns.org` | Password Manager |
-| **Komga** | Luffy | 25600 | `komga.lovelain.duckdns.org` | Comics/Manga Library |
-| **Your Spotify** | Luffy | 3457 | `spotify.lovelain.duckdns.org` | Listening Analytics |
-| **AdGuard Home** | Luffy | 3002 | `adguard.lovelain.duckdns.org` | DNS & Ad-Blocking |
-| **Jellyfin** | Z0r0 | 8096 | `jellyfin.lovelain.duckdns.org` | Media Streaming |
-| **Sonarr** | Z0r0 | 8989 | `sonarr.lovelain.duckdns.org` | TV Show Management |
-| **Radarr** | Z0r0 | 7878 | `radarr.lovelain.duckdns.org` | Movie Management |
-| **Prowlarr** | Z0r0 | 9696 | `prowlarr.lovelain.duckdns.org` | Indexer Manager |
-| **SillyTavern** | Luffy | 8000 | `silly.lovelain.duckdns.org` | AI Roleplay Interface |
+Configuration logic is strictly compartmentalized across 10 numbered layers. See [layers/NUMBERING.md](layers/NUMBERING.md) for full governance specs and sub-layer numbering registries.
+
+| Layer Band | Name | Description & Contents |
+|:---|:---|:---|
+| **00–09** | `00-cyberia` | System documentation, asset templates, ISO specs, audit scripts |
+| **10–19** | `10-system` | Core OS foundation, CPU/GPU drivers, users, ZFS impermanence |
+| **20–29** | `20-services` | System services, networking, LLM routers, monitoring, dashboards |
+| **30–39** | `30-theming` | System-wide theme engines, Matugen colors, cursor & sound themes |
+| **40–49** | `40-desktop` | Compositors (Hyprland, Niri), Noctalia shell, launchers (Rofi, Vicinae) |
+| **50–59** | `50-cli-tui-programs` | Shells (Zsh, Nushell), editors (NixVim), multiplexers (Zellij, Tmux) |
+| **60–69** | `60-gui-programs` | Desktop apps (Brave, CamoFox), media, development IDEs, gaming |
+| **70–79** | `70-agents` | Autonomous agent swarm (Hermes, OpenCode), MCP servers, skills |
+| **80–89** | `80-lib` | Functional Nix library (`mkDendriticModule`), overlays, custom derivations |
+| **90–99** | `90-profiles` | Machine profile tag aggregators (`tags/`) |
 
 ---
 
-## ⚔️ The Arsenal (Features)
+## 🤖 AI Swarm Control Plane & Agent Ecosystem
 
-### 🖥️ Desktop Experience (Noctalia)
+NFP includes a production-grade multi-agent autonomous framework:
 
-A heavily customized **Hyprland** environment driven by **Matugen** for dynamic material theming.
-
-* **Neon Aesthetics**: Saber-like glowing borders and deep, rich shadows powered by Hyprland's `col.active_border` and `decoration.shadow`.
-* **Matugen Integration**: Wallpaper-based color schemes that propagate to GTK, QT, Terminals, and Hyprland instantly.
-* **Workflow Optimization**:
-  * **Vicinae** & **Noctalia** launchers for instant access.
-  * **Hyprspace** overview for workspace management.
-  * **Yazelix**: A custom Helix-based modal editing environment.
-
-### 🧠 Brain Force (AI Stack)
-
-A robust local AI infrastructure fully provisioned by Nix:
-
-* **Local LLMs**: Integrated **Ollama**, **LocalAI**, and **LM Studio**.
-* **Vector Power**: **ChromaDB** and **Qdrant** for RAG applications.
-* **Agents**: Pre-configured environments for **CrewAI**, **AutoGen**, and custom Python agents.
-* **Automation**: **n8n** workflow automation server and **Home Assistant** integration.
-
-### 🛡️ Ship Security & Privacy
-
-* **Sops-Nix**: All secrets are encrypted at rest using Age encryption.
-* **Impermanence**: Root filesystems are wiped on boot; only strictly defined state is persisted (Persistence as Code).
-* **Headscale**: Secure mesh networking compatible with Tailscale.
-* **AdGuard Home**: Network-wide ad blocking and DNS privacy.
+* **Hermes Agent Gateway**: Multi-turn agent gateway (`:8085`) and dashboard (`:9119`) with custom skill packs and Managed Scope isolation (`/etc/hermes/config.yaml`).
+* **Unified LLM Gateway**: Kong Gateway (`:8090`) and ExtremeRouter (`:20128`) supporting 150+ LLM providers with automatic fallback routing.
+* **Context & Memory Chassis**: EverOS engine (`:8092`), PostgreSQL vector store, and ContextForge MCP gateway.
+* **Agent Workspaces**: OpenCode, AionUI, Paperclip, and Polyfloor multi-floor OS.
 
 ---
 
-## 🛠️ Technology Stack (Flakes)
+## 🚀 Quickstart & Session Workflow
 
-Managed via `flake.nix` and `flake-parts`:
+### 1. Initialize Workspace
 
-| Flake | Description | Usage |
-| :--- | :--- | :--- |
-| `clan-core` | Fleet Management | Modules, secrets, and deployment |
-| `hyprland` | Window Manager | Tiling compositor and plugins |
-| `home-manager` | User Environment | Dotfiles and user styling |
-| `sops-nix` | Secrets Management | Encrypted secrets at rest |
-| `impermanence` | State Management | Opt-in persistence for stateless root |
-| `spicetify-nix` | Spotify Theming | Custom Spotify client theming |
-| `nixos-hardware` | Hardware Quirks | Auto-configured hardware support |
-| `llm-agents` | AI Tooling | Local AI agent environment |
-
----
-
-## 🗺️ Architecture Structure
-
-This configuration follows the **Clan-Core** architecture for scalable fleet management.
-
-```mermaid
-graph TD
-    User[t0psh31f] -->|Manages| Flake[Flake.nix]
-    Flake -- Imports --> Clan[Clan Inventory]
-
-    subgraph Hosts
-        Luffy[Luffy (Workstation)]
-        Z0r0[Z0r0 (Media Server)]
-    end
-
-    subgraph Layers (Dendritic V2)
-        Cyberia[00-Cyberia: Docs/Assets/Scripts]
-        System[10-System: Foundation/Hardware]
-        Services[20-Services: Infra/AI/Media]
-        Theming[30-Theming: UI]
-        Desktop[40-Desktop: Hyprland/Wayland]
-        CLI[50-CLI: Shell/Tools]
-        GUI[60-GUI: Browsers/Activities]
-        Agents[70-Agents: LLM Tooling]
-        Lib[80-Lib: Nix SDK/Helpers]
-        Profiles[90-Profiles: Tag Aggregation]
-    end
-
-    Clan --> Luffy
-    Clan --> Z0r0
-
-    Luffy --> Profiles
-    Z0r0 --> Profiles
-```
-
----
-
-## 🚀 Setting Sail (Quick Start)
-
-### Prerequisites
-
-* Nix enabled system (Linux/MacOS) with Flakes enabled.
-* `direnv` installed.
-
-### 1. Recruit the Crew (Clone)
+Clone the repository and run the session initialization harness:
 
 ```bash
 git clone https://github.com/T0PSH31F/NFP.git
 cd NFP
-direnv allow
+./init.sh
 ```
 
-### 2. Update the Ship (Deploy)
+`./init.sh` automatically verifies dependencies, linter compliance (`nixfmt`, `deadnix`, `statix`), schema validity of `feature_list.json`, and machine top-level evaluation.
 
-Updates are handled via a self-hosted GitHub Actions runner:
-1. Push changes to `main`.
-2. The `deploy.yml` workflow formats, checks, and deploys to all active machines.
+### 2. Fleet Deployment
 
-To manually trigger a deployment locally:
-```bash
-clan machines update <machine>
-```
-
-### Documentation
-All documentation is in `layers/00-cyberia/01-docs/`:
-- **[harness.md](layers/00-cyberia/01-docs/harness.md)** — agent harness specification & lifecycle
-- **[yazelix_guide.md](layers/00-cyberia/01-docs/yazelix_guide.md)** — editor setup & keybinds
-- **[hermes-agent.md](layers/00-cyberia/01-docs/hermes-agent.md)** — AI agent features
-- **[deployment.md](layers/00-cyberia/01-docs/deployment.md)** — deployment methods
-- **[features.md](layers/00-cyberia/01-docs/features.md)** — feature overview
-- **[AGENT_ONBOARDING.md](layers/00-cyberia/01-docs/AGENT_ONBOARDING.md)** — system architecture for agents
-
-### 3. Unlock the Treasure (Secrets)
+NFP uses **Clan-Core** for declarative machine updates:
 
 ```bash
-sops treasure/secrets/vicinae.yaml
+# Update all machines in the fleet
+clan machines update
+
+# Target a specific host
+clan machines update z0r0
+clan machines update luffy
 ```
 
 ---
 
-## 📦 Allied Crews (Related Projects)
+## 📚 Core System Documentation
 
-### [VegaNix Records](https://github.com/T0PSH31F/grandlix-devenvs)
+Detailed technical references are maintained under `layers/00-cyberia/01-docs/`:
 
-*(Formerly Grandlix-Devenvs)*
-A separate repository hosting reproducible development environments for Python, Node.js, Rust, and Go. Kept separate to minimize the closure size of the main system flake.
-
----
-
-## 📸 Gallery
-
-![Desktop Screenshot](assets/screenshots/desktop_placeholder.png)
-![Dashboard Screenshot](assets/screenshots/dashboard_placeholder.png)
+* **[AGENT_ONBOARDING.md](layers/00-cyberia/01-docs/AGENT_ONBOARDING.md)** — Architectural blueprint & system boot sequence
+* **[harness.md](layers/00-cyberia/01-docs/harness.md)** — Harness specification & session verification workflow
+* **[ai-stack.md](layers/00-cyberia/01-docs/ai-stack.md)** — Complete AI infrastructure & MCP server map
+* **[ports.md](layers/00-cyberia/01-docs/ports.md)** — Fleet port allocation registry
+* **[services.md](layers/00-cyberia/01-docs/services.md)** — Active service URLs & endpoints
+* **[deployment.md](layers/00-cyberia/01-docs/deployment.md)** — Deployment commands & CI/CD workflows
+* **[NUMBERING.md](layers/NUMBERING.md)** — Canonical layer numbering standard & CI governance
 
 ---
 
-## 📜 Pirate Code (License)
+## 📜 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-> "I'm going to be the King of the Pirates!" — Monkey D. Luffy
+Distributed under the MIT License. See `LICENSE` for details.

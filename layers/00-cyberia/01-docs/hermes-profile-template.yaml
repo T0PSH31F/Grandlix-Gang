@@ -1,0 +1,78 @@
+# config.yaml.tmpl
+# Template for a new Hermes profile, meant to be substituted by the "HR"
+# generator agent and installed via:
+#   hermes profile install ./profile-template --name {{PROFILE_NAME}}
+#
+# Placeholders (substitute before install, or have HR write these directly
+# rather than hand-editing the .yaml per the earlier ask):
+#   {{PROFILE_NAME}}          - unique profile identifier, e.g. "research-01"
+#   {{PERSONA_SUMMARY}}       - one-line description for the kanban orchestrator
+#   {{TELEGRAM_HOME_CHANNEL}} - chat_id of the shared group all profiles post into
+#   {{MATRIX_ROOM_ID}}        - shared Matrix room ID all profiles join
+#   {{FOCUSED_TOOLS}}         - YAML list of this profile's tool subset
+#   {{FOCUSED_SKILLS}}        - YAML list of skill names to enable (from shared pool)
+#   {{FOCUSED_MCP_SERVERS}}   - YAML mapping of this profile's MCP server subset
+
+model:
+  provider: kong
+  default: auto
+  fallback: extremerouter/direct-model-id
+
+providers:
+  kong:
+    base_url: "${KONG_BASE_URL}"
+    api_key: "${KONG_API_KEY}"
+    request_timeout_seconds: 180
+  extremerouter:
+    base_url: "${EXTREMEROUTER_BASE_URL}"
+    api_key: "${EXTREMEROUTER_API_KEY}"
+    request_timeout_seconds: 180
+
+# Shared-channel routing: every profile uses the SAME home channel/room but
+# a unique session_namespace so the gateway can tell sessions apart without
+# colliding. Requires one bot token / one Matrix user per profile (see
+# bootstrap-agent-identity.sh) even though they post to the same place.
+gateways:
+  telegram:
+    token: "${TELEGRAM_BOT_TOKEN}"          # unique per profile — see Task 6
+    home_channel_env: "TELEGRAM_HOME_CHANNEL"
+    session_namespace: "{{PROFILE_NAME}}"
+  matrix:
+    user_id: "${MATRIX_USER_ID}"             # unique per profile
+    access_token: "${MATRIX_ACCESS_TOKEN}"   # unique per profile
+    home_channel_env: "MATRIX_HOME_ROOM"
+    session_namespace: "{{PROFILE_NAME}}"
+
+# Focused tool/skill/MCP selection — this is what makes each profile
+# "specialized" despite sharing providers and channels.
+tools:
+  include: {{FOCUSED_TOOLS}}
+
+skills:
+  enabled: {{FOCUSED_SKILLS}}
+  guard_agent_created: false
+  write_approval: false
+
+mcp_servers:
+{{FOCUSED_MCP_SERVERS}}
+
+security:
+  redact_secrets: true
+
+---
+# .env.tmpl
+# Non-secret shared values reference the managed /etc/hermes/.env layer
+# automatically; only put THIS PROFILE's unique secrets here.
+# TELEGRAM_BOT_TOKEN=
+# MATRIX_USER_ID=
+# MATRIX_ACCESS_TOKEN=
+# TELEGRAM_HOME_CHANNEL=
+# MATRIX_HOME_ROOM=
+
+---
+# SOUL.md.tmpl
+# {{PERSONA_SUMMARY}}
+#
+# Fill in persona/system-prompt details here. This file is intentionally
+# left to the HR generator agent or a human — it's the one file that should
+# genuinely differ, hand-authored, per profile.

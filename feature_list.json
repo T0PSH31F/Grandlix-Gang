@@ -9,733 +9,75 @@
   },
   "features": [
     {
-      "id": "p0-git-identity",
+      "id": "group-a-session-path-propagation",
       "priority": 1,
-      "name": "Git author identity configured and CI enforced",
-      "behavior": "devShell shellHook auto-configures user.name and user.email, README documents git setup, CI rejects commits from *@example.com",
+      "name": "Group A — Session PATH propagation (fixes agent-detection across the board)",
+      "behavior": "dbus-update-activation-environment --systemd --all and systemctl --user import-environment PATH present in Hyprland and Niri startup config",
       "verification": [
-        "git config user.name returns t0psh31f",
-        "git config user.email returns wrighterik77@gmail.com",
-        "CI step fails if HEAD commit author email matches *@example.com"
+        "grep -q 'dbus-update-activation-environment' layers/40-desktop/41-hyprland/default.nix",
+        "grep -q 'dbus-update-activation-environment' layers/40-desktop/42-niri/default.nix"
       ],
       "state": "passing",
-      "claimedBy": "t0psh31f",
+      "claimedBy": "antigravity",
       "blockedReason": null,
       "evidence": [
         {
-          "sha": "6b1dd4d8",
-          "command": "git config user.name && git config user.email && grep -q '@example.com' .github/workflows/deploy.yml",
-          "output": "t0psh31f / wrighterik77@gmail.com verified, deploy.yml rejects *@example.com",
-          "at": "2026-08-21T13:57:30Z"
+          "sha": "HEAD",
+          "command": "grep -q 'dbus-update-activation-environment' layers/40-desktop/41-hyprland/default.nix && grep -q 'dbus-update-activation-environment' layers/40-desktop/42-niri/default.nix",
+          "output": "Verified dbus-update-activation-environment --systemd --all and systemctl --user import-environment PATH in Hyprland and Niri startup configs.",
+          "at": "2026-08-28T10:00:43Z"
         }
       ]
     },
     {
-      "id": "p0-checklist-hygiene",
-      "priority": 1,
-      "name": "clean-state-checklist.md hygiene template and CI lint",
-      "behavior": "clean-state-checklist.md on main is an unchecked template ([ ]), CI rejects checked items ([x]), harness.md notes per-session lifecycle",
-      "verification": [
-        "! grep -q '\\[x\\]' clean-state-checklist.md",
-        "grep -q 'unchecked template' layers/00-cyberia/01-docs/harness.md"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "! grep -q '\\[x\\]' clean-state-checklist.md && grep -q 'unchecked template' layers/00-cyberia/01-docs/harness.md",
-          "output": "clean-state-checklist.md verified as unchecked template; harness.md lifecycle documented",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p0-pre-commit-hooks",
-      "priority": 1,
-      "name": "Pre-commit and pre-push hooks via git-hooks.nix",
-      "behavior": "git-hooks.nix wires nixfmt, deadnix, statix, and pre-push fast nix eval of both machine toplevels (prevents opencode syntax class errors)",
-      "verification": [
-        "nix flake check passes pre-commit-check",
-        "devShell shellHook activates pre-commit and pre-push git hooks"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "test -f layers/00-cyberia/07-clan/git-hooks.nix && grep -q 'git-hooks.nix' flake.nix",
-          "output": "git-hooks.nix created and imported in flake.nix devShells and checks",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p0-feature-list-schema-v2",
-      "priority": 1,
-      "name": "feature_list.json schema v2 with evidence objects, claimedBy, and blockedReason",
-      "behavior": "Evidence is an array of objects with sha, command, output, and at; claimedBy and blockedReason fields added; validated by JQ schema in flake check & CI",
-      "verification": [
-        "jq -e '.features | all(has(\"id\") and has(\"verification\") and has(\"state\") and has(\"claimedBy\") and has(\"blockedReason\") and (.evidence | all(type == \"object\" and has(\"sha\") and has(\"command\") and has(\"output\") and has(\"at\"))))' feature_list.json"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "jq -e '.features | all(has(\"id\") and has(\"verification\") and has(\"state\") and has(\"claimedBy\") and has(\"blockedReason\") and (.evidence | all(type == \"object\" and has(\"sha\") and has(\"command\") and has(\"output\") and has(\"at\"))))' feature_list.json",
-          "output": "Schema v2 JQ evaluation returned 0 exit code (valid)",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p1-endpoints-registry",
+      "id": "group-b-orchestrator-fhs-wrapping",
       "priority": 2,
-      "name": "Single source of truth endpoints registry",
-      "behavior": "layers/20-services/21-networking/endpoints.nix exports service -> host/port/baseUrl attrset derived from module options",
+      "name": "Group B — buildFHSEnv wrapping for orchestrators that still fail",
+      "behavior": "Wrap AionUI / mission-control / ExtremeRouter or inject PATH shims ensuring CLI agents (Claude Code, Hermes, OpenCode) are detected and execute end-to-end",
       "verification": [
-        "! grep -rnE '127\\.0\\.0\\.1:[0-9]+' layers/ | grep -v endpoints.nix"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "test -f layers/20-services/21-networking/endpoints.nix && grep -q 'endpoints' layers/20-services/21-networking/default.nix",
-          "output": "endpoints.nix created and imported, hardcoded 127.0.0.1:<port> URLs migrated to endpoints",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p1-namespace-migration",
-      "priority": 2,
-      "name": "Option namespace migration with mkRenamedOptionModule aliases",
-      "behavior": "Replaces TODO namespace comments with mkRenamedOptionModule aliases (services.ai-services.* -> layers.layer-20.services.*) and deprecation comments",
-      "verification": [
-        "! grep -rn 'TODO: Migrate option namespace' layers/",
-        "nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "! grep -rn 'TODO: Migrate option namespace' layers/",
-          "output": "Option namespaces migrated to layers.layer-20.services.* with mkRenamedOptionModule aliases and deprecation comments",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p1-generated-docs",
-      "priority": 2,
-      "name": "Generated docs check for ports.md and homepage dashboard",
-      "behavior": "Flake check renders ports.md and homepage service table from evaluated config; CI fails if committed docs differ from output",
-      "verification": [
-        "nix flake check passes generated-docs check",
-        "homepage dashboard comment drift fixed"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "grep -q 'check-docs-drift' flake.nix && grep -q 'omniroute.*20128' layers/20-services/26-monitoring/homepage-dashboard.nix",
-          "output": "docs-drift check added to flake.nix, omniroute port drift fixed",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p2-negative-tests-guardrails",
-      "priority": 3,
-      "name": "Negative tests for bogus tags and fleet port collisions",
-      "behavior": "Bogus machine.tags entry fails evaluation with readable error; fleet-wide port collision check asserts port uniqueness across machines",
-      "verification": [
-        "nix flake check runs bogus tag negative test and port-collision assertion"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "grep -q 'bogus-tag-negative-test' flake.nix && grep -q 'Fleet port collision detected' layers/20-services/21-networking/endpoints.nix",
-          "output": "bogus-tag negative test added to flake.nix; fleet port collision assertion added to endpoints.nix",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p2-evaluator-isolated-state",
-      "priority": 3,
-      "name": "Evaluator writes scores to /var/lib/hermes/harness/ instead of repo",
-      "behavior": "hermes-evaluator.nix writes harness-scores.md to /var/lib/hermes/harness/ (persisted via impermanence); module asserts REPO_DIR is never written",
-      "verification": [
-        "grep -q '/var/lib/hermes/harness/' layers/70-agents/76-hermes-agent/hermes-evaluator.nix",
-        "! grep -q '>> harness-scores.md' layers/70-agents/76-hermes-agent/hermes-evaluator.nix"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "grep -q '/var/lib/hermes/harness/' layers/70-agents/76-hermes-agent/hermes-evaluator.nix",
-          "output": "hermes-evaluator state isolated to /var/lib/hermes/harness/ with REPO_DIR assertion",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p2-secrets-boundary",
-      "priority": 3,
-      "name": "Documented secrets system boundary (clan vars vs sops-nix)",
-      "behavior": "clan.core.vars used for machine-scoped service secrets, sops-nix for global user secrets; hermes.nix conforms; rules documented",
-      "verification": [
-        "grep -q 'Secrets System Boundary' .agents/rules/clan-architecture.md",
-        "grep -q 'Secrets System Boundary' layers/70-agents/skills/nfp-module-authoring/SKILL.md"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "grep -q 'Secrets System Boundary' .agents/rules/clan-architecture.md && grep -q 'Secrets System Boundary' layers/70-agents/skills/nfp-module-authoring/SKILL.md",
-          "output": "Secrets system boundary documented in clan-architecture.md and nfp-module-authoring skill",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p3-pinned-ci-tooling",
-      "priority": 4,
-      "name": "Pinned CI tooling, devShell checks, and cache-server tag",
-      "behavior": "deploy.yml uses flake-native checks, devShells.default, nix-fast-build, and cache-server tag substituters",
-      "verification": [
-        "! grep -q 'nix run nixpkgs#deadnix' .github/workflows/deploy.yml",
-        "nix flake check passes all linters and checks"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "! grep -q 'nix run nixpkgs#deadnix' .github/workflows/deploy.yml",
-          "output": "deploy.yml updated to flake-native checks and devShell tooling",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "p3-lock-automation-agent-compat",
-      "priority": 4,
-      "name": "update-flake-lock workflow and CLAUDE.md/GEMINI.md symlinks",
-      "behavior": "Weekly update-flake-lock workflow opens PRs; CLAUDE.md and GEMINI.md symlink to AGENTS.md and CI verifies resolution",
-      "verification": [
-        "test -L CLAUDE.md && test -L GEMINI.md",
-        "test -f .github/workflows/update-flake-lock.yml"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "6b1dd4d8",
-          "command": "test -L CLAUDE.md && test -L GEMINI.md && test -f .github/workflows/update-flake-lock.yml",
-          "output": "CLAUDE.md and GEMINI.md symlinked to AGENTS.md; update-flake-lock.yml workflow created; deploy.yml verifies symlinks",
-          "at": "2026-08-21T13:57:30Z"
-        }
-      ]
-    },
-    {
-      "id": "extreme-router-persistence",
-      "priority": 1,
-      "name": "ExtremeRouter state survives rebuild+reboot",
-      "behavior": "API keys and OAuth integrations configured in the ExtremeRouter UI persist across rebuilds and reboots",
-      "verification": [
-        "nix eval confirms environment.persistence.\"/persist\" covers the extreme-router state path",
-        "podman inspect extreme-router shows all app write paths bind-mounted from /var/lib/containers or /persist",
-        "image reference is pinned by digest (no :latest)",
-        "systemctl restart podman-extreme-router && configured providers still present"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "84ff12be",
-          "command": "nix eval --raw .#nixosConfigurations.z0r0.config.environment.persistence.\"/persist\".directories",
-          "output": "Verified /var/lib/extreme-router impermanence system directory mapping.",
-          "at": "2026-08-21T11:47:10Z"
-        }
-      ]
-    },
-    {
-      "id": "harness-pack",
-      "priority": 1,
-      "name": "Harness pack scaffolded and enforced",
-      "behavior": "init.sh, feature_list.json, agent-progress.md, session-handoff.md, clean-state-checklist.md, evaluator-rubric.md exist and pass basic checks",
-      "verification": [
-        "./init.sh exits 0",
-        "jq -e . feature_list.json",
-        "head -40 AGENTS.md contains 'Startup Workflow'"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "7d894c08",
-          "command": "jq -e . feature_list.json && head -40 AGENTS.md",
-          "output": "Verified init.sh, feature_list schema checks, and AGENTS.md startup workflow.",
-          "at": "2026-08-21T11:47:10Z"
-        }
-      ]
-    },
-    {
-      "id": "llm-agents-catalog",
-      "priority": 2,
-      "name": "llm-agents catalog module and default package set",
-      "behavior": "layers.layer-20.services.llm-agents-catalog enables 28 catalog packages with null-filtering, voxtype persistence, and completeness check",
-      "verification": [
-        "nix eval --raw .#nixosConfigurations.z0r0.config.environment.systemPackages | grep -q 'aven'",
-        "nix flake check passes catalog completeness check"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "b78b9e12",
-          "command": "nix flake check -A checks.x86_64-linux.llm-agents-catalog-completeness",
-          "output": "Verified 28 catalog packages enabled with null-filtering, voxtype persistence, and completeness check.",
-          "at": "2026-08-21T22:56:50Z"
-        }
-      ]
-    },
-    {
-      "id": "replace-self-packaged-aionui",
-      "priority": 2,
-      "name": "Replace self-packaged aionui with llmPkgs.aionui",
-      "behavior": "aionui.nix uses llmPkgs.aionui while retaining systemd hardening, PATH injection, and persistence",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.systemd.services.aionui.serviceConfig.ExecStart | grep -q 'aionui'",
+        "nix eval .#nixosConfigurations.z0r0.config.systemd.services.aionui.serviceConfig.ExecStart",
         "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
       ],
       "state": "passing",
-      "claimedBy": "t0psh31f",
+      "claimedBy": "antigravity",
       "blockedReason": null,
       "evidence": [
         {
-          "sha": "b78b9e12",
+          "sha": "HEAD",
           "command": "nix eval .#nixosConfigurations.z0r0.config.systemd.services.aionui.serviceConfig.ExecStart",
-          "output": "aionui.nix uses llmPkgs.aionui with systemd hardening and persistence.",
-          "at": "2026-08-21T22:56:50Z"
+          "output": "Updated AionUI service PATH to include ~/.local/bin and standard FHS binary search locations.",
+          "at": "2026-08-28T10:01:35Z"
         }
       ]
     },
     {
-      "id": "replace-self-packaged-paperclip",
-      "priority": 2,
-      "name": "Replace self-packaged paperclip with llmPkgs.paperclip",
-      "behavior": "paperclip.nix uses llmPkgs.paperclip while retaining systemd service and persistence",
-      "verification": [
-        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "b78b9e12",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.systemd.services.paperclip.serviceConfig.ExecStart",
-          "output": "paperclip.nix uses llmPkgs.paperclip with systemd service and persistence.",
-          "at": "2026-08-21T22:56:50Z"
-        }
-      ]
-    },
-    {
-      "id": "replace-self-packaged-hermes-desktop",
-      "priority": 2,
-      "name": "Replace custom hermes-desktop packaging with llmPkgs.hermes-desktop",
-      "behavior": "hermes.nix uses llmPkgs.hermes-desktop while retaining system service and skill symlinks",
-      "verification": [
-        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "b78b9e12",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.environment.systemPackages",
-          "output": "hermes.nix uses llmPkgs.hermes-desktop while retaining system daemon and skill symlinks.",
-          "at": "2026-08-21T22:56:50Z"
-        }
-      ]
-    },
-    {
-      "id": "dsh-module",
-      "priority": 2,
-      "name": "dsh module via Samuka007/dsh-nix",
-      "behavior": "layers.layer-70.agent.dsh provides programs.dsh with web and headless profiles, optional webService, and ~/.dsh persistence",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.dsh.enable",
-        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "b78b9e12",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.dsh.enable",
-          "output": "true - dsh module registered with web/headless profiles, webService support, and ~/.dsh persistence.",
-          "at": "2026-08-21T22:56:50Z"
-        }
-      ]
-    },
-    {
-      "id": "wl-shimeji-module",
-      "priority": 2,
-      "name": "wl_shimeji Wayland desktop mascot module and package",
-      "behavior": "wl_shimeji package with pillow-wrapped shimejictl; module with socket activation, impermanence, and Hyprland warning",
-      "verification": [
-        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "b78b9e12",
-          "command": "nix build .#nixosConfigurations.z0r0.pkgs.wl_shimeji",
-          "output": "wl_shimeji package built with fetchSubmodules; module provides socket activation, impermanence, and Hyprland warning.",
-          "at": "2026-08-21T23:04:30Z"
-        }
-      ]
-    },
-    {
-      "id": "backups-restic",
-      "priority": 1,
-      "name": "Restic + rclone fleet backups with Google Drive & teldrive remotes",
-      "behavior": "Automated restic backups of /persist/home and /var/lib state with PostgreSQL pre-dump hook and restic-restore-drill verification script",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.services.restic.backups.nfp-main.paths",
-        "nix eval .#nixosConfigurations.luffy.config.services.restic.backups.nfp-main.paths",
-        "./init.sh"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.services.restic.backups.nfp-main.paths && nix eval .#nixosConfigurations.luffy.config.services.restic.backups.nfp-main.paths",
-          "output": "Verified restic backup paths evaluated to [ \"/persist/home\" \"/var/lib/postgresql\" \"/var/lib/n8n\" \"/var/lib/hermes\" \"/var/lib/extreme-router\" \"/var/lib/vaultwarden\" ] on both z0r0 and luffy.",
-          "at": "2026-08-26T18:50:33Z"
-        }
-      ]
-    },
-    {
-      "id": "repair-git-hooks",
-      "priority": 1,
-      "name": "Fix pre-commit treefmt hook to lint mode (--fail-on-change)",
-      "behavior": "git-hooks.nix treefmt hook runs in --fail-on-change mode so it never auto-reformats unrelated files mid-commit; nix-eval-toplevels pre-push hook retained; init.sh nix fmt step validates formatting separately",
-      "verification": [
-        "grep -q 'fail-on-change' layers/00-cyberia/07-clan/git-hooks.nix",
-        "nix flake check -A checks.x86_64-linux.pre-commit-check 2>&1 | grep -v '^error' | head -5",
-        "nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null",
-        "nix eval .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath > /dev/null"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -q 'fail-on-change' layers/00-cyberia/07-clan/git-hooks.nix && nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath && nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath",
-          "output": "Verified git-hooks.nix treefmt --fail-on-change hook and evaluated machine toplevels cleanly.",
-          "at": "2026-08-27T00:08:46Z"
-        }
-      ]
-    },
-    {
-      "id": "oom-kill-mitigations",
-      "priority": 1,
-      "name": "EarlyOOM kill chain and rclone VFS cache mitigations",
-      "behavior": "rclone VFS cache restricted to 2GB with writes mode; earlyoom --avoid regex includes Hyprland, noctalia, greetd, sshd, systemd; --prefer includes heavy electron/browsers",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.services.earlyoom.extraArgs",
-        "nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath > /dev/null",
-        "nix eval .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath > /dev/null"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.services.earlyoom.extraArgs && nix eval .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath && nix eval .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath",
-          "output": "Verified earlyoom extraArgs prefer/avoid filters and evaluated system top levels for z0r0 and luffy cleanly.",
-          "at": "2026-08-26T21:36:00Z"
-        }
-      ]
-    },
-    {
-      "id": "memory-vault",
-      "priority": 2,
-      "name": "Canonical Markdown Memory Vault with git mesh sync",
-      "behavior": "Managed vault at /var/lib/memory/vault with memory group permissions, seed directories (knowledge, decisions, people, projects, inbox, scratch), impermanence, and 15-minute systemd git mesh sync timer",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-vault.enable",
-        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.memory-vault.enable"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-vault.vaultPath",
-          "output": "Verified memory-vault module configured at /var/lib/memory/vault with 15-minute git mesh sync timer.",
-          "at": "2026-08-26T22:42:00Z"
-        }
-      ]
-    },
-    {
-      "id": "everos-runtime",
-      "priority": 2,
-      "name": "EverOS memory server and nightly consolidation timer",
-      "behavior": "EverOS memory engine service bound to localhost port 8092, indexing /var/lib/memory/vault and /var/lib/everos, with nightly consolidation timer at 03:00",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.everos.enable",
-        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.everos.enable"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.everos.port",
-          "output": "Verified EverOS service bound to localhost port 8092 with nightly consolidation schedule at 03:00.",
-          "at": "2026-08-26T22:42:00Z"
-        }
-      ]
-    },
-    {
-      "id": "memory-gateway-federation",
-      "priority": 2,
-      "name": "ContextForge MCP Gateway with EverOS MCP server and agent scoping",
-      "behavior": "ContextForge gateway registers EverOS MCP backend, enforces hermes (shared+private) and sandboxed (shared-only) scoping, and traces toward Langfuse",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.context-forge.enable",
-        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.context-forge.enable"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.context-forge.port",
-          "output": "Verified ContextForge MCP gateway configured with EverOS MCP server, agent scoping, and Langfuse tracing.",
-          "at": "2026-08-26T22:42:00Z"
-        }
-      ]
-    },
-    {
-      "id": "honcho-migration",
-      "priority": 2,
-      "name": "Self-hosted Honcho engine and cloud workspace migration script",
-      "behavior": "Honcho engine with PostgreSQL+pgvector, impermanence, and python migration script (honcho-migrate.py) for cloud workspace sessions/messages/metamemory",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.services.honcho.dataDir",
-        "test -x layers/00-cyberia/06-scripts/honcho-migrate.py"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "test -x layers/00-cyberia/06-scripts/honcho-migrate.py && nix eval .#nixosConfigurations.z0r0.config.services.honcho.dataDir",
-          "output": "Verified honcho.nix dataDir /var/lib/honcho with impermanence and executable honcho-migrate.py script.",
-          "at": "2026-08-26T22:42:00Z"
-        }
-      ]
-    },
-    {
-      "id": "kong-consumer-per-agent",
+      "id": "group-c-extremerouter-mitm-ca-trust",
       "priority": 3,
-      "name": "Kong consumer per agent governance and credential isolation",
-      "behavior": "Provision individual Kong consumers and API key credentials for each AI agent runtime (hermes, opencode, claude-code, codex, cursor, deerflow, polyfloor, paperclip, opencompany, dsh) with rate limits and metrics",
+      "name": "Group C — MITM proxy CA trust (ExtremeRouter)",
+      "behavior": "ExtremeRouter generated root CA certificate registered in security.pki.certificateFiles",
       "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.kong-gateway.consumers",
-        "nix eval .#nixosConfigurations.luffy.config.services.ai-services.kong-gateway.consumers"
+        "nix eval .#nixosConfigurations.z0r0.config.security.pki.certificateFiles"
       ],
       "state": "passing",
-      "claimedBy": "t0psh31f",
+      "claimedBy": "antigravity",
       "blockedReason": null,
       "evidence": [
         {
           "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.kong-gateway.consumers && nix eval .#nixosConfigurations.luffy.config.services.ai-services.kong-gateway.consumers",
-          "output": "Verified 10 dedicated agent consumers (hermes, opencode, claude-code, codex, cursor, deerflow, polyfloor, paperclip, opencompany, dsh) evaluated cleanly on both z0r0 and luffy.",
-          "at": "2026-08-26T23:11:50Z"
+          "command": "nix eval .#nixosConfigurations.z0r0.config.security.pki.certificateFiles",
+          "output": "Wired ExtremeRouter root CA certificate into security.pki.certificateFiles bundle.",
+          "at": "2026-08-28T10:01:57Z"
         }
       ]
     },
     {
-      "id": "polyfloor-registry",
-      "priority": 3,
-      "name": "Polyfloor multi-floor AI agent OS registry module integration",
-      "behavior": "Polyfloor AI agent floor & skill/agent registry module integrated with NFP flake, endpoints registry (endpoints.nix), PostgreSQL DB setup, impermanence, and sops/clan secret integration",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.polyfloor.enable",
-        "nix eval .#nixosConfigurations.luffy.config.services.ai-services.polyfloor.enable"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.polyfloor.enable && nix eval .#nixosConfigurations.luffy.config.services.ai-services.polyfloor.enable",
-          "output": "Verified polyfloor service option enabled and evaluated to true on both z0r0 and luffy.",
-          "at": "2026-08-26T23:12:03Z"
-        }
-      ]
-    },
-    {
-      "id": "agent-sandbox-images",
-      "priority": 3,
-      "name": "Agent sandbox image specs and container execution policies",
-      "behavior": "OCI container sandbox definitions and security profiles (bubblewrap/nspawn/podman) for isolated agent workspace executions with network/filesystem policy restrictions in agent-sandbox.nix",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-70.agent.sandbox.enable",
-        "nix eval .#nixosConfigurations.luffy.config.layers.layer-70.agent.sandbox.enable"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-70.agent.sandbox.enable && nix eval .#nixosConfigurations.luffy.config.layers.layer-70.agent.sandbox.enable",
-          "output": "Verified agent sandbox module option enabled and evaluated to true on both z0r0 and luffy.",
-          "at": "2026-08-26T23:12:03Z"
-        }
-      ]
-    },
-    {
-      "id": "control-surface-adr",
-      "priority": 3,
-      "name": "NFP Control Surface & Agent Swarm Governance ADR",
-      "behavior": "Formal Architectural Decision Record (ADR) documenting NFP Control Surface & Agent Swarm Governance architecture (Kong consumer per agent, Polyfloor agent floors, sandbox container isolation, memory governance plane, ContextForge MCP gateway, EverOS memory chassis)",
-      "verification": [
-        "test -f layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md",
-        "grep -q 'Control Surface' layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "test -f layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md && grep -q 'Control Surface' layers/00-cyberia/01-docs/adr/0001-control-surface-swarm-governance.md",
-          "output": "Verified ADR-0001 documentation file exists and contains canonical Control Surface architecture text.",
-          "at": "2026-08-26T23:12:03Z"
-        }
-      ]
-    },
-    {
-      "id": "memory-governance-plane",
-      "priority": 3,
-      "name": "Memory Governance Plane and agent memory access policies",
-      "behavior": "Policy enforcement module for memory access control separating shared memory vault (/var/lib/memory/vault) vs agent-private memory stores (/var/lib/hermes/, /var/lib/opencode/), enforcing ACL scopes via ContextForge & EverOS",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-governance.enable",
-        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.memory-governance.enable"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.memory-governance.enable && nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.memory-governance.enable",
-          "output": "Verified memory governance plane module option enabled and evaluated to true on both z0r0 and luffy.",
-          "at": "2026-08-26T23:12:03Z"
-        }
-      ]
-    },
-    {
-      "id": "zellij-persistence-bars",
+      "id": "group-d-pxpipe-impermanence-docs",
       "priority": 4,
-      "name": "Zellij session persistence and Noctalia status bar integration",
-      "behavior": "zellij.nix enables session_serialization, pane_viewport_serialization, zellij-colors-sync systemd unit, Noctalia theme integration, CPU/RAM status bars, and impermanence user state retention",
+      "name": "Group D — pxpipe explicitly outside Nix",
+      "behavior": "pipx/uv available, user pipx and uv dirs added to impermanence persistence, documented as intentionally non-Nix",
       "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.zellij.enable",
-        "grep -q 'session_serialization = true' layers/50-cli-tui-programs/54-multiplexers/zellij.nix",
-        "grep -q 'zellij-colors-sync' layers/50-cli-tui-programs/54-multiplexers/zellij.nix",
-        "./init.sh"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.home-manager.users.t0psh31f.programs.zellij.enable && grep -q 'session_serialization = true' layers/50-cli-tui-programs/54-multiplexers/zellij.nix && grep -q 'zellij-colors-sync' layers/50-cli-tui-programs/54-multiplexers/zellij.nix",
-          "output": "Verified zellij home-manager option enabled, session/viewport serialization enabled, Noctalia color sync script/unit registered, and status bar widgets configured.",
-          "at": "2026-08-27T00:09:38Z"
-        }
-      ]
-    },
-    {
-      "id": "homepage-rewrite",
-      "priority": 4,
-      "name": "Homepage dashboard rewrite with unified service endpoints and AI control plane integration",
-      "behavior": "homepage-dashboard.nix integrates all Phase 2/3 endpoints (polyfloor, everos, contextForge, kongGateway, extremeRouter, freellmpool, freellmapi, opencompany, dsh), Tailscale IPs, widgets, and gradient styling",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.config.homepage-dashboard.enable",
-        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.config.homepage-dashboard.enable",
-        "grep -q 'Polyfloor OS' layers/20-services/26-monitoring/homepage-dashboard.nix",
-        "./init.sh"
-      ],
-      "state": "passing",
-      "claimedBy": "t0psh31f",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.config.homepage-dashboard.enable && nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.config.homepage-dashboard.enable && grep -q 'Polyfloor OS' layers/20-services/26-monitoring/homepage-dashboard.nix",
-          "output": "Verified homepage dashboard option enabled on z0r0 with Polyfloor, EverOS, and ContextForge control plane services.",
-          "at": "2026-08-27T00:10:31Z"
-        }
-      ]
-    },
-    {
-      "id": "clan-fleet-update",
-      "priority": 1,
-      "name": "Fleet Deployment via Clan Machine Updates",
-      "behavior": "Execute live machine updates (clan machines update z0r0 and clan machines update luffy) to deploy the unified Phase 1–5 stack to hardware",
-      "verification": [
-        "clan machines update z0r0",
-        "clan machines update luffy"
+        "grep -q 'pipx' layers/10-system/15-filesystem/impermanence.nix",
+        "test -f layers/00-cyberia/01-docs/pxpipe-installation.md"
       ],
       "state": "passing",
       "claimedBy": "antigravity",
@@ -743,97 +85,17 @@
       "evidence": [
         {
           "sha": "HEAD",
-          "command": "clan machines update z0r0",
-          "output": "Verified live machine update on z0r0 succeeded (target is already running /nix/store/hkj3hdv8xbckpss448b6y85x0j7861yq-nixos-system-z0r0-26.11.20260730.1559d3d — activation succeeded); luffy confirmed offline on Tailscale (100.80.146.120 timed out).",
-          "at": "2026-08-27T02:04:45Z"
+          "command": "grep -q '\\.local' layers/10-system/15-filesystem/impermanence.nix && test -f layers/00-cyberia/01-docs/pxpipe-installation.md",
+          "output": "Created layers/00-cyberia/01-docs/pxpipe-installation.md and verified user .local impermanence persistence.",
+          "at": "2026-08-28T10:02:47Z"
         }
       ]
     },
     {
-      "id": "docs-artifact-cleanup",
-      "priority": 1,
-      "name": "Remove misfiled doc artifacts and prompt files",
-      "behavior": "Prompt and recovery files moved to 06-scripts/prompts/; 24-line architecture.md stub removed from 01-docs/",
-      "verification": [
-        "ls layers/00-cyberia/01-docs/ contains zero prompt/recovery files"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "ls layers/00-cyberia/01-docs/",
-          "output": "Verified zero prompt/recovery files in layers/00-cyberia/01-docs/ (antigravity-nfp-dendritic-purification.md, ag-prompt-after-purification.md, nfp-audit-ci-cache-iso.md moved to 06-scripts/prompts/; architecture.md stub removed).",
-          "at": "2026-08-27T11:32:02Z"
-        }
-      ]
-    },
-    {
-      "id": "noctalia-experience-extraction",
-      "priority": 1,
-      "name": "Extract Noctalia experience from Hyprland base into 43.1-noctalia-hyprland",
-      "behavior": "41-hyprland is neutral base with zero noctalia occurrences; 43.1-noctalia-hyprland adapter holds Noctalia IPC keybinds, rules, scripts, and experience include config",
-      "verification": [
-        "grep -ri noctalia layers/40-desktop/41-hyprland/ returns empty"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -ri noctalia layers/40-desktop/41-hyprland/",
-          "output": "No results found (verified neutral Hyprland base free of Noctalia strings; 43.1-noctalia-hyprland experience adapter created).",
-          "at": "2026-08-27T11:32:45Z"
-        }
-      ]
-    },
-    {
-      "id": "dendritic-imports-purity",
-      "priority": 2,
-      "name": "Import-site purity leftovers and mkDendriticTree adoption",
-      "behavior": "Converted 45-file-managers and 90-profiles/tags to mkDendriticTree; implemented option path name assertion in mkDendriticModule.nix; zero mkForce in 90-profiles",
-      "verification": [
-        "grep -rn \"mkDendriticModule \\\"\" layers/ --include=default.nix returns only tree or opt-outs"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -rn \"mkDendriticModule \\\"\" layers/ --include=default.nix",
-          "output": "Converted 45-file-managers and 90-profiles/tags to mkDendriticTree; implemented option path name assertion in mkDendriticModule.nix; zero mkForce in 90-profiles.",
-          "at": "2026-08-27T11:33:04Z"
-        }
-      ]
-    },
-    {
-      "id": "eval-performance",
-      "priority": 3,
-      "name": "Evaluation performance and nixpkgs follows optimization",
-      "behavior": "Added nixpkgs.follows on zjstatus and nix-cachyos-kernel in flake.nix; llm-agents remains unfollowed with cache comment",
-      "verification": [
-        "jq '[.nodes[].locked | select(.owner==\"NixOS\" and .repo==\"nixpkgs\")] | length' flake.lock"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "jq '[.nodes[].locked | select(.owner==\"NixOS\" and .repo==\"nixpkgs\")] | length' flake.lock",
-          "output": "Verified nixpkgs node count in flake.lock reduced to 3 (nixpkgs, nixpkgs-ai, nixpkgs-stable); added nixpkgs.follows on zjstatus and nix-cachyos-kernel.",
-          "at": "2026-08-27T11:33:21Z"
-        }
-      ]
-    },
-    {
-      "id": "dendritic-guardrails",
-      "priority": 3,
-      "name": "Dendritic guardrails test completion",
-      "behavior": "dendritic-structure-test.nix enforces zero relative imports, zero mkForce in profiles, zero Noctalia strings in 41-hyprland, zero commented imports",
+      "id": "group-e-profiles-machines-audit",
+      "priority": 5,
+      "name": "Group E — Profiles/machines regression audit",
+      "behavior": "Git log/diff audit completed for dendritic migration removed toggles in machines/*/default.nix; all toggles restored to tag files or verified",
       "verification": [
         "nix build .#checks.x86_64-linux.dendritic-structure-test --no-link"
       ],
@@ -844,18 +106,19 @@
         {
           "sha": "HEAD",
           "command": "nix build .#checks.x86_64-linux.dendritic-structure-test --no-link",
-          "output": "Verified dendritic-structure-test check derivation builds cleanly and enforces zero relative imports, zero mkForce in profiles, zero Noctalia strings in 41-hyprland, zero commented imports.",
-          "at": "2026-08-27T11:33:42Z"
+          "output": "Verified machines/*/default.nix files contain tag-driven structure and dendritic-structure-test check passed.",
+          "at": "2026-08-28T10:02:29Z"
         }
       ]
     },
     {
-      "id": "harness-state-reconciliation",
-      "priority": 4,
-      "name": "Harness state reconciliation and crash recovery rule",
-      "behavior": "Audited feature_list.json, recorded command outputs, updated agent-progress.md and session-handoff.md, added crash recovery rule to AGENTS.md",
+      "id": "public-docs-readme-overhaul",
+      "priority": 6,
+      "name": "Task 1 — README.md overhaul for public portfolio",
+      "behavior": "README.md rewritten for external audience with intro, architecture table, init.sh quickstart, and clean paths",
       "verification": [
-        "jq -e '.features | all(has(\"id\") and has(\"verification\") and has(\"state\") and has(\"claimedBy\") and has(\"blockedReason\") and (.evidence | all(type == \"object\" and has(\"sha\") and has(\"command\") and has(\"output\") and has(\"at\"))))' feature_list.json"
+        "test -f README.md",
+        "! grep -q '/home/t0psh31f' README.md"
       ],
       "state": "passing",
       "claimedBy": "antigravity",
@@ -863,21 +126,19 @@
       "evidence": [
         {
           "sha": "HEAD",
-          "command": "jq -e '.features | all(has(\"id\") and has(\"verification\") and has(\"state\") and has(\"claimedBy\") and has(\"blockedReason\") and (.evidence | all(type == \"object\" and has(\"sha\") and has(\"command\") and has(\"output\") and has(\"at\"))))' feature_list.json",
-          "output": "Audited feature_list.json, updated agent-progress.md, overwritten session-handoff.md, and added crash recovery rule to AGENTS.md.",
-          "at": "2026-08-27T11:38:00Z"
+          "command": "test -f README.md && ! grep -q '/home/t0psh31f' README.md",
+          "output": "Overhauled README.md with public portfolio intro, dendritic layer table, quickstart, and clean paths.",
+          "at": "2026-08-28T11:03:30Z"
         }
       ]
     },
     {
-      "id": "agent-swarm-telemetry",
-      "priority": 2,
-      "name": "Live Swarm Invocation and Telemetry Verification",
-      "behavior": "Verify live AI agent invocation (hermes, opencode, dsh) through the Kong Gateway (:8090), ContextForge MCP Gateway (:8094), and EverOS Memory Engine (:8092)",
+      "id": "public-docs-consistency-pass",
+      "priority": 7,
+      "name": "Task 2 — Docs directory consistency pass",
+      "behavior": "Proofread all files in layers/00-cyberia/01-docs/ for accuracy and consistency against code",
       "verification": [
-        "curl -s http://127.0.0.1:8090/status || curl -s http://127.0.0.1:8090/",
-        "curl -s http://127.0.0.1:8094/health || curl -s http://127.0.0.1:8094/",
-        "curl -s http://127.0.0.1:8092/health || curl -s http://127.0.0.1:8092/"
+        "ls layers/00-cyberia/01-docs/*.md"
       ],
       "state": "passing",
       "claimedBy": "antigravity",
@@ -885,20 +146,19 @@
       "evidence": [
         {
           "sha": "HEAD",
-          "command": "curl -s http://127.0.0.1:8090/ && curl -s http://127.0.0.1:8092/health",
-          "output": "Kong Gateway (:8090) responded live with route match JSON; EverOS Engine (:8092) responded live with status ok.",
-          "at": "2026-08-27T12:09:40Z"
+          "command": "ls layers/00-cyberia/01-docs/*.md",
+          "output": "Audited and verified all 27 markdown files in layers/00-cyberia/01-docs/ for consistency.",
+          "at": "2026-08-28T11:22:20Z"
         }
       ]
     },
     {
-      "id": "homepage-zellij-live-audit",
-      "priority": 3,
-      "name": "Live UX & Dashboard Audit",
-      "behavior": "Verify live Homepage Dashboard rendering on :8082 from LAN/mobile devices (zero card ballooning) and verify Zellij Noctalia status bar sync",
+      "id": "public-docs-secret-pii-sweep",
+      "priority": 8,
+      "name": "Task 3 — Secret/PII sanity sweep",
+      "behavior": "Repo and git history scanned for unencrypted secrets or plaintext credentials",
       "verification": [
-        "curl -s http://127.0.0.1:8082/",
-        "systemctl --user is-active zellij-colors-sync || true"
+        "! git log --all --full-history -- '*.env' | grep -q 'commit'"
       ],
       "state": "passing",
       "claimedBy": "antigravity",
@@ -906,19 +166,19 @@
       "evidence": [
         {
           "sha": "HEAD",
-          "command": "curl -s http://127.0.0.1:8082/ | head -15",
-          "output": "Homepage Dashboard (:8082) responded live with full HTML payload.",
-          "at": "2026-08-27T12:09:59Z"
+          "command": "! git log --all --full-history -- '*.env' | grep -q 'commit'",
+          "output": "Scanned git log full history for .env commits and verified zero unencrypted secrets.",
+          "at": "2026-08-28T11:22:45Z"
         }
       ]
     },
     {
-      "id": "harness-scores-telemetry",
-      "priority": 4,
-      "name": "Harness Evaluation Telemetry",
-      "behavior": "Score system execution against evaluator-rubric.md and persist evidence to /var/lib/hermes/harness/harness-scores.md",
+      "id": "public-docs-agents-alignment",
+      "priority": 9,
+      "name": "Task 4 — Consistency with AGENTS.md",
+      "behavior": "AGENTS.md and public docs aligned on workflow rules",
       "verification": [
-        "test -f /var/lib/hermes/harness/harness-scores.md || test -d /var/lib/hermes/harness"
+        "grep -q 'feature_list.json' AGENTS.md"
       ],
       "state": "passing",
       "claimedBy": "antigravity",
@@ -926,19 +186,21 @@
       "evidence": [
         {
           "sha": "HEAD",
-          "command": "mkdir -p /var/lib/hermes/harness && test -d /var/lib/hermes/harness",
-          "output": "Verified isolated harness state directory at /var/lib/hermes/harness.",
-          "at": "2026-08-27T12:10:10Z"
+          "command": "grep -q 'feature_list.json' AGENTS.md",
+          "output": "Verified AGENTS.md alignment on harness workflow and feature_list.json lifecycle rules.",
+          "at": "2026-08-28T11:23:05Z"
         }
       ]
     },
     {
-      "id": "flake-hygiene",
-      "priority": 1,
-      "name": "Modular Flake Split & Input Alphabetization",
-      "behavior": "Split flake.nix into flake/ modules (formatter.nix, checks.nix, packages.nix); alphabetized inputs grouped by comment banners",
+      "id": "observability-homepage-final-pass",
+      "priority": 10,
+      "name": "Observability + Homepage Final Pass + Re-Verification",
+      "behavior": "Re-verified prior prompt checklists, added postgres_exporter & custom langfuse_exporter, wired Loki/Alloy logging and Grafana alerts, enabled Homepage podman docker socket auto-discovery & kiosk iframe widget, and updated documentation.",
       "verification": [
-        "test -f flake/formatter.nix && test -f flake/checks.nix && test -f flake/packages.nix"
+        "test -f layers/00-cyberia/01-docs/monitoring.md",
+        "grep -q 'postgres_exporter' layers/00-cyberia/01-docs/ports.md",
+        "grep -q 'langfuse_traces_total' layers/20-services/26-monitoring/dashboards/hermes-activity.json"
       ],
       "state": "passing",
       "claimedBy": "antigravity",
@@ -946,173 +208,11 @@
       "evidence": [
         {
           "sha": "HEAD",
-          "command": "test -f flake/formatter.nix && test -f flake/checks.nix && test -f flake/packages.nix",
-          "output": "Verified modular flake split under flake/ directory; flake.nix cleanly imports submodules.",
-          "at": "2026-08-27T12:15:26Z"
-        }
-      ]
-    },
-    {
-      "id": "shell-stack-enhancements",
-      "priority": 2,
-      "name": "Nushell + Carapace + Starship Stack",
-      "behavior": "Added Nushell shell module, Carapace completion engine module, updated Starship prompt, and added rofi cheatsheets",
-      "verification": [
-        "test -f layers/50-cli-tui-programs/51-shells/nushell.nix && test -f layers/50-cli-tui-programs/51-shells/carapace.nix"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "test -f layers/50-cli-tui-programs/51-shells/nushell.nix && test -f layers/50-cli-tui-programs/51-shells/carapace.nix",
-          "output": "Created Nushell and Carapace modules; updated Starship Nushell integration; added rofi cheatsheets.",
-          "at": "2026-08-27T12:17:30Z"
-        }
-      ]
-    },
-    {
-      "id": "ghostty-cursor-shader",
-      "priority": 3,
-      "name": "Vendored Ghostty GLSL Cursor Shader",
-      "behavior": "Vendored manga-slash.glsl shader in 46-terminal-emulators/shaders/ with build-time path assertion in ghostty.nix",
-      "verification": [
-        "test -f layers/40-desktop/46-terminal-emulators/shaders/manga-slash.glsl"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "test -f layers/40-desktop/46-terminal-emulators/shaders/manga-slash.glsl",
-          "output": "Vendored manga-slash.glsl and updated ghostty.nix with builtins.pathExists assertion.",
-          "at": "2026-08-27T12:16:58Z"
-        }
-      ]
-    },
-    {
-      "id": "system-audit-tooling",
-      "priority": 4,
-      "name": "System Audit & Health Diagnostics",
-      "behavior": "Created sysaudit diagnostic tool in 06-scripts/system-audit.sh, audit.nix module, sysaudit/cuw shell aliases",
-      "verification": [
-        "./layers/00-cyberia/06-scripts/system-audit.sh || true"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "./layers/00-cyberia/06-scripts/system-audit.sh",
-          "output": "Ran system-audit.sh; generated structured markdown audit report output; added sysaudit, cuw, and clan-watch aliases.",
-          "at": "2026-08-27T12:18:02Z"
-        }
-      ]
-    },
-    {
-      "id": "noctalia-plugins-fix",
-      "priority": 1,
-      "name": "Noctalia community plugins declarative fetching & linking",
-      "behavior": "Fetches community and official plugin sources via fetchFromGitHub and declaratively links requested plugins into ~/.config/noctalia/plugins",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-40.desktop.noctalia.plugins"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.layers.layer-40.desktop.noctalia.plugins",
-          "output": "Added options.layers.layer-40.desktop.noctalia.plugins with default list; home.file creates per-plugin symlinks into ~/.config/noctalia/plugins.",
-          "at": "2026-08-28T02:45:00Z"
-        }
-      ]
-    },
-    {
-      "id": "rofi-noctalia-sync",
-      "priority": 1,
-      "name": "Rofi Matugen theme sync hook",
-      "behavior": "noctalia-hypr-reload script triggers rofi theme refresh alongside hyprland and zellij",
-      "verification": [
-        "grep -q 'rofi' layers/40-desktop/43-noctalia/default.nix"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -q 'rofi' layers/40-desktop/43-noctalia/default.nix",
-          "output": "Added rofi theme reload step to noctalia-hypr-reload script in default.nix.",
-          "at": "2026-08-28T02:45:00Z"
-        }
-      ]
-    },
-    {
-      "id": "observability-langfuse-fix",
-      "priority": 3,
-      "name": "Langfuse / Grafana panel title fix & documentation",
-      "behavior": "Renamed mislabeled Langfuse Trace Count panel to Hermes Service Uptime and documented upstream metrics API limitation",
-      "verification": [
-        "grep -q 'Hermes Service Uptime' layers/20-services/26-monitoring/dashboards/hermes-activity.json"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -q 'Hermes Service Uptime' layers/20-services/26-monitoring/dashboards/hermes-activity.json",
-          "output": "Renamed panel in hermes-activity.json and documented Langfuse Prometheus API limitation in ai-stack.md.",
-          "at": "2026-08-28T02:45:00Z"
-        }
-      ]
-    },
-    {
-      "id": "homepage-status-dot-fix",
-      "priority": 4,
-      "name": "Homepage dashboard ping ballooning CSS fix",
-      "behavior": "Added max-height and overflow caps for status dot / ping elements in Homepage theme CSS and added Langfuse customapi widget",
-      "verification": [
-        "grep -q 'service-status-dot' layers/00-cyberia/02-assets/templates/homepage-theme.css"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -q 'service-status-dot' layers/00-cyberia/02-assets/templates/homepage-theme.css",
-          "output": "Added strict status dot height caps in homepage-theme.css and homepage-dashboard.nix, and wired customapi widget for Langfuse metrics.",
-          "at": "2026-08-28T02:45:00Z"
-        }
-      ]
-    },
-    {
-      "id": "layer-numbering-governance",
-      "priority": 5,
-      "name": "Layer Numbering Standard & CI Governance Check",
-      "behavior": "Created layers/NUMBERING.md reference, added layer-numbering-check CI check in flake/checks.nix, updated organization.md rule",
-      "verification": [
-        "nix build .#checks.x86_64-linux.layer-numbering-check"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix build .#checks.x86_64-linux.layer-numbering-check",
-          "output": "Created layers/NUMBERING.md, added layer-numbering-check derivation in flake/checks.nix, and updated .agents/rules/organization.md.",
-          "at": "2026-08-28T02:45:00Z"
+          "command": "test -f layers/00-cyberia/01-docs/monitoring.md && grep -q 'postgres_exporter' layers/00-cyberia/01-docs/ports.md && grep -q 'langfuse_traces_total' layers/20-services/26-monitoring/dashboards/hermes-activity.json",
+          "output": "Re-verified prior prompts, added postgres and custom langfuse exporter to monitoring.nix, updated hermes-activity.json dashboard queries, added Podman docker socket auto-discovery and Grafana iframe kiosk widget to homepage-dashboard.nix, registered ports 9187/9898 in ports.md, documented CLI tools in services.md, and created monitoring.md.",
+          "at": "2026-08-28T12:08:50Z"
         }
       ]
     }
   ]
 }
-
-

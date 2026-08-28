@@ -56,13 +56,13 @@ in
         owner = "noctalia-dev";
         repo = "community-plugins";
         rev = "caed21ab081948435cd770d2e954c99b8bbb72cf";
-        hash = "sha256-MP4ZliG+Uq8FHQtwFcEVBifDiSRMJcBeKKCzl4Wfn1M=";
+        hash = "sha256-3mFoSMTkfR2W7qVsV4MaM8s1pX5cjucu9UXLI88qv0s=";
       };
       officialPluginsSrc = pkgs.fetchFromGitHub {
         owner = "noctalia-dev";
         repo = "official-plugins";
         rev = "8cb833c3e2502f57e49d34fa64386b4d66794b77";
-        hash = "sha256-95CfWMekA1H92NtUq7cHwgF/eozvav6v7kCnF8wuG2U=";
+        hash = "sha256-gb4YgbRAismjl3Cur4ERFDfU2pR33ynRw0/CCAFw+Pw=";
       };
     in
     {
@@ -84,6 +84,12 @@ in
               else
                 "${communityPluginsSrc}/${pluginName}";
           }) cfg.plugins
+          ++ [
+            {
+              ".face".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
+              ".face.icon".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
+            }
+          ]
         );
         home.packages = with pkgs; [
           gst_all_1.gst-plugins-base
@@ -888,11 +894,6 @@ in
             #   colorGeneration = "noctalia-hypr-reload && zellij-colors-sync";
             # };
           };
-        };
-
-        home.file = {
-          ".face".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
-          ".face.icon".source = ../../../layers/00-cyberia/02-assets/user_profile/cloud.gif;
         };
 
         # Sync Noctalia colors → Hyprland borders + Zellij on login.

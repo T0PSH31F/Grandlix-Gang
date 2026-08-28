@@ -9,5 +9,6 @@
     (mkDendriticModule "feh" ./feh.nix)
     (mkDendriticModule "kodi" ./kodi.nix)
     (mkDendriticModule "mopidy" ./mopidy.nix)
+    (mkDendriticModule "lmms" ./lmms.nix)
   ];
 }

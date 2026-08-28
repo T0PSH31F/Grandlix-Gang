@@ -84,7 +84,7 @@ in
         RestartSec = 5;
         Environment = [
           "HOME=/home/${primaryUser}"
-          "PATH=/etc/profiles/per-user/${primaryUser}/bin:/home/${primaryUser}/.nix-profile/bin:/run/current-system/sw/bin"
+          "PATH=/etc/profiles/per-user/${primaryUser}/bin:/home/${primaryUser}/.nix-profile/bin:/home/${primaryUser}/.local/bin:/run/current-system/sw/bin:/usr/bin:/bin"
           "AIONUI_HOST=127.0.0.1"
           "HOST=127.0.0.1"
           "AIONUI_PORT=${toString cfg.port}"

@@ -21,7 +21,10 @@ FAIL_COUNT=0
 
 pass() { echo "✅ **PASS:** $*"; }
 warn() { echo "⚠️ **WARN:** $*"; }
-fail() { echo "❌ **FAIL:** $*"; FAIL_COUNT=$((FAIL_COUNT + 1)); }
+fail() {
+  echo "❌ **FAIL:** $*"
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+}
 
 echo "## 1. Hardware Baseline"
 if command -v sysbench >/dev/null 2>&1; then
@@ -43,9 +46,9 @@ fi
 echo ""
 echo "## 2. Thermals & Power"
 if command -v sensors >/dev/null 2>&1; then
-  echo "\`\`\`"
+  echo '```'
   sensors 2>/dev/null | head -15 || true
-  echo "\`\`\`"
+  echo '```'
   pass "Sensors telemetry read"
 else
   warn "lm_sensors not installed"

@@ -14,6 +14,7 @@
 6. Score the work against `evaluator-rubric.md` (≥ 8, no zeros).
 7. Update `feature_list.json` (state + evidence), append to `agent-progress.md`, overwrite `session-handoff.md`.
 8. After context loss or crash, NEVER re-mark prior work passing from memory — re-run the verification commands or reopen the feature.
+9. **`feature_list.json` Size Cap**: Keep `feature_list.json` under 300 lines to preserve context window. Archive older passing features to `feature_list_archive.json` whenever it exceeds 300 lines (enforced by CI).
 
 Never mark work complete without recorded evidence. Never expand scope mid-session; record new ideas as `untried` features.
 

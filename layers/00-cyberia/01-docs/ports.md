@@ -64,6 +64,8 @@
 | **8093** | CalibreWeb             | luffy  | `layers/20-services/26-monitoring/`                | E-book Web Reader               |
 | **8095** | qBittorrent WebUI      | luffy  | `layers/20-services/23-media/download-clients.nix`| Torrent Client Web Interface    |
 | **8096** | Jellyfin               | luffy  | `layers/20-services/23-media/media-stack.nix`     | Media Streaming Server          |
+| **8098** | RomM                   | luffy  | `layers/20-services/23-media/romm.nix`             | ROM Manager & Web Emulator      |
+| **8099** | ntfy-sh                | Both   | `layers/20-services/26-monitoring/ntfy-sh.nix`     | Push Notification Service       |
 | **8443** | HTTPS Alt 1            | luffy  | `machines/luffy/default.nix`                       | Secondary TLS Ingress           |
 | **8444** | Element Web            | luffy  | `machines/luffy/default.nix`                       | Matrix Client Web App           |
 | **8686** | Lidarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Music Collection Manager        |
@@ -73,8 +75,12 @@
 | **8888** | SearXNG                | luffy  | `layers/20-services/27-automation/`               | Meta Search Engine              |
 | **8989** | Sonarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | TV Series Management            |
 | **9090** | Prometheus             | Both   | `machines/*/default.nix`                           | Metrics Collection Daemon       |
-| **9100** | Glances                | z0r0   | `layers/20-services/26-monitoring/`                | Node Hardware Stats Daemon      |
+| **9100** | Glances / Node Exporter| z0r0   | `layers/20-services/26-monitoring/`                | Node Hardware Stats Daemon      |
+| **9115** | Blackbox Exporter      | z0r0   | `layers/20-services/26-monitoring/`                | HTTP Probe Exporter             |
 | **9119** | Hermes Dashboard       | z0r0   | `layers/70-agents/76-hermes-agent/`                | Hermes Agent Control Center     |
+| **9187** | Postgres Exporter      | Both   | `layers/20-services/26-monitoring/`                | PostgreSQL Database Metrics     |
+| **9586** | WireGuard Exporter     | Both   | `layers/20-services/26-monitoring/`                | WireGuard Mesh VPN Metrics      |
+| **9898** | Langfuse Exporter      | z0r0   | `layers/20-services/26-monitoring/`                | Custom Langfuse Metrics Exporter|
 | **9377** | Camofox Browser        | z0r0   | `machines/z0r0/default.nix`                        | Anti-Detection Browser CDP      |
 | **9696** | Prowlarr               | luffy  | `layers/20-services/23-media/media-stack.nix`     | Indexer Proxy Manager           |
 | **11434**| Ollama                 | Both   | `layers/20-services/22-ai/ollama.nix`              | Local LLM Inference Engine      |

@@ -14,6 +14,7 @@
   # System-level user settings managed via Clan core users module
   users.users.t0psh31f = {
     isNormalUser = true;
+    home = "/home/t0psh31f";
     description = "t0psh31f";
     shell = pkgs.zsh;
     extraGroups = [

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   perSystem =
     {
       pkgs,
@@ -18,10 +17,18 @@
         feature-list-schema =
           pkgs.runCommand "check-feature-list-schema"
             {
-              nativeBuildInputs = [ pkgs.jq ];
+              nativeBuildInputs = [
+                pkgs.jq
+                pkgs.coreutils
+              ];
             }
             ''
               jq -e '.features | all(has("id") and has("verification") and has("state") and has("claimedBy") and has("blockedReason") and (.evidence | all(type == "object" and has("sha") and has("command") and has("output") and has("at"))))' ${../feature_list.json} > /dev/null
+              LINES=$(wc -l < ${../feature_list.json})
+              if [ "$LINES" -gt 300 ]; then
+                echo "feature_list.json size error: file has $LINES lines (limit is 300). Archive older passing features to feature_list_archive.json."
+                exit 1
+              fi
               touch $out
             '';
 
@@ -43,7 +50,8 @@
           let
             llmPkgs = inputs.llm-agents.packages.${system} or { };
             catalogEnabled =
-              inputs.self.nixosConfigurations.z0r0.config.layers.layer-20.services.llm-agents-catalog.packages or [ ];
+              inputs.self.nixosConfigurations.z0r0.config.layers.layer-20.services.llm-agents-catalog.packages
+                or [ ];
             missingNames = pkgs.lib.filter (name: !(llmPkgs ? ${name})) catalogEnabled;
           in
           if missingNames != [ ] then

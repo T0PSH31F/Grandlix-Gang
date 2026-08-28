@@ -25,7 +25,10 @@ SYNAPSE_URL="${SYNAPSE_URL:-http://localhost:8008}"
 SYNAPSE_SHARED_SECRET="${SYNAPSE_SHARED_SECRET:?Set SYNAPSE_SHARED_SECRET env var (from homeserver.yaml registration_shared_secret)}"
 SOPS_SECRETS_FILE="${SOPS_SECRETS_FILE:-$HOME/.nixconf/sops/agent-secrets.yaml}"
 
-BLU=$'\033[34m'; GRN=$'\033[32m'; YEL=$'\033[33m'; RST=$'\033[0m'
+BLU=$'\033[34m'
+GRN=$'\033[32m'
+YEL=$'\033[33m'
+RST=$'\033[0m'
 
 echo "${BLU}== Provisioning identity for profile: ${PROFILE} ==${RST}"
 
@@ -38,8 +41,8 @@ MATRIX_PASSWORD=$(openssl rand -base64 24)
 
 # Synapse's shared-secret registration flow: get a nonce, then HMAC it.
 NONCE=$(curl -s "${SYNAPSE_URL}/_synapse/admin/v1/register" | jq -r '.nonce')
-MAC=$(printf '%s\0%s\0%s\0%s' "$NONCE" "$MATRIX_USERNAME" "$MATRIX_PASSWORD" "notadmin" \
-  | openssl dgst -sha1 -hmac "$SYNAPSE_SHARED_SECRET" -hex | awk '{print $2}')
+MAC=$(printf '%s\0%s\0%s\0%s' "$NONCE" "$MATRIX_USERNAME" "$MATRIX_PASSWORD" "notadmin" |
+  openssl dgst -sha1 -hmac "$SYNAPSE_SHARED_SECRET" -hex | awk '{print $2}')
 
 REGISTER_RESP=$(curl -s -X POST "${SYNAPSE_URL}/_synapse/admin/v1/register" \
   -H "Content-Type: application/json" \

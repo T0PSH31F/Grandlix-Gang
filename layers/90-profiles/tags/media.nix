@@ -5,6 +5,7 @@
   config = lib.mkIf (builtins.elem "media" config.machine.tags) {
     layers.layer-20.services.config = {
       media-stack.enable = lib.mkDefault true;
+      romm.enable = lib.mkDefault true;
     };
 
     layers.layer-60.gui = {

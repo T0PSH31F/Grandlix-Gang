@@ -184,6 +184,8 @@ in
             };
 
             exec-once = [
+              "dbus-update-activation-environment --systemd --all &"
+              "systemctl --user import-environment PATH &"
               "pypr & disown"
               "hypr-sfx & disown"
               "udiskie & disown"

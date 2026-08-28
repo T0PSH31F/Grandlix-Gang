@@ -44,7 +44,6 @@ in
       localai.enable = mkDefault true;
       ollama.enable = mkDefault true;
       ollama-ui.enable = mkDefault true;
-      lmstudio.enable = mkDefault false; # Disabled: packaging error in unstable
       jan.enable = mkDefault true;
       cherry-studio.enable = mkDefault true;
       aider.enable = mkDefault true;

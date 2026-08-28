@@ -62,11 +62,20 @@ with lib;
             "cpu"
             "diskstats"
             "filesystem"
+            "btrfs"
             "loadavg"
             "meminfo"
             "netdev"
             "processes"
           ];
+        };
+        postgres = {
+          enable = true;
+          port = 9187;
+        };
+        wireguard = {
+          enable = true;
+          port = 9586;
         };
         blackbox = {
           enable = true;
@@ -80,6 +89,29 @@ with lib;
           );
         };
       };
+      rules = [
+        (builtins.toJSON {
+          groups = [
+            {
+              name = "service-alerts";
+              rules = [
+                {
+                  alert = "ServiceDown";
+                  expr = "up == 0";
+                  for = "5m";
+                  labels = {
+                    severity = "critical";
+                  };
+                  annotations = {
+                    summary = "Instance {{ $labels.instance }} down";
+                    description = "Service {{ $labels.job }} target {{ $labels.instance }} is down.";
+                  };
+                }
+              ];
+            }
+          ];
+        })
+      ];
       scrapeConfigs = [
         {
           job_name = "prometheus";
@@ -94,6 +126,18 @@ with lib;
         {
           job_name = "node";
           static_configs = [ { targets = [ "localhost:9100" ]; } ];
+        }
+        {
+          job_name = "postgres";
+          static_configs = [ { targets = [ "localhost:9187" ]; } ];
+        }
+        {
+          job_name = "wireguard";
+          static_configs = [ { targets = [ "localhost:9586" ]; } ];
+        }
+        {
+          job_name = "langfuse";
+          static_configs = [ { targets = [ "localhost:9898" ]; } ];
         }
         {
           job_name = "loki";
@@ -113,8 +157,26 @@ with lib;
             }
           ];
         }
+        # Caddy metrics
+        (mkIf (config.services.caddy.enable or false) {
+          job_name = "caddy";
+          metrics_path = "/metrics";
+          static_configs = [ { targets = [ "127.0.0.1:2019" ]; } ];
+        })
+        # Matrix Synapse metrics
+        (mkIf (config.services.matrix-synapse.enable or false) {
+          job_name = "matrix-synapse";
+          metrics_path = "/_synapse/metrics";
+          static_configs = [ { targets = [ "127.0.0.1:8008" ]; } ];
+        })
+        # n8n metrics
+        (mkIf (config.services.n8n.enable or false) {
+          job_name = "n8n";
+          metrics_path = "/metrics";
+          static_configs = [ { targets = [ "127.0.0.1:5678" ]; } ];
+        })
         # Kong AI Gateway metrics
-        (mkIf config.services.ai-services.kong-gateway.enable {
+        (mkIf (config.services.ai-services.kong-gateway.enable or false) {
           job_name = "kong";
           metrics_path = "/metrics";
           static_configs = [
@@ -124,7 +186,7 @@ with lib;
           ];
         })
         # LangGraph metrics
-        (mkIf config.services.ai-services.langgraph.enable {
+        (mkIf (config.services.ai-services.langgraph.enable or false) {
           job_name = "langgraph";
           metrics_path = "/metrics";
           static_configs = [
@@ -133,6 +195,56 @@ with lib;
             }
           ];
         })
+        # Exportarr - Sonarr / Radarr / Lidarr / Readarr / Bazarr / Prowlarr
+        {
+          job_name = "exportarr-sonarr";
+          static_configs = [ { targets = [ "127.0.0.1:9707" ]; } ];
+        }
+        {
+          job_name = "exportarr-radarr";
+          static_configs = [ { targets = [ "127.0.0.1:9708" ]; } ];
+        }
+        {
+          job_name = "exportarr-lidarr";
+          static_configs = [ { targets = [ "127.0.0.1:9709" ]; } ];
+        }
+        {
+          job_name = "exportarr-readarr";
+          static_configs = [ { targets = [ "127.0.0.1:9710" ]; } ];
+        }
+        {
+          job_name = "exportarr-bazarr";
+          static_configs = [ { targets = [ "127.0.0.1:9711" ]; } ];
+        }
+        {
+          job_name = "exportarr-prowlarr";
+          static_configs = [ { targets = [ "127.0.0.1:9712" ]; } ];
+        }
+        # qBittorrent exporter
+        {
+          job_name = "qbittorrent";
+          static_configs = [ { targets = [ "127.0.0.1:8095" ]; } ];
+        }
+        # Cloudflare exporter
+        {
+          job_name = "cloudflare";
+          static_configs = [ { targets = [ "127.0.0.1:9199" ]; } ];
+        }
+        # Restic exporter
+        {
+          job_name = "restic";
+          static_configs = [ { targets = [ "127.0.0.1:9753" ]; } ];
+        }
+        # Smokeping prober
+        {
+          job_name = "smokeping";
+          static_configs = [ { targets = [ "127.0.0.1:9374" ]; } ];
+        }
+        # Tailscale exporter
+        {
+          job_name = "tailscale";
+          static_configs = [ { targets = [ "127.0.0.1:9095" ]; } ];
+        }
         # Hermes API health
         {
           job_name = "blackbox-hermes";
@@ -162,6 +274,82 @@ with lib;
           ];
         }
       ];
+    };
+
+    # Enable ntfy-sh and alertmanager-ntfy bridge
+    layers.layer-20.services.config.ntfy-sh.enable = true;
+    services.alertmanager-ntfy.enable = true;
+
+    # Include notification and exporter packages
+    environment.systemPackages = with pkgs; [
+      ntfy-sh
+      prometheus
+      prometheus-node-exporter
+    ];
+
+    # Custom Exporter for Langfuse metrics
+    systemd.services.langfuse-exporter = {
+      description = "Langfuse Metrics Exporter for Prometheus";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.python3}/bin/python3 ${pkgs.writeText "langfuse-exporter.py" ''
+          import http.server
+          import urllib.request
+          import json
+
+          LANGFUSE_URL = "http://127.0.0.1:3005/api/public/metrics"
+          PORT = 9898
+
+          class ExporterHandler(http.server.BaseHTTPRequestHandler):
+              def do_GET(self):
+                  if self.path == '/metrics':
+                      traces_count = 0
+                      total_tokens = 0
+                      total_cost = 0.0
+                      status_up = 0
+                      try:
+                          req = urllib.request.Request(LANGFUSE_URL, headers={"User-Agent": "Langfuse-Exporter/1.0"})
+                          with urllib.request.urlopen(req, timeout=5) as response:
+                              if response.status == 200:
+                                  status_up = 1
+                                  data = json.loads(response.read().decode('utf-8'))
+                                  traces_count = data.get("count", data.get("traces", 0))
+                                  total_tokens = data.get("tokens", data.get("total_tokens", 0))
+                                  total_cost = data.get("cost", data.get("total_cost", 0.0))
+                      except Exception:
+                          status_up = 0
+
+                      output = (
+                          f"# HELP langfuse_up Reachability of Langfuse metrics API\n"
+                          f"# TYPE langfuse_up gauge\n"
+                          f"langfuse_up {status_up}\n"
+                          f"# HELP langfuse_traces_total Total trace count\n"
+                          f"# TYPE langfuse_traces_total gauge\n"
+                          f"langfuse_traces_total {traces_count}\n"
+                          f"# HELP langfuse_tokens_total Total tokens\n"
+                          f"# TYPE langfuse_tokens_total gauge\n"
+                          f"langfuse_tokens_total {total_tokens}\n"
+                          f"# HELP langfuse_cost_dollars Total cost in USD\n"
+                          f"# TYPE langfuse_cost_dollars gauge\n"
+                          f"langfuse_cost_dollars {total_cost}\n"
+                      )
+                      self.send_response(200)
+                      self.send_header('Content-Type', 'text/plain; version=0.0.4')
+                      self.end_headers()
+                      self.wfile.write(output.encode('utf-8'))
+                  else:
+                      self.send_response(404)
+                      self.end_headers()
+
+          if __name__ == '__main__':
+              server = http.server.HTTPServer(('127.0.0.1', PORT), ExporterHandler)
+              server.serve_forever()
+        ''}";
+        Restart = "always";
+        RestartSec = "5s";
+        DynamicUser = true;
+      };
     };
     # ============================================================================
     # ALLOY - Log Shipper (journald → Loki) — Promtail successor

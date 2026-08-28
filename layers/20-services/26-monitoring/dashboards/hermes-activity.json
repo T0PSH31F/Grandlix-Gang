@@ -59,7 +59,7 @@
       "targets": [
         {
           "expr": "count(probe_success{job=\"blackbox-hermes\"})",
-          "legendFormat": "Langfuse",
+          "legendFormat": "Probes",
           "datasource": { "type": "prometheus", "uid": "prometheus" }
         }
       ],
@@ -71,11 +71,11 @@
     },
     {
       "title": "Langfuse Traces",
-      "type": "table",
+      "type": "stat",
       "gridPos": { "h": 10, "w": 12, "x": 0, "y": 4 },
       "targets": [
         {
-          "expr": "count(probe_success)",
+          "expr": "langfuse_traces_total",
           "legendFormat": "Traces",
           "datasource": { "type": "prometheus", "uid": "prometheus" }
         }

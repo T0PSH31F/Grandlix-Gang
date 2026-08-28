@@ -296,3 +296,14 @@ ss -tlnp
 | Reverse proxy (Caddy) | `layers/20-services/21-networking/caddy.nix` |
 | Machine-specific | `machines/z0r0/default.nix` or `machines/luffy/default.nix` |
 | Tag profiles | `layers/90-profiles/tags/<tag>.nix` |
+
+## CLI-Only Services (No Web UI)
+
+| CLI Tool | Purpose | Primary Location | Command / Setup |
+|----------|---------|------------------|-----------------|
+| **OpenCode** | Multi-provider terminal AI agent | `layers/70-agents/71-coding/opencode.nix` | `opencode` |
+| **Claude Code** | Anthropic CLI agent | `layers/70-agents/` | `claude` |
+| **Hermes CLI** | Hermes autonomous agent CLI | `layers/70-agents/76-hermes-agent/` | `hermes` |
+| **pxpipe** | PyPI pipeline tool (intentionally non-Nix) | User environment (`pipx`/`uv`) | `pipx install pxpipe` (persisted in `/persist/home/*/.local`) |
+| **clan** | Clan machine deployment CLI | `flake.nix` | `clan machines update` |
+
