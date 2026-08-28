@@ -69,8 +69,8 @@ nom_run() {
 section "1/3 Building ${MACHINE} closure with nom (full progress tree)"
 ATTR="${FLAKE}#nixosConfigurations.${MACHINE}.config.system.build.toplevel"
 echo "Building: $ATTR"
-nom_run build "$ATTR" --no-link --print-out-paths | tee /tmp/clan-update-watch-outpath.txt
-BUILT_PATH=$(tail -n1 /tmp/clan-update-watch-outpath.txt)
+nom_run build "$ATTR" --no-link
+BUILT_PATH=$(nix eval --raw "$ATTR.outPath" 2>/dev/null || echo "unknown")
 echo "${GRN}Built:${RST} $BUILT_PATH"
 
 # ---------------------------------------------------------------------------
