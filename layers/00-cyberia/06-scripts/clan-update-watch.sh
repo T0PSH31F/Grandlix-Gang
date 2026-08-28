@@ -69,13 +69,13 @@ nom_run() {
 section "1/3 Building ${MACHINE} closure with nom (full progress tree)"
 ATTR="${FLAKE}#nixosConfigurations.${MACHINE}.config.system.build.toplevel"
 echo "Building: $ATTR"
-nom_run build "$ATTR" --no-link
+nom_run build "$ATTR" --no-link -L --verbose
 BUILT_PATH=$(nix eval --raw "$ATTR.outPath" 2>/dev/null || echo "unknown")
 echo "${GRN}Built:${RST} $BUILT_PATH"
 
 # ---------------------------------------------------------------------------
 section "2/3 Handing off to clan machines update (should now be fast/cached)"
-CLAN_ARGS=(machines update "$MACHINE")
+CLAN_ARGS=(machines update "$MACHINE" --debug)
 [ -n "$TARGET_HOST" ] && CLAN_ARGS+=(--target-host "$TARGET_HOST")
 clan "${CLAN_ARGS[@]}"
 CLAN_EXIT=$?
