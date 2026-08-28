@@ -45,6 +45,9 @@ in
       nfpg = "clan vars generate";
       cbuild = "clan machines build";
       cupdate = "clan machines update";
+      cuw = "~/Clan/NFP/layers/00-cyberia/06-scripts/clan-update-watch.sh";
+      clan-watch = "~/Clan/NFP/layers/00-cyberia/06-scripts/clan-update-watch.sh";
+      sysaudit = "sysaudit";
       htop = "btop";
       top = "btop";
       weather = "curl wttr.in";

@@ -1,20 +1,30 @@
+# Ghostty Terminal Emulator Module
 {
   config,
   lib,
+  pkgs,
   osConfig ? config,
   ...
 }:
 let
   clanTags = osConfig.machine.tags or [ ];
+  shaderPath = ../../00-cyberia/02-assets/shaders/manga_slash.glsl;
+  shaderExists = builtins.pathExists shaderPath;
 in
 {
   config = lib.mkIf (builtins.elem "desktop" clanTags) {
+    assertions = [
+      {
+        assertion = shaderExists;
+        message = "Ghostty cursor shader missing at ${toString shaderPath}";
+      }
+    ];
+
     programs.ghostty = {
       enable = true;
       enableBashIntegration = true;
       enableZshIntegration = true;
       settings = {
-        # theme = "catppuccin-mocha";
         font-family = "JetBrains Mono Nerd Font";
         font-size = 16;
         shell-integration-features = true;
@@ -26,7 +36,11 @@ in
 
         cursor-style = "block";
         cursor-style-blink = true;
-        custom-shader = "${../../../layers/00-cyberia/02-assets/shaders/cursor.glsl}";
+
+        # Custom GLSL cursor shader (manga_slash.glsl in assets)
+        # Note: GLSL cursor shaders render on top-level Ghostty surfaces,
+        # but do not render inside text-cell multiplexers (Zellij/Tmux panes).
+        custom-shader = "${shaderPath}";
 
         keybind = [
           "ctrl+alt+v=new_split:right"

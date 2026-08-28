@@ -48,6 +48,8 @@ let
         🤖 OpenCode
         🧠 Hermes Agent
         📋 Shell Aliases
+        🐚 Nushell
+        ⚡ Carapace
         🛠️ CLI Tools
         🏷️ Tag Groups
     CHOICES
@@ -68,6 +70,8 @@ let
             "🤖 OpenCode")          opencode-cheatsheet ;;
             "🧠 Hermes Agent")      hermes-cheatsheet ;;
             "📋 Shell Aliases")     aliases-cheatsheet ;;
+            "🐚 Nushell")           nushell-cheatsheet ;;
+            "⚡ Carapace")          carapace-cheatsheet ;;
             "🛠️ CLI Tools")       cli-tools-cheatsheet ;;
             "🏷️ Tag Groups")      tag-groups-cheatsheet ;;
           esac
@@ -974,6 +978,58 @@ let
     "
         echo "$TAGS" | rofi_with_theme -dmenu -p "Tag Groups" -filter ""
   '';
+  nushell_cheatsheet = pkgs.writeShellScriptBin "nushell-cheatsheet" ''
+        ${rofiTheme}
+        NUSHELL="
+    🐚 NUSHELL CHEATSHEET & GUIDE
+    ═══════════════════════════════════════════
+
+    💡 CONCEPTS & PIPELINES
+    ─────────────────────────────────────────
+    Pipelines vs Commands       Data streams as structured tables, not plain text
+    open file.json | get key    Load structured data into table/record
+    sys | where cpu > 50        Filter structured data stream
+    ls | sort-by size           Sort table rows by column
+    each { |it| print $it }     Iterate structured rows
+    reduce { |it, acc| ... }    Fold structured table data
+
+    🛠️ USEFUL COMMANDS
+    ─────────────────────────────────────────
+    help find <term>            Search Nushell built-in help documentation
+    config nu                   Edit main Nushell config
+    config env                  Edit Nushell environment variables
+    http get <url>              Native structured HTTP GET query
+
+     NFP FLEET & HARNESS
+    ─────────────────────────────────────────
+    cuw <machine>               clan-update-watch wrapper script
+    cupdate                     clan machines update
+    cbuild                      clan machines build
+    nfp                         clan CLI gateway
+    "
+        echo "$NUSHELL" | rofi_with_theme -dmenu -p "Nushell Guide" -filter ""
+  '';
+
+  carapace_cheatsheet = pkgs.writeShellScriptBin "carapace-cheatsheet" ''
+        ${rofiTheme}
+        CARAPACE="
+    ⚡ CARAPACE COMPLETION ENGINE
+    ═══════════════════════════════════════════
+
+    💡 CONCEPTS
+    ─────────────────────────────────────────
+    Engine                      Multi-shell polyglot completion generator
+    Bridging                    Reuses zsh/bash/fish completion specs transparently
+    Composition                 Composes seamlessly with Nushell native completions
+
+    🛠️ COMMANDS & USAGE
+    ─────────────────────────────────────────
+    carapace --list             List registered command completion specs
+    carapace <cmd> nushell      Generate Nushell completion code
+    carapace <cmd> zsh          Generate Zsh completion code
+    "
+        echo "$CARAPACE" | rofi_with_theme -dmenu -p "Carapace Guide" -filter ""
+  '';
 
 in
 {
@@ -992,6 +1048,8 @@ in
     opencode_cheatsheet
     hermes_cheatsheet
     aliases_cheatsheet
+    nushell_cheatsheet
+    carapace_cheatsheet
     cli_tools_cheatsheet
     tag_groups_cheatsheet
   ];

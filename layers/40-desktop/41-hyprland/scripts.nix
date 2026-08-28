@@ -134,10 +134,12 @@ let
       --transition-duration 2 \
       --transition-fps 60
 
-    # ── Step 2: Command Noctalia to regenerate templates ──
-    noctalia msg wallpaper-set "$WALLPAPER" 2>/dev/null || true
+    # ── Step 2: Trigger active experience wallpaper hook ──
+    if [ -x "$HOME/.config/hypr/experiences/wallpaper-hook.sh" ]; then
+      "$HOME/.config/hypr/experiences/wallpaper-hook.sh" "$WALLPAPER" 2>/dev/null || true
+    fi
 
-    # ── Step 3: Wait for Noctalia's Matugen to finish generating ──
+    # ── Step 3: Wait for theme generation to settle ──
     sleep 2
 
     # ── Step 4: Live-reload ALL apps (async for speed) ──

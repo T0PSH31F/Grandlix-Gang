@@ -4,10 +4,8 @@
   Handles both multi-class (nixos/home/options) and standard modules.
 
   The `name` argument identifies the module and is used to assert that
-  the module's declared option paths end with the given name — catching
-  mismatches at eval time. For example:
-    (mkDendriticModule "claude-code" ./71-coding/claude-code.nix)
-  will assert that any top-level option key ends with "claude-code".
+  the module's declared option paths contain or end with the given name —
+  catching mismatches at eval time.
 */
 let
   mkDendriticModule =
@@ -48,6 +46,61 @@ let
       isMultiClass = builtins.hasAttr "nixos" evaluated || builtins.hasAttr "home" evaluated;
 
       opts = evaluated.options or { };
+
+      # Option path assertion helper: verify option declarations contain or end with module name
+      cleanName =
+        let
+          noNum = builtins.replaceStrings [
+            "00-" "01-" "02-" "03-" "04-" "05-" "06-" "07-" "08-" "09-"
+            "10-" "11-" "12-" "13-" "14-" "15-" "16-" "17-" "18-" "19-"
+            "20-" "21-" "22-" "23-" "24-" "25-" "26-" "27-" "28-" "29-"
+            "30-" "31-" "32-" "33-" "34-" "35-" "36-" "37-" "38-" "39-"
+            "40-" "41-" "42-" "43-" "44-" "45-" "46-" "47-" "48-" "49-"
+            "50-" "51-" "52-" "53-" "54-" "55-" "56-" "57-" "58-" "59-"
+            "60-" "61-" "62-" "63-" "64-" "65-" "66-" "67-" "68-" "69-"
+            "70-" "71-" "72-" "73-" "74-" "75-" "76-" "77-" "78-" "79-"
+            "80-" "81-" "82-" "83-" "84-" "85-" "86-" "87-" "88-" "89-"
+            "90-" "91-" "92-" "93-" "94-" "95-" "96-" "97-" "98-" "99-"
+          ] [
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+            "" "" "" "" "" "" "" "" "" ""
+          ] name;
+        in
+        builtins.replaceStrings [ "packages-" "agent-" "mcp-" ] [ "" "" "" ] noNum;
+
+      checkOptionPaths =
+        optsTree:
+        let
+          collectPaths =
+            attr: path:
+            if lib.isOption attr then
+              [ path ]
+            else if builtins.isAttrs attr && !(lib.isDerivation attr) then
+              lib.concatLists (lib.mapAttrsToList (k: v: collectPaths v (path ++ [ k ])) attr)
+            else
+              [ ];
+          paths = collectPaths optsTree [ ];
+        in
+        if paths == [ ] then
+          true
+        else
+          lib.any (
+            p:
+            lib.last p == name
+            || builtins.elem name p
+            || lib.last p == cleanName
+            || builtins.elem cleanName p
+            || lib.any (seg: lib.hasInfix cleanName seg || lib.hasInfix seg cleanName) p
+          ) paths;
+
       nixosConf =
         evaluated.nixos or (
           if isMultiClass then
@@ -74,7 +127,6 @@ let
       wrappedHomeConf = if builtins.isFunction homeConf then homeConf evalArgs else homeConf;
 
       # Sanitize homeConf for Home-Manager module system
-      # Home-Manager requires all option definitions (including _module) to be under 'config' whenever module keys ('imports', 'options') are present.
       sanitizeHM =
         m:
         if !builtins.isAttrs m then
@@ -111,6 +163,15 @@ let
       # Predicate for non-empty config (purely structural, never forces content evaluation)
       hasHomeConfig = builtins.hasAttr "home" evaluated;
 
+      optionAssertion = {
+        assertions = [
+          {
+            assertion = checkOptionPaths opts;
+            message = "mkDendriticModule(${name}): Declared option paths must contain or end with module name '${name}'.";
+          }
+        ];
+      };
+
     in
     {
       _file = "mkDendriticModule(${name})";
@@ -120,6 +181,7 @@ let
         if isNixOS then
           lib.mkMerge [
             wrappedNixosConf
+            optionAssertion
             (lib.mkIf hasHomeConfig {
               home-manager.users.${config.layers.meta.primaryUser or "t0psh31f"} = sanitizedHomeConf;
             })

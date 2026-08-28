@@ -33,10 +33,38 @@ in
       default = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
       description = "The noctalia v5 package to use";
     };
+
+    plugins = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "assistant-panel"
+        "ip-monitor"
+        "tailscale"
+        "workspace-overview"
+        "screen-toolkit"
+        "todo"
+        "model-usage"
+      ];
+      description = "List of Noctalia plugins to declaratively fetch and link into ~/.config/noctalia/plugins";
+    };
   };
 
   home =
     { config, lib, ... }:
+    let
+      communityPluginsSrc = pkgs.fetchFromGitHub {
+        owner = "noctalia-dev";
+        repo = "community-plugins";
+        rev = "caed21ab081948435cd770d2e954c99b8bbb72cf";
+        hash = "sha256-MP4ZliG+Uq8FHQtwFcEVBifDiSRMJcBeKKCzl4Wfn1M=";
+      };
+      officialPluginsSrc = pkgs.fetchFromGitHub {
+        owner = "noctalia-dev";
+        repo = "official-plugins";
+        rev = "8cb833c3e2502f57e49d34fa64386b4d66794b77";
+        hash = "sha256-95CfWMekA1H92NtUq7cHwgF/eozvav6v7kCnF8wuG2U=";
+      };
+    in
     {
       imports = lib.optionals cfg.enable [
         ./ipc.nix
@@ -46,6 +74,17 @@ in
       ];
 
       config = lib.mkIf cfg.enable {
+        home.file = lib.mkMerge (
+          map (pluginName: {
+            ".config/noctalia/plugins/${pluginName}".source =
+              if builtins.pathExists "${officialPluginsSrc}/${pluginName}" then
+                "${officialPluginsSrc}/${pluginName}"
+              else if builtins.pathExists "${communityPluginsSrc}/${pluginName}" then
+                "${communityPluginsSrc}/${pluginName}"
+              else
+                "${communityPluginsSrc}/${pluginName}";
+          }) cfg.plugins
+        );
         home.packages = with pkgs; [
           gst_all_1.gst-plugins-base
           gst_all_1.gst-plugins-good
@@ -120,6 +159,9 @@ in
 
             # Sync Zellij colors
             zellij-colors-sync 2>/dev/null || true
+
+            # Sync Rofi theme/colors
+            pkill -USR2 rofi 2>/dev/null || true
           '')
         ];
 

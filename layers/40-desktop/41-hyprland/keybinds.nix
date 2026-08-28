@@ -14,7 +14,6 @@ in
       "$terminal" = "ghostty";
       "$fileManager" = "dolphin";
       "$browser" = "brave";
-      "$ipc" = "noctalia msg";
 
       bind = [
         # ── Core App Launchers ─────────────────────────────────────────
@@ -33,13 +32,10 @@ in
         "$mod CTRL, B, exec, uwsm app -- librewolf"
         "$mod SHIFT, B, exec, uwsm app -- mullvad-browser"
         "$mod ALT, B, exec, uwsm app -- dillo"
-        "$mod, comma, exec, $ipc settings-toggle"
         "$mod SHIFT, T, exec, uwsm app -- kitty"
         "$mod SHIFT, Return, exec, uwsm app -- warp-terminal"
 
-        "$mod, A, exec, $ipc panel-toggle launcher"
         "$mod, Space, exec, vicinae toggle"
-        "$mod, X, exec, $ipc panel-toggle control-center"
         "$mod, slash, exec, cheatsheet"
 
         # Scratchpads (Pyprland)
@@ -63,16 +59,8 @@ in
         "SHIFT, XF86AudioEject, exec, hypr-screenshot full"
         "CTRL SHIFT, S, exec, hypr-screenshot edit"
 
-        # ── Theme & Layout Management ──────────────────────────────────
-        # "$mod SHIFT, P, exec, noctalia-theme-toggle"
-        # "$mod, Tab, hyprexpo:expo, toggle" # Temporarily disabled
-        "$mod, Tab, exec, $ipc window-switcher"
-
         # ── System / Session ───────────────────────────────────────────
         "$mod, Q, killactive,"
-        "$mod SHIFT, L, exec, $ipc session lock"
-        "CTRL ALT, Delete, exec, $ipc panel-toggle session"
-        "$mod SHIFT, N, exec, $ipc notification-dnd-toggle"
         "$mod CTRL SHIFT, M, exec, hypr-sfx-toggle"
         "$mod, F, fullscreen, 1"
         "$mod ALT, F, fullscreen, 1"

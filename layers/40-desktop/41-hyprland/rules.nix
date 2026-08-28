@@ -96,14 +96,6 @@ in
 
           # Fast Launchers
           "no_anim 1, match:namespace gtk4-layer-shell"
-
-          # Noctalia Shell v5
-          "blur 1, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"
-          "blur_popups 1, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"
-          "no_anim 1, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$"
-          # Ignore near-transparent pixels so blur only covers visible content,
-          # not the full oversized layer surface geometry.
-          "ignore_alpha 0.1, match:namespace ^noctalia-(notification|dock|osd)$"
         ];
       in
       if isLuffy then

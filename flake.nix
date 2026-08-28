@@ -1,39 +1,8 @@
 {
   description = "Nix Flake Pirates (NFP) Configuration";
 
-  nixConfig = {
-    extra-substituters = [
-      # cache.nixos.org first — most populous; numtide.com last (unreachable from
-      # this network, timeouts). Kept in sync with layers/10-system/11-foundation/caches.nix.
-      "https://cache.nixos.org"
-      "https://nix-community.cachix.org"
-      "https://numtide.cachix.org"
-      "https://vicinae.cachix.org"
-      "https://hyprland.cachix.org"
-      "https://niri.cachix.org"
-      # "https://cache.garnix.io"  # DOWN: 502 Bad Gateway (2026-08-01) — remove when garnix recovers
-      "https://noctalia.cachix.org"
-      "https://cache.numtide.com"
-    ];
-    extra-trusted-public-keys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-      "numtide.cachix.org-1:vSxzZPSh9OCpqJc572Mk9BdbrGMNSbR4F5O4/jVtHK8="
-      "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-      # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="  # DOWN: re-enable when garnix recovers
-      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-    ];
-  };
-
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    # Fresh AI packages channel — update independently with `nix flake update nixpkgs-ai`
-    nixpkgs-ai.url = "github:NixOS/nixpkgs/9c4c05a947a91dc14625265fab505fb695e93218";
-
+    # ── Core Flake Tools & Clan ──────────────────────────────────
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,11 +11,40 @@
       inputs.disko.follows = "disko";
       inputs.systems.follows = "systems";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-parts.url = "github:hercules-ci/flake-parts";
-    # Reuse the treefmt-nix already locked by clan-core instead of adding a new input.
-    treefmt-nix.follows = "clan-core/treefmt-nix";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    systems.url = "github:nix-systems/default";
+    treefmt-nix.follows = "clan-core/treefmt-nix";
+
+    # ── Desktop & UI Runtimes ───────────────────────────────────
+    dsh-nix = {
+      url = "github:Samuka007/dsh-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland = {
@@ -59,64 +57,21 @@
       inputs.hyprland.follows = "hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    dsh-nix = {
-      url = "github:Samuka007/dsh-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    impermanence = {
-      url = "github:nix-community/impermanence";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
-    # Safe to use inputs.nixpkgs.follows = "nixpkgs" because NFP nixpkgs tracks nixos-unstable
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.treefmt-nix.follows = "clan-core/treefmt-nix";
-      inputs.systems.follows = "systems";
-    };
-    nixai = {
-      url = "github:olafkfreund/nix-ai-help";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware/master";
-    };
-    # Noctalia v5 desktop shell (native C++/OpenGL ES, replaces v4 Quickshell)
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
-      # Do NOT use inputs.nixpkgs.follows — it changes the derivation hash
-      # and breaks the noctalia.cachix.org binary cache, forcing a full
-      # C++ compile (904 files). Let noctalia use its own pinned nixpkgs.
     };
-    # Noctalia greeter (login manager) — standalone greetd greeter
     noctalia-greeter = {
       url = "github:noctalia-dev/noctalia-greeter";
-      # Do NOT use inputs.nixpkgs.follows — same cache-miss bug as noctalia:
-      # changes derivation hash, breaks noctalia.cachix.org binary cache.
-      # Let noctalia-greeter use its own pinned nixpkgs.
-    };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    zjstatus = {
-      url = "github:dj95/zjstatus";
     };
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
     };
-
     vicinae = {
       url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -128,6 +83,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-compat.follows = "hyprland/pre-commit-hooks/flake-compat";
       inputs.systems.follows = "systems";
+    };
+    yazelix-cursors = {
+      url = "github:luccahuguet/yazelix-cursors";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     yazelix-hm = {
       url = "github:luccahuguet/yazelix";
@@ -141,27 +100,26 @@
       inputs.yazelixZellijPaneOrchestrator.inputs.flake-utils.follows = "flake-utils";
       inputs.yazelixZellijPopup.inputs.flake-utils.follows = "flake-utils";
     };
-    yazelix-cursors = {
-      url = "github:luccahuguet/yazelix-cursors";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     yazelix-screen = {
       url = "github:luccahuguet/yazelix-screen";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    disko = {
-      url = "github:nix-community/disko";
+    zjstatus = {
+      url = "github:dj95/zjstatus";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    wakatime-lsp = {
-      url = "github:mrnossiom/wakatime-lsp";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.gitignore.follows = "hyprland/pre-commit-hooks/gitignore";
-    };
+
+    # ── AI & Agents ────────────────────────────────────────────
     antigravity = {
       url = "github:Jacopone/Antigravity-nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
+    };
+    camoufox-nix = {
+      url = "github:maximoffua/camoufox-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
     };
     hermes-agent = {
       url = "github:NousResearch/hermes-agent";
@@ -171,24 +129,19 @@
       url = "github:nesquena/hermes-webui/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-cachyos-kernel = {
-      url = "github:xddxdd/nix-cachyos-kernel/release";
-    };
-
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Camoufox anti-detection browser — source-built to avoid prebuilt binary SIGSEGV
-    camoufox-nix = {
-      url = "github:maximoffua/camoufox-nix";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "clan-core/treefmt-nix";
       inputs.systems.follows = "systems";
     };
-
-    # Polyfloor — Multi-floor AI company OS
+    nixai = {
+      url = "github:olafkfreund/nix-ai-help";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+    nixpkgs-ai.url = "github:NixOS/nixpkgs/9c4c05a947a91dc14625265fab505fb695e93218";
     polyfloor = {
       url = "github:T0PSH31F/Polyfloor";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -196,17 +149,19 @@
       inputs.systems.follows = "systems";
     };
 
-    # Pre-commit & Pre-push hooks
-    git-hooks-nix = {
-      url = "github:cachix/git-hooks.nix";
+    # ── Services & Utilities ───────────────────────────────────
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel/release";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Utility inputs defined at top-level to allow follows
-    systems.url = "github:nix-systems/default";
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    wakatime-lsp = {
+      url = "github:mrnossiom/wakatime-lsp";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.gitignore.follows = "hyprland/pre-commit-hooks/gitignore";
     };
   };
 
@@ -215,38 +170,18 @@
       clan-core,
       flake-parts,
       home-manager,
-      llm-agents,
-      niri,
-      noctalia,
-      spicetify-nix,
-
-      vicinae,
-      vicinae-extensions,
-      nixai,
-      yazelix-hm,
-      yazelix-cursors,
-      yazelix-screen,
-      disko,
-      wakatime-lsp,
-      antigravity,
-      nix-cachyos-kernel,
-      hermes-agent,
-      nixpkgs-ai,
-      nixvim,
-      git-hooks-nix,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
-      {
-        config,
-        inputs,
-        ...
-      }:
+      { ... }:
       {
         imports = [
           clan-core.flakeModules.default
           home-manager.flakeModules.home-manager
           inputs.treefmt-nix.flakeModule
+          ./flake/formatter.nix
+          ./flake/checks.nix
+          ./flake/packages.nix
           ./layers/00-cyberia/07-clan/clan-inventory.nix
           ./layers/00-cyberia/07-clan/devshell.nix
           ./layers/00-cyberia/07-clan/git-hooks.nix
@@ -263,22 +198,17 @@
               mkDendriticTree
               ;
           };
-          # Configure nixpkgs to allow unfree packages
           pkgsForSystem =
             system:
             import inputs.nixpkgs {
               localSystem = system;
               config.allowUnfree = true;
-              # Overlays applied via nixpkgs.overlays in overlays.nix (single source of truth).
             };
         };
 
-        # Register clan services
         flake.clan = {
           modules = {
-            # Binary cache
             nix-cache = ./layers/20-services/28-clan-services/nix-cache/default.nix;
-            # Matrix Synapse
             matrix-synapse = ./layers/20-services/28-clan-services/matrix-synapse/module.nix;
           };
         };
@@ -302,156 +232,6 @@
           builtins.mapAttrs extractMachineConfig inputs.self.nixosConfigurations;
 
         systems = [ "x86_64-linux" ];
-
-        # flake.homeConfigurations = {
-        #   "root@vps" = inputs.home-manager.lib.homeManagerConfiguration {
-        #     pkgs = import inputs.nixpkgs {
-        #       system = "x86_64-linux";
-        #       config.allowUnfree = true;
-        #       overlays = [
-        #         (import ./layers/80-lib/82-overlays/custom-packages.nix)
-        #       ];
-        #     };
-        #     extraSpecialArgs = { inherit inputs; };
-        #     modules = [
-        #       ./layers/50-cli-tui-programs/50-entry/cli-tui.nix
-        #       {
-        #         home.username = "root";
-        #         home.homeDirectory = "/root";
-        #         # Standard age key location for NFP users
-        #         sops.age.keyFile = "/root/.config/sops/age/keys.txt";
-        #         # Enable Yazelix on VPS
-        #         programs.cli-environment.headless = true;
-        #         programs.cli-environment.theming.theme = "Tokyo Night Moon";
-        #         features.home.cli.yazelix.enable = true;
-        #       }
-        #     ];
-        #   };
-        # };
-
-        perSystem =
-          {
-            pkgs,
-            system,
-            ...
-          }:
-          {
-            packages.iso =
-              (inputs.nixpkgs.lib.nixosSystem {
-                inherit system;
-                specialArgs = {
-                  inherit inputs;
-                  inherit (import ./layers/80-lib/81-helpers/mkDendriticModule.nix { inherit (inputs.nixpkgs) lib; })
-                    mkDendriticModule
-                    ;
-                  inherit (import ./layers/80-lib/81-helpers/mkDendriticTree.nix { inherit (inputs.nixpkgs) lib; })
-                    mkDendriticTree
-                    ;
-                };
-                modules = [
-                  ./layers/00-cyberia/04-templates/iso/default.nix
-                ];
-              }).config.system.build.isoImage;
-
-            # Multi-tool Nix formatting/linting: nix fmt / nix flake check run nixfmt,
-            # deadnix, statix, and nixf-diagnose together via treefmt. See
-            # https://github.com/numtide/treefmt-nix
-            treefmt = {
-              projectRootFile = "flake.nix";
-              programs.nixfmt.enable = true;
-              # This codebase relies heavily on `{ ... }@args:` capture-all
-              # dendritic module patterns, and on `with pkgs;` blocks, where
-              # named args (e.g. `pkgs`) look statically unused to deadnix but
-              # are forwarded wholesale via `args` or used via dynamic scope.
-              # Removing them (deadnix's default `--edit` behavior) breaks
-              # evaluation, so pattern-name checking is disabled.
-              programs.deadnix.no-lambda-pattern-names = true;
-              programs.deadnix.enable = true;
-              programs.statix.enable = true;
-              programs.nixf-diagnose.enable = true;
-              programs.shfmt.enable = true;
-              # The dendritic module convention here destructures
-              # `{ config, lib, pkgs, inputs, osConfig, ... }` for consistency
-              # even when a given file doesn't use every name; nixf-diagnose
-              # treats that as a hard failure (not just a warning), which
-              # would make nearly every module "fail" formatting.
-              programs.nixf-diagnose.ignore = [
-                "sema-unused-def-lambda-noarg-formal"
-                "sema-unused-def-lambda-witharg-formal"
-              ];
-              # nixf-diagnose's static builtin database doesn't know about
-              # `builtins.getFlake` (flakes are still an experimental Nix
-              # feature) and hard-errors instead of warning; these two files
-              # use it deliberately.
-              settings.formatter.nixf-diagnose.excludes = [
-                "layers/00-cyberia/05-tests/test-radios.nix"
-                "layers/00-cyberia/09-tools/nfpu/eval-registry.nix"
-              ];
-            };
-
-            checks =
-              let
-                theme-tests = import ./layers/00-cyberia/05-tests/themes.nix {
-                  inherit pkgs;
-                  inherit (pkgs) lib;
-                };
-              in
-              {
-                feature-list-schema =
-                  pkgs.runCommand "check-feature-list-schema"
-                    {
-                      nativeBuildInputs = [ pkgs.jq ];
-                    }
-                    ''
-                      jq -e '.features | all(has("id") and has("verification") and has("state") and has("claimedBy") and has("blockedReason") and (.evidence | all(type == "object" and has("sha") and has("command") and has("output") and has("at"))))' ${./feature_list.json} > /dev/null
-                      touch $out
-                    '';
-
-                docs-drift =
-                  pkgs.runCommand "check-docs-drift"
-                    {
-                      nativeBuildInputs = [ pkgs.diffutils ];
-                    }
-                    ''
-                      test -f ${./layers/00-cyberia/01-docs/ports.md}
-                      touch $out
-                    '';
-
-                bogus-tag-negative-test = pkgs.runCommand "check-bogus-tag-negative-test" { } ''
-                  touch $out
-                '';
-
-                llm-agents-catalog-completeness =
-                  let
-                    llmPkgs = inputs.llm-agents.packages.${system} or { };
-                    catalogEnabled =
-                      inputs.self.nixosConfigurations.z0r0.config.layers.layer-20.services.llm-agents-catalog.packages;
-                    missingNames = pkgs.lib.filter (name: !(llmPkgs ? ${name})) catalogEnabled;
-                  in
-                  if missingNames != [ ] then
-                    throw "llm-agents-catalog error: The following enabled package names are missing from llmPkgs: ${pkgs.lib.concatStringsSep ", " missingNames}"
-                  else
-                    pkgs.runCommand "check-llm-agents-catalog-completeness" { } ''
-                      touch $out
-                    '';
-
-                inherit (theme-tests) plymouth-theme-builds sddm-theme-builds all-themes;
-
-                dendritic-structure-test = import ./layers/00-cyberia/05-tests/dendritic-structure-test.nix {
-                  inherit pkgs;
-                  inherit (pkgs) lib;
-                };
-
-                services-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/services.nix);
-                n8n-test = pkgs.testers.nixosTest (import ./layers/00-cyberia/05-tests/n8n.nix { inherit pkgs; });
-                homepage-dashboard-test = pkgs.testers.nixosTest (
-                  import ./layers/00-cyberia/05-tests/homepage-dashboard.nix
-                );
-                ai-services-test = pkgs.testers.nixosTest (
-                  import ./layers/00-cyberia/05-tests/ai-services-tests.nix
-                );
-              };
-          };
       }
     );
 }

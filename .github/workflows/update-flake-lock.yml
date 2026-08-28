@@ -8,11 +8,20 @@ on:
 jobs:
   update-flake-lock:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/update-flake-lock@main
+        id: update
         with:
           pr-title: "build(deps): update flake.lock"
           pr-assignees: "t0psh31f"
           git-author-name: "t0psh31f"
           git-author-email: "wrighterik77@gmail.com"
+      - name: Enable auto-merge on green check
+        if: steps.update.outputs.pull-request-number != ''
+        run: gh pr merge --auto --squash "${{ steps.update.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

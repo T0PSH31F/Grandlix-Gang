@@ -35,6 +35,9 @@ graph TB
         LF[Langfuse :3005<br/>LLM tracing]
     end
 
+> [!NOTE]
+> Langfuse does not expose a native Prometheus `/metrics` endpoint upstream. Metrics are queryable via the HTTP API (`GET /api/public/metrics` on port 3005) or displayed via Homepage `customapi` widget rather than direct Prometheus scraping.
+
     subgraph "Terminal Sandboxes"
         D[Docker]
         MO[Modal]

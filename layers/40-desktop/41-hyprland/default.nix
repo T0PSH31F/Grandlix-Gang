@@ -156,8 +156,8 @@ in
             ];
 
             # Color variables ($primary, $secondary, $surfaceContainer) are
-            # provided by noctalia's hyprtoolkit template via the source above.
-            # Do NOT hardcode them here — it breaks noctalia theme sync.
+            # provided by active experience templates via the source above.
+            # Do NOT hardcode them here.
 
             plugin = {
               "dynamic-cursors" = {
@@ -196,8 +196,8 @@ in
 
             general = {
               border_size = 4;
-              # Border colors ($primary, $surface) are provided by noctalia's
-              # hyprtoolkit template and HVE overlay — do NOT override here.
+              # Border colors ($primary, $surface) are provided by active experience
+              # templates — do NOT override here.
               resize_on_border = true;
               layout = "dwindle";
             };
@@ -258,7 +258,7 @@ in
           Service = {
             Type = "oneshot";
             RemainAfterExit = true;
-            ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr/experiences %h/.cache/noctalia/HVE && touch %h/.config/hypr/experiences/active-experience.conf %h/.config/hypr/monitors.conf %h/.config/hypr/hyprviz.conf'";
+            ExecStart = "${pkgs.bash}/bin/bash -c 'mkdir -p %h/.config/hypr/experiences && touch %h/.config/hypr/experiences/active-experience.conf %h/.config/hypr/monitors.conf %h/.config/hypr/hyprviz.conf'";
           };
         };
 

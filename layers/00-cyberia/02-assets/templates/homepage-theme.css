@@ -516,3 +516,17 @@ header {
 .neon-text-purple { text-shadow: 0 0 7px hsl(280 100% 50% / 0.8); color: var(--vegapunk-purple) !important; }
 .neon-text-teal   { text-shadow: 0 0 7px hsl(190 100% 50% / 0.8); color: var(--robin-teal) !important; }
 .neon-text-pink   { text-shadow: 0 0 7px hsl(300 100% 50% / 0.8); color: var(--chopper-pink) !important; }
+
+/* Status dot & ping indicator height cap fix */
+.service-ping,
+.service-status,
+.ping-dot,
+.status-dot,
+.service-status-dot,
+[class*="ping-"],
+[class*="status-"] {
+  max-height: 1.5rem !important;
+  max-width: 1.5rem !important;
+  overflow: hidden !important;
+}
+

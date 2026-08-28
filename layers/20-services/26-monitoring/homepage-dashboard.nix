@@ -30,6 +30,13 @@ let
       contain: content !important;
     }
 
+    /* Status dot & ping indicator height cap fix */
+    .service-ping, .service-status, .ping-dot, .status-dot, .service-status-dot, [class*="ping-"], [class*="status-"] {
+      max-height: 1.5rem !important;
+      max-width: 1.5rem !important;
+      overflow: hidden !important;
+    }
+
     /* Compact API error pill styling */
     .service-widget-error, .widget-error, [class*="widget-error"], [class*="Error"] {
       max-height: 24px !important;
@@ -264,7 +271,11 @@ let
       (zSrv "Hermes Dashboard" "hermesDashboard" "mdi-chart-timeline-variant" "Agent Metrics & Sessions")
       (zSrv "SillyTavern" "sillytavern" "sillytavern.png" "AI Character Chat")
       (zSrv "llama.cpp" "llamaCpp" "mdi-brain" "Inference Server")
-      (zSrv "Langfuse" "langfuse" "mdi-chart-line-variant" "LLM Observability")
+      (zSrvW "Langfuse" "langfuse" "mdi-chart-line-variant" "LLM Observability" {
+        type = "customapi";
+        url = "http://${hostOf "z0r0"}:${toString ports.langfuse}/api/public/metrics";
+        refresh = 10000;
+      })
       (zSrv "Brain Service" "brainService" "mdi-brain" "AI Brain Layer")
       (zSrv "Hermes WebUI" "hermesWebui" "mdi-react" "Web UI Dashboard")
       (zSrv "AionUi" "aionUi" "mdi-account-group" "AI Agent Cowork UI")

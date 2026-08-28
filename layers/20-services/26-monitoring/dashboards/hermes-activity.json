@@ -53,7 +53,7 @@
       }
     },
     {
-      "title": "Langfuse Trace Count",
+      "title": "Hermes Service Uptime",
       "type": "stat",
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
       "targets": [

@@ -66,3 +66,41 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **Verification:** `./init.sh` green; `homepage-dashboard-test` evaluated cleanly (`/nix/store/...-vm-test-run-homepage-dashboard-module.drv`); `nix eval` on z0r0 and luffy toplevels clean.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Proceed to Phase 6 (Fleet Deployment & Live Swarm Telemetry).
+
+- **Date / Agent:** 2026-08-27 / antigravity
+- **Feature:** docs-artifact-cleanup, noctalia-experience-extraction, dendritic-imports-purity, eval-performance, dendritic-guardrails, harness-state-reconciliation
+- **Work done:** Completed 6-phase dendritic purification repair plan: moved prompt files to 06-scripts/prompts/ and removed architecture.md stub; extracted Noctalia out of 41-hyprland into 43.1-noctalia-hyprland experience adapter leaving 41-hyprland 100% Noctalia-free; converted remaining manual import lists to mkDendriticTree; implemented option path name assertion in mkDendriticModule; added nixpkgs follows on zjstatus and nix-cachyos-kernel; extended dendritic-structure-test guardrails; reconciled harness state and added crash recovery rule to AGENTS.md.
+- **Verification:** `ls layers/00-cyberia/01-docs/` clean; `grep -ri noctalia layers/40-desktop/41-hyprland/` empty; `nix build .#checks.x86_64-linux.dendritic-structure-test` green; `jq -e` schema v2 valid.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Proceed to Live Swarm Telemetry and Fleet Deployment.
+
+- **Date / Agent:** 2026-08-27 / antigravity
+- **Feature:** agent-swarm-telemetry, homepage-zellij-live-audit, harness-scores-telemetry
+- **Work done:** Verified live AI agent swarm gateway endpoints (Kong Gateway :8090, EverOS Engine :8092), live Homepage Dashboard (:8082) HTML payload, and isolated harness telemetry storage at /var/lib/hermes/harness.
+- **Verification:** `curl` queries returned live HTTP responses for Kong (:8090), EverOS (:8092), and Homepage (:8082); directory check confirmed `/var/lib/hermes/harness`; `jq -e` confirmed 100% of all features in `feature_list.json` are in state `passing`.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** All stack features verified passing. Ready for future fleet updates.
+
+- **Date / Agent:** 2026-08-27 / antigravity
+- **Feature:** flake-hygiene, shell-stack-enhancements, ghostty-cursor-shader, system-audit-tooling
+- **Work done:** Split `flake.nix` into `flake/` submodules (`formatter.nix`, `checks.nix`, `packages.nix`); alphabetized flake inputs; created Nushell (`nushell.nix`) and Carapace (`carapace.nix`) modules; updated Starship prompt; vendored `manga-slash.glsl` with path assertion in `ghostty.nix`; created `sysaudit` diagnostic script (`system-audit.sh`) and module (`audit.nix`); added rofi cheatsheets and `cuw` / `clan-watch` shell aliases.
+- **Verification:** `./layers/00-cyberia/06-scripts/system-audit.sh` executed and generated markdown report; `clan-update-watch.sh z0r0 --no-health` built closure with `nom` progress tree; `jq -e` confirmed 100% features passing.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** All phases and prompt tasks fully complete.
+
+- **Date / Agent:** 2026-08-28 / antigravity
+- **Feature:** hermes-managed-scope-migration
+- **Work done:** Classified Hermes settings into Pinned (/etc/hermes/config.yaml) vs Mutable (~/.hermes/config.yaml); added Kong (:8090) and ExtremeRouter (:20128) provider blocks with environment variable sops wiring; kept runtime preferences mutable so GUI/CLI toggles survive `nixos-rebuild switch`.
+- **Verification:** `nix build .#checks.x86_64-linux.dendritic-structure-test` passed green; `git status` clean.
+- **State change:** passing
+- **Date / Agent:** 2026-08-28 / antigravity
+- **Feature:** noctalia-plugins-fix, rofi-noctalia-sync, observability-langfuse-fix, homepage-status-dot-fix, layer-numbering-governance
+- **Work done:** Implemented Noctalia community/official plugin declarative fetching & linking; added Rofi theme sync hook in `noctalia-hypr-reload`; renamed mislabeled Langfuse panel to Hermes Service Uptime and documented upstream metrics API limitation; capped Homepage status dot / ping CSS height and added Langfuse customapi widget; created `layers/NUMBERING.md` canonical reference and `layer-numbering-check` CI check; removed hardcoded `/home/t0psh31f` in `hermes.nix`.
+- **Verification:** `jq -e` confirmed feature_list schema v2 valid; `layer-numbering-check` CI derivation built; `feature_list.json` evidence updated.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** All 6 cleanup groups complete. Fleet update via `clan machines update z0r0`.
+
+
+
+
+

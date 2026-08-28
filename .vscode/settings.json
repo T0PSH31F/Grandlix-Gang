@@ -1,3 +1,10 @@
 {
-    "nixEnvSelector.nixFile": "${workspaceFolder}/flake.nix"
+    "nixEnvSelector.nixFile": "${workspaceFolder}/flake.nix",
+    "contextguard.statusBar.enabled": true,
+    "contextguard.codeLens.enabled": true,
+    "contextguard.scanGlobalConfig.enabled": false,
+    "contextguard.liveSecretGuard.enabled": true,
+    "contextguard.secretScan.highEntropy": false,
+    "contextguard.costModel.requestsPerDay": 50,
+    "contextguard.costModel.usdPerMillionInputTokens": 3
 }

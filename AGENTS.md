@@ -13,6 +13,7 @@
 5. Run every command in the feature's `verification` list. Record outputs as evidence in `feature_list.json`.
 6. Score the work against `evaluator-rubric.md` (≥ 8, no zeros).
 7. Update `feature_list.json` (state + evidence), append to `agent-progress.md`, overwrite `session-handoff.md`.
+8. After context loss or crash, NEVER re-mark prior work passing from memory — re-run the verification commands or reopen the feature.
 
 Never mark work complete without recorded evidence. Never expand scope mid-session; record new ideas as `untried` features.
 

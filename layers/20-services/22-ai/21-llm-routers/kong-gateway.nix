@@ -395,7 +395,7 @@ in
 
     image = mkOption {
       type = types.str;
-      default = "docker.io/kong/kong:latest";
+      default = "docker.io/kong/kong-gateway:latest";
       description = "Kong Docker image";
     };
 
@@ -539,6 +539,9 @@ in
         KONG_ADMIN_LISTEN = "127.0.0.1:${toString cfg.adminPort}";
         KONG_ADMIN_LISTEN_SSL = "127.0.0.1:${toString cfg.adminSslPort}";
         KONG_MANAGER_LISTEN = "127.0.0.1:${toString cfg.managerPort}";
+        KONG_ADMIN_GUI_LISTEN = "127.0.0.1:${toString cfg.managerPort}";
+        KONG_ADMIN_GUI_URL = "http://127.0.0.1:${toString cfg.managerPort}";
+        KONG_ADMIN_API_URI = "http://127.0.0.1:${toString cfg.adminPort}";
         KONG_LOG_LEVEL = "info";
         KONG_PROXY_ACCESS_LOG = "/dev/stdout";
         KONG_ADMIN_ACCESS_LOG = "/dev/stdout";

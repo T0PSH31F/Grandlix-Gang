@@ -34,4 +34,8 @@ amd, amd-gpu, intel, intel-gpu, nvidia-gpu.
 Ensure these tags correctly trigger the respective drivers and kernel modules without hardcoding them into the machine level.
 PHASE 4: COMPOSITION Ensure the z0r0 machine configuration in clan.nix (or its machine folder) has all these tags enabled, and verify that nix flake check passes.
 
+MANDATORY LAYER NUMBERING GOVERNANCE:
+Before creating ANY new directory under `layers/`, you MUST check `layers/NUMBERING.md` to pick an unassigned number within the reserved band and register the new directory in `layers/NUMBERING.md` in the same commit. Failure to do so will break CI (`check-layer-numbering`).
+
+
 Does this prompt accurately capture the level of rigor and the specific organizational split you are looking for? If so, I will wait for your signal to begin executing it phase-by-phase.

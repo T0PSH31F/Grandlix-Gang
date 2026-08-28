@@ -49,5 +49,17 @@ else
         exit 1
       fi
 
+      # 3. Hyprland base contains zero "noctalia" strings
+      if grep -ri "noctalia" ${../../.}/layers/40-desktop/41-hyprland/ >/dev/null 2>&1; then
+        echo "ERROR: noctalia reference found in neutral Hyprland base (layers/40-desktop/41-hyprland/)"
+        exit 1
+      fi
+
+      # 4. Zero commented-out imports in default.nix files
+      if grep -rn "#.*imports =" ${../../.}/layers/ --include=default.nix >/dev/null 2>&1; then
+        echo "ERROR: Commented-out imports found in default.nix files"
+        exit 1
+      fi
+
       echo "Dendritic structure & guardrail checks passed successfully." > $out
     ''

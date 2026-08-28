@@ -1,8 +1,4 @@
-{ lib, mkDendriticModule, ... }:
+{ mkDendriticModule, mkDendriticTree, ... }:
 {
-  imports = [
-    (mkDendriticModule "dolphin" ./dolphin.nix)
-    (mkDendriticModule "file-managers-system" ./file-managers-system.nix)
-    (mkDendriticModule "nemo" ./nemo.nix)
-  ];
+  imports = mkDendriticTree mkDendriticModule ./.;
 }
