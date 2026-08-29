@@ -37,21 +37,29 @@ in
 
   config = mkIf cfg.enable {
     # alertmanager-ntfy service
-    systemd.services.alertmanager-ntfy = {
-      description = "alertmanager-ntfy — Prometheus alerts to ntfy";
-      after = [
-        "network.target"
-        "alertmanager.service"
-        "ntfy-sh.service"
-      ];
-      wantedBy = [ "multi-user.target" ];
+    systemd.services.alertmanager-ntfy =
+      let
+        configFile = pkgs.writeText "alertmanager-ntfy-config.yml" ''
+          ntfy:
+            url: "${cfg.ntfyUrl}"
+            topic: "${cfg.ntfyTopic}"
+        '';
+      in
+      {
+        description = "alertmanager-ntfy — Prometheus alerts to ntfy";
+        after = [
+          "network.target"
+          "alertmanager.service"
+          "ntfy-sh.service"
+        ];
+        wantedBy = [ "multi-user.target" ];
 
-      serviceConfig = {
-        ExecStart = "${pkgs.alertmanager-ntfy}/bin/alertmanager-ntfy --ntfy-baseurl ${cfg.ntfyUrl} --ntfy-topic ${cfg.ntfyTopic}";
-        Restart = "always";
-        RestartSec = 5;
+        serviceConfig = {
+          ExecStart = "${pkgs.alertmanager-ntfy}/bin/alertmanager-ntfy --configs ${configFile} --ntfy-baseurl ${cfg.ntfyUrl} --ntfy-topic ${cfg.ntfyTopic}";
+          Restart = "always";
+          RestartSec = 5;
+        };
       };
-    };
 
     # Grafana notification channel for ntfy
     # Configure in Grafana UI: Alerting → Contact Points → New → ntfy

@@ -65,7 +65,7 @@ in
       serviceConfig = {
         User = "root";
         Group = "root";
-        ExecStart = "${lib.getExe paperclipPkg} start";
+        ExecStart = "${lib.getExe paperclipPkg} run";
         Restart = "always";
         RestartSec = 5;
         WorkingDirectory = cfg.dataDir;
