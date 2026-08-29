@@ -47,7 +47,7 @@ in
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
-        ExecStart = "${pkgs.alertmanager-ntfy}/bin/alertmanager-ntfy --ntfy-url ${cfg.ntfyUrl} --ntfy-topic ${cfg.ntfyTopic} --alertmanager-url ${cfg.alertmanagerUrl}";
+        ExecStart = "${pkgs.alertmanager-ntfy}/bin/alertmanager-ntfy --ntfy-baseurl ${cfg.ntfyUrl} --ntfy-topic ${cfg.ntfyTopic}";
         Restart = "always";
         RestartSec = 5;
       };
