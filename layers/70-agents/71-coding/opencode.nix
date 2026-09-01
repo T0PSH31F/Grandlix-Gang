@@ -418,41 +418,26 @@
             baseUrl = "http://127.0.0.1:${toString (osConfig.services.ai-services.kong-gateway.proxyPort or 8090)}/v1";
             name = "Kong AI Gateway";
             models = {
-              "claude-3-7-sonnet" = {
-                name = "Claude 3.7 Sonnet (via Kong)";
-                limit = {
-                  context = 200000;
-                  output = 64000;
-                };
-              };
-              "claude-3-5-sonnet" = {
-                name = "Claude 3.5 Sonnet (via Kong)";
-                limit = {
-                  context = 200000;
-                  output = 8192;
-                };
-              };
-              "gpt-4o" = {
-                name = "GPT-4o (via Kong)";
-                limit = {
-                  context = 128000;
-                  output = 16384;
-                };
-              };
-              "deepseek-r1" = {
-                name = "DeepSeek R1 (via Kong)";
-                limit = {
-                  context = 128000;
-                  output = 16384;
-                };
-              };
-              "qwen-2.5-coder-32b" = {
-                name = "Qwen 2.5 Coder 32B (via Kong)";
-                limit = {
-                  context = 128000;
-                  output = 8192;
-                };
-              };
+              "deepseek-v4-pro" = { name = "DeepSeek V4 Pro (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "deepseek-v4-flash" = { name = "DeepSeek V4 Flash (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "deepseek-r1" = { name = "DeepSeek R1 (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "mimo-2.5-pro" = { name = "Mimo 2.5 Pro (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "hy3" = { name = "Hunyuan 3 / HY3 (via Kong)"; limit = { context = 128000; output = 8192; }; };
+              "kimi-k3" = { name = "Kimi K3 (via Kong)"; limit = { context = 200000; output = 16384; }; };
+              "kimi-k2.7code" = { name = "Kimi K2.7 Code (via Kong)"; limit = { context = 200000; output = 16384; }; };
+              "kimi-k2.6" = { name = "Kimi K2.6 (via Kong)"; limit = { context = 200000; output = 8192; }; };
+              "glm-5.3" = { name = "GLM 5.3 (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "glm-5.2" = { name = "GLM 5.2 (via Kong)"; limit = { context = 128000; output = 8192; }; };
+              "claude-3-7-sonnet" = { name = "Claude 3.7 Sonnet (via Kong)"; limit = { context = 200000; output = 64000; }; };
+              "claude-3-5-sonnet" = { name = "Claude 3.5 Sonnet (via Kong)"; limit = { context = 200000; output = 8192; }; };
+              "gpt-4o" = { name = "GPT-4o (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "qwen-2.5-coder-32b" = { name = "Qwen 2.5 Coder 32B (via Kong)"; limit = { context = 128000; output = 8192; }; };
+              "free-deepseek-r1" = { name = "Free DeepSeek R1 (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "free-claude-3-7-sonnet" = { name = "Free Claude 3.7 Sonnet (via Kong)"; limit = { context = 200000; output = 64000; }; };
+              "free-gpt-4o" = { name = "Free GPT-4o (via Kong)"; limit = { context = 128000; output = 16384; }; };
+              "free-gemini-2.5-pro" = { name = "Free Gemini 2.5 Pro (via Kong)"; limit = { context = 1048576; output = 65536; }; };
+              "free-qwen-2.5-coder-32b" = { name = "Free Qwen 2.5 Coder 32B (via Kong)"; limit = { context = 128000; output = 8192; }; };
+              "free-llama-3.3-70b" = { name = "Free Llama 3.3 70B (via Kong)"; limit = { context = 128000; output = 8192; }; };
             };
           };
 
@@ -468,41 +453,26 @@
                 }/v1";
                 name = "ExtremeRouter";
                 models = {
-                  "claude-3-7-sonnet" = {
-                    name = "Claude 3.7 Sonnet (ExtremeRouter)";
-                    limit = {
-                      context = 200000;
-                      output = 64000;
-                    };
-                  };
-                  "claude-3-5-sonnet" = {
-                    name = "Claude 3.5 Sonnet (ExtremeRouter)";
-                    limit = {
-                      context = 200000;
-                      output = 8192;
-                    };
-                  };
-                  "gpt-4o" = {
-                    name = "GPT-4o (ExtremeRouter)";
-                    limit = {
-                      context = 128000;
-                      output = 16384;
-                    };
-                  };
-                  "deepseek-r1" = {
-                    name = "DeepSeek R1 (ExtremeRouter)";
-                    limit = {
-                      context = 128000;
-                      output = 16384;
-                    };
-                  };
-                  "qwen-2.5-coder-32b" = {
-                    name = "Qwen 2.5 Coder 32B (ExtremeRouter)";
-                    limit = {
-                      context = 128000;
-                      output = 8192;
-                    };
-                  };
+                  "deepseek-v4-pro" = { name = "DeepSeek V4 Pro (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "deepseek-v4-flash" = { name = "DeepSeek V4 Flash (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "deepseek-r1" = { name = "DeepSeek R1 (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "mimo-2.5-pro" = { name = "Mimo 2.5 Pro (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "hy3" = { name = "Hunyuan 3 / HY3 (ExtremeRouter)"; limit = { context = 128000; output = 8192; }; };
+                  "kimi-k3" = { name = "Kimi K3 (ExtremeRouter)"; limit = { context = 200000; output = 16384; }; };
+                  "kimi-k2.7code" = { name = "Kimi K2.7 Code (ExtremeRouter)"; limit = { context = 200000; output = 16384; }; };
+                  "kimi-k2.6" = { name = "Kimi K2.6 (ExtremeRouter)"; limit = { context = 200000; output = 8192; }; };
+                  "glm-5.3" = { name = "GLM 5.3 (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "glm-5.2" = { name = "GLM 5.2 (ExtremeRouter)"; limit = { context = 128000; output = 8192; }; };
+                  "claude-3-7-sonnet" = { name = "Claude 3.7 Sonnet (ExtremeRouter)"; limit = { context = 200000; output = 64000; }; };
+                  "claude-3-5-sonnet" = { name = "Claude 3.5 Sonnet (ExtremeRouter)"; limit = { context = 200000; output = 8192; }; };
+                  "gpt-4o" = { name = "GPT-4o (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "qwen-2.5-coder-32b" = { name = "Qwen 2.5 Coder 32B (ExtremeRouter)"; limit = { context = 128000; output = 8192; }; };
+                  "free-deepseek-r1" = { name = "Free DeepSeek R1 (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "free-claude-3-7-sonnet" = { name = "Free Claude 3.7 Sonnet (ExtremeRouter)"; limit = { context = 200000; output = 64000; }; };
+                  "free-gpt-4o" = { name = "Free GPT-4o (ExtremeRouter)"; limit = { context = 128000; output = 16384; }; };
+                  "free-gemini-2.5-pro" = { name = "Free Gemini 2.5 Pro (ExtremeRouter)"; limit = { context = 1048576; output = 65536; }; };
+                  "free-qwen-2.5-coder-32b" = { name = "Free Qwen 2.5 Coder 32B (ExtremeRouter)"; limit = { context = 128000; output = 8192; }; };
+                  "free-llama-3.3-70b" = { name = "Free Llama 3.3 70B (ExtremeRouter)"; limit = { context = 128000; output = 8192; }; };
                 };
               };
         };
