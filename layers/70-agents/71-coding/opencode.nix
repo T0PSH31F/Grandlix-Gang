@@ -415,9 +415,45 @@
           # Kong AI Gateway — unified LLM provider
           # Routes to ExtremeRouter (coding), FreeLLMAPI (free), etc.
           provider.kong = lib.mkIf (osConfig.services.ai-services.kong-gateway.enable or false) {
-            baseUrl = "http://127.0.0.1:${toString osConfig.services.ai-services.kong-gateway.proxyPort}/v1";
+            baseUrl = "http://127.0.0.1:${toString (osConfig.services.ai-services.kong-gateway.proxyPort or 8090)}/v1";
             name = "Kong AI Gateway";
-            models = { };
+            models = {
+              "claude-3-7-sonnet" = {
+                name = "Claude 3.7 Sonnet (via Kong)";
+                limit = {
+                  context = 200000;
+                  output = 64000;
+                };
+              };
+              "claude-3-5-sonnet" = {
+                name = "Claude 3.5 Sonnet (via Kong)";
+                limit = {
+                  context = 200000;
+                  output = 8192;
+                };
+              };
+              "gpt-4o" = {
+                name = "GPT-4o (via Kong)";
+                limit = {
+                  context = 128000;
+                  output = 16384;
+                };
+              };
+              "deepseek-r1" = {
+                name = "DeepSeek R1 (via Kong)";
+                limit = {
+                  context = 128000;
+                  output = 16384;
+                };
+              };
+              "qwen-2.5-coder-32b" = {
+                name = "Qwen 2.5 Coder 32B (via Kong)";
+                limit = {
+                  context = 128000;
+                  output = 8192;
+                };
+              };
+            };
           };
 
           # ExtremeRouter — 154+ providers, RTK savings, smart fallback
@@ -431,7 +467,43 @@
                   toString (osConfig.layers.layer-20.services.extreme-router.port or 20128)
                 }/v1";
                 name = "ExtremeRouter";
-                models = { };
+                models = {
+                  "claude-3-7-sonnet" = {
+                    name = "Claude 3.7 Sonnet (ExtremeRouter)";
+                    limit = {
+                      context = 200000;
+                      output = 64000;
+                    };
+                  };
+                  "claude-3-5-sonnet" = {
+                    name = "Claude 3.5 Sonnet (ExtremeRouter)";
+                    limit = {
+                      context = 200000;
+                      output = 8192;
+                    };
+                  };
+                  "gpt-4o" = {
+                    name = "GPT-4o (ExtremeRouter)";
+                    limit = {
+                      context = 128000;
+                      output = 16384;
+                    };
+                  };
+                  "deepseek-r1" = {
+                    name = "DeepSeek R1 (ExtremeRouter)";
+                    limit = {
+                      context = 128000;
+                      output = 16384;
+                    };
+                  };
+                  "qwen-2.5-coder-32b" = {
+                    name = "Qwen 2.5 Coder 32B (ExtremeRouter)";
+                    limit = {
+                      context = 128000;
+                      output = 8192;
+                    };
+                  };
+                };
               };
         };
       };

@@ -373,6 +373,8 @@ in
         # Mutable runtime prefs live in ~/.hermes/config.yaml (user-owned).
 
         model:
+          default: "kong/claude-3-7-sonnet"
+          fallback: "extremerouter/claude-3-5-sonnet"
           api_mode: chat_completions
 
         providers:
