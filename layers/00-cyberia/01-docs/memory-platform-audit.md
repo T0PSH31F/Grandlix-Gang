@@ -113,6 +113,19 @@ Repos cloned to `~/Projects/AI/Memory/` for full local review.
 
 brain-service and gno are complementary: brain-service handles ingest and RBAC; gno independently indexes the same corpus (or a subset) and provides the graph/workspace verified-answer interface. True redundancy is minimal.
 
+## gno adoption decision (2026-09-01, confirmed by owner)
+
+**Decision: adopt gno** as the retrieval/workspace/graph layer (workstream 4).
+
+Planned deployment: standalone systemd unit (`gno serve`) on luffy as an OCI container or a NixOS module wrapping its Bun binary. No Nix-flake rewrite needed — gno is a self-contained Bun runtime. It will index the same `~/Notes/PKB` corpus independently of brain-service and provide:
+- Hybrid search (BM25+vector, sqlite-vec)
+- Context capsules + verified answers with citations
+- Graph + editor workspace (for the "fun/cool" browsing UI)
+- Egress policy (local_only/lan/remote)
+- MCP server for Hermes/OpenCode integration
+
+brain-service stays as the ask/ingest/RBAC layer; gno is the query/browse/graph layer. Honcho stays as profile memory.
+
 ## Progress log
 
 - **2026-09-01 (workstream 1 + consolidation):** brain-service MCP bearer auth +
