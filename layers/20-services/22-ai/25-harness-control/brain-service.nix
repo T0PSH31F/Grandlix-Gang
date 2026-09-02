@@ -24,6 +24,7 @@ let
       llama-index-vector-stores-postgres
       llama-index-embeddings-ollama
       llama-index-llms-openai
+      llama-index-llms-ollama
 
       # Document parsing
       pymupdf # PDF
@@ -64,13 +65,25 @@ in
     llmApiBase = lib.mkOption {
       type = lib.types.str;
       default = "https://openrouter.ai/api/v1";
-      description = "OpenAI compatible base URL";
+      description = "OpenAI compatible base URL (used only when llmProvider = \"openai\")";
     };
 
     llmModel = lib.mkOption {
       type = lib.types.str;
       default = "gpt-4o-mini";
       description = "LLM model for query answering";
+    };
+
+    # Privacy-first: default to a local Ollama LLM for answer generation so
+    # the corpus never leaves the box. Set to "openai" to fall back to a
+    # hosted OpenAI-compatible endpoint.
+    llmProvider = lib.mkOption {
+      type = lib.types.enum [
+        "ollama"
+        "openai"
+      ];
+      default = "ollama";
+      description = "Answer-generation LLM provider: local ollama (private) or hosted openai-compatible";
     };
 
     embedModel = lib.mkOption {
@@ -83,6 +96,31 @@ in
       type = lib.types.int;
       default = 768;
       description = "Embedding dimension (must match model)";
+    };
+
+    # ── Database & user (hardening) ─────────────────────────────────
+    dbUser = lib.mkOption {
+      type = lib.types.str;
+      default = "brain_user";
+      description = "PostgreSQL role for brain-service (NOT the postgres superuser)";
+    };
+
+    dbName = lib.mkOption {
+      type = lib.types.str;
+      default = "brain_db";
+      description = "PostgreSQL database for brain-service";
+    };
+
+    dbHost = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1";
+      description = "PostgreSQL host";
+    };
+
+    dbPort = lib.mkOption {
+      type = lib.types.port;
+      default = 5432;
+      description = "PostgreSQL port";
     };
 
     booksDir = lib.mkOption {
@@ -138,6 +176,10 @@ in
         type = "hidden";
         description = "JSON map of agent -> {key, role} for brain-service MCP/API auth (e.g. {\"hermes\":{\"key\":\"...\",\"role\":\"writer\"}})";
       };
+      prompts."db-password" = {
+        type = "hidden";
+        description = "Password for the dedicated brain_db / brain_user PostgreSQL role";
+      };
       script = ''
                 if [ -f "$prompts/api-key" ]; then
                   API_KEY=$(cat "$prompts/api-key")
@@ -145,6 +187,14 @@ in
                   API_KEY="dummy"
                 fi
                 echo "LLM_API_KEY=$API_KEY" > "$out/env"
+
+                # DB password for the dedicated brain_user role
+                if [ -f "$prompts/db-password" ] && [ -s "$prompts/db-password" ]; then
+                  DB_PASS=$(cat "$prompts/db-password")
+                else
+                  DB_PASS="brain-dev-password"
+                fi
+                echo "DB_PASS=$DB_PASS" >> "$out/env"
 
                 # RBAC agent keys (JSON). Fall back to a deterministic local default
                 # if the prompt is unset so the service still boots in dev/CI.
@@ -162,6 +212,27 @@ in
                 fi
                 echo "BRAIN_SERVICE_API_KEYS=$AGENT_KEYS" >> "$out/env"
       '';
+    };
+
+    # ── Dedicated PostgreSQL role/db + pgvector (hardening) ──────────
+    # brain-service uses its own brain_user/brain_db role instead of the
+    # postgres superuser. Mirrors honcho.nix provisioning.
+    services.postgresql = {
+      enable = true;
+      ensureDatabases = [ cfg.dbName ];
+      ensureUsers = [
+        {
+          name = cfg.dbUser;
+          ensureDBOwnership = false; # owned via initialScript below (different name)
+          ensureClauses = {
+            login = true;
+            superuser = false;
+            createrole = false;
+            createdb = false;
+          };
+        }
+      ];
+      extensions = ps: with ps; [ pgvector ];
     };
 
     # Grant postgres access to traverse /home/t0psh31f/ for PKB books
@@ -184,10 +255,11 @@ in
       requires = [ "postgresql.service" ];
 
       environment = {
-        DB_NAME = "vectordb";
-        DB_USER = "postgres";
-        DB_HOST = "127.0.0.1";
-        DB_PORT = "5432";
+        DB_NAME = cfg.dbName;
+        DB_USER = cfg.dbUser;
+        DB_HOST = cfg.dbHost;
+        DB_PORT = toString cfg.dbPort;
+        LLM_PROVIDER = cfg.llmProvider;
         LLM_API_BASE = cfg.llmApiBase;
         LLM_MODEL = cfg.llmModel;
         OLLAMA_URL = "http://127.0.0.1:11434";
@@ -205,6 +277,17 @@ in
 
       serviceConfig = {
         ExecStart = "${pythonEnv}/bin/python ${brainScript}";
+        ExecStartPre = [
+          "+${pkgs.writeShellScript "brain-service-db-init" ''
+            set -euo pipefail
+            # Coexists with honcho's postgresql.initialScript (which owns the
+            # global initialScript); provision brain_db's vector extension +
+            # ownership idempotently here via psql as the postgres superuser.
+            ${pkgs.postgresql}/bin/psql -v ON_ERROR_STOP=1 -d postgres -c "ALTER DATABASE ${cfg.dbName} OWNER TO ${cfg.dbUser};"
+            ${pkgs.postgresql}/bin/psql -v ON_ERROR_STOP=1 -d ${cfg.dbName} -c "CREATE EXTENSION IF NOT EXISTS vector;"
+            ${pkgs.postgresql}/bin/psql -v ON_ERROR_STOP=1 -d ${cfg.dbName} -c "GRANT ALL ON SCHEMA public TO ${cfg.dbUser};"
+          ''}"
+        ];
         Restart = "on-failure";
         User = "postgres";
         EnvironmentFile = cfg.apiSecretFile;
@@ -222,10 +305,13 @@ in
         EnvironmentFile = cfg.apiSecretFile;
         Environment = [
           "BRAIN_MODE=mcp"
-          "DB_NAME=vectordb"
-          "DB_USER=postgres"
-          "DB_HOST=127.0.0.1"
-          "DB_PORT=5432"
+          "DB_NAME=${cfg.dbName}"
+          "DB_USER=${cfg.dbUser}"
+          "DB_HOST=${cfg.dbHost}"
+          "DB_PORT=${toString cfg.dbPort}"
+          "LLM_PROVIDER=${cfg.llmProvider}"
+          "LLM_API_BASE=${cfg.llmApiBase}"
+          "LLM_MODEL=${cfg.llmModel}"
           "OLLAMA_URL=http://127.0.0.1:11434"
           "EMBED_MODEL=${cfg.embedModel}"
           "EMBED_DIM=${toString cfg.embedDim}"
@@ -244,10 +330,11 @@ in
 
       environment = {
         BRAIN_MODE = "watcher";
-        DB_NAME = "vectordb";
-        DB_USER = "postgres";
-        DB_HOST = "127.0.0.1";
-        DB_PORT = "5432";
+        DB_NAME = cfg.dbName;
+        DB_USER = cfg.dbUser;
+        DB_HOST = cfg.dbHost;
+        DB_PORT = toString cfg.dbPort;
+        LLM_PROVIDER = cfg.llmProvider;
         OLLAMA_URL = "http://127.0.0.1:11434";
         EMBED_MODEL = cfg.embedModel;
         EMBED_DIM = toString cfg.embedDim;
@@ -268,10 +355,13 @@ in
     environment.systemPackages = lib.mkIf cfg.mcpEnable [
       (pkgs.writeShellScriptBin "brain-mcp" ''
         export BRAIN_MODE=mcp
-        export DB_NAME=vectordb
-        export DB_USER=postgres
-        export DB_HOST=127.0.0.1
-        export DB_PORT=5432
+        export DB_NAME=${cfg.dbName}
+        export DB_USER=${cfg.dbUser}
+        export DB_HOST=${cfg.dbHost}
+        export DB_PORT=${toString cfg.dbPort}
+        export LLM_PROVIDER=${cfg.llmProvider}
+        export LLM_API_BASE=${cfg.llmApiBase}
+        export LLM_MODEL=${cfg.llmModel}
         export OLLAMA_URL=http://127.0.0.1:11434
         export EMBED_MODEL=${cfg.embedModel}
         export EMBED_DIM=${toString cfg.embedDim}

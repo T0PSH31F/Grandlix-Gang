@@ -129,14 +129,15 @@ def _require_admin(request: Request):
     if _auth_enabled() and role != "admin":
         raise HTTPException(status_code=403, detail="Insufficient role for admin operation")
 
-DB_NAME = os.getenv("DB_NAME", "vectordb")
-DB_USER = os.getenv("DB_USER", "postgres")
+DB_NAME = os.getenv("DB_NAME", "brain_db")
+DB_USER = os.getenv("DB_USER", "brain_user")
 DB_PASS = os.getenv("DB_PASS", "")
 DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_PORT = os.getenv("DB_PORT", "5432")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "dummy")
 LLM_API_BASE = os.getenv("LLM_API_BASE", "https://openrouter.ai/api/v1")
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")  # "ollama" (local/private) or "openai" (hosted)
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
 EMBED_DIM = int(os.getenv("EMBED_DIM", "768"))
@@ -144,7 +145,12 @@ BOOKS_DIR = os.getenv("BOOKS_DIR", "")
 MANIFEST_PATH = os.getenv("MANIFEST_PATH", "/var/lib/brain-service/manifest.json")
 
 Settings.embed_model = OllamaEmbedding(model_name=EMBED_MODEL, base_url=OLLAMA_URL)
-Settings.llm = OpenAI(api_key=LLM_API_KEY, api_base=LLM_API_BASE, model=LLM_MODEL)
+if LLM_PROVIDER == "ollama":
+    from llama_index.llms.ollama import Ollama
+    ollama_model = LLM_MODEL if LLM_MODEL != "gpt-4o-mini" else "qwen2.5:7b"
+    Settings.llm = Ollama(model=ollama_model, base_url=OLLAMA_URL, request_timeout=180.0)
+else:
+    Settings.llm = OpenAI(api_key=LLM_API_KEY, api_base=LLM_API_BASE, model=LLM_MODEL)
 Settings.text_splitter = SentenceSplitter(chunk_size=1024, chunk_overlap=200)
 
 
