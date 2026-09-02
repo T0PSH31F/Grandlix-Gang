@@ -66,11 +66,13 @@ in
       };
     in
     {
-      imports = lib.optionals cfg.enable [
+      imports = [
+        inputs.noctalia.homeModules.default
+      ]
+      ++ lib.optionals cfg.enable [
         ./ipc.nix
         ./mutable-includes.nix
         ./hypridle.nix
-        inputs.noctalia.homeModules.default
       ];
 
       config = lib.mkIf cfg.enable {

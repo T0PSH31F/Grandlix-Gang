@@ -359,11 +359,9 @@ let
 
 in
 {
-  options.layers.layer-20.services.todo-system = {
-    enable = lib.mkEnableOption "Rofi + Hermes To-Do system" // {
-      default = true;
-    };
-  };
+  # Option definition moved to layers/20-services/22-ai/29-todo/default.nix
+  # so it is always available (including headless servers) without importing
+  # 40-desktop.
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [

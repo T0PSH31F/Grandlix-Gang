@@ -31,6 +31,17 @@ let
       deploy.targetHost = "root@100.80.146.120"; # Tailscale IP
     };
 
+    # Cloud control-plane + gno retrieval/graph service.
+    # Memory services (brain-service, Honcho) stay on luffy for privacy.
+    sanji = {
+      tags = [
+        "server"
+        "homelab"
+      ];
+      # Set to actual Tailscale IP once provisioned:
+      deploy.targetHost = "root@47.254.90.69"; # Alibaba VPS (US West-1)
+    };
+
   };
 in
 {
@@ -159,5 +170,12 @@ in
       ];
     };
 
+    sanji = {
+      machine.tags = machinesInventory.sanji.tags;
+      imports = [
+        ./machines/sanji/default.nix
+        ./server-layers.nix # headless: all layers EXCEPT 13-users (no HM profile)
+      ];
+    };
   };
 }

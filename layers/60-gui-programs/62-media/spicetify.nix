@@ -22,8 +22,10 @@ in
   home =
     { config, osConfig, ... }:
     {
-      imports = lib.optionals osConfig.layers.layer-60.gui.spicetify.enable [
+      imports = [
         inputs.spicetify-nix.homeManagerModules.default
+      ]
+      ++ lib.optionals osConfig.layers.layer-60.gui.spicetify.enable [
       ];
 
       config = lib.mkIf osConfig.layers.layer-60.gui.spicetify.enable {
