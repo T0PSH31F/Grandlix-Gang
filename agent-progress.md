@@ -150,6 +150,13 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Fix brain-service placement — it's enabled on z0r0 but Ollama (its embedding backend) is disabled there (ollama.enable=mkForce false), so ingestion fails on z0r0. Move/verify on luffy. Then workstreams: local LLM answering, DB user hardening, dashboard/gno evaluation.
 
+- **Date / Agent:** 2026-09-01 / antigravity
+- **Feature:** brain-service-llm-privacy-db-hardening
+- **Work done:** (1) Local/private answer generation — added `llmProvider` (ollama|openai, default ollama) + `llama-index-llms-ollama` dep; brain_server.py builds a local Ollama LLM when provider=ollama. (2) DB hardening — dedicated `brain_user` (non-superuser, login) + `brain_db` with pgvector, provisioned via ExecStartPre psql (coexists with honcho's initialScript); `db-password` clan var. Also archived 5 oldest group-* features to feature_list_archive.json to stay under the 300-line cap.
+- **Verification:** `llmProvider=ollama`, `dbUser=brain_user`, `dbName=brain_db`; brain_server.py compiles; z0r0+luffy toplevels eval clean.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Deploy to luffy (offline) + runtime-verify: pull a local chat model (qwen2.5:7b or similar) in Ollama, run a query to confirm local answering; set brain_user role password via sops. Then workstreams 4 (dashboard/gno), 5 (restic restore), 6 (Oracle/Alibaba).
+
 
 
 

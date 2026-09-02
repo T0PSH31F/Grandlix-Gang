@@ -1,6 +1,6 @@
 {
   "project": "NFP",
-  "description": "NixOS fleet flake — dendritic layers, clan-core, impermanence, AI agent fleet",
+  "description": "NixOS fleet flake \u2014 dendritic layers, clan-core, impermanence, AI agent fleet",
   "states": {
     "untried": "No verified attempt yet.",
     "in-progress": "Being actively worked; not yet verified.",
@@ -9,112 +9,9 @@
   },
   "features": [
     {
-      "id": "group-a-session-path-propagation",
-      "priority": 1,
-      "name": "Group A — Session PATH propagation (fixes agent-detection across the board)",
-      "behavior": "dbus-update-activation-environment --systemd --all and systemctl --user import-environment PATH present in Hyprland and Niri startup config",
-      "verification": [
-        "grep -q 'dbus-update-activation-environment' layers/40-desktop/41-hyprland/default.nix",
-        "grep -q 'dbus-update-activation-environment' layers/40-desktop/42-niri/default.nix"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -q 'dbus-update-activation-environment' layers/40-desktop/41-hyprland/default.nix && grep -q 'dbus-update-activation-environment' layers/40-desktop/42-niri/default.nix",
-          "output": "Verified dbus-update-activation-environment --systemd --all and systemctl --user import-environment PATH in Hyprland and Niri startup configs.",
-          "at": "2026-08-28T10:00:43Z"
-        }
-      ]
-    },
-    {
-      "id": "group-b-orchestrator-fhs-wrapping",
-      "priority": 2,
-      "name": "Group B — buildFHSEnv wrapping for orchestrators that still fail",
-      "behavior": "Wrap AionUI / mission-control / ExtremeRouter or inject PATH shims ensuring CLI agents (Claude Code, Hermes, OpenCode) are detected and execute end-to-end",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.systemd.services.aionui.serviceConfig.ExecStart",
-        "nix build .#nixosConfigurations.z0r0.config.system.build.toplevel --no-link"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.systemd.services.aionui.serviceConfig.ExecStart",
-          "output": "Updated AionUI service PATH to include ~/.local/bin and standard FHS binary search locations.",
-          "at": "2026-08-28T10:01:35Z"
-        }
-      ]
-    },
-    {
-      "id": "group-c-extremerouter-mitm-ca-trust",
-      "priority": 3,
-      "name": "Group C — MITM proxy CA trust (ExtremeRouter)",
-      "behavior": "ExtremeRouter generated root CA certificate registered in security.pki.certificateFiles",
-      "verification": [
-        "nix eval .#nixosConfigurations.z0r0.config.security.pki.certificateFiles"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.security.pki.certificateFiles",
-          "output": "Wired ExtremeRouter root CA certificate into security.pki.certificateFiles bundle.",
-          "at": "2026-08-28T10:01:57Z"
-        }
-      ]
-    },
-    {
-      "id": "group-d-pxpipe-impermanence-docs",
-      "priority": 4,
-      "name": "Group D — pxpipe explicitly outside Nix",
-      "behavior": "pipx/uv available, user pipx and uv dirs added to impermanence persistence, documented as intentionally non-Nix",
-      "verification": [
-        "grep -q 'pipx' layers/10-system/15-filesystem/impermanence.nix",
-        "test -f layers/00-cyberia/01-docs/pxpipe-installation.md"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "grep -q '\\.local' layers/10-system/15-filesystem/impermanence.nix && test -f layers/00-cyberia/01-docs/pxpipe-installation.md",
-          "output": "Created layers/00-cyberia/01-docs/pxpipe-installation.md and verified user .local impermanence persistence.",
-          "at": "2026-08-28T10:02:47Z"
-        }
-      ]
-    },
-    {
-      "id": "group-e-profiles-machines-audit",
-      "priority": 5,
-      "name": "Group E — Profiles/machines regression audit",
-      "behavior": "Git log/diff audit completed for dendritic migration removed toggles in machines/*/default.nix; all toggles restored to tag files or verified",
-      "verification": [
-        "nix build .#checks.x86_64-linux.dendritic-structure-test --no-link"
-      ],
-      "state": "passing",
-      "claimedBy": "antigravity",
-      "blockedReason": null,
-      "evidence": [
-        {
-          "sha": "HEAD",
-          "command": "nix build .#checks.x86_64-linux.dendritic-structure-test --no-link",
-          "output": "Verified machines/*/default.nix files contain tag-driven structure and dendritic-structure-test check passed.",
-          "at": "2026-08-28T10:02:29Z"
-        }
-      ]
-    },
-    {
       "id": "public-docs-readme-overhaul",
       "priority": 6,
-      "name": "Task 1 — README.md overhaul for public portfolio",
+      "name": "Task 1 \u2014 README.md overhaul for public portfolio",
       "behavior": "README.md rewritten for external audience with intro, architecture table, init.sh quickstart, and clean paths",
       "verification": [
         "test -f README.md",
@@ -135,7 +32,7 @@
     {
       "id": "public-docs-consistency-pass",
       "priority": 7,
-      "name": "Task 2 — Docs directory consistency pass",
+      "name": "Task 2 \u2014 Docs directory consistency pass",
       "behavior": "Proofread all files in layers/00-cyberia/01-docs/ for accuracy and consistency against code",
       "verification": [
         "ls layers/00-cyberia/01-docs/*.md"
@@ -155,7 +52,7 @@
     {
       "id": "public-docs-secret-pii-sweep",
       "priority": 8,
-      "name": "Task 3 — Secret/PII sanity sweep",
+      "name": "Task 3 \u2014 Secret/PII sanity sweep",
       "behavior": "Repo and git history scanned for unencrypted secrets or plaintext credentials",
       "verification": [
         "! git log --all --full-history -- '*.env' | grep -q 'commit'"
@@ -175,7 +72,7 @@
     {
       "id": "public-docs-agents-alignment",
       "priority": 9,
-      "name": "Task 4 — Consistency with AGENTS.md",
+      "name": "Task 4 \u2014 Consistency with AGENTS.md",
       "behavior": "AGENTS.md and public docs aligned on workflow rules",
       "verification": [
         "grep -q 'feature_list.json' AGENTS.md"
@@ -217,7 +114,7 @@
     {
       "id": "kong-extremerouter-enumeration-fix",
       "priority": 11,
-      "name": "Kong gateway → ExtremeRouter model enumeration & chat routing fix",
+      "name": "Kong gateway \u2192 ExtremeRouter model enumeration & chat routing fix",
       "behavior": "Kong proxy (8090) forwards ExtremeRouter's remote API key upstream and serves /v1/models and /v1/chat/completions to agents (Hermes, OpenCode) authenticated via per-consumer key-auth keys.",
       "verification": [
         "curl -s http://127.0.0.1:8090/v1/models -H 'apikey: <kong_key_hermes>' | jq -e '.data | length > 0'",
@@ -230,7 +127,7 @@
         {
           "sha": "HEAD",
           "command": "curl -s http://127.0.0.1:8090/v1/models -H \"apikey: $(sops -d layers/00-cyberia/03-treasure/secrets/external_services.yaml | grep '^kong_key_hermes' | awk '{print $2}')\" | python3 -c 'import sys,json; print(len(json.load(sys.stdin)[\"data\"]))'",
-          "output": "538 — Kong proxy now enumerates 538 ExtremeRouter models over HTTP (was 426 https-only + 401 no-upstream-auth).",
+          "output": "538 \u2014 Kong proxy now enumerates 538 ExtremeRouter models over HTTP (was 426 https-only + 401 no-upstream-auth).",
           "at": "2026-09-01T16:06:02Z"
         }
       ]
@@ -252,7 +149,7 @@
         {
           "sha": "HEAD",
           "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.chromadb.enable && nix eval .#nixosConfigurations.luffy.config.services.ai-services.chromadb.enable && nix eval .#nixosConfigurations.luffy.config.services.ai-services.qdrant.enable && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.qdrant.enable",
-          "output": "false / false / false / false — all four evaluations return false. Modules (chromadb.nix, qdrant.nix) retained. Stale qdrant=6333 reverseProxy route removed from luffy. Both z0r0+luffy toplevels eval clean.",
+          "output": "false / false / false / false \u2014 all four evaluations return false. Modules (chromadb.nix, qdrant.nix) retained. Stale qdrant=6333 reverseProxy route removed from luffy. Both z0r0+luffy toplevels eval clean.",
           "at": "2026-09-01T17:00:00Z"
         }
       ]
@@ -276,6 +173,28 @@
           "command": "for m in z0r0 luffy; do nix eval .#nixosConfigurations.$m.config.layers.layer-20.services.everos.enable; nix eval .#nixosConfigurations.$m.config.layers.layer-20.services.context-forge.enable; nix eval .#nixosConfigurations.$m.config.layers.layer-20.services.memory-vault.enable; done",
           "output": "everos=false, context-forge=false, memory-vault=true on both z0r0 and luffy. EverOS/context-forge enable removed from ai-agent/ai-server tags and memory-governance dependency block. Modules retained; both toplevels eval clean.",
           "at": "2026-09-01T20:40:00Z"
+        }
+      ]
+    },
+    {
+      "id": "brain-service-llm-privacy-db-hardening",
+      "priority": 14,
+      "name": "brain-service local LLM answering (privacy) + dedicated DB role (hardening)",
+      "behavior": "brain-service answer-generation uses local Ollama (llmProvider=ollama default); connects as brain_user/brain_db (non-superuser) with pgvector extension provisioned in brain_db.",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.llmProvider | grep -q ollama",
+        "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbName | grep -q brain_db",
+        "python3 -m py_compile layers/20-services/22-ai/25-harness-control/brain_server.py"
+      ],
+      "state": "passing",
+      "claimedBy": "antigravity",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "639ab9ed",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.llmProvider && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbUser && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbName && python3 -m py_compile layers/20-services/22-ai/25-harness-control/brain_server.py && nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath && nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath",
+          "output": "llmProvider=ollama, dbUser=brain_user, dbName=brain_db; brain_server.py compiles; z0r0 + luffy toplevels eval clean. Runtime deployment/verify pending (luffy offline; local chat model must be pulled).",
+          "at": "2026-09-01T21:30:00Z"
         }
       ]
     }
