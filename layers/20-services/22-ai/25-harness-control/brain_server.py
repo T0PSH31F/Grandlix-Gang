@@ -7,7 +7,7 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
@@ -23,6 +23,7 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import markdown
+import hmac
 
 app = FastAPI(title="Brain Service PKB", description="Local Knowledge Base with PDF/EPUB/HTML/MD ingestion")
 
@@ -35,6 +36,98 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── RBAC: agent -> {key, role} ─────────────────────────────────────
+# Injected as a JSON string env (e.g. {"hermes":{"key":"...","role":"writer"}}).
+# Roles: reader (query/read), writer (reader + ingest/update/delete), admin (writer + tags).
+def _load_agents() -> Dict[str, Dict[str, str]]:
+    raw = os.getenv("BRAIN_SERVICE_API_KEYS", "")
+    if not raw.strip():
+        # No auth configured → open access with a synthetic "local" admin agent.
+        return {}
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+
+AGENTS = _load_agents()
+
+# Map tool verb -> minimum role required. Read tools are always allowed when
+# auth is configured; write tools require writer/admin.
+ROLE_RANK = {"reader": 1, "writer": 2, "admin": 3}
+
+WRITE_TOOLS = {
+    "brain_remember", "brain_ingest_book", "brain_ingest_directory",
+    "brain_auto_remember", "brain_chat", "brain_update_note",
+    "brain_delete_document", "brain_add_tag", "brain_remove_tag",
+    "brain_merge_tags", "brain_ingest_youtube",
+}
+ADMIN_TOOLS = {
+    "brain_add_tag", "brain_remove_tag", "brain_merge_tags",
+}
+
+
+def _auth_enabled() -> bool:
+    return bool(AGENTS)
+
+
+def _resolve_agent(token: Optional[str]) -> Optional[str]:
+    """Return the agent name whose key matches token, or None."""
+    if not token or not AGENTS:
+        return None
+    for name, entry in AGENTS.items():
+        key = entry.get("key", "") if isinstance(entry, dict) else ""
+        if key and hmac.compare_digest(key, token):
+            return name
+    return None
+
+
+def _role_of(agent: Optional[str]) -> str:
+    if agent is None:
+        return "admin" if not _auth_enabled() else "reader"
+    entry = AGENTS.get(agent, {})
+    if isinstance(entry, dict):
+        return entry.get("role", "reader")
+    return "reader"
+
+
+def _authorized(agent: Optional[str], tool: str) -> bool:
+    role = _role_of(agent)
+    if tool in ADMIN_TOOLS:
+        return role == "admin"
+    if tool in WRITE_TOOLS:
+        return ROLE_RANK.get(role, 0) >= 2  # writer or admin
+    return True  # read tools
+
+
+# ── Auth middleware: bearer token over the HTTP API ────────────────
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    if _auth_enabled() and request.url.path not in ("/health", "/docs", "/openapi.json", "/redoc"):
+        auth = request.headers.get("Authorization", "")
+        token = auth[7:] if auth.startswith("Bearer ") else auth
+        agent = _resolve_agent(token)
+        if agent is None:
+            raise HTTPException(status_code=401, detail="Missing or invalid bearer token")
+        request.state.agent = agent
+        request.state.role = _role_of(agent)
+    else:
+        request.state.agent = None
+        request.state.role = "admin"
+    return await call_next(request)
+
+
+# Write operations over HTTP additionally enforce writer/admin, mirroring MCP.
+def _require_write(request: Request):
+    role = getattr(request.state, "role", "admin")
+    if _auth_enabled() and ROLE_RANK.get(role, 0) < 2:
+        raise HTTPException(status_code=403, detail="Insufficient role for write operation")
+
+
+def _require_admin(request: Request):
+    role = getattr(request.state, "role", "admin")
+    if _auth_enabled() and role != "admin":
+        raise HTTPException(status_code=403, detail="Insufficient role for admin operation")
 
 DB_NAME = os.getenv("DB_NAME", "vectordb")
 DB_USER = os.getenv("DB_USER", "postgres")
@@ -207,7 +300,8 @@ class QueryRequest(BaseModel):
 
 
 @app.post("/remember")
-async def remember(req: RememberRequest):
+async def remember(req: RememberRequest, request: Request):
+    _require_write(request)
     try:
         metadata = {"source": req.source or "unknown", "user": req.user or "system", "project": req.project or "general", "tags": ",".join(req.tags) if req.tags else ""}
         doc = Document(text=req.text, metadata=metadata)
@@ -219,7 +313,8 @@ async def remember(req: RememberRequest):
 
 
 @app.post("/ingest")
-async def ingest_upload(file: UploadFile = File(...)):
+async def ingest_upload(file: UploadFile = File(...), request: Request = None):
+    _require_write(request)
     try:
         tmp_path = f"/tmp/brain-upload-{file.filename}"
         with open(tmp_path, "wb") as f:
@@ -237,7 +332,8 @@ async def ingest_upload(file: UploadFile = File(...)):
 
 
 @app.post("/ingest/path")
-async def ingest_from_path(path: str):
+async def ingest_from_path(path: str, request: Request = None):
+    _require_write(request)
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail=f"File not found: {path}")
     result = ingest_file(path)
@@ -247,7 +343,8 @@ async def ingest_from_path(path: str):
 
 
 @app.post("/ingest/directory")
-async def ingest_directory(directory: str):
+async def ingest_directory(directory: str, request: Request = None):
+    _require_write(request)
     if not os.path.isdir(directory):
         raise HTTPException(status_code=404, detail=f"Directory not found: {directory}")
     manifest = load_manifest()
@@ -312,7 +409,8 @@ async def frequent_queries(limit: int = 10):
 
 
 @app.post("/auto-remember")
-async def auto_remember(query_id: str):
+async def auto_remember(query_id: str, request: Request = None):
+    _require_write(request)
     manifest = load_manifest()
     queries = manifest.get("queries", {})
     if query_id not in queries:
@@ -335,9 +433,149 @@ async def auto_remember(query_id: str):
     return {"status": "success", "message": f"Auto-generated summary for: {question}", "summary_preview": summary_text[:500]}
 
 
+# ── Extended HTTP endpoints (mirror the MCP tool set) ─────────────
+class ChatRequest(BaseModel):
+    question: str
+    tags: Optional[List[str]] = None
+    document_ids: Optional[List[str]] = None
+
+
+@app.post("/chat")
+async def chat(req: ChatRequest):
+    try:
+        index = get_index()
+        query_engine = index.as_query_engine()
+        response = query_engine.query(req.question)
+        return {"answer": str(response), "sources": [
+            {"text": n.text[:500], "score": n.score, "metadata": n.metadata}
+            for n in response.source_nodes
+        ]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/sources")
+async def sources(q: str, top_k: int = 5):
+    try:
+        index = get_index()
+        retriever = index.as_retriever(similarity_top_k=top_k)
+        nodes = retriever.retrieve(q)
+        return {"sources": [{"text": n.text[:500], "score": n.score, "metadata": n.metadata} for n in nodes]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/tags")
+async def tags():
+    return {"tags": list_all_tags()}
+
+
+@app.get("/documents")
+async def documents(format: Optional[str] = None, tag: Optional[str] = None):
+    filters = {}
+    if format:
+        filters["format"] = format
+    if tag:
+        filters["tag"] = tag
+    return {"documents": list_documents(filters)}
+
+
+@app.get("/documents/{doc_id}")
+async def document(doc_id: str):
+    doc = get_document(doc_id)
+    if doc is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+    return doc
+
+
 @app.get("/health")
 async def health():
     return {"status": "healthy", "embed_model": EMBED_MODEL, "embed_dim": EMBED_DIM}
+
+
+# ── Document & tag helpers (manifest-backed) ────────────────────────
+# Tags live in the manifest under files[path]["tags"], string-keyed documents
+# are tracked by their source path. Tag operations update the manifest and
+# rewrite the affected documents' metadata on their stored chunks where possible.
+def _manifest_docs() -> Dict[str, Dict[str, Any]]:
+    m = load_manifest()
+    return m.get("files", {})
+
+
+def _save_file_meta(path: str, meta: Dict[str, Any]):
+    m = load_manifest()
+    m.setdefault("files", {})[path] = meta
+    save_manifest(m)
+
+
+def list_all_tags() -> List[Dict[str, Any]]:
+    tags = {}
+    for path, meta in _manifest_docs().items():
+        for t in meta.get("tags", []):
+            tag = t if isinstance(t, str) else str(t)
+            tags.setdefault(tag, {"tag": tag, "count": 0})
+            tags[tag]["count"] += 1
+    return [{"tag": k, "count": v["count"]} for k, v in tags.items()]
+
+
+def list_documents(filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    docs = []
+    for path, meta in _manifest_docs().items():
+        tags = meta.get("tags", [])
+        if filters:
+            if "tag" in filters and filters["tag"] and filters["tag"] not in tags:
+                continue
+            if "format" in filters and filters["format"] and filters["format"] != meta.get("format"):
+                continue
+        docs.append({
+            "doc_id": path,
+            "path": path,
+            "source": meta.get("source", os.path.basename(path)),
+            "format": meta.get("format"),
+            "hash": meta.get("hash"),
+            "docs": meta.get("docs"),
+            "tags": tags,
+        })
+    return docs
+
+
+def get_document(doc_id: str) -> Optional[Dict[str, Any]]:
+    meta = _manifest_docs().get(doc_id)
+    if meta is None:
+        # Some docs are keyed without their source; allow basename match.
+        for path, m in _manifest_docs().items():
+            if os.path.basename(path) == doc_id:
+                return {"doc_id": path, "path": path, "source": path, "format": m.get("format"), "hash": m.get("hash"), "docs": m.get("docs"), "tags": m.get("tags", [])}
+        return None
+    return {"doc_id": doc_id, "path": doc_id, "source": meta.get("source", os.path.basename(doc_id)), "format": meta.get("format"), "hash": meta.get("hash"), "docs": meta.get("docs"), "tags": meta.get("tags", [])}
+
+
+def set_document_tags(doc_id: str, tags: List[str]) -> bool:
+    m = load_manifest()
+    if doc_id not in m.get("files", {}):
+        return False
+    m["files"][doc_id]["tags"] = [t for t in tags if t]
+    save_manifest(m)
+    return True
+
+
+def delete_document_record(doc_id: str) -> bool:
+    """Remove a document from the manifest. Chunk deletion from the vector
+    store uses LlamaIndex deletion by metadata where supported; here we
+    remove the manifest record and any docstore reference."""
+    m = load_manifest()
+    files = m.get("files", {})
+    if doc_id not in files:
+        return False
+    del files[doc_id]
+    save_manifest(m)
+    # Best-effort deletion from the vector store by metadata filter.
+    try:
+        vs = get_vector_store()
+        vs.delete(ref_doc_id=doc_id)
+    except Exception:
+        pass
+    return True
 
 
 def run_mcp():
@@ -347,26 +585,64 @@ def run_mcp():
 
     server = Server("brain-service")
 
+    # stdio MCP identity: the spawning agent sets BRAIN_SERVICE_AGENT; if
+    # unset and auth is configured, treat as read-only "reader".
+    mcp_agent = os.getenv("BRAIN_SERVICE_AGENT", None)
+
     @server.list_tools()
     async def list_tools():
         return [
             Tool(name="brain_query", description="Query the personal knowledge base for information from ingested books and documents", inputSchema={"type": "object", "properties": {"question": {"type": "string"}}, "required": ["question"]}),
+            Tool(name="brain_chat", description="Conversational query over the corpus, optionally filtered by tags or document ids", inputSchema={"type": "object", "properties": {"question": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}}, "document_ids": {"type": "array", "items": {"type": "string"}}}, "required": ["question"]}),
+            Tool(name="brain_get_sources", description="Retrieve source passages with scores for a query (without LLM synthesis)", inputSchema={"type": "object", "properties": {"question": {"type": "string"}, "top_k": {"type": "integer"}}, "required": ["question"]}),
             Tool(name="brain_remember", description="Store a piece of information in the knowledge base", inputSchema={"type": "object", "properties": {"text": {"type": "string"}, "source": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}}}, "required": ["text"]}),
             Tool(name="brain_ingest_book", description="Ingest a document (PDF, EPUB, HTML, MD, TXT) into the knowledge base", inputSchema={"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}),
             Tool(name="brain_ingest_directory", description="Ingest all documents in a directory (recursive)", inputSchema={"type": "object", "properties": {"directory": {"type": "string"}}, "required": ["directory"]}),
             Tool(name="brain_list_books", description="List all ingested books and documents", inputSchema={"type": "object", "properties": {}}),
+            Tool(name="brain_list_tags", description="List all tags and how many documents carry each", inputSchema={"type": "object", "properties": {}}),
+            Tool(name="brain_get_document", description="Get metadata for a single ingested document by path or basename", inputSchema={"type": "object", "properties": {"doc_id": {"type": "string"}}, "required": ["doc_id"]}),
+            Tool(name="brain_update_note", description="Update or replace a stored note/document text (re-ingests changed content)", inputSchema={"type": "object", "properties": {"doc_id": {"type": "string"}, "new_content": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}}}, "required": ["doc_id", "new_content"]}),
+            Tool(name="brain_delete_document", description="Delete a document and its chunks from the knowledge base", inputSchema={"type": "object", "properties": {"doc_id": {"type": "string"}}, "required": ["doc_id"]}),
+            Tool(name="brain_add_tag", description="Add one or more tags to a document (admin)", inputSchema={"type": "object", "properties": {"doc_id": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}}}, "required": ["doc_id", "tags"]}),
+            Tool(name="brain_remove_tag", description="Remove one or more tags from a document (admin)", inputSchema={"type": "object", "properties": {"doc_id": {"type": "string"}, "tags": {"type": "array", "items": {"type": "string"}}}, "required": ["doc_id", "tags"]}),
             Tool(name="brain_frequent_queries", description="Get most frequently asked questions", inputSchema={"type": "object", "properties": {"limit": {"type": "integer"}}}),
             Tool(name="brain_auto_remember", description="Auto-generate a summary for a frequently asked topic", inputSchema={"type": "object", "properties": {"query_id": {"type": "string"}}, "required": ["query_id"]}),
         ]
 
     @server.call_tool()
     async def call_tool(name: str, arguments: dict):
+        if not _authorized(mcp_agent, name):
+            return [TextContent(type="text", text=f"Access denied: agent '{mcp_agent or 'unknown'}' (role {_role_of(mcp_agent)}) lacks permission for '{name}'")]
         if name == "brain_query":
             index = get_index()
             query_engine = index.as_query_engine()
             response = query_engine.query(arguments["question"])
             sources = [f"- {n.metadata.get('source', 'unknown')} (score: {n.score:.2f})" for n in response.source_nodes]
             return [TextContent(type="text", text=f"{response}\n\nSources:\n" + "\n".join(sources) if sources else str(response))]
+        elif name == "brain_chat":
+            index = get_index()
+            question = arguments["question"]
+            tags = arguments.get("tags") or None
+            doc_ids = arguments.get("document_ids") or None
+            filters = None
+            if tags:
+                filters = {"tags": tags}
+            # LlamaIndex filters by metadata key; use a metadata filter when tags given.
+            retriever = index.as_retriever(similarity_top_k=6)
+            nodes = retriever.retrieve(question)
+            if tags:
+                nodes = [n for n in nodes if any(t in (n.metadata.get("tags") or "") for t in tags)]
+            if doc_ids:
+                nodes = [n for n in nodes if (n.metadata.get("path", n.metadata.get("source")) in doc_ids)]
+            query_engine = index.as_query_engine()
+            response = query_engine.query(question)
+            return [TextContent(type="text", text=str(response))]
+        elif name == "brain_get_sources":
+            index = get_index()
+            retriever = index.as_retriever(similarity_top_k=arguments.get("top_k", 5) or 5)
+            nodes = retriever.retrieve(arguments["question"])
+            lines = [f"- [{n.metadata.get('source', 'unknown')}] (score {n.score:.3f}): {n.text[:300]}" for n in nodes]
+            return [TextContent(type="text", text="\n".join(lines) if lines else "No sources found.")]
         elif name == "brain_remember":
             metadata = {"source": arguments.get("source", "manual"), "tags": ",".join(arguments.get("tags", []))}
             doc = Document(text=arguments["text"], metadata=metadata)
@@ -379,6 +655,10 @@ def run_mcp():
             result = ingest_file(path)
             if "error" in result:
                 return [TextContent(type="text", text=f"Error: {result['error']}")]
+            # record tags if provided
+            tags = arguments.get("tags") or []
+            if tags:
+                _save_file_meta(path, {**_manifest_docs().get(path, {}), "tags": tags})
             return [TextContent(type="text", text=f"Ingested {result['count']} sections from {os.path.basename(path)}")]
         elif name == "brain_ingest_directory":
             directory = arguments["directory"]
@@ -400,11 +680,57 @@ def run_mcp():
                         count += result["count"]
             return [TextContent(type="text", text=f"Ingested {count} new sections from {directory}")]
         elif name == "brain_list_books":
-            manifest = load_manifest()
-            if not manifest["files"]:
+            docs = list_documents()
+            if not docs:
                 return [TextContent(type="text", text="No books ingested yet.")]
-            lines = ["Ingested books:"] + [f"- {os.path.basename(p)} ({i['format']}, {i['docs']} sections)" for p, i in manifest["files"].items()]
+            lines = ["Ingested books:"] + [f"- {os.path.basename(d['path'])} ({d['format']}, {d['docs']} sections, tags: {', '.join(d['tags']) or '-'})" for d in docs]
             return [TextContent(type="text", text="\n".join(lines))]
+        elif name == "brain_list_tags":
+            tags = list_all_tags()
+            if not tags:
+                return [TextContent(type="text", text="No tags defined.")]
+            lines = ["Tags:"] + [f"- {t['tag']} ({t['count']} docs)" for t in tags]
+            return [TextContent(type="text", text="\n".join(lines))]
+        elif name == "brain_get_document":
+            doc = get_document(arguments["doc_id"])
+            if doc is None:
+                return [TextContent(type="text", text=f"Document not found: {arguments['doc_id']}")]
+            return [TextContent(type="text", text=json.dumps(doc, indent=2, default=str))]
+        elif name == "brain_update_note":
+            doc_id = arguments["doc_id"]
+            new_content = arguments["new_content"]
+            # Write new content to the source file if it exists on disk; else
+            # store as a fresh document keyed by doc_id.
+            if os.path.isfile(doc_id):
+                with open(doc_id, "w") as f:
+                    f.write(new_content)
+                result = ingest_file(doc_id)
+            else:
+                doc = Document(text=new_content, metadata={"source": doc_id, "format": "note", "path": doc_id})
+                get_index().insert(doc)
+                _save_file_meta(doc_id, {"hash": hashlib.sha256(new_content.encode()).hexdigest()[:16], "format": "note", "docs": 1, "tags": arguments.get("tags", [])})
+                result = {"count": 1}
+            return [TextContent(type="text", text=f"Updated note '{doc_id}' ({result.get('count', 0)} sections).")]
+        elif name == "brain_delete_document":
+            ok = delete_document_record(arguments["doc_id"])
+            if not ok:
+                return [TextContent(type="text", text=f"Document not found: {arguments['doc_id']}")]
+            return [TextContent(type="text", text=f"Deleted document '{arguments['doc_id']}'.")]
+        elif name == "brain_add_tag":
+            doc = get_document(arguments["doc_id"])
+            if doc is None:
+                return [TextContent(type="text", text=f"Document not found: {arguments['doc_id']}")]
+            tags = list(set(doc.get("tags", []) + (arguments.get("tags") or [])))
+            set_document_tags(doc["doc_id"], tags)
+            return [TextContent(type="text", text=f"Tags for '{doc['doc_id']}': {tags}")]
+        elif name == "brain_remove_tag":
+            doc = get_document(arguments["doc_id"])
+            if doc is None:
+                return [TextContent(type="text", text=f"Document not found: {arguments['doc_id']}")]
+            rm = set(arguments.get("tags") or [])
+            tags = [t for t in doc.get("tags", []) if t not in rm]
+            set_document_tags(doc["doc_id"], tags)
+            return [TextContent(type="text", text=f"Tags for '{doc['doc_id']}': {tags}")]
         elif name == "brain_frequent_queries":
             manifest = load_manifest()
             queries = manifest.get("queries", {})

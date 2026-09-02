@@ -102,6 +102,25 @@ in
       default = config.clan.core.vars.generators.brain-service.files."env".path;
       description = "Path to the environment file with API keys.";
     };
+
+    # ── MCP/API authentication & RBAC ───────────────────────────────
+    # Agent -> role map. API keys are injected via BRAIN_SERVICE_API_KEYS env
+    # (rendered by the generator below); roles gate tool access.
+    agents = lib.mkOption {
+      type = lib.types.attrsOf (
+        lib.types.enum [
+          "reader"
+          "writer"
+          "admin"
+        ]
+      );
+      default = {
+        hermes = "writer";
+        polyfloor = "writer";
+        everos = "reader";
+      };
+      description = "Agent names mapped to RBAC roles (reader/writer/admin).";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -115,13 +134,33 @@ in
         type = "hidden";
         description = "OpenRouter/OpenAI API key for Brain Service";
       };
+      prompts."mcp-api-keys" = {
+        type = "hidden";
+        description = "JSON map of agent -> {key, role} for brain-service MCP/API auth (e.g. {\"hermes\":{\"key\":\"...\",\"role\":\"writer\"}})";
+      };
       script = ''
-        if [ -f "$prompts/api-key" ]; then
-          API_KEY=$(cat "$prompts/api-key")
-        else
-          API_KEY="dummy"
-        fi
-        echo "LLM_API_KEY=$API_KEY" > "$out/env"
+                if [ -f "$prompts/api-key" ]; then
+                  API_KEY=$(cat "$prompts/api-key")
+                else
+                  API_KEY="dummy"
+                fi
+                echo "LLM_API_KEY=$API_KEY" > "$out/env"
+
+                # RBAC agent keys (JSON). Fall back to a deterministic local default
+                # if the prompt is unset so the service still boots in dev/CI.
+                if [ -f "$prompts/mcp-api-keys" ] && [ -s "$prompts/mcp-api-keys" ]; then
+                  AGENT_KEYS=$(cat "$prompts/mcp-api-keys")
+                else
+                  AGENT_KEYS=$(cat <<JSON
+                  {
+                    "hermes": {"key": "local-dev-hermes", "role": "writer"},
+                    "polyfloor": {"key": "local-dev-polyfloor", "role": "writer"},
+                    "everos": {"key": "local-dev-everos", "role": "reader"}
+                  }
+        JSON
+                  )
+                fi
+                echo "BRAIN_SERVICE_API_KEYS=$AGENT_KEYS" >> "$out/env"
       '';
     };
 

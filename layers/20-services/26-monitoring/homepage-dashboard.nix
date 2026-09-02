@@ -112,11 +112,9 @@ let
     # luffy — ai
     ollama = 11434;
     openWebui = 8088;
-    chromadb = 8004;
     jan = 1337;
     maxkb = 32784;
     simStudio = 32790;
-    qdrant = 6333;
     postgres = 5432;
 
     # luffy — infra
@@ -262,8 +260,6 @@ let
     "AI / Agents" = [
       (lSrv "Ollama" "ollama" "ollama.png" "LLM Inference Server")
       (lSrv "Open WebUI" "openWebui" "open-webui.png" "Chat Frontend")
-      (lSrv "ChromaDB" "chromadb" "si-chromadb" "Vector Database")
-      (lSrv "Qdrant" "qdrant" "mdi-database-search" "Vector Search Engine")
       (lSrv "PostgreSQL" "postgres" "si-postgresql" "PG + pgvector + lantern")
       (lSrv "MaxKB" "maxkb" "mdi-book-search" "Knowledge Base")
       (lSrv "Jan" "jan" "mdi-desktop-tower-monitor" "Local AI Desktop")

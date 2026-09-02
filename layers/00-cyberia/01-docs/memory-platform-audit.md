@@ -75,6 +75,27 @@ Both `z0r0` and `luffy` carry the `ai-server` and `ai-agent` tags (`clan.nix` in
    Oracle/Alibaba host definition or aarch64 image is present. Alibaba ECS is future work.
 10. **EverMe + Raven**: not present; future additions.
 
+## Memory-tool vetting (verified by reading the repos, 2026-09-01)
+
+`web_search` is currently broken (invalid harness search-key), so these were read
+directly via `git clone` of the upstream repos.
+
+- **Our `everos.nix` is NOT EverOS.** It is a ~200-line FastAPI stub that does
+  naive substring grep over a Markdown vault into a JSON index (0 embedding/pgvector
+  references). It should be retired — it is strictly worse than brain-service.
+- **Real EverOS** (`EverMind-AI/EverOS`): a Python local-first memory engine —
+  Markdown source-of-truth + SQLite + LanceDB, user "episodes/profile" + agent
+  "cases/skills". Serious, embeddable, but a *third* memory substrate. Defer.
+- **EverMe** (`EverMind-AI/EverMe`): **only a client toolchain** (CLI + MCP +
+  agent plugins). Its backend is the hosted `evermind.ai` cloud service (or a
+  self-hosted EverOS via `EVERME_API_BASE`). Skip — the hosted path violates the
+  "as private as possible" requirement.
+- **gno** (`gmickel/gno`): local knowledge engine — hybrid search (BM25+vector),
+  workspace with graph + editor, verified answers with citations, egress policy
+  (`local_only`/`lan`/`remote`), MIT, no telemetry, no GPU. **Strong candidate**
+  for the retrieval/workspace/graph layer (covers dashboard + 3D graph + citation
+  goals privately).
+
 ## Open questions for the owner (blocking for later workstreams)
 
 - Which of EverOS / memory-vault / context-forge / memory-governance should be retired
