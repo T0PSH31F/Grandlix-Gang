@@ -13,8 +13,7 @@
         # Preserve the existing BIOS-GPT partition (1MB)
         bios-grub = {
           type = "EF02";
-          start = "1MiB";
-          size = "1MiB";
+          size = "1M";
         };
         # EFI partition — reuse existing 200MB vfat partition
         ESP = {
