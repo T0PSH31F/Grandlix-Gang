@@ -96,6 +96,23 @@ directly via `git clone` of the upstream repos.
   for the retrieval/workspace/graph layer (covers dashboard + 3D graph + citation
   goals privately).
 
+## Deep tool vetting (local copies, 2026-09-01)
+
+Repos cloned to `~/Projects/AI/Memory/` for full local review.
+
+| Tool | Architecture | Integration cost | Verdict |
+|---|---|---|---|
+| **EverOS** (real) | Python, LanceDB v0.34 + SQLite, FastAPI, watchdog, TUI. Markdown source-of-truth, episodes/cases tracks, BM25+vector hybrid. | Medium — need Nix package; embedding via OpenAI-compatible API (could point to local Ollama). A *third* memory substrate (Honcho, brain-service, this). | **Adopt alongside only** if you want "agent trajectories as Markdown" — not needed as durable corpus store (brain-service already does that). |
+| **EverMe** | CLI + MCP + agent plugins (Claude Code, Cursor, Hermes, Raven etc.). Backend = hosted `evermind.ai` (cloud) or self-hosted EverOS via `EVERME_API_BASE`. | Low CLI/mcp cost, but usably *only* useful if you self-host EverOS as backend. The cloud backend violates privacy. | **Skip unless adopting EverOS** as backend. |
+| **gno** (`@gmickel/gno`) | Bun/TypeScript, **sqlite-vec** + BM25 + graph, context capsules, verified answers, retrieval provenance, egress policy. Web UI + desktop (Electrobun) + MCP + SDK. MIT, zero telemetry. | High for Nix packaging (heavy Bun/TypeScript + native sqlite-vec), **but runs as standalone self-contained service** — no Nix integration required if we run its `gno serve` binary walled in a container or systemd unit. | **Strong recommendation**: adopt as the retrieval/browsing/graph layer (workstream 4). Gives graph UI + verified answers + citation provenance + egress policy. |
+
+**Architecture recommendation** (after deep review):
+- **Honcho** = durable user/agent profile memory (existing, keep).
+- **brain-service** = corpus ingestion + MCP API + RBAC (existing, keep).
+- **gno** = standalone retrieval/workspace/graph layer (new adopt, runs as its own service on luffy — no Nix-code integration needed beyond systemd unit + container).
+
+brain-service and gno are complementary: brain-service handles ingest and RBAC; gno independently indexes the same corpus (or a subset) and provides the graph/workspace verified-answer interface. True redundancy is minimal.
+
 ## Progress log
 
 - **2026-09-01 (workstream 1 + consolidation):** brain-service MCP bearer auth +
