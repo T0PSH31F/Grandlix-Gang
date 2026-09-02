@@ -86,6 +86,7 @@ let
     "elevenlabs_api_key"
     "xiaomi_mimo_api_key_wright"
     "kong_key_hermes"
+    "extremerouter_api_key"
   ];
 
   # Replaced custom Electron build with llmPkgs.hermes-desktop.
@@ -665,8 +666,8 @@ in
         OLLAMA_API_KEY=${config.sops.placeholder.ollama_api_key}
         ANTHROPIC_API_KEY=${config.sops.placeholder.anthropic_api_key}
         # ExtremeRouter integration
-        OPENAI_API_KEY=${config.sops.placeholder.openrouter_api_key_2}
-        EXTREMEROUTER_API_KEY=${config.sops.placeholder.openrouter_api_key_2}
+        OPENAI_API_KEY=${config.sops.placeholder.extremerouter_api_key}
+        EXTREMEROUTER_API_KEY=${config.sops.placeholder.extremerouter_api_key}
         EXTREMEROUTER_BASE_URL=http://127.0.0.1:20128/v1
         OPENAI_BASE_URL=http://127.0.0.1:20128/v1
 

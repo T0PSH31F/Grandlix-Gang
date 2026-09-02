@@ -129,6 +129,13 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Baseline clean. Ready for fleet updates.
 
+- **Date / Agent:** 2026-09-01 / antigravity
+- **Feature:** kong-extremerouter-enumeration-fix
+- **Work done:** Fixed ExtremeRouter model/provider enumeration to Hermes/OpenCode/agents through Kong. Root causes: (1) all 9 Kong routes were HTTPS-only (`protocols:["https"]`) → 426 on HTTP; (2) Kong never forwarded ExtremeRouter's remote API key upstream → 401; (3) wrong path architecture (service `path=/v1` + routes already carrying `/v1` → double `/v1`; missing `/v1/chat/completions` route); (4) freellmapi/freellmpool port drift (3001→3003, 8080→8083). Added `extremerouter_api_key` sops secret, request-transformer plugin injecting `Authorization: Bearer` upstream, `deep_merge` jq for array-safe declarative merge, and new bare `/v1/*` routes (`strip_path:false`). Corrected stale docs/firewall (8081→8090, dashboard on 8093). Also reverted two pre-existing broken WIP regressions (paperclip `start`→`run`, alertmanager-ntfy dropped `--configs`).
+- **Verification:** `clan machines update z0r0` (activation succeeded); `curl http://127.0.0.1:8090/v1/models -H "apikey:<kong_key_hermes>"` → 200/538 models; `curl -X POST /v1/chat/completions` → 200 SSE streaming from claude-sonnet-4.5; unauthenticated `/v1/models` → 401 (key-auth gate). Both z0r0 & luffy toplevels eval clean.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Note paperclip.service needs one-time `paperclipai onboard` (non-interactive config missing); optionally push + PR the Kong routing fix.
+
 
 
 

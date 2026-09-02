@@ -51,7 +51,7 @@
         8008 # Matrix Synapse
         8010 # Brain Service
         8080 # Signal CLI
-        8081 # Kong Gateway
+        8081 # SABnzbd (usenet) / LocalAI reserve
         8082 # Homepage Dashboard
         8083 # FreeLLMPool
         8084 # Paperless-ngx
@@ -60,7 +60,8 @@
         8087 # Mealie
         8088 # Open WebUI
         8089 # Filebrowser
-        8091 # llama.cpp
+        8090 # Kong Gateway (proxy)
+        8091 # Kong Admin API
         8093 # CalibreWeb
         8095 # qBittorrent WebUI
         8096 # Jellyfin

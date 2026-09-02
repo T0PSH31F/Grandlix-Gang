@@ -47,6 +47,12 @@ in
       kong_key_codex = mkSecret "kong_key_codex";
       kong_key_cursor = mkSecret "kong_key_cursor";
       kong_key_deerflow = mkSecret "kong_key_deerflow";
+
+      # ExtremeRouter remote API key (the "Kong Key" provisioned in the
+      # ExtremeRouter dashboard under Settings → API Keys). Kong injects this
+      # as the upstream Authorization header when proxying /v1/* to
+      # ExtremeRouter, so model enumeration and chat completions authenticate.
+      extremerouter_api_key = mkSecret "extremerouter_api_key";
     };
 
     # ── Environment file template for Kong ──────────────────────────
@@ -102,6 +108,33 @@ in
             }
           ];
         }) cfg.consumers;
+      };
+      owner = "root";
+      group = "root";
+      mode = "0400";
+    };
+
+    # ── ExtremeRouter upstream auth (request-transformer plugin) ────
+    # Kong must present ExtremeRouter's remote API key when proxying upstream,
+    # otherwise ExtremeRouter rejects /v1/* with 401 "API key required".
+    # Rendered by sops (secret must not live in the Nix store) and merged into
+    # the declarative config alongside kong.base.yml and kong-consumers.
+    sops.templates."kong-extremerouter-auth" = {
+      content = builtins.toJSON {
+        _format_version = "3.0";
+        plugins = [
+          {
+            name = "request-transformer";
+            service = "extremerouter-llm";
+            config = {
+              add = {
+                headers = [
+                  "Authorization: Bearer ${config.sops.placeholder.extremerouter_api_key}"
+                ];
+              };
+            };
+          }
+        ];
       };
       owner = "root";
       group = "root";

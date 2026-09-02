@@ -25,7 +25,7 @@ let
         # Manifest — frontier model routing
         (optional cfg.routers.manifest.enable {
           name = "manifest-llm";
-          url = "http://127.0.0.1:${toString cfg.routers.manifest.port}/v1";
+          url = "http://127.0.0.1:${toString cfg.routers.manifest.port}";
           tags = [
             "llm"
             "frontier"
@@ -34,7 +34,7 @@ let
         # FreeLLMAPI — free+paid aggregated pool
         ++ (optional cfg.routers.freellmapi.enable {
           name = "freellmapi-llm";
-          url = "http://127.0.0.1:${toString cfg.routers.freellmapi.port}/v1";
+          url = "http://127.0.0.1:${toString cfg.routers.freellmapi.port}";
           tags = [
             "llm"
             "free-first"
@@ -43,7 +43,7 @@ let
         # freellmpool — pure free-tier pool
         ++ (optional cfg.routers.freellmpool.enable {
           name = "freellmpool-llm";
-          url = "http://127.0.0.1:${toString cfg.routers.freellmpool.port}/v1";
+          url = "http://127.0.0.1:${toString cfg.routers.freellmpool.port}";
           tags = [
             "llm"
             "free-only"
@@ -52,7 +52,7 @@ let
         # Coding router — mutually exclusive (omniroute or extreme-router)
         ++ (optional (cfg.routers.codingRouter == "omniroute") {
           name = "omniroute-llm";
-          url = "http://127.0.0.1:${toString cfg.routers.omniroute.port}/v1";
+          url = "http://127.0.0.1:${toString cfg.routers.omniroute.port}";
           tags = [
             "llm"
             "coding"
@@ -60,7 +60,7 @@ let
         })
         ++ (optional (cfg.routers.codingRouter == "extreme-router") {
           name = "extremerouter-llm";
-          url = "http://127.0.0.1:${toString cfg.routers.extreme-router.port}/v1";
+          url = "http://127.0.0.1:${toString cfg.routers.extreme-router.port}";
           tags = [
             "llm"
             "coding"
@@ -69,109 +69,218 @@ let
         });
 
       # ── Routes ───────────────────────────────────────────────────
-      routes =
-        # OpenAI-compatible chat completions — smart routing by model name
-        [
-          {
-            name = "llm-chat";
-            service = "freellmapi-llm";
-            paths = [ "/llm/v1/chat/completions" ];
-            methods = [ "POST" ];
-            tags = [ "llm" ];
-          }
-          {
-            name = "llm-completions";
-            service = "freellmapi-llm";
-            paths = [ "/llm/v1/completions" ];
-            methods = [ "POST" ];
-            tags = [ "llm" ];
-          }
-          {
-            name = "llm-embeddings";
-            service = "freellmapi-llm";
-            paths = [ "/llm/v1/embeddings" ];
-            methods = [ "POST" ];
-            tags = [ "llm" ];
-          }
-          # Frontier traffic → Manifest
-          {
-            name = "llm-frontier";
-            service = "manifest-llm";
-            paths = [ "/llm/frontier/v1/chat/completions" ];
-            methods = [ "POST" ];
-            tags = [
-              "llm"
-              "frontier"
-            ];
-          }
-          # Coding traffic → OmniRoute or ExtremeRouter (mutually exclusive)
-          {
-            name = "llm-coding";
-            service =
-              if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
-            paths = [ "/llm/coding/v1/chat/completions" ];
-            methods = [ "POST" ];
-            tags = [
-              "llm"
-              "coding"
-            ];
-          }
-          # Free pool → freellmpool
-          {
-            name = "llm-free";
-            service = "freellmpool-llm";
-            paths = [ "/llm/free/v1/chat/completions" ];
-            methods = [ "POST" ];
-            tags = [
-              "llm"
-              "free"
-            ];
-          }
-          # Model discovery → coding router (ExtremeRouter or OmniRoute)
-          # OpenCode/Hermes call /v1/models to enumerate available models
-          {
-            name = "llm-models";
-            service =
-              if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
-            paths = [
-              "/v1/models"
-              "/llm/v1/models"
-            ];
-            methods = [ "GET" ];
-            tags = [
-              "llm"
-              "models"
-            ];
-          }
-          # MCP gateway
-          {
-            name = "mcp-gateway";
-            service = "freellmapi-llm";
-            paths = [ "/mcp" ];
-            methods = [
-              "GET"
-              "POST"
-            ];
-            tags = [ "mcp" ];
-          }
-          # Health check
-          {
-            name = "health";
-            paths = [ "/health" ];
-            methods = [ "GET" ];
-            plugins = [
-              {
-                name = "request-termination";
-                config = {
-                  status_code = 200;
-                  content_type = "application/json";
-                  body = ''{"status":"ok","gateway":"kong"}'';
-                };
-              }
-            ];
-            tags = [ "infra" ];
-          }
-        ];
+      # Two schemes coexist:
+      #  1. OpenAI-native `/v1/*` paths (what Hermes/OpenCode call, since their
+      #     base_url ends in `/v1`) — strip_path=false so the full `/v1/*` path
+      #     is forwarded upstream verbatim.
+      #  2. Legacy `/llm/{pool}/v1/*` pool-split paths — strip_path=true strips
+      #     the `/llm/{pool}` prefix so the upstream still sees `/v1/*`.
+      routes = [
+        # ★ Primary — chat completions → coding router (ExtremeRouter)
+        {
+          name = "v1-chat";
+          service =
+            if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+          paths = [ "/v1/chat/completions" ];
+          methods = [ "POST" ];
+          strip_path = false;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [
+            "llm"
+            "coding"
+          ];
+        }
+        # Primary — legacy completions → coding router
+        {
+          name = "v1-completions";
+          service =
+            if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+          paths = [ "/v1/completions" ];
+          methods = [ "POST" ];
+          strip_path = false;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [ "llm" ];
+        }
+        # Primary — embeddings → coding router
+        {
+          name = "v1-embeddings";
+          service =
+            if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+          paths = [ "/v1/embeddings" ];
+          methods = [ "POST" ];
+          strip_path = false;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [ "llm" ];
+        }
+        # Primary — model discovery → coding router (ExtremeRouter or OmniRoute)
+        # OpenCode/Hermes call /v1/models to enumerate available models
+        {
+          name = "v1-models";
+          service =
+            if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+          paths = [ "/v1/models" ];
+          methods = [ "GET" ];
+          strip_path = false;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [
+            "llm"
+            "models"
+          ];
+        }
+        # Legacy pool split — chat via FreeLLMAPI
+        {
+          name = "llm-chat";
+          service = "freellmapi-llm";
+          paths = [ "/llm/v1/chat/completions" ];
+          methods = [ "POST" ];
+          strip_path = true;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [ "llm" ];
+        }
+        {
+          name = "llm-completions";
+          service = "freellmapi-llm";
+          paths = [ "/llm/v1/completions" ];
+          methods = [ "POST" ];
+          strip_path = true;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [ "llm" ];
+        }
+        {
+          name = "llm-embeddings";
+          service = "freellmapi-llm";
+          paths = [ "/llm/v1/embeddings" ];
+          methods = [ "POST" ];
+          strip_path = true;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [ "llm" ];
+        }
+        # Frontier traffic → Manifest
+        {
+          name = "llm-frontier";
+          service = "manifest-llm";
+          paths = [ "/llm/frontier/v1/chat/completions" ];
+          methods = [ "POST" ];
+          strip_path = true;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [
+            "llm"
+            "frontier"
+          ];
+        }
+        # Coding traffic → OmniRoute or ExtremeRouter (mutually exclusive)
+        {
+          name = "llm-coding";
+          service =
+            if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+          paths = [ "/llm/coding/v1/chat/completions" ];
+          methods = [ "POST" ];
+          strip_path = true;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [
+            "llm"
+            "coding"
+          ];
+        }
+        # Free pool → freellmpool
+        {
+          name = "llm-free";
+          service = "freellmpool-llm";
+          paths = [ "/llm/free/v1/chat/completions" ];
+          methods = [ "POST" ];
+          strip_path = true;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [
+            "llm"
+            "free"
+          ];
+        }
+        # Legacy model discovery → coding router
+        {
+          name = "llm-models";
+          service =
+            if cfg.routers.codingRouter == "extreme-router" then "extremerouter-llm" else "omniroute-llm";
+          paths = [ "/llm/v1/models" ];
+          methods = [ "GET" ];
+          strip_path = true;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [
+            "llm"
+            "models"
+          ];
+        }
+        # MCP gateway
+        {
+          name = "mcp-gateway";
+          service = "freellmapi-llm";
+          paths = [ "/mcp" ];
+          methods = [
+            "GET"
+            "POST"
+          ];
+          strip_path = false;
+          protocols = [
+            "http"
+            "https"
+          ];
+          tags = [ "mcp" ];
+        }
+        # Health check
+        {
+          name = "health";
+          paths = [ "/health" ];
+          methods = [ "GET" ];
+          strip_path = false;
+          protocols = [
+            "http"
+            "https"
+          ];
+          plugins = [
+            {
+              name = "request-termination";
+              config = {
+                status_code = 200;
+                content_type = "application/json";
+                body = ''{"status":"ok","gateway":"kong"}'';
+              };
+            }
+          ];
+          tags = [ "infra" ];
+        }
+      ];
 
       # ── Upstreams (for load balancing) ────────────────────────────
       upstreams =
@@ -416,7 +525,7 @@ in
         };
         port = mkOption {
           type = types.port;
-          default = 3001;
+          default = 3003;
         };
       };
       freellmpool = {
@@ -425,7 +534,7 @@ in
         };
         port = mkOption {
           type = types.port;
-          default = 8080;
+          default = 8083;
         };
       };
 
@@ -510,13 +619,31 @@ in
         "+${pkgs.writeShellScript "kong-merge-declarative-config" ''
           set -euo pipefail
           mkdir -p ${cfg.dataDir}
-          if [ -f "${config.sops.templates."kong-consumers".path}" ]; then
-            ${pkgs.jq}/bin/jq -s '.[0] * .[1]' ${kongYml} "${
-              config.sops.templates."kong-consumers".path
-            }" > ${cfg.dataDir}/declarative.json
-          else
-            cp ${kongYml} ${cfg.dataDir}/declarative.json
-          fi
+          # Base structural config first; consumer keys and the ExtremeRouter
+          # upstream auth header are sops-rendered fragments merged alongside.
+          # deep_merge concatenates Kong's declarative array keys (services,
+          # routes, upstreams, plugins, consumers) instead of overwriting them,
+          # which plain jq `*` would do.
+          ${pkgs.jq}/bin/jq -s '
+            def deep_merge($a; $b):
+              if ($a | type) == "object" and ($b | type) == "object" then
+                reduce ($b | keys_unsorted[]) as $k (
+                  $a;
+                  if (.[$k] | type) == "array" and ($b[$k] | type) == "array" then
+                    .[$k] = (.[$k] + $b[$k])
+                  elif has($k) and (.[$k] | type) == "object" and ($b[$k] | type) == "object" then
+                    .[$k] = deep_merge(.[$k]; $b[$k])
+                  else
+                    .[$k] = $b[$k]
+                  end
+                )
+              else
+                $b
+              end;
+            reduce .[] as $item ({}; deep_merge(.; $item))
+          ' ${kongYml} "${config.sops.templates."kong-consumers".path}" "${
+            config.sops.templates."kong-extremerouter-auth".path
+          }" > ${cfg.dataDir}/declarative.json
           chmod 0644 ${cfg.dataDir}/declarative.json
         ''}"
       ];

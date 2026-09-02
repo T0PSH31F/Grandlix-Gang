@@ -21,7 +21,7 @@
 | grafana | 3008 | ✅ Running | Dashboards |
 | loki | 3100 | ✅ Running | Logs |
 | glances | 61208 | ✅ Running | System stats |
-| kong-gateway | 8081 | ✅ Running | Unified LLM/API gateway |
+| kong-gateway | 8090 | ✅ Running | Unified LLM/API gateway (proxy) |
 
 ## Hermes Agent
 
@@ -51,9 +51,9 @@
 - **API Key**: Needs OAuth setup via `hermes auth`
 
 ### Local LLM (llama.cpp)
-- **Status**: Running
+- **Status**: Disabled on z0r0 (routed via ExtremeRouter/Kong)
 - **Model**: Llama3.3-8B-Instruct-Thinking-Heretic-Uncensored
-- **Port**: 8081 (via Kong gateway)
+- **Port**: 8081 (localai/usenet reserve — no longer active)
 - **Context**: 8192 tokens
 
 ### Mistral MCP

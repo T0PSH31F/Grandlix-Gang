@@ -37,26 +37,32 @@ ExtremeRouter replaces OmniRoute as the coding LLM router.
 
 5. **Verify model discovery**:
    ```bash
-   # Via Kong (what OpenCode/Hermes use)
-   curl -s http://localhost:8081/v1/models | python3 -m json.tool
+   # Via Kong (what OpenCode/Hermes use) — proxy port is 8090
+   curl -s http://localhost:8090/v1/models | python3 -m json.tool
 
-   # Direct to ExtremeRouter
-   curl -s http://localhost:20128/v1/models | python3 -m json.tool
+   # Direct to ExtremeRouter (requires the remote API key)
+   curl -s http://localhost:20128/v1/models \
+     -H "Authorization: Bearer $EXTREMEROUTER_API_KEY" | python3 -m json.tool
    ```
 
 ## 2. Kong Gateway Verification (z0r0)
 
 Kong is the unified entry point for all LLM traffic.
 
+> **Port map** (correct as of 2026-09):
+> - `8090` — Kong **proxy** (clients call `/v1/*`, `/llm/*` here)
+> - `8091` — Kong **Admin API** (loopback, declarative config)
+> - `8093` — Kong **Manager GUI / dashboard** (loopback: `http://127.0.0.1:8093`)
+
 ```bash
 # Check Kong is running
-curl -s http://localhost:8081/health
+curl -s http://localhost:8090/health
 
 # Check routes
-curl -s http://localhost:8081/v1/models
+curl -s http://localhost:8090/v1/models
 
 # Check coding route (should go to ExtremeRouter)
-curl -s -X POST http://localhost:8081/llm/coding/v1/chat/completions \
+curl -s -X POST http://localhost:8090/llm/coding/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{"model":"auto","messages":[{"role":"user","content":"hello"}]}'
 ```
@@ -200,9 +206,10 @@ curl -s http://localhost:8008/_matrix/client/versions
 - Restart: `systemctl restart podman-extreme-router`
 
 ### Kong not routing to ExtremeRouter
-- Check Kong config: `curl -s http://localhost:8001/routes`
+- Check Kong config: `curl -s http://localhost:8091/routes`
 - Verify codingRouter setting: `grep codingRouter machines/z0r0/default.nix`
-- Check Kong logs: `podman logs kong`
+- Check Kong logs: `journalctl -u podman-kong`
+- Verify upstream auth header is injected: `curl -s http://localhost:8091/plugins | jq '.data[] | select(.service.name=="extremerouter-llm")'`
 
 ### Hermes can't reach Kong
 - Check KONG_API_KEY is set: `grep KONG_API_KEY ~/.hermes/config.yaml`
@@ -211,14 +218,16 @@ curl -s http://localhost:8008/_matrix/client/versions
 
 ### OpenCode can't enumerate models
 - Check opencode.json provider config
-- Verify Kong /v1/models endpoint: `curl http://localhost:8081/v1/models`
+- Verify Kong /v1/models endpoint: `curl http://localhost:8090/v1/models`
 - Check OpenCode logs: `journalctl -u opencode`
 
 ## Quick Reference
 
 | Service | Port | URL |
 |---------|------|-----|
-| Kong Gateway | 8081 | http://z0r0:8081 |
+| Kong Gateway (proxy) | 8090 | http://z0r0:8090 |
+| Kong Manager GUI | 8093 | http://127.0.0.1:8093 (loopback) |
+| Kong Admin API | 8091 | http://127.0.0.1:8091 (loopback) |
 | ExtremeRouter | 20128 | http://z0r0:20128 |
 | Hermes Dashboard | 9119 | http://z0r0:9119 |
 | Brain Service | 8010 | http://z0r0:8010 |

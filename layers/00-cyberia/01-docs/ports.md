@@ -52,7 +52,7 @@
 | **8008** | Matrix Synapse         | luffy  | `machines/luffy/default.nix`                       | Matrix Federation & Homeserver  |
 | **8010** | Brain Service          | z0r0   | `machines/z0r0/default.nix`                        | Personal Knowledge Base API     |
 | **8080** | Signal CLI             | z0r0   | `machines/z0r0/default.nix`                        | Signal Messenger REST Daemon    |
-| **8081** | Kong Gateway           | z0r0   | `machines/z0r0/default.nix`                        | Unified LLM / API Gateway       |
+| **8081** | Kong Gateway (legacy doc ref — REPLACED, see 8090) | z0r0   | `layers/20-services/22-ai/21-llm-routers/kong-gateway.nix` | Deprecated stale reference |
 | **8082** | Homepage Dashboard     | z0r0   | `layers/20-services/26-monitoring/`                | Main Desktop Service Dashboard  |
 | **8083** | FreeLLMPool            | z0r0   | `machines/z0r0/default.nix`                        | Free-tier LLM Provider Pool     |
 | **8084** | Paperless-ngx          | luffy  | `machines/luffy/default.nix`                       | Document Archival System        |
@@ -61,7 +61,10 @@
 | **8087** | Mealie                 | luffy  | `machines/luffy/default.nix`                       | Recipe & Meal Manager           |
 | **8088** | Open WebUI             | z0r0   | `layers/20-services/22-ai/24-agent-uis/open-webui.nix` | LLM Web Chat Interface |
 | **8089** | Filebrowser            | luffy  | `layers/20-services/26-monitoring/`                | Web File Manager                |
-| **8093** | CalibreWeb             | luffy  | `layers/20-services/26-monitoring/`                | E-book Web Reader               |
+| **8090** | Kong Gateway (proxy)   | z0r0   | `layers/20-services/22-ai/21-llm-routers/kong-gateway.nix` | Unified LLM/API gateway — clients hit `/v1/*` here |
+| **8091** | Kong Admin API         | z0r0   | `layers/20-services/22-ai/21-llm-routers/kong-gateway.nix` | Kong declarative admin API (loopback) |
+| **8092** | EverOS Memory Server   | z0r0   | `layers/20-services/22-ai/25-harness-control/everos.nix` | Memory consolidation engine |
+| **8093** | CalibreWeb (luffy) / Kong Manager GUI (z0r0, loopback) | luffy  | `layers/20-services/26-monitoring/` | E-book Web Reader (luffy); Kong dashboard is loopback-only on z0r0 at `http://127.0.0.1:8093` |
 | **8095** | qBittorrent WebUI      | luffy  | `layers/20-services/23-media/download-clients.nix`| Torrent Client Web Interface    |
 | **8096** | Jellyfin               | luffy  | `layers/20-services/23-media/media-stack.nix`     | Media Streaming Server          |
 | **8098** | RomM                   | luffy  | `layers/20-services/23-media/romm.nix`             | ROM Manager & Web Emulator      |
@@ -84,6 +87,7 @@
 | **9377** | Camofox Browser        | z0r0   | `machines/z0r0/default.nix`                        | Anti-Detection Browser CDP      |
 | **9696** | Prowlarr               | luffy  | `layers/20-services/23-media/media-stack.nix`     | Indexer Proxy Manager           |
 | **11434**| Ollama                 | Both   | `layers/20-services/22-ai/ollama.nix`              | Local LLM Inference Engine      |
+| **20128**| ExtremeRouter          | z0r0   | `layers/20-services/22-ai/21-llm-routers/extreme-router.nix` | Coding LLM router — 154+ providers, web UI + `/v1/*` API |
 | **21116**| RustDesk Signal        | z0r0   | `layers/20-services/24-communication/`             | Remote Desktop Signaling        |
 | **25600**| Komga                  | luffy  | `layers/20-services/26-monitoring/`                | Comic & Manga Server            |
 | **29317**| Mautrix WhatsApp       | luffy  | `layers/20-services/24-communication/`             | WhatsApp Matrix Bridge          |

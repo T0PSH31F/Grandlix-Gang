@@ -213,6 +213,27 @@
           "at": "2026-08-28T12:08:50Z"
         }
       ]
+    },
+    {
+      "id": "kong-extremerouter-enumeration-fix",
+      "priority": 11,
+      "name": "Kong gateway → ExtremeRouter model enumeration & chat routing fix",
+      "behavior": "Kong proxy (8090) forwards ExtremeRouter's remote API key upstream and serves /v1/models and /v1/chat/completions to agents (Hermes, OpenCode) authenticated via per-consumer key-auth keys.",
+      "verification": [
+        "curl -s http://127.0.0.1:8090/v1/models -H 'apikey: <kong_key_hermes>' | jq -e '.data | length > 0'",
+        "curl -s http://127.0.0.1:8090/v1/models | grep -q 401"
+      ],
+      "state": "passing",
+      "claimedBy": "antigravity",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "curl -s http://127.0.0.1:8090/v1/models -H \"apikey: $(sops -d layers/00-cyberia/03-treasure/secrets/external_services.yaml | grep '^kong_key_hermes' | awk '{print $2}')\" | python3 -c 'import sys,json; print(len(json.load(sys.stdin)[\"data\"]))'",
+          "output": "538 — Kong proxy now enumerates 538 ExtremeRouter models over HTTP (was 426 https-only + 401 no-upstream-auth).",
+          "at": "2026-09-01T16:06:02Z"
+        }
+      ]
     }
   ]
 }
