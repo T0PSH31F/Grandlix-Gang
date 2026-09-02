@@ -23,16 +23,20 @@
     kernelModules = [ ];
   };
 
-  # Disk layout: single root partition (LVM not needed for small cloud VPS).
-  # Override with disko.nix for production hosts that need declarative partitioning.
+  # Disk layout: single root partition on NVMe (standard Alibaba ExCS layout).
+  # The Alibaba image uses /dev/nvme0n1p1 (1MB BIOS), p2 (200MB EFI), p3 (root).
+  # No disko — provisioning handled by nixos-anywhere or nixos-install.
   fileSystems."/" = lib.mkDefault {
-    device = "/dev/vda1"; # Adjust to match cloud provider's device naming
+    device = "/dev/nvme0n1p3";
     fsType = "ext4";
   };
 
-  swapDevices = lib.mkDefault [
-    { device = "/dev/vda2"; }
-  ];
+  fileSystems."/boot" = lib.mkDefault {
+    device = "/dev/nvme0n1p2";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
 
+  swapDevices = [ ];
   networking.interfaces.eth0.useDHCP = true;
 }
