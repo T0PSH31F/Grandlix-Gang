@@ -234,6 +234,28 @@
           "at": "2026-09-01T16:06:02Z"
         }
       ]
+    },
+    {
+      "id": "qdrant-chromadb-deactivation",
+      "priority": 12,
+      "name": "Deactivate Qdrant + ChromaDB fleet-wide (keep modules)",
+      "behavior": "services.ai-services.{qdrant,chromadb}.enable evaluate to false on both z0r0 and luffy; module files retained for possible re-enable.",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.chromadb.enable | grep -q false",
+        "nix eval .#nixosConfigurations.luffy.config.services.ai-services.chromadb.enable | grep -q false",
+        "nix eval .#nixosConfigurations.luffy.config.services.ai-services.qdrant.enable | grep -q false"
+      ],
+      "state": "passing",
+      "claimedBy": "antigravity",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "HEAD",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.chromadb.enable && nix eval .#nixosConfigurations.luffy.config.services.ai-services.chromadb.enable && nix eval .#nixosConfigurations.luffy.config.services.ai-services.qdrant.enable && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.qdrant.enable",
+          "output": "false / false / false / false — all four evaluations return false. Modules (chromadb.nix, qdrant.nix) retained. Stale qdrant=6333 reverseProxy route removed from luffy. Both z0r0+luffy toplevels eval clean.",
+          "at": "2026-09-01T17:00:00Z"
+        }
+      ]
     }
   ]
 }

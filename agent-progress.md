@@ -136,6 +136,13 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Note paperclip.service needs one-time `paperclipai onboard` (non-interactive config missing); optionally push + PR the Kong routing fix.
 
+- **Date / Agent:** 2026-09-01 / antigravity
+- **Feature:** qdrant-chromadb-deactivation (+ memory-platform audit)
+- **Work done:** Deactivated Qdrant and ChromaDB fleet-wide per the two-layer memory consolidation (Honcho = profile, brain-service = corpus). Changed `chromadb.enable` to `mkDefault false` in ai-services.nix and ai-server.nix (qdrrant was already `mkDefault false`), removed the stale `qdrant=6333` reverseProxy route from luffy. Wrote `layers/00-cyberia/01-docs/memory-platform-audit.md` documenting the full 6-module memory stack vs the 2-layer target, verified brain-service (already has FastAPI+pgvector+LlamaIndex+Ollama embeddings+MCP) and Honcho (PostgreSQL+pgvector), and enumerated gaps (MCP auth/RBAC, tool subset, cloud LLM answering, DB user hardening, dashboard/3D/YouTube, backups, Oracle/Alibaba hosts, EverMe/Raven).
+- **Verification:** `nix eval` confirmed qdrant/chromadb `enable` = false on z0r0+luffy; both toplevels eval clean; `jq -e` feature_list valid.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Decide memory consolidation — which of EverOS/memory-vault/context-forge/memory-governance to retire vs fold; then brain-service MCP auth + tool expansion (brain.chat/list_tags/get_document/update_note/delete_document/get_sources).
+
 
 
 

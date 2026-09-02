@@ -8,7 +8,7 @@
       ai-services = {
         enable = lib.mkDefault true;
         ollama.enable = lib.mkDefault true;
-        chromadb.enable = lib.mkDefault true;
+        chromadb.enable = lib.mkDefault false; # Deactivated — durable memory is Honcho + brain-service (pgvector)
         open-webui.enable = lib.mkDefault true;
         jan.enable = lib.mkDefault true;
         aider.enable = lib.mkDefault true;

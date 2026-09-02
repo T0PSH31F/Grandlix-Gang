@@ -408,7 +408,6 @@ in
 
   layers.layer-20.services.config.reverseProxy.routes = {
     ollama = 11434;
-    qdrant = 6333;
   };
 
   # ============================================================================
