@@ -256,6 +256,28 @@
           "at": "2026-09-01T17:00:00Z"
         }
       ]
+    },
+    {
+      "id": "memory-retire-everos-contextforge",
+      "priority": 13,
+      "name": "Retire EverOS + context-forge; consolidate to Honcho + brain-service + memory-vault",
+      "behavior": "layers.layer-20.services.{everos,context-forge}.enable evaluate to false on z0r0 and luffy; memory-vault stays true; modules retained.",
+      "verification": [
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.everos.enable | grep -q false",
+        "nix eval .#nixosConfigurations.luffy.config.layers.layer-20.services.everos.enable | grep -q false",
+        "nix eval .#nixosConfigurations.z0r0.config.layers.layer-20.services.context-forge.enable | grep -q false"
+      ],
+      "state": "passing",
+      "claimedBy": "antigravity",
+      "blockedReason": null,
+      "evidence": [
+        {
+          "sha": "167d0138",
+          "command": "for m in z0r0 luffy; do nix eval .#nixosConfigurations.$m.config.layers.layer-20.services.everos.enable; nix eval .#nixosConfigurations.$m.config.layers.layer-20.services.context-forge.enable; nix eval .#nixosConfigurations.$m.config.layers.layer-20.services.memory-vault.enable; done",
+          "output": "everos=false, context-forge=false, memory-vault=true on both z0r0 and luffy. EverOS/context-forge enable removed from ai-agent/ai-server tags and memory-governance dependency block. Modules retained; both toplevels eval clean.",
+          "at": "2026-09-01T20:40:00Z"
+        }
+      ]
     }
   ]
 }

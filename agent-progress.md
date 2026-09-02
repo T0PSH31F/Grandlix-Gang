@@ -143,6 +143,13 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Decide memory consolidation — which of EverOS/memory-vault/context-forge/memory-governance to retire vs fold; then brain-service MCP auth + tool expansion (brain.chat/list_tags/get_document/update_note/delete_document/get_sources).
 
+- **Date / Agent:** 2026-09-01 / antigravity
+- **Feature:** brain-service-mcp-auth-tools, memory-retire-everos-contextforge
+- **Work done:** (1) Added bearer-token auth + reader/writer/admin RBAC to brain-service (HTTP middleware + MCP stdio identity) plus 8 new tools (brain.chat, get_sources, list_tags, get_document, update_note, delete_document, add_tag, remove_tag) and matching HTTP endpoints; deployed to z0r0 (service active, /tags + /documents return 200). (2) Retired EverOS + context-forge (disabled in ai-agent/ai-server tags + memory-governance dep block), retaining memory-vault as git storage. (3) Vetted real EverOS/EverMe/gno by cloning repos: our everos.nix is a grep stub, EverMe is a cloud client, gno is a promising local hybrid-search/graph engine.
+- **Verification:** brain_server.py compiles; both z0r0+luffy toplevels eval clean; everos/context-forge eval false, memory-vault true on both; brain-service new endpoints 200 live.
+- **State change:** passing (evidence recorded in feature_list.json)
+- **Next action:** Fix brain-service placement — it's enabled on z0r0 but Ollama (its embedding backend) is disabled there (ollama.enable=mkForce false), so ingestion fails on z0r0. Move/verify on luffy. Then workstreams: local LLM answering, DB user hardening, dashboard/gno evaluation.
+
 
 
 

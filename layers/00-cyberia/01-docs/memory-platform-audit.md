@@ -96,6 +96,17 @@ directly via `git clone` of the upstream repos.
   for the retrieval/workspace/graph layer (covers dashboard + 3D graph + citation
   goals privately).
 
+## Progress log
+
+- **2026-09-01 (workstream 1 + consolidation):** brain-service MCP bearer auth +
+  RBAC (reader/writer/admin) + 8 new tools implemented and deployed to z0r0 (new
+  `/tags`, `/documents` endpoints return 200). EverOS + context-forge retired
+  (eval false on z0r0+luffy); memory-vault retained.
+  **Runtime finding:** brain-service is enabled on z0r0 but its embedding backend
+  (Ollama, `nomic-embed-text`) is `inactive` on z0r0 (`ollama.enable = mkForce false`
+  in machines/z0r0/default.nix). Consequence: ingest/remember/query fail on z0r0.
+  Placement fix = brain-service should run on **luffy** (where ollama runs), not z0r0.
+
 ## Open questions for the owner (blocking for later workstreams)
 
 - Which of EverOS / memory-vault / context-forge / memory-governance should be retired
