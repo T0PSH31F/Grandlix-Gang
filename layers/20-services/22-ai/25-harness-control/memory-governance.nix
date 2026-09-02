@@ -85,8 +85,9 @@ in
     ];
 
     # Enable dependency services if governance is enabled
+    # EverOS + context-forge retired from the memory stack (2026-09) — see
+    # memory-platform-audit.md. memory-vault remains the git-backed storage
+    # substrate; per-agent scoping now lives in brain-service MCP RBAC.
     layers.layer-20.services.memory-vault.enable = mkDefault true;
-    layers.layer-20.services.everos.enable = mkDefault true;
-    layers.layer-20.services.context-forge.enable = mkDefault true;
   };
 }

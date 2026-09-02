@@ -13,7 +13,7 @@
         jan.enable = lib.mkDefault true;
         aider.enable = lib.mkDefault true;
         postgresql.enable = lib.mkDefault true;
-        context-forge.enable = lib.mkDefault true;
+        # context-forge retired (folded into brain-service MCP + memory-vault)
 
         # AI Gateway & Upstream Routers
         kong-gateway = {
