@@ -410,7 +410,7 @@ final: prev: {
         owner = "Socialpranker";
         repo = "agentburn";
         rev = "main";
-        hash = "sha256-7aR7WoS8dh7e59KfYfldw5htlPCs82Q/dfUdx5ObsBw=";
+        hash = "sha256-3T7+1n0sBcl3bWaGq0VeUhqhLVZdi2PNakHLnmJUflk=";
       };
 
       # pyproject.toml requires setuptools>=68 as build backend
