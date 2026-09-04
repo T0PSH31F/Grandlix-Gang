@@ -13,6 +13,5 @@
     # Agent control-plane services
     layers.layer-20.services.mission-control.enable = lib.mkDefault true;
     layers.layer-20.services.paperclip.enable = lib.mkDefault true;
-    layers.layer-20.services.aionui.enable = lib.mkDefault true;
   };
 }
