@@ -71,7 +71,12 @@
   };
 
   services = {
-    # Disable heavy workstation inference & UIs (routed via extreme-router/kong)
+    # z0r0 is a desktop workstation — no always-on server services.
+    # These modules default to enable=true in their own definitions,
+    # so we override to false. The new tag system means z0r0 no longer
+    # gets ai-server/ai-agent tag-driven enables, but module defaults
+    # still need explicit disabling. Fix upstream (mkDefault false in
+    # modules) to eliminate these overrides.
     llama-cpp-server.enable = lib.mkForce false;
     llama-swap.enable = lib.mkForce false;
     wyoming-services.enable = lib.mkForce false;
@@ -79,30 +84,20 @@
     ai-services = {
       ollama.enable = lib.mkForce false;
       open-webui.enable = lib.mkForce false;
-      ollama-ui.enable = lib.mkForce false;
       localai.enable = lib.mkForce false;
-      jan.enable = lib.mkForce false;
-      aider.enable = lib.mkForce false;
       chromadb.enable = lib.mkForce false;
 
+      # These are mkEnableOption (default false) — override only needed
+      # to be explicit about z0r0's intent. Can be removed once tags are stable.
+      kong-gateway.enable = lib.mkForce false;
       kong-gateway.environmentFile = config.sops.templates."kong-env".path;
-      freellmpool = {
-        enable = true;
-        environmentFile = config.sops.templates."kong-env".path;
-        port = 8083; # Moved off 8082 to avoid shadowing Homepage Dashboard
-      };
+      freellmpool.enable = lib.mkForce false;
+      freellmpool.environmentFile = config.sops.templates."kong-env".path;
+      freellmpool.port = lib.mkForce 8083;
+      polyfloor.enable = lib.mkForce false;
       polyfloor.environmentFile = config.sops.templates."polyfloor-env".path;
     };
   };
-
-  layers.layer-20.services.config.homepage-dashboard = {
-    enable = true;
-    port = 8082;
-    lovable.enable = true;
-  };
-
-  # Make Langfuse accessible from LAN for cross-machine dashboard monitoring
-  virtualisation.oci-containers.containers.langfuse.environment.HOSTNAME = lib.mkForce "0.0.0.0";
 
   layers.layer-20.services.communication.rustdesk = {
     enable = true;

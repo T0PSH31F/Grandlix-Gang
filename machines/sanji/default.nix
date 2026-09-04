@@ -4,7 +4,8 @@
 # Private IP  : 172.21.238.38
 # SSH key     : id_25519 t0psh31f@ganglib.gang  (~/.ssh/)
 #
-# Headless server: no desktop user, no display compositor, no agents.
+# Roles: network-router (Headscale, Homepage), ai-router (Kong, Omniroute),
+#        agent-orchestrator (Hermes, Mission Control, Paperclip).
 # Memory services stay on luffy for privacy. gno runs here (always-on).
 {
   config,
@@ -16,13 +17,14 @@
 {
   imports = [ ./hardware.nix ];
 
-  machine.tags = [
-    "server"
-    "homelab"
-  ];
-
   networking.hostName = "sanji";
   system.stateVersion = "25.05";
+
+  # === Headscale — fleet VPN control server (via network-router tag) ===
+  services.headscale-server = {
+    serverUrl = "https://headscale.lovelain.duckdns.org";
+    # Update the above to Sanji's public IP/domain once DNS is pointed here.
+  };
 
   # === Privacy-gate: memory services stay on luffy ===
   services.honcho.enable = lib.mkForce false;
@@ -40,13 +42,9 @@
   layers.layer-10.system.config.impermanence.enable = lib.mkForce false;
 
   # === Home Manager: disable useUserPackages on headless host ===
-  # This avoids the XDG portal pathsToLink assertion triggered by the
-  # vicinae HM module (imported via hm-catalog.nix for option definition).
-  # Portals are irrelevant without a display compositor.
   home-manager.useUserPackages = lib.mkForce false;
 
   # === SSH (Alibaba security group: public from admin IP only) ===
-  # Base layer uses mkForce true; we need mkOverride 0 to win.
   services.openssh = {
     enable = true;
     settings = {
@@ -55,14 +53,13 @@
     };
   };
 
-  # === Firewall: SSH + gno (locked to Tailscale by SG) ===
+  # === Firewall: SSH + gno + headscale + HTTPS ===
   networking.firewall.allowedTCPPorts = [
     22
-    3456
+    80 # Caddy HTTP (ACME challenges)
+    443 # Caddy HTTPS (Headscale, Homepage)
+    3456 # gno
   ];
-
-  # === Tailscale/Headscale — configured via server/homelab tags ===
-  # Set clan.nix deploy.targetHost to Tailscale IP once joined.
 
   # === Restic backups ===
   layers.layer-20.services.backups.restic.enable = lib.mkDefault true;

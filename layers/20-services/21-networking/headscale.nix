@@ -10,6 +10,16 @@ in
       type = types.port;
       default = 8086;
     };
+    serverUrl = mkOption {
+      type = types.str;
+      default = "https://headscale.lovelain.duckdns.org";
+      description = "Public URL where this Headscale instance is reachable (used by Tailscale clients as login-server)";
+    };
+    baseDomain = mkOption {
+      type = types.str;
+      default = "grandlix.net";
+      description = "Magic DNS base domain for the tailnet";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -20,15 +30,15 @@ in
       settings = {
         dns = {
           magic_dns = true;
-          base_domain = "grandlix.net";
+          base_domain = cfg.baseDomain;
           nameservers = {
             global = [
-              "127.0.0.1" # AdGuard Home on luffy (local)
-              "1.1.1.1" # Fallback
+              "1.1.1.1"
+              "1.0.0.1"
             ];
           };
         };
-        server_url = "https://headscale.lovelain.duckdns.org";
+        server_url = cfg.serverUrl;
         # Permissive ACL - allow all our nodes full mesh
         policy = {
           mode = "file";

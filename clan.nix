@@ -1,44 +1,45 @@
 let
   machinesInventory = {
+    # Z0R0 — Desktop workstation (dev, gaming, inference)
+    # Always-on services: none (ExtremeRouter enabled directly in machine config)
     z0r0 = {
       tags = [
-        "workstation"
         "desktop"
+        "workstation"
+        "laptop"
         "development"
         "gaming"
-        "laptop"
-        "ai-server"
-        "ai-agent"
         "intel-12th-gen"
       ];
       deploy.targetHost = "root@127.0.0.1";
     };
 
+    # LUFFY — Homelab server (memory, media, private data)
+    # Always-on services: brain-service, Honcho, Matrix, n8n, Kavita, media
     luffy = {
       tags = [
-        "workstation"
-        "desktop"
-        "gaming"
         "server"
         "homelab"
-        "cache-server"
-        "ai-server"
         "ai-agent"
-        "development"
+        "pkb-node"
+        "cache-server"
         "media"
         "intel-9th-gen"
       ];
       deploy.targetHost = "root@100.80.146.120"; # Tailscale IP
     };
 
-    # Cloud control-plane + gno retrieval/graph service.
-    # Memory services (brain-service, Honcho) stay on luffy for privacy.
+    # SANJI — Cloud control-plane (always-on AI gateway, agent orchestration)
+    # Always-on services: Kong, Omniroute, Mission Control, Paperclip, Homepage, Headscale
+    # Memory services stay on luffy for privacy.
     sanji = {
       tags = [
         "server"
         "homelab"
+        "network-router"
+        "ai-router"
+        "agent-orchestrator"
       ];
-      # Set to actual Tailscale IP once provisioned:
       deploy.targetHost = "root@47.254.90.69"; # Alibaba VPS (US West-1)
     };
 

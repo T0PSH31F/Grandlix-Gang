@@ -150,6 +150,21 @@
     };
 
     # ── Services & Utilities ───────────────────────────────────
+    jerry = {
+      url = "github:justchokingaround/jerry";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+    lobster = {
+      url = "github:justchokingaround/lobster";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+    };
+    luffy = {
+      url = "github:DemonKingSwarn/luffy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel/release";
       inputs.nixpkgs.follows = "nixpkgs";

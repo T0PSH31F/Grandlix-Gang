@@ -154,8 +154,8 @@ in
     # Disable SillyTavern Tag Default to completely disable it
     sillytavern-app.enable = lib.mkForce false;
 
-    # Headscale Server
-    headscale-server.enable = true;
+    # Headscale moved to Sanji (network-router tag)
+    headscale-server.enable = lib.mkForce false;
 
     # Native Postgres (Shared for Nextcloud, Immich, MaxKB etc.)
     postgresql = {

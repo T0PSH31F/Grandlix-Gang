@@ -3,16 +3,24 @@
   lib,
   ...
 }:
-
+let
+  cfg = config.layers.layer-20.services.config.tailscale;
+in
 {
-  options.layers.layer-20.services.config.tailscale.enable = lib.mkEnableOption "Tailscale client";
+  options.layers.layer-20.services.config.tailscale = {
+    enable = lib.mkEnableOption "Tailscale client";
+    loginServer = lib.mkOption {
+      type = lib.types.str;
+      default = "https://headscale.lovelain.duckdns.org";
+      description = "Headscale login server URL for fleet-wide Tailscale authentication";
+    };
+  };
 
-  config = lib.mkIf config.layers.layer-20.services.config.tailscale.enable {
-    # Shared Tailscale client configuration for the fleet connecting to Luffy's Headscale
+  config = lib.mkIf cfg.enable {
+    # Shared Tailscale client configuration for the fleet
     services.tailscale = {
       enable = true;
-      # Tell clients to use your Headscale server
-      extraUpFlags = [ "--login-server=https://headscale.lovelain.duckdns.org" ];
+      extraUpFlags = [ "--login-server=${cfg.loginServer}" ];
     };
 
     # Open UDP port 41641 for peer-to-peer Tailscale connections

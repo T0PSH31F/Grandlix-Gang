@@ -34,7 +34,10 @@
   fileSystems."/boot" = lib.mkDefault {
     device = "/dev/nvme0n1p2";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
   swapDevices = [ ];

@@ -157,9 +157,12 @@ Append one entry per session, newest at the bottom. Never edit past entries.
 - **State change:** passing (evidence recorded in feature_list.json)
 - **Next action:** Deploy to luffy (offline) + runtime-verify: pull a local chat model (qwen2.5:7b or similar) in Ollama, run a query to confirm local answering; set brain_user role password via sops. Then workstreams 4 (dashboard/gno), 5 (restic restore), 6 (Oracle/Alibaba).
 
-
-
-
+- **Date / Agent:** 2026-09-03 / mimo-v2.5-pro
+- **Feature:** tag-refactor-granular-service-redistribution
+- **Work done:** Recovered session context from crash. Fixed 7 broken option paths across tag files from incomplete previous refactor. Created 4 new granular tags (ai-router, pkb-node, agent-orchestrator, network-router). Redistributed services: Sanji = always-on control-plane (AI gateway, agent orchestration, network routing), Luffy = private memory (brain-service, Honcho, media), Z0r0 = stateless desktop workstation. Removed stale mkForce overrides from z0r0. Fixed undefined `jerry` package. Updated validTags in both registry and CI test.
+- **Verification:** `nix eval` toplevel on z0r0, luffy, sanji all return clean drvPaths; `dendritic-structure-test` passes green.
+- **State change:** passing (eval evidence: z0r0/bf94j77vd, luffy/fqpmprc295, sanji/b52npnzrf7)
+- **Next action:** Luffy Tailscale recovery (user in progress). Then fleet deployment via `clan machines update sanji` (first deploy), upstream mkDefault cleanup for module defaults, Omniroute port verification.
 
 
 

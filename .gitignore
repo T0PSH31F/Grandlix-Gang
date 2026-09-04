@@ -18,6 +18,8 @@ inventory.json
 .hermes/plans/*
 .env
 *.env
+# Clan vars secrets must be committed (encrypted by sops)
+!vars/**/*.env
 system_packages.txt
 /scratch
 

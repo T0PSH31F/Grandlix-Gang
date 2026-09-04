@@ -9,7 +9,9 @@
 let
   validTags = [
     "ai-agent"
+    "ai-router"
     "ai-server"
+    "agent-orchestrator"
     "cache-server"
     "desktop"
     "development"
@@ -20,6 +22,8 @@ let
     "intel-9th-gen"
     "laptop"
     "media"
+    "network-router"
+    "pkb-node"
     "server"
     "workstation"
   ];

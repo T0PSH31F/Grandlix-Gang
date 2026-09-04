@@ -1069,6 +1069,32 @@
         "type": "github"
       }
     },
+    "jerry": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777288767,
+        "narHash": "sha256-R7yNvYk2af4dVYn32qXaAb5RGzxNQ+H/+cqEP6Q3TPQ=",
+        "owner": "justchokingaround",
+        "repo": "jerry",
+        "rev": "ad4329695cb59314fb0a5be5d22f6b7fc5a124ba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "justchokingaround",
+        "repo": "jerry",
+        "type": "github"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -1097,6 +1123,49 @@
       "original": {
         "owner": "numtide",
         "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
+    "lobster": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776589977,
+        "narHash": "sha256-qMdRBiiBDD8OaSEZ1cnfjA3fKbIrMaGTgrlZGOU8sGg=",
+        "owner": "justchokingaround",
+        "repo": "lobster",
+        "rev": "ad9688fd1f759abaf3ffa741e77ea9d54bfe38b7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "justchokingaround",
+        "repo": "lobster",
+        "type": "github"
+      }
+    },
+    "luffy": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779445240,
+        "narHash": "sha256-n8FboCuTQC0OBFYQB1nLEimoEUr8m1bfRtnu+tqNe7E=",
+        "owner": "DemonKingSwarn",
+        "repo": "luffy",
+        "rev": "888d3237cbee8642187cda237262e084738f5076",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DemonKingSwarn",
+        "repo": "luffy",
         "type": "github"
       }
     },
@@ -1631,7 +1700,10 @@
         "hypr-dynamic-cursors": "hypr-dynamic-cursors",
         "hyprland": "hyprland",
         "impermanence": "impermanence",
+        "jerry": "jerry",
         "llm-agents": "llm-agents",
+        "lobster": "lobster",
+        "luffy": "luffy",
         "niri": "niri",
         "nix-cachyos-kernel": "nix-cachyos-kernel",
         "nixai": "nixai",

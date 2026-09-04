@@ -9,7 +9,7 @@ let
   hasTag = tag: builtins.elem tag (config.machine.tags or [ ]);
 in
 {
-  config = lib.mkIf (hasTag "dev") {
+  config = lib.mkIf (hasTag "development") {
     environment.systemPackages = with pkgs; [
       # Compilers & build tools
       #       antigravity
