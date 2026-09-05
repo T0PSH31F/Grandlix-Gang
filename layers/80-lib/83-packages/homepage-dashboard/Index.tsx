@@ -8,8 +8,17 @@ import { categories } from '@/data/services';
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const vegapunk = categories.find(c => c.id === 'vegapunk')!;
-  const otherCategories = categories.filter(c => c.id !== 'vegapunk');
+  const { vegapunk, otherCategories } = categories.reduce(
+    (acc, category) => {
+      if (category.id === 'vegapunk') {
+        acc.vegapunk = category;
+      } else {
+        acc.otherCategories.push(category);
+      }
+      return acc;
+    },
+    { vegapunk: null as any, otherCategories: [] as typeof categories }
+  );
 
   return (
     <div className="min-h-screen relative grain-overlay">
