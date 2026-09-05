@@ -164,7 +164,14 @@ let
     contextForge = 8094;
   };
 
-  hostOf = machine: if machine == "z0r0" then z0r0 else if machine == "sanji" then sanji else luffy;
+  hostOf =
+    machine:
+    if machine == "z0r0" then
+      z0r0
+    else if machine == "sanji" then
+      sanji
+    else
+      luffy;
 
   mkService =
     name:

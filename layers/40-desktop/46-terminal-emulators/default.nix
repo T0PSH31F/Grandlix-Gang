@@ -14,8 +14,11 @@
       ./waveterm.nix
       ./kitty.nix
     ];
-    home.packages = lib.optionals config.layers.layer-40.desktop.terminals.enable (with pkgs; [
-      warp-terminal
-    ]);
+    home.packages = lib.optionals config.layers.layer-40.desktop.terminals.enable (
+      with pkgs;
+      [
+        warp-terminal
+      ]
+    );
   };
 }

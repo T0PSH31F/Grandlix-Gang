@@ -61,17 +61,21 @@ with lib;
 
       virtualHosts =
         let
-          baseVirtualHosts = mapAttrs (_name: value:
+          baseVirtualHosts = mapAttrs (
+            _name: value:
             filterAttrs (_: v: v != null) {
               inherit (value) extraConfig useACMEHost serverAliases;
             }
           ) config.services.caddy-server.virtualHosts;
 
-          registryRoutes = mapAttrs' (subdomain: port: nameValuePair "http://${subdomain}.${config.layers.meta.domain or "lovelain.duckdns.org"}" {
-            extraConfig = ''
-              reverse_proxy localhost:${toString port}
-            '';
-          }) config.layers.layer-20.services.config.reverseProxy.routes;
+          registryRoutes = mapAttrs' (
+            subdomain: port:
+            nameValuePair "http://${subdomain}.${config.layers.meta.domain or "lovelain.duckdns.org"}" {
+              extraConfig = ''
+                reverse_proxy localhost:${toString port}
+              '';
+            }
+          ) config.layers.layer-20.services.config.reverseProxy.routes;
         in
         if config.layers.layer-20.services.config.reverseProxy.routes != { } then
           lib.mkMerge [
