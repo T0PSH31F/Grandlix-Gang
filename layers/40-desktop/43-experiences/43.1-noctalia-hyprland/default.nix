@@ -18,7 +18,7 @@ in
     };
   };
 
-  config = lib.mkIf isEnabled {
+  nixos = lib.mkIf isEnabled {
     layers.layer-40.desktop.noctalia.enable = true;
   };
 
