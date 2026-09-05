@@ -1,9 +1,7 @@
-# Desktop Experiences — selector + experience adapters
-# Direct imports (not via mkDendriticTree) because the selector defines
-# options.layers.desktop.* which sits outside the layer-XX namespace.
+# Desktop Experiences — pure aggregator for the dendritic tree.
+# mkDendriticTree wraps each entry via mkDendriticModule, which
+# correctly handles multi-class modules (nixos + home).
+{ mkDendriticModule, mkDendriticTree, ... }:
 {
-  imports = [
-    ./43.0-selector.nix
-    ./43.1-noctalia-hyprland/default.nix
-  ];
+  imports = mkDendriticTree mkDendriticModule ./.;
 }
