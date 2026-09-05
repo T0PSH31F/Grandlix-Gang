@@ -65,10 +65,12 @@ in
       openwakeword.enable = cfg.openwakeword.enable;
     };
 
-    networking.firewall.allowedTCPPorts = [
-      10200
-      10300
-      10400
-    ];
+    networking.firewall = {
+      allowedTCPPorts = [
+        10200 # piper
+        10300 # faster-whisper
+        10400 # openwakeword
+      ];
+    };
   };
 }
