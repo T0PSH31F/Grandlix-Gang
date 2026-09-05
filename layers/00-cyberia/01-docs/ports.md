@@ -20,13 +20,13 @@
 | **389**  | Vaultwarden LDAP       | luffy  | `layers/20-services/25-data/vaultwarden.nix`      | Internal LDAP auth              |
 | **465**  | Himalaya SMTPS         | z0r0   | `layers/50-cli-tui-programs/53-tools/`             | Email client SMTP               |
 | **993**  | Himalaya IMAPS         | z0r0   | `layers/50-cli-tui-programs/53-tools/`             | Email client IMAP               |
-| **1337** | Jan AI                 | z0r0   | `layers/20-services/22-ai/22-inference/jan.nix`    | Local AI Desktop API            |
-| **3000** | Hermes Workspace       | z0r0   | `machines/z0r0/default.nix`                        | Hermes Agent Web GUI            |
+| **1337** | Jan AI                 | z0r0   | `layers/74-ai-infra/jan.nix`                       | Local AI Desktop API            |
+| **3000** | Hermes Workspace       | z0r0   | `layers/70-agents/71-harness/hermes/`              | Hermes Agent Web GUI            |
 | **3001** | HedgeDoc               | z0r0   | `machines/z0r0/default.nix`                        | Collaborative Markdown Editor   |
-| **3002** | AdGuard Web            | luffy  | `machines/luffy/default.nix`                       | AdGuard Admin Dashboard         |
-| **3001** | FreeLLMAPI             | z0r0   | `layers/20-services/22-ai/21-llm-routers/freellmapi.nix` | Free-tier LLM API Router |
-| **3005** | Langfuse               | z0r0   | `machines/z0r0/default.nix`                        | LLM Observability & Tracing     |
-| **3006** | AionUI                 | z0r0   | `layers/20-services/22-ai/24-agent-uis/aionui.nix` | AI Cowork Web Interface         |
+| **3002** | AdGuard Web            | luffy  | `layers/20-services/21-networking/adguard.nix`    | AdGuard Admin Dashboard         |
+| **3003** | FreeLLMAPI             | z0r0   | `layers/70-agents/78-llm-routers/freellmapi.nix`  | Free-tier LLM API Router        |
+| **3005** | Langfuse               | z0r0   | `layers/70-agents/73-memory/langfuse.nix`         | LLM Observability & Tracing     |
+| **3006** | AionUI                 | z0r0   | `layers/70-agents/76-orchestrators/aionui.nix`    | AI Cowork Web Interface         |
 | **3007** | N8N Web / Karakeep     | luffy  | `machines/luffy/default.nix`                       | Workflow Automation Primary     |
 | **3008** | Grafana                | Both   | `layers/20-services/26-monitoring/`                | System Observability Dashboard  |
 | **3099** | Mission Control        | z0r0   | `machines/z0r0/default.nix`                        | Container & Task Manager        |
@@ -38,32 +38,30 @@
 | **5050** | Kavita                 | luffy  | `layers/20-services/26-monitoring/`                | E-book & Digital Library        |
 | **5432** | PostgreSQL             | Both   | System Services                                    | Relational Database             |
 | **5678** | N8N Webhook            | luffy  | `machines/luffy/default.nix`                       | Workflow Automation Webhook     |
-| **5680** | OpenCompany UI         | luffy  | `layers/20-services/22-ai/25-harness-control/opencompany.nix` | AI Org Web Interface   |
-| **5681** | OpenCompany Backend    | luffy  | `layers/20-services/22-ai/25-harness-control/opencompany.nix` | AI Org Python Server   |
+| **5680** | OpenCompany UI         | luffy  | `layers/70-agents/76-orchestrators/opencompany.nix` | AI Org Web Interface   |
+| **5681** | OpenCompany Backend    | luffy  | `layers/70-agents/76-orchestrators/opencompany.nix` | AI Org Python Server   |
 | **6080** | Camofox VNC            | z0r0   | `layers/20-services/24-communication/`             | Browser VNC Viewport            |
-| **6333** | Qdrant HTTP            | z0r0   | `layers/20-services/22-ai/23-vector-db/qdrant.nix` | Vector Database REST API        |
-| **6334** | Qdrant gRPC            | z0r0   | `layers/20-services/22-ai/23-vector-db/qdrant.nix` | Vector Database gRPC            |
+| **6333** | Qdrant HTTP            | z0r0   | `layers/20-services/25-data/qdrant.nix`             | Vector Database REST API        |
+| **6334** | Qdrant gRPC            | z0r0   | `layers/20-services/25-data/qdrant.nix`             | Vector Database gRPC            |
 | **6380** | Nextcloud              | luffy  | `layers/20-services/25-data/nextcloud.nix`         | Cloud File Synchronization      |
 | **6767** | Bazarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Subtitle Manager                |
 | **6800** | Aria2                  | luffy  | `layers/20-services/23-media/download-clients.nix`| Download Daemon RPC             |
 | **7878** | Radarr                 | luffy  | `layers/20-services/23-media/media-stack.nix`     | Movie Management                |
-| **8000** | SillyTavern            | z0r0   | `machines/z0r0/default.nix`                        | LLM Frontend Interface          |
-| **8004** | ChromaDB               | z0r0   | `layers/20-services/22-ai/23-vector-db/chromadb.nix` | Vector Database HTTP API |
+| **8000** | SillyTavern            | z0r0   | `layers/70-agents/77-dash-desk-ui/sillytavern.nix` | LLM Frontend Interface          |
+| **8004** | ChromaDB               | z0r0   | `layers/20-services/25-data/chromadb.nix`          | Vector Database HTTP API        |
 | **8008** | Matrix Synapse         | luffy  | `machines/luffy/default.nix`                       | Matrix Federation & Homeserver  |
-| **8010** | Brain Service          | z0r0   | `machines/z0r0/default.nix`                        | Personal Knowledge Base API     |
+| **8010** | Brain Service          | luffy  | `layers/70-agents/73-memory/brain-service.nix`    | Personal Knowledge Base API     |
 | **8080** | Signal CLI             | z0r0   | `machines/z0r0/default.nix`                        | Signal Messenger REST Daemon    |
-| **8081** | Kong Gateway (legacy doc ref — REPLACED, see 8090) | z0r0   | `layers/20-services/22-ai/21-llm-routers/kong-gateway.nix` | Deprecated stale reference |
+| **8081** | Kong Gateway (legacy)  | sanji  | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Deprecated stale reference      |
 | **8082** | Homepage Dashboard     | z0r0   | `layers/20-services/26-monitoring/`                | Main Desktop Service Dashboard  |
-| **8083** | FreeLLMPool            | z0r0   | `machines/z0r0/default.nix`                        | Free-tier LLM Provider Pool     |
+| **8083** | FreeLLMPool            | z0r0   | `layers/70-agents/78-llm-routers/freellmpool.nix`  | Free-tier LLM Provider Pool     |
 | **8084** | Paperless-ngx          | luffy  | `machines/luffy/default.nix`                       | Document Archival System        |
-| **8085** | Hermes Agent Gateway   | z0r0   | `layers/70-agents/76-hermes-agent/`                | Hermes Agent MCP Control Gateway|
-| **8086** | Headscale              | luffy  | `layers/20-services/21-networking/`               | Tailscale Control Plane         |
-| **8087** | Mealie                 | luffy  | `machines/luffy/default.nix`                       | Recipe & Meal Manager           |
-| **8088** | Open WebUI             | z0r0   | `layers/20-services/22-ai/24-agent-uis/open-webui.nix` | LLM Web Chat Interface |
-| **8089** | Filebrowser            | luffy  | `layers/20-services/26-monitoring/`                | Web File Manager                |
-| **8090** | Kong Gateway (proxy)   | z0r0   | `layers/20-services/22-ai/21-llm-routers/kong-gateway.nix` | Unified LLM/API gateway — clients hit `/v1/*` here |
-| **8091** | Kong Admin API         | z0r0   | `layers/20-services/22-ai/21-llm-routers/kong-gateway.nix` | Kong declarative admin API (loopback) |
-| **8092** | EverOS Memory Server   | z0r0   | `layers/20-services/22-ai/25-harness-control/everos.nix` | Memory consolidation engine |
+| **8085** | Hermes Agent Gateway   | z0r0   | `layers/70-agents/71-harness/hermes/`              | Hermes Agent MCP Control Gateway|
+| **8086** | Headscale              | sanji  | `layers/20-services/21-networking/headscale.nix`  | Tailscale Control Plane         |
+| **8088** | Open WebUI             | luffy  | `layers/70-agents/77-dash-desk-ui/open-webui.nix` | LLM Web Chat Interface          |
+| **8090** | Kong Gateway (proxy)   | sanji  | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Unified LLM/API gateway         |
+| **8091** | Kong Admin API         | sanji  | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Kong declarative admin API      |
+| **8092** | EverOS Memory Server   | z0r0   | `layers/70-agents/73-memory/everos.nix`           | Memory consolidation engine     |
 | **8093** | CalibreWeb (luffy) / Kong Manager GUI (z0r0, loopback) | luffy  | `layers/20-services/26-monitoring/` | E-book Web Reader (luffy); Kong dashboard is loopback-only on z0r0 at `http://127.0.0.1:8093` |
 | **8095** | qBittorrent WebUI      | luffy  | `layers/20-services/23-media/download-clients.nix`| Torrent Client Web Interface    |
 | **8096** | Jellyfin               | luffy  | `layers/20-services/23-media/media-stack.nix`     | Media Streaming Server          |
