@@ -41,8 +41,16 @@
   # === Cloud VM: ext4 root, no tmpfs/impermanence ===
   layers.layer-10.system.config.impermanence.enable = lib.mkForce false;
 
-  # === Home Manager: disable useUserPackages on headless host ===
+  # === Virtualization: Podman for OCI containers (Omniroute, Mission Control, gno) ===
+  virtualisation.podman = {
+    enable = true;
+    dockerSocket.enable = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
+
+  # === Home Manager: headless cloud host overrides ===
   home-manager.useUserPackages = lib.mkForce false;
+  home-manager.users.t0psh31f.dconf.enable = false;
 
   # === SSH (Alibaba security group: public from admin IP only) ===
   services.openssh = {
