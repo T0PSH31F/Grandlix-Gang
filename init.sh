@@ -18,10 +18,11 @@ statix check . || echo "    (statix check failed or uninstalled — check files)
 echo "==> [3/5] Baseline verification"
 "${VERIFY_CMD[@]}"
 
-echo "==> [4/5] Machine evaluation (luffy, z0r0)"
+echo "==> [4/5] Machine evaluation (luffy, z0r0, nami)"
 nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath >/dev/null
 nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath >/dev/null
-echo "    both machines evaluate"
+nix eval --raw .#nixosConfigurations.nami.config.system.build.toplevel.drvPath >/dev/null
+echo "    all 3 machines evaluate"
 
 echo "==> [5/5] Fleet visibility"
 "${START_CMD[@]}" || echo "    (clan CLI unavailable locally — non-fatal)"

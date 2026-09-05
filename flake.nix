@@ -72,6 +72,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.systems.follows = "systems";
     };
+    nova = {
+      url = "github:Yazelix/nova";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     vicinae = {
       url = "github:vicinaehq/vicinae";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -7,6 +7,13 @@
   networking = {
     networkmanager.enable = true;
 
+    # Fleet DNS: AdGuard Home primary with Cloudflare fallback
+    nameservers = [
+      "192.168.1.54"
+      "1.1.1.1"
+      "1.0.0.1"
+    ];
+
     # Unified Master Fleet Firewall Configuration
     firewall = {
       enable = true;

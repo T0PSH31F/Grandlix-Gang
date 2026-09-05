@@ -630,6 +630,12 @@
                 - serve
                 - --mcp
               env: {}
+            headroom:
+              command: headroom
+              args:
+                - mcp
+                - serve
+              env: {}
         '';
       };
 

@@ -52,15 +52,15 @@
 | **8008** | Matrix Synapse         | luffy  | `machines/luffy/default.nix`                       | Matrix Federation & Homeserver  |
 | **8010** | Brain Service          | luffy  | `layers/70-agents/73-memory/brain-service.nix`    | Personal Knowledge Base API     |
 | **8080** | Signal CLI             | z0r0   | `machines/z0r0/default.nix`                        | Signal Messenger REST Daemon    |
-| **8081** | Kong Gateway (legacy)  | sanji  | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Deprecated stale reference      |
+| **8081** | Kong Gateway (legacy)  | nami   | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Deprecated stale reference      |
 | **8082** | Homepage Dashboard     | z0r0   | `layers/20-services/26-monitoring/`                | Main Desktop Service Dashboard  |
 | **8083** | FreeLLMPool            | z0r0   | `layers/70-agents/78-llm-routers/freellmpool.nix`  | Free-tier LLM Provider Pool     |
 | **8084** | Paperless-ngx          | luffy  | `machines/luffy/default.nix`                       | Document Archival System        |
 | **8085** | Hermes Agent Gateway   | z0r0   | `layers/70-agents/71-harness/hermes/`              | Hermes Agent MCP Control Gateway|
-| **8086** | Headscale              | sanji  | `layers/20-services/21-networking/headscale.nix`  | Tailscale Control Plane         |
+| **8086** | Headscale              | nami   | `layers/20-services/21-networking/headscale.nix`  | Tailscale Control Plane         |
 | **8088** | Open WebUI             | luffy  | `layers/70-agents/77-dash-desk-ui/open-webui.nix` | LLM Web Chat Interface          |
-| **8090** | Kong Gateway (proxy)   | sanji  | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Unified LLM/API gateway         |
-| **8091** | Kong Admin API         | sanji  | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Kong declarative admin API      |
+| **8090** | Kong Gateway (proxy)   | nami   | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Unified LLM/API gateway         |
+| **8091** | Kong Admin API         | nami   | `layers/70-agents/78-llm-routers/kong-gateway.nix` | Kong declarative admin API      |
 | **8092** | EverOS Memory Server   | z0r0   | `layers/70-agents/73-memory/everos.nix`           | Memory consolidation engine     |
 | **8093** | CalibreWeb (luffy) / Kong Manager GUI (z0r0, loopback) | luffy  | `layers/20-services/26-monitoring/` | E-book Web Reader (luffy); Kong dashboard is loopback-only on z0r0 at `http://127.0.0.1:8093` |
 | **8095** | qBittorrent WebUI      | luffy  | `layers/20-services/23-media/download-clients.nix`| Torrent Client Web Interface    |

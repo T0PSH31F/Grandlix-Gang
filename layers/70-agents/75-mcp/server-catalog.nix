@@ -30,7 +30,27 @@
     };
   };
 
-  nixos = { };
+  nixos =
+    let
+      cfg = config.layers.layer-75.mcp;
+    in
+    lib.mkIf (cfg.enable && cfg.gateway.enable) {
+      systemd.services.mcp-gateway = {
+        description = "MCP Aggregator Gateway Service";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
+        environment = {
+          PORT = toString cfg.gateway.port;
+        };
+        serviceConfig = {
+          ExecStart = "${pkgs.nodejs_24}/bin/npx -y @portel/ncp --port ${toString cfg.gateway.port}";
+          Restart = "on-failure";
+          RestartSec = 5;
+          MemoryMax = "500M";
+          MemoryHigh = "400M";
+        };
+      };
+    };
 
   home =
     let
@@ -49,6 +69,24 @@
 
       xdg.configFile."mcp/config.json".text = builtins.toJSON {
         mcpServers = lib.recursiveUpdate {
+          brain-service = {
+            command = "/run/current-system/sw/bin/brain-mcp";
+            args = [ ];
+          };
+          ncp = {
+            command = "npx";
+            args = [
+              "-y"
+              "@portel/ncp"
+            ];
+          };
+          headroom = {
+            command = "headroom";
+            args = [
+              "mcp"
+              "serve"
+            ];
+          };
           browser-use = {
             command = "npx";
             args = [

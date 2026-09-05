@@ -17,6 +17,7 @@
     layers.layer-72.voice.voice.enable = lib.mkDefault false;
 
     layers.layer-75.mcp.enable = lib.mkDefault true;
+    layers.layer-75.mcp.gateway.enable = lib.mkDefault true;
     layers.layer-76.hermes.enable = lib.mkDefault true;
     layers.layer-76.hermes.enableDesktop = lib.mkDefault true;
     layers.layer-76.hermes-workspace.enable = lib.mkDefault true;

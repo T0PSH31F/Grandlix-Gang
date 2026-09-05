@@ -366,23 +366,14 @@
 
       # MCP wrapper package for Hermes integration
       environment.systemPackages = lib.mkIf cfg.mcpEnable [
-        (pkgs.writeShellScriptBin "brain-mcp" ''
-          export BRAIN_MODE=mcp
-          export DB_NAME=${cfg.dbName}
-          export DB_USER=${cfg.dbUser}
-          export DB_HOST=${cfg.dbHost}
-          export DB_PORT=${toString cfg.dbPort}
-          export LLM_PROVIDER=${cfg.llmProvider}
-          export LLM_API_BASE=${cfg.llmApiBase}
-          export LLM_MODEL=${cfg.llmModel}
-          export OLLAMA_URL=http://127.0.0.1:11434
-          export EMBED_MODEL=${cfg.embedModel}
-          export EMBED_DIM=${toString cfg.embedDim}
-          export MANIFEST_PATH=/var/lib/brain-service/manifest.json
-          export TIKTOKEN_CACHE_DIR=/var/lib/brain-service/tiktoken-cache
-
-          exec ${pythonEnv}/bin/python ${brainScript}
-        '')
+        (import ../75-mcp/_brain-mcp-wrapper.nix {
+          inherit
+            pkgs
+            brainScript
+            pythonEnv
+            cfg
+            ;
+        })
         # CLI tool for quick ingestion
         (pkgs.writeShellScriptBin "brain-ingest" ''
           if [ -z "$1" ]; then

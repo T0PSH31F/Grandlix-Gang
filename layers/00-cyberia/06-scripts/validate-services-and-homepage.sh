@@ -32,7 +32,7 @@ fi
 declare -A NODE_IPS=(
   ["z0r0"]="127.0.0.1"
   ["luffy"]="192.168.1.54"
-  ["sanji"]="sanji.local"
+  ["nami"]="nami.local"
 )
 
 # Defined homepage service targets: Name | Machine | Port
@@ -62,11 +62,11 @@ declare -a SERVICES=(
   "n8n|luffy|5678"
   "Kavita|luffy|5050"
 
-  "Kong Gateway|sanji|8090"
-  "Headscale|sanji|8086"
-  "Paperclip|sanji|3101"
-  "Mission Control|sanji|3099"
-  "OmniRoute|sanji|20128"
+  "Kong Gateway|nami|8090"
+  "Headscale|nami|8086"
+  "Paperclip|nami|3101"
+  "Mission Control|nami|3099"
+  "OmniRoute|nami|20128"
 )
 
 echo "[1/2] Probing service ports and HTTP endpoints across fleet..."
@@ -102,7 +102,7 @@ probe_service() {
 
   local host="127.0.0.1"
   if [ "$node" = "luffy" ]; then host="192.168.1.54"; fi
-  if [ "$node" = "sanji" ]; then host="sanji.local"; fi
+  if [ "$node" = "nami" ]; then host="nami.local"; fi
 
   local tcp_status="CLOSED"
   if nc -z -w 1 "$host" "$port" 2>/dev/null; then

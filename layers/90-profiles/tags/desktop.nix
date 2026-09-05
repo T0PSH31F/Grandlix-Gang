@@ -35,7 +35,10 @@
         };
       };
       desktop.experience = lib.mkDefault "noctalia-hyprland";
-      layer-50.cli.terminal-toys.enable = lib.mkDefault true;
+      layer-50.cli = {
+        terminal-toys.enable = lib.mkDefault true;
+        yazelix-nova.enable = lib.mkDefault true;
+      };
       layer-60.gui = {
         communication.enable = lib.mkDefault true;
         documents.enable = lib.mkDefault true;

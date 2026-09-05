@@ -32,16 +32,17 @@ let
       deploy.targetHost = "root@192.168.1.54"; # LAN IP (Tailscale offline)
     };
 
-    # SANJI — Cloud control-plane (always-on AI gateway, agent orchestration)
-    # Always-on services: Kong, Omniroute, Mission Control, Paperclip, Homepage, Headscale
+    # NAMI — Cloud control-plane (always-on AI gateway, agent orchestration, media)
+    # Always-on services: Kong, Omniroute, ExtremeRouter, Mission Control, Paperclip, Homepage, Headscale
     # Memory services stay on luffy for privacy.
-    sanji = {
+    nami = {
       tags = [
         "server"
         "homelab"
         "network-router"
         "ai-router"
         "agent-orchestrator"
+        "media"
       ];
       deploy.targetHost = "root@47.254.90.69"; # Alibaba VPS (US West-1)
     };
@@ -174,10 +175,10 @@ in
       ];
     };
 
-    sanji = {
-      machine.tags = machinesInventory.sanji.tags;
+    nami = {
+      machine.tags = machinesInventory.nami.tags;
       imports = [
-        ./machines/sanji/default.nix
+        ./machines/nami/default.nix
         ./server-layers.nix # headless: all layers EXCEPT 13-users (no HM profile)
       ];
     };

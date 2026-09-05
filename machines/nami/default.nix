@@ -1,4 +1,4 @@
-# sanji — Alibaba Elastic Compute (US West-1, us-west-1b) control plane + gno
+# nami — Alibaba Elastic Compute (US West-1, us-west-1b) cloud control plane + AI router
 # Instance ID : i-rj951wld3zoyv1lr6nk7
 # Public IP   : 47.254.90.69
 # Private IP  : 172.21.238.38
@@ -17,7 +17,7 @@
 {
   imports = [ ./hardware.nix ];
 
-  networking.hostName = "sanji";
+  networking.hostName = "nami";
   system.stateVersion = "25.05";
 
   # === Headscale — fleet VPN control server (via network-router tag) ===

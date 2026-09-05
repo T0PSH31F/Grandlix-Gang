@@ -26,6 +26,8 @@
     inputs.sops-nix.nixosModules.sops
   ];
 
+  sops.age.sshKeyPaths = lib.mkDefault [ "/etc/ssh/ssh_host_ed25519_key" ];
+
   _module.args.osConfig = config;
 
   _module.args.lib = lib.extend (

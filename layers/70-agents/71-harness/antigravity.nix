@@ -61,6 +61,27 @@
             url = osConfig.layers.layer-20.endpoints.context-forge.baseUrl;
             description = "ContextForge Universal MCP/A2A Gateway";
           };
+          brain-service = {
+            command = "/run/current-system/sw/bin/brain-mcp";
+            args = [ ];
+            description = "PKB Brain RAG Search & Vector Index";
+          };
+          ncp = {
+            command = "npx";
+            args = [
+              "-y"
+              "@portel/ncp"
+            ];
+            description = "Semantic MCP Gateway (Context Reduction)";
+          };
+          headroom = {
+            command = "headroom";
+            args = [
+              "mcp"
+              "serve"
+            ];
+            description = "Headroom Context Token Compressor";
+          };
           mcp-nixos = {
             command = "${lib.getExe pkgs.mcp-nixos}";
             args = [ ];

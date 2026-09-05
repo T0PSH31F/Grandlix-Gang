@@ -73,7 +73,7 @@ let
   # ---------------------------------------------------------------------------
   z0r0 = "z0r0.local";
   luffy = "luffy.local";
-  sanji = "sanji.local";
+  nami = "nami.local";
 
   # The "other" machine — for glances remote stats widget
   remoteMachine = if hostName == "z0r0" then "luffy" else "z0r0";
@@ -168,8 +168,8 @@ let
     machine:
     if machine == "z0r0" then
       z0r0
-    else if machine == "sanji" then
-      sanji
+    else if machine == "nami" then
+      nami
     else
       luffy;
 
@@ -213,13 +213,13 @@ let
       icon = ic;
       description = "${desc} @luffy";
     };
-  sSrv =
+  nSrv =
     n: p: ic: desc:
     mkService n {
-      machine = "sanji";
+      machine = "nami";
       port = ports.${p};
       icon = ic;
-      description = "${desc} @sanji";
+      description = "${desc} @nami";
     };
 
   zSrvW =
@@ -240,13 +240,13 @@ let
       description = "${desc} @luffy";
       inherit widget;
     };
-  sSrvW =
+  nSrvW =
     n: p: ic: desc: widget:
     mkService n {
-      machine = "sanji";
+      machine = "nami";
       port = ports.${p};
       icon = ic;
-      description = "${desc} @sanji";
+      description = "${desc} @nami";
       inherit widget;
     };
 
@@ -258,7 +258,7 @@ let
       (zSrv "Hermes Workspace" "hermesWorkspace" "mdi-robot-outline" "Agent Command Center")
       (lSrv "Open WebUI" "openWebui" "open-webui.png" "Local LLM Chat")
       (lSrv "SearXNG" "searxng" "searxng.png" "Meta Search Engine")
-      (sSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
+      (nSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
       (zSrvW "Grafana" "grafana" "grafana.png" "Dashboards & Visualization" {
         type = "grafana";
         url = "http://${hostOf "z0r0"}:${toString ports.grafana}";
@@ -306,13 +306,13 @@ let
       (zSrv "Brain Service" "brainService" "mdi-brain" "AI Brain Layer")
       (zSrv "Hermes WebUI" "hermesWebui" "mdi-react" "Web UI Dashboard")
       (zSrv "AionUi" "aionUi" "mdi-account-group" "AI Agent Cowork UI")
-      (sSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
-      (sSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
-      (sSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
+      (nSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
+      (nSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
+      (nSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
       (zSrv "ExtremeRouter" "extremeRouter" "mdi-router-network"
         "AI Gateway — 154+ Providers, RTK Savings"
       )
-      (sSrv "OmniRoute" "omniroute" "mdi-routes" "Sanji AI Router")
+      (nSrv "OmniRoute" "omniroute" "mdi-routes" "Nami AI Router")
       (zSrv "FreeLLMPool" "freellmpool" "mdi-pool" "Free-Tier LLM Pool")
       (zSrv "FreeLLMAPI" "freellmapi" "mdi-api" "Free-Tier LLM Router")
       (zSrv "Mistral MCP" "mistralMcp" "mdi-brain" "Mistral AI Tool Server")
@@ -320,14 +320,14 @@ let
       (zSrv "Polyfloor OS" "polyfloor" "mdi-layers-triple" "Multi-floor AI Agent OS")
       (zSrv "EverOS Memory Engine" "everos" "mdi-brain-freeze" "Memory Chassis & Engine")
       (zSrv "ContextForge Gateway" "contextForge" "mdi-router-wireless" "MCP Context Gateway")
-      (sSrv "gno Memory Storage" "gno" "mdi-database-search" "Cloud Knowledge Index")
+      (nSrv "gno Memory Storage" "gno" "mdi-database-search" "Cloud Knowledge Index")
     ];
 
     Infrastructure = [
       (lSrv "Vaultwarden" "vaultwarden" "vaultwarden.png" "Password Manager")
-      (sSrvW "Headscale" "headscale" "headscale.png" "Tailscale Control Server" {
+      (nSrvW "Headscale" "headscale" "headscale.png" "Tailscale Control Server" {
         type = "headscale";
-        url = "http://${hostOf "sanji"}:${toString ports.headscale}";
+        url = "http://${hostOf "nami"}:${toString ports.headscale}";
         nodeId = "\${HOMEPAGE_HEADSCALE_NODE_ID}";
         key = "\${HOMEPAGE_HEADSCALE_KEY}";
       })
