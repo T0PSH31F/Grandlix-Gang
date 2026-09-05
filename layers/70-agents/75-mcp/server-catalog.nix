@@ -1,4 +1,9 @@
-# 🧠 MCP Server Catalog & Gateway
+# Tier: 75-mcp
+# Module: server-catalog.nix
+# Purpose: Declarative Model Context Protocol (MCP) server catalog & registry.
+# Option Path: layers.layer-75.mcp
+# Enabling Host Tags: ai-agent, workstation, desktop
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

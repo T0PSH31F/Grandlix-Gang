@@ -1,3 +1,9 @@
+# Tier: 73-memory
+# Module: langfuse.nix
+# Purpose: Langfuse LLM observability, prompt management, and trace telemetry suite.
+# Option Path: services.infrastructure.langfuse
+# Enabling Host Tags: pkb-node, homelab
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

@@ -1,4 +1,9 @@
-# llama-swap Proxy NixOS Service
+# Tier: 74-ai-infra
+# Module: llama-swap.nix
+# Purpose: Dynamic model swapper proxy — unloads/loads GGUF models on demand.
+# Option Path: services.llama-swap-proxy
+# Enabling Host Tags: gpu-compute, ai-server
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

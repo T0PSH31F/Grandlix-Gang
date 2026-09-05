@@ -1,3 +1,9 @@
+# Tier: 71-harness
+# Module: supergraph.nix
+# Purpose: Supergraph autonomous codebase navigation harness.
+# Option Path: layers.layer-70.agent.supergraph
+# Enabling Host Tags: ai-agent, development
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

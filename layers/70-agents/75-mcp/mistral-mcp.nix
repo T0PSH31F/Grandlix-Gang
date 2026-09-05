@@ -1,3 +1,9 @@
+# Tier: 75-mcp
+# Module: mistral-mcp.nix
+# Purpose: Mistral MCP service backend daemon exposing Mistral model capabilities via MCP tools.
+# Option Path: services.ai-services.mistral-mcp
+# Enabling Host Tags: ai-agent, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

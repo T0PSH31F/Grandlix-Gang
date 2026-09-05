@@ -1,3 +1,9 @@
+# Tier: 77-dash-desk-ui
+# Module: open-webui.nix
+# Purpose: Full-featured chat & RAG user interface supporting multi-user LLM interactions.
+# Option Path: services.ai-services.open-webui
+# Enabling Host Tags: desktop, workstation, homelab
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

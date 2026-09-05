@@ -4,9 +4,6 @@
   osConfig ? config,
   ...
 }:
-let
-  hasDesktopTag = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
-in
 {
   options.layers.layer-60.gui.documents.zathura = {
     enable = lib.mkOption {

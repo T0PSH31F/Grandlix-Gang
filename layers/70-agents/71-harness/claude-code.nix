@@ -1,4 +1,9 @@
-# 🧠 Claude Code — Anthropic Agentic Coding Tool
+# Tier: 71-harness
+# Module: claude-code.nix
+# Purpose: Anthropic Claude Code terminal agent harness wrapper.
+# Option Path: layers.layer-70.agent.claude-code
+# Enabling Host Tags: ai-agent, development
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

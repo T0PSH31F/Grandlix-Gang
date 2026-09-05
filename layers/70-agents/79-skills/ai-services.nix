@@ -1,3 +1,9 @@
+# Tier: 79-skills
+# Module: ai-services.nix
+# Purpose: Master top-level option namespace defining default services.ai-services.* flags.
+# Option Path: services.ai-services
+# Enabling Host Tags: ai-agent, ai-router, ai-server
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

@@ -1,4 +1,9 @@
-# llama.cpp HTTP Server NixOS Service
+# Tier: 74-ai-infra
+# Module: llama-cpp.nix
+# Purpose: High-performance C/C++ GGUF LLM inference server (llama-server).
+# Option Path: services.llama-cpp-server
+# Enabling Host Tags: gpu-compute, ai-server
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

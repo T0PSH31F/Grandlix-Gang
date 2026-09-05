@@ -1,3 +1,9 @@
+# Tier: 74-ai-infra
+# Module: localai.nix
+# Purpose: Multi-modal local AI server supporting audio, vision, and text models.
+# Option Path: services.ai-services.localai
+# Enabling Host Tags: ai-server
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

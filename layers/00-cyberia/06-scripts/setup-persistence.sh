@@ -26,8 +26,11 @@ if [ -z "$TARGET_USER" ]; then
 fi
 
 if [ ! -d "$PERSIST_DIR" ]; then
-    echo "⚠️  Warning: $PERSIST_DIR does not exist. Attempting to create it..."
-    sudo mkdir -p "$PERSIST_DIR" || { echo "❌ Error: Could not create $PERSIST_DIR"; exit 1; }
+  echo "⚠️  Warning: $PERSIST_DIR does not exist. Attempting to create it..."
+  sudo mkdir -p "$PERSIST_DIR" || {
+    echo "❌ Error: Could not create $PERSIST_DIR"
+    exit 1
+  }
 fi
 
 # Create Noctalia persistence directories

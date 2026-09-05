@@ -1,3 +1,9 @@
+# Tier: 71-harness
+# Module: opencode.nix
+# Purpose: OpenCode terminal agent harness with custom skills, agents, and configs.
+# Option Path: layers.layer-70.agent.opencode
+# Enabling Host Tags: ai-agent, development, workstation
+# RAM Footprint: medium (300MB-1GB)
 {
   lib,
   pkgs,

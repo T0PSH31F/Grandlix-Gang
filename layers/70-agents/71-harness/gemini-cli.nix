@@ -1,3 +1,9 @@
+# Tier: 71-harness
+# Module: gemini-cli.nix
+# Purpose: Google Gemini CLI harness for command line generation.
+# Option Path: layers.layer-70.agent.gemini-cli
+# Enabling Host Tags: ai-agent, development
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

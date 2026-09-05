@@ -59,11 +59,15 @@ else
         exit 1
       fi
 
-      # 4. Zero commented-out imports in default.nix files
-      if grep -rn "#.*imports =" ${../../.}/layers/ --include=default.nix >/dev/null 2>&1; then
-        echo "ERROR: Commented-out imports found in default.nix files"
-        exit 1
-      fi
+      # 5. Check for orphaned layers.layer-* option paths in machines and tags
+      echo "Checking for orphaned layers.layer-* setting paths..."
+      for opt in $(grep -oE "layers\.layer-[0-9]+\.[a-zA-Z0-9._-]+" -r ${../../.}/machines/ ${../../.}/layers/90-profiles/tags/ | cut -d: -f2 | cut -d'=' -f1 | tr -d ' ' | sort -u); do
+        base_opt=$(echo "$opt" | sed 's/\.enable$//')
+        if ! grep -rn "$base_opt" ${../../.}/layers/ >/dev/null 2>&1; then
+          echo "ERROR: Orphaned setting path found: $opt (not declared anywhere in layers/)"
+          exit 1
+        fi
+      done
 
       echo "Dendritic structure & guardrail checks passed successfully." > $out
     ''

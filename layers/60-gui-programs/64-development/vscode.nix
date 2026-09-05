@@ -5,9 +5,6 @@
   osConfig ? config,
   ...
 }:
-let
-  clanTags = osConfig.machine.tags or [ ];
-in
 {
   options.layers.layer-60.gui.vscode = {
     enable = lib.mkEnableOption "VS Code";

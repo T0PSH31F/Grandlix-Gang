@@ -6,7 +6,6 @@
 }:
 let
   cfg = config.layers.layer-50.cli.theming.matugen;
-  hasNoctalia = config.programs.noctalia.enable or false;
   allThemes = import ./themes.nix { inherit lib; };
   selectedThemeName = config.layers.layer-50.cli.theming.theme;
   themeColors = allThemes.${selectedThemeName} or allThemes."tokyo-night";

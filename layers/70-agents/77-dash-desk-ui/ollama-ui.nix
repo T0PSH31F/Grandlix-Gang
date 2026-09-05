@@ -1,3 +1,9 @@
+# Tier: 77-dash-desk-ui
+# Module: ollama-ui.nix
+# Purpose: Minimal web interface for local Ollama instances.
+# Option Path: services.ai-services.ollama-ui
+# Enabling Host Tags: desktop, workstation, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

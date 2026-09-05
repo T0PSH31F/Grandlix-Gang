@@ -1,3 +1,9 @@
+# Tier: 71-harness
+# Module: codegraph.nix
+# Purpose: CodeGraph semantic code intelligence for AI coding agents.
+# Option Path: layers.layer-70.agent.codegraph
+# Enabling Host Tags: ai-agent, development
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

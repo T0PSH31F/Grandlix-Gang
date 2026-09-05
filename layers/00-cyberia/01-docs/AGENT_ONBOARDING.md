@@ -168,7 +168,7 @@ NFP/
 │   ├── 40-desktop/        # desktop environments (hyprland via noctalia)
 │   ├── 50-cli-tui-programs/
 │   ├── 60-gui-programs/
-│   ├── 70-agents/         # AI agents
+│   ├── 70-agents/         # 9-tier AI subsystem (71-harness, 72-voice, 73-memory, 74-ai-infra, 75-mcp, 76-orchestrators, 77-dash-desk-ui, 78-llm-routers, 79-skills)
 │   ├── 80-lib/            # libraries, overlays
 │   └── 90-profiles/tags/  # tag-based profiles (workstation, desktop, laptop, etc.)
 ├── tools/

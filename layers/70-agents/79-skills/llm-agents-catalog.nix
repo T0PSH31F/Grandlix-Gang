@@ -1,5 +1,9 @@
-# llm-agents Catalog Module
-# Exposes llmPkgs catalog packages from inputs.llm-agents with tag-activated defaults
+# Tier: 79-skills
+# Module: llm-agents-catalog.nix
+# Purpose: Declarative catalog of available agent skills, prompt templates, and tool manifests.
+# Option Path: layers.layer-79.skills.llm-agents-catalog
+# Enabling Host Tags: ai-agent, development
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

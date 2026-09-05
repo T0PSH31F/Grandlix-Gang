@@ -1,3 +1,9 @@
+# Tier: 76-orchestrators
+# Module: opencompany.nix
+# Purpose: OpenCompany autonomous organization platform (Python API + Next.js UI).
+# Option Path: services.ai-services.opencompany
+# Enabling Host Tags: agent-orchestrator, homelab
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

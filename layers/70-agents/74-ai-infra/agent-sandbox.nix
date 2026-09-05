@@ -1,6 +1,9 @@
-# layers/70-agents/74-ai-infra/agent-sandbox.nix
-# OCI / Bubblewrap Agent Sandbox environment for isolated agent task execution.
-
+# Tier: 74-ai-infra
+# Module: agent-sandbox.nix
+# Purpose: Isolated container sandbox for secure agent code evaluation.
+# Option Path: layers.layer-70.agent.sandbox
+# Enabling Host Tags: ai-agent, ai-server
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

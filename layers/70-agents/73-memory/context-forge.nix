@@ -1,6 +1,9 @@
-# ContextForge MCP / A2A gateway for agent memory federation and tracing.
-# Registers EverOS MCP server backend and enforces agent memory scoping rules.
-
+# Tier: 73-memory
+# Module: context-forge.nix
+# Purpose: ContextForge agent prompt assembly & dynamic context window manager.
+# Option Path: layers.layer-73.memory.context-forge / services.ai-services.context-forge
+# Enabling Host Tags: pkb-node, ai-agent, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

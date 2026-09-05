@@ -3,10 +3,9 @@
   config,
   lib,
   pkgs,
-  osConfig ? config,
   ...
 }:
-let {
+{
   options.layers.layer-60.gui.obsidian = {
     enable = lib.mkOption {
       type = lib.types.bool;

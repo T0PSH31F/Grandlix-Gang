@@ -1,3 +1,9 @@
+# Tier: 78-llm-routers
+# Module: freellmapi.nix
+# Purpose: FreeLLMAPI free provider aggregation router with OpenAI-compatible endpoint.
+# Option Path: services.ai-services.freellmapi
+# Enabling Host Tags: ai-router, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

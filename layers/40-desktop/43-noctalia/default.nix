@@ -8,7 +8,6 @@
 }:
 let
   cfg = osConfig.layers.layer-40.desktop.noctalia;
-  hasDesktopTag = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
 in
 {
   options.layers.layer-40.desktop.noctalia = {

@@ -13,7 +13,6 @@ let
     mkDefault
     types
     ;
-  clanTags = osConfig.machine.tags or [ ];
 in
 {
   options.layers.layer-60.gui.gaming = {

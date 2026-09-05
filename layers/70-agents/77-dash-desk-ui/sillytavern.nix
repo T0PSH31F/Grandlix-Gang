@@ -1,3 +1,9 @@
+# Tier: 77-dash-desk-ui
+# Module: sillytavern.nix
+# Purpose: SillyTavern interactive LLM chat and character frontend interface.
+# Option Path: services.sillytavern-app (also clan.services.ai.sillytavern)
+# Enabling Host Tags: desktop, workstation, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

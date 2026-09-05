@@ -4,9 +4,6 @@
   osConfig ? config,
   ...
 }:
-let
-  clanTags = osConfig.machine.tags or [ ];
-in
 {
   options.layers.layer-60.gui.browsers.thunderbird = {
     enable = lib.mkEnableOption "Thunderbird Mail Client";

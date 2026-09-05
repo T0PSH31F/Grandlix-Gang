@@ -1,5 +1,9 @@
-# LangGraph — multi-agent orchestration layer (Python)
-# Agents call LLMs only via Kong Gateway.
+# Tier: 76-orchestrators
+# Module: langgraph.nix
+# Purpose: LangGraph stateful multi-agent flow runtime and graph execution server.
+# Option Path: services.ai-services.langgraph
+# Enabling Host Tags: agent-orchestrator, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

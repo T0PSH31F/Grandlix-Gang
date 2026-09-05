@@ -1,5 +1,9 @@
-# Unified AI Packages Catalog
-# Consolidates legacy ai-packages.nix, llm-agents.nix, and packages-ai.nix
+# Tier: 79-skills
+# Module: ai-packages.nix
+# Purpose: System-wide package collection for AI CLI utilities, PyTorch/Python helpers, and tool binaries.
+# Option Path: layers.layer-79.skills.ai-packages
+# Enabling Host Tags: ai-agent, development, workstation
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

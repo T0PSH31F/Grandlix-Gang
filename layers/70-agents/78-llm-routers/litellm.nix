@@ -1,4 +1,9 @@
-# LiteLLM Proxy NixOS Service
+# Tier: 78-llm-routers
+# Module: litellm.nix
+# Purpose: LiteLLM proxy server — unified OpenAI-compatible format with cost tracking & load balancing.
+# Option Path: services.litellm-proxy
+# Enabling Host Tags: ai-router, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

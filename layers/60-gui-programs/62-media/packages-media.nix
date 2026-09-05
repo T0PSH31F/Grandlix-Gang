@@ -7,7 +7,6 @@
   ...
 }:
 let
-  clanTags = osConfig.machine.tags or [ ];
   system = pkgs.stdenv.hostPlatform.system;
 in
 {

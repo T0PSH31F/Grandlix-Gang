@@ -1,3 +1,9 @@
+# Tier: 76-orchestrators
+# Module: polyfloor.nix
+# Purpose: Polyfloor AI governance, policy routing, and task allocation control plane.
+# Option Path: services.ai-services.polyfloor
+# Enabling Host Tags: agent-orchestrator, homelab
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

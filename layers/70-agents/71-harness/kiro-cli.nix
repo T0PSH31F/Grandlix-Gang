@@ -1,4 +1,9 @@
-# Kiro CLI — Command-line interface for Kiro agentic IDE
+# Tier: 71-harness
+# Module: kiro-cli.nix
+# Purpose: Kiro autonomous agent CLI tool integration.
+# Option Path: layers.layer-70.agent.kiro-cli
+# Enabling Host Tags: ai-agent, development
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

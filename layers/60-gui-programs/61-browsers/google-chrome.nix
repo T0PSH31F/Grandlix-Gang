@@ -5,9 +5,6 @@
   osConfig ? config,
   ...
 }:
-let
-  clanTags = osConfig.machine.tags or [ ];
-in
 {
   options.layers.layer-60.gui.browsers.google-chrome = {
     enable = lib.mkOption {

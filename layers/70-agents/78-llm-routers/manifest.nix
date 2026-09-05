@@ -1,3 +1,9 @@
+# Tier: 78-llm-routers
+# Module: manifest.nix
+# Purpose: Manifest frontier router selecting dynamic model fallbacks based on query complexity.
+# Option Path: services.ai-services.manifest
+# Enabling Host Tags: ai-router, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

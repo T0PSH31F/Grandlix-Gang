@@ -1,6 +1,9 @@
-# Kong AI Gateway — DB-less declarative configuration
-# Deployed as OCI container via podman. Config lives in the flake at
-# layers/20-services/22-ai/kong.yml — edit there, rebuild, done.
+# Tier: 78-llm-routers
+# Module: kong-gateway.nix
+# Purpose: Kong API Gateway — central authenticated LLM proxy, plugin engine, & consumer secret gateway.
+# Option Path: services.ai-services.kong-gateway
+# Enabling Host Tags: ai-router, homelab, server
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

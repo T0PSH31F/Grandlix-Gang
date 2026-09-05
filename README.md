@@ -32,12 +32,12 @@ Configuration logic is strictly compartmentalized across 10 numbered layers. See
 |:---|:---|:---|
 | **00–09** | `00-cyberia` | System documentation, asset templates, ISO specs, audit scripts |
 | **10–19** | `10-system` | Core OS foundation, CPU/GPU drivers, users, ZFS impermanence |
-| **20–29** | `20-services` | System services, networking, LLM routers, monitoring, dashboards |
+| **20–29** | `20-services` | System services, networking, database storage, monitoring, dashboards |
 | **30–39** | `30-theming` | System-wide theme engines, Matugen colors, cursor & sound themes |
 | **40–49** | `40-desktop` | Compositors (Hyprland, Niri), Noctalia shell, launchers (Rofi, Vicinae) |
 | **50–59** | `50-cli-tui-programs` | Shells (Zsh, Nushell), editors (NixVim), multiplexers (Zellij, Tmux) |
 | **60–69** | `60-gui-programs` | Desktop apps (Brave, CamoFox), media, development IDEs, gaming |
-| **70–79** | `70-agents` | Autonomous agent swarm (Hermes, OpenCode), MCP servers, skills |
+| **70–79** | `70-agents` | 9-tier Agent Subsystem: 71-harness, 72-voice, 73-memory, 74-ai-infra, 75-mcp, 76-orchestrators, 77-dash-desk-ui, 78-llm-routers, 79-skills |
 | **80–89** | `80-lib` | Functional Nix library (`mkDendriticModule`), overlays, custom derivations |
 | **90–99** | `90-profiles` | Machine profile tag aggregators (`tags/`) |
 
@@ -45,12 +45,13 @@ Configuration logic is strictly compartmentalized across 10 numbered layers. See
 
 ## 🤖 AI Swarm Control Plane & Agent Ecosystem
 
-NFP includes a production-grade multi-agent autonomous framework:
+NFP includes a production-grade multi-agent autonomous framework structured across tiers 71–79:
 
-* **Hermes Agent Gateway**: Multi-turn agent gateway (`:8085`) and dashboard (`:9119`) with custom skill packs and Managed Scope isolation (`/etc/hermes/config.yaml`).
-* **Unified LLM Gateway**: Kong Gateway (`:8090`) and ExtremeRouter (`:20128`) supporting 150+ LLM providers with automatic fallback routing.
-* **Context & Memory Chassis**: EverOS engine (`:8092`), PostgreSQL vector store, and ContextForge MCP gateway.
-* **Agent Workspaces**: OpenCode, AionUI, Paperclip, and Polyfloor multi-floor OS.
+* **Agent Harnesses** (`71-harness`): Hermes Agent Gateway (`:8085`), OpenCode, Antigravity IDE, DSH.
+* **LLM Routing** (`78-llm-routers`): Kong Gateway (`:8090`), ExtremeRouter (`:20128`), LiteLLM, FreeLLMAPI.
+* **Memory & PKB** (`73-memory`): Brain-service (`:8010`), EverOS (`:8092`), ContextForge (`:8094`), Honcho, GNO.
+* **Inference Runtimes** (`74-ai-infra`): Ollama (`:11434`), llama.cpp (`:8080`), vLLM (`:8000`), LocalAI.
+* **Orchestration & UIs** (`76-orchestrators`, `77-dash-desk-ui`): Polyfloor (`:8000`), Open WebUI (`:8088`), AionUI, Mission Control.
 
 ---
 
@@ -88,6 +89,8 @@ clan machines update luffy
 Detailed technical references are maintained under `layers/00-cyberia/01-docs/`:
 
 * **[AGENT_ONBOARDING.md](layers/00-cyberia/01-docs/AGENT_ONBOARDING.md)** — Architectural blueprint & system boot sequence
+* **[agent-layers.md](layers/00-cyberia/01-docs/agent-layers.md)** — 70-agents tier request flows, host mapping, and port table
+* **[tag-matrix.md](layers/00-cyberia/01-docs/tag-matrix.md)** — Machine × Tag profile matrix and rationale
 * **[harness.md](layers/00-cyberia/01-docs/harness.md)** — Harness specification & session verification workflow
 * **[ai-stack.md](layers/00-cyberia/01-docs/ai-stack.md)** — Complete AI infrastructure & MCP server map
 * **[ports.md](layers/00-cyberia/01-docs/ports.md)** — Fleet port allocation registry

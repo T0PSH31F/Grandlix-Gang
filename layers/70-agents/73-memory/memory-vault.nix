@@ -1,7 +1,9 @@
-# layers/20-services/22-ai/25-harness-control/memory-vault.nix
-# Canonical Markdown Memory Vault with cross-machine git mesh sync.
-# Managed directory at /var/lib/memory/vault owned by 'memory' group.
-
+# Tier: 73-memory
+# Module: memory-vault.nix
+# Purpose: Memory Vault encrypted key-value store and memory snapshot manager.
+# Option Path: layers.layer-73.memory.memory-vault
+# Enabling Host Tags: pkb-node, ai-agent
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

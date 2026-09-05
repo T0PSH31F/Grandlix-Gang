@@ -1,4 +1,9 @@
-# Deprecated: services.ai-services.extreme-router is aliased to layers.layer-20.services.extreme-router (removal in 2 releases, v26.11).
+# Tier: 78-llm-routers
+# Module: extreme-router.nix
+# Purpose: ExtremeRouter OCI container proxy — 154+ LLM providers with web UI & /v1/* API.
+# Option Path: layers.layer-78.llm-routers.extreme-router
+# Enabling Host Tags: ai-router, ai-agent, workstation
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

@@ -1,4 +1,9 @@
-# Deprecated: services.ai-services.mission-control is aliased to layers.layer-20.services.mission-control (removal in 2 releases, v26.11).
+# Tier: 76-orchestrators
+# Module: mission-control.nix
+# Purpose: Mission Control agent fleet status, task dispatch, and telemetry dashboard.
+# Option Path: layers.layer-76.orchestrators.mission-control
+# Enabling Host Tags: agent-orchestrator, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

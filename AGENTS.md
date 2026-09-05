@@ -65,8 +65,9 @@ clan machines update z0r0     # update specific machine (e.g. z0r0, luffy)
 
 ## 6. AI Infrastructure Overview
 
-- **OpenCode**: `layers/70-agents/71-coding/opencode.nix` (skills: `./opencode/skills`, agents: `./opencode/agents`).
-- **Hermes-Agent**: `layers/70-agents/76-hermes-agent/hermes.nix` (gateway `:8085`, browser `:9377`, skills: `/var/lib/hermes/.hermes/skills/`).
+- **70-agents Subsystem**: Structured across `71-harness` (agents/IDEs), `72-voice` (speech engines), `73-memory` (RAG/PKB), `74-ai-infra` (inference), `75-mcp` (tool catalog), `76-orchestrators` (swarms), `77-dash-desk-ui` (chat UIs), `78-llm-routers` (gateways), `79-skills` (packages/skills).
+- **OpenCode**: `layers/70-agents/71-harness/opencode.nix` (skills: `./opencode/skills`, agents: `./opencode/agents`).
+- **Hermes-Agent**: `layers/70-agents/71-harness/hermes/hermes.nix` (gateway `:8085`, browser `:9377`, dashboard `:9119`).
 
 ---
 

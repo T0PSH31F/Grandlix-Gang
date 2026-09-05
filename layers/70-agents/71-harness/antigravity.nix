@@ -1,4 +1,9 @@
-# 🧠 Antigravity Agentic IDE & CLI
+# Tier: 71-harness
+# Module: antigravity.nix
+# Purpose: Google Antigravity Agentic IDE & CLI suite integration.
+# Option Path: layers.layer-70.agent.antigravity
+# Enabling Host Tags: ai-agent, workstation, desktop
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   pkgs,

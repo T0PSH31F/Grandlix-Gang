@@ -1,9 +1,9 @@
-# layers/70-agents/79-skills/todo-system.nix
-# Option definition for the To-Do system (layers.layer-79.skills.todo-system).
-# The full implementation (rofi + systemd units) lives in
-#   layers/40-desktop/48-rofi/todo-system.nix
-# This module exists so the option is defined on all hosts (including headless
-# servers) without pulling in 40-desktop.
+# Tier: 79-skills
+# Module: todo-system.nix
+# Purpose: Agent task tracking system — Rofi frontend, Hermes roundups, and periodic timers.
+# Option Path: layers.layer-79.skills.todo-system
+# Enabling Host Tags: ai-agent, desktop
+# RAM Footprint: light (<300MB)
 {
   lib,
   ...

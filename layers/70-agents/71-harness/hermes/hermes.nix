@@ -1,3 +1,9 @@
+# Tier: 71-harness
+# Module: hermes/hermes.nix
+# Purpose: Nous Research Hermes autonomous agent daemon & browser runner.
+# Option Path: layers.layer-76.hermes (also services.hermes)
+# Enabling Host Tags: ai-agent, agent-orchestrator, homelab
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

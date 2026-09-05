@@ -1,4 +1,9 @@
-# Deprecated: services.ai-services.aionui is aliased to layers.layer-20.services.aionui (removal in 2 releases, v26.11).
+# Tier: 76-orchestrators
+# Module: aionui.nix
+# Purpose: AionUI AI coworker web interface and agent session manager.
+# Option Path: layers.layer-76.orchestrators.aionui
+# Enabling Host Tags: agent-orchestrator, ai-agent, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

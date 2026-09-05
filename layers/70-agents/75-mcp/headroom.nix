@@ -1,13 +1,9 @@
-# Headroom — Context compression proxy for AI agents
-# https://github.com/headroomlabs-ai/headroom
-#
-# Compresses tool outputs, logs, files, and RAG chunks before they reach the LLM.
-# 20% fewer tokens for coding agents, 60-95% fewer tokens for JSON.
-#
-# Runs as a local proxy on port 8787. Can be used with:
-#   - ExtremeRouter (as compression upstream)
-#   - OpenCode (as MCP server or proxy)
-#   - Any OpenAI-compatible client (as proxy)
+# Tier: 75-mcp
+# Module: headroom.nix
+# Purpose: Headroom MCP server wrapper & context compression proxy.
+# Option Path: services.ai-services.headroom
+# Enabling Host Tags: ai-agent, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

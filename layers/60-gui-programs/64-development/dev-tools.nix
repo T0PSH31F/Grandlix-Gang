@@ -6,7 +6,6 @@
   ...
 }:
 let
-  clanTags = osConfig.machine.tags or [ ];
   cfg = config.layers.layer-60.gui.dev-tools;
 in
 {

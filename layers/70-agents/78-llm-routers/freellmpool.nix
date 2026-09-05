@@ -1,4 +1,9 @@
-# freellmpool — pure free-tier LLM pool with quality-aware routing
+# Tier: 78-llm-routers
+# Module: freellmpool.nix
+# Purpose: FreeLLMPool connection pool manager maintaining healthy provider sockets.
+# Option Path: services.ai-services.freellmpool
+# Enabling Host Tags: ai-router, homelab
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

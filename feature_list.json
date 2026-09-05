@@ -184,7 +184,7 @@
       "verification": [
         "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.llmProvider | grep -q ollama",
         "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbName | grep -q brain_db",
-        "python3 -m py_compile layers/20-services/22-ai/25-harness-control/brain_server.py"
+        "python3 -m py_compile layers/70-agents/73-memory/brain_server.py"
       ],
       "state": "passing",
       "claimedBy": "antigravity",
@@ -192,7 +192,7 @@
       "evidence": [
         {
           "sha": "639ab9ed",
-          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.llmProvider && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbUser && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbName && python3 -m py_compile layers/20-services/22-ai/25-harness-control/brain_server.py && nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath && nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath",
+          "command": "nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.llmProvider && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbUser && nix eval .#nixosConfigurations.z0r0.config.services.ai-services.brain-service.dbName && python3 -m py_compile layers/70-agents/73-memory/brain_server.py && nix eval --raw .#nixosConfigurations.z0r0.config.system.build.toplevel.drvPath && nix eval --raw .#nixosConfigurations.luffy.config.system.build.toplevel.drvPath",
           "output": "llmProvider=ollama, dbUser=brain_user, dbName=brain_db; brain_server.py compiles; z0r0 + luffy toplevels eval clean. Runtime deployment/verify pending (luffy offline; local chat model must be pulled).",
           "at": "2026-09-01T21:30:00Z"
         }

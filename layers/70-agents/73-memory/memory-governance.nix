@@ -1,6 +1,9 @@
-# layers/20-services/22-ai/25-harness-control/memory-governance.nix
-# Memory Governance Plane for agent access control and memory scope segregation.
-
+# Tier: 73-memory
+# Module: memory-governance.nix
+# Purpose: Swarm memory governance, privacy filters, and policy enforcement daemon.
+# Option Path: layers.layer-73.memory.memory-governance
+# Enabling Host Tags: pkb-node, ai-agent
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

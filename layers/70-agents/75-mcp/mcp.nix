@@ -1,7 +1,9 @@
-# Deprecated — moved to layers/70-agents/75-mcp/server-catalog.nix
-# This file exists as a backward-compatibility alias.
-# All new config should use layers.layer-75.mcp.* options.
-
+# Tier: 75-mcp
+# Module: mcp.nix
+# Purpose: Legacy MCP configuration adapter & helper imports (redirects to layer-75).
+# Option Path: layers.layer-70.agent.mcp
+# Enabling Host Tags: ai-agent
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

@@ -1,11 +1,9 @@
-# layers/20-services/22-ai/28-gno/default.nix
-# gno retrieval/workspace/graph service
-# Runs as an OCI container with a self-contained Bun runtime.
-# Indexes a local corpus directory into sqlite-vec + BM25 and serves:
-# - Web UI (workspace, graph, editor)
-# - REST API
-# - MCP server (for Hermes, OpenCode, etc.)
-# - CLI (gno search, gno ask, gno embed)
+# Tier: 73-memory
+# Module: gno.nix
+# Purpose: GNO (Gnosis Knowledge Node) graph-based knowledge lookup daemon.
+# Option Path: layers.layer-73.memory.gno
+# Enabling Host Tags: pkb-node, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

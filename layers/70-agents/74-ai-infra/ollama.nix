@@ -1,3 +1,9 @@
+# Tier: 74-ai-infra
+# Module: ollama.nix
+# Purpose: Ollama local LLM inference manager supporting GGUF model libraries.
+# Option Path: services.ai-services.ollama
+# Enabling Host Tags: gpu-compute, ai-server
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

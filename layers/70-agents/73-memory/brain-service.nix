@@ -1,3 +1,9 @@
+# Tier: 73-memory
+# Module: brain-service.nix
+# Purpose: PKB RAG service — ingestion, indexing, and vector query API for notes/documents.
+# Option Path: services.ai-services.brain-service
+# Enabling Host Tags: pkb-node, ai-server, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

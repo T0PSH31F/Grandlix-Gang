@@ -1,4 +1,9 @@
-# Deprecated: services.ai-services.paperclip is aliased to layers.layer-20.services.paperclip (removal in 2 releases, v26.11).
+# Tier: 76-orchestrators
+# Module: paperclip.nix
+# Purpose: Paperclip multi-agent swarm task queuing and goal tracking engine.
+# Option Path: layers.layer-76.orchestrators.paperclip
+# Enabling Host Tags: agent-orchestrator, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

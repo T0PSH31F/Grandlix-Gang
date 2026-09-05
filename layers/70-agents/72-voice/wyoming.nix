@@ -1,3 +1,9 @@
+# Tier: 72-voice
+# Module: wyoming.nix
+# Purpose: Wyoming protocol satellite & server stack (piper, faster-whisper, openwakeword).
+# Option Path: services.wyoming-services
+# Enabling Host Tags: ai-agent, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

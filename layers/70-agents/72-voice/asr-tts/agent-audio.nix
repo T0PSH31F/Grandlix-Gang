@@ -1,3 +1,9 @@
+# Tier: 72-voice
+# Module: asr-tts/agent-audio.nix
+# Purpose: Home-Manager package collection for CLI audio tooling and voice engines.
+# Option Path: layers.layer-70.agent.asr-tts
+# Enabling Host Tags: ai-agent, desktop
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

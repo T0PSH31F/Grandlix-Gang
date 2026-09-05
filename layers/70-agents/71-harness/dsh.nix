@@ -1,5 +1,9 @@
-# 🧠 DeepSeek Harness (dsh) Agent Module
-# Integrates Samuka007/dsh-nix and llmPkgs.dsh for declarative profile management
+# Tier: 71-harness
+# Module: dsh.nix
+# Purpose: Dendritic Shell (DSH) AI terminal shell environment integration.
+# Option Path: layers.layer-71.harness.dsh
+# Enabling Host Tags: ai-agent, desktop, workstation
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

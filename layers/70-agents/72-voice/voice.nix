@@ -1,3 +1,9 @@
+# Tier: 72-voice
+# Module: voice.nix
+# Purpose: Unified local STT (whisper.cpp) and TTS (Piper/XTTSv2) service stack.
+# Option Path: layers.layer-72.voice.voice
+# Enabling Host Tags: ai-agent, homelab, desktop
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

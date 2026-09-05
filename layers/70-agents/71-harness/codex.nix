@@ -1,4 +1,9 @@
-# 🧠 OpenAI Codex — Coding Agent
+# Tier: 71-harness
+# Module: codex.nix
+# Purpose: OpenAI Codex CLI terminal harness tool.
+# Option Path: layers.layer-70.agent.codex
+# Enabling Host Tags: ai-agent, development
+# RAM Footprint: light (<300MB)
 {
   config,
   lib,

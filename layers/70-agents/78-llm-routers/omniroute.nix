@@ -1,4 +1,9 @@
-# OmniRoute — AI gateway for multi-provider LLMs with RTK compression
+# Tier: 78-llm-routers
+# Module: omniroute.nix
+# Purpose: OmniRoute Next.js OCI container LLM routing and visual management app.
+# Option Path: services.ai-services.omniroute
+# Enabling Host Tags: ai-router, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

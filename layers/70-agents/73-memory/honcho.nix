@@ -1,8 +1,9 @@
-# Honcho — Self-hosted cross-agent memory and context engine
-# https://honcho.dev/docs/v3/contributing/self-hosting
-#
-# Provides persistent memory, session summaries, and dream consolidation
-# for Hermes Agent profiles. Uses PostgreSQL with pgvector.
+# Tier: 73-memory
+# Module: honcho.nix
+# Purpose: Honcho user profile & memory state engine (containerized API, deriver, Redis).
+# Option Path: services.honcho
+# Enabling Host Tags: pkb-node, ai-agent, homelab
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,

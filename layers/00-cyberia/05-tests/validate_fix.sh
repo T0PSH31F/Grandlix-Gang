@@ -7,12 +7,12 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 
 # Create mock binaries
 mkdir -p "$TMP_DIR/bin"
-cat <<EOF > "$TMP_DIR/bin/nix"
+cat <<EOF >"$TMP_DIR/bin/nix"
 #!/usr/bin/env bash
 echo "mock nix \$@"
 exit 0
 EOF
-cat <<EOF > "$TMP_DIR/bin/clan"
+cat <<EOF >"$TMP_DIR/bin/clan"
 #!/usr/bin/env bash
 echo "mock clan \$@"
 exit 0
@@ -30,8 +30,8 @@ RET=$?
 echo "$OUTPUT"
 
 if [ $RET -eq 0 ] && echo "$OUTPUT" | grep -q "Nix flake check completed successfully"; then
-    echo "SUCCESS: Validation script ran correctly with the fix."
+  echo "SUCCESS: Validation script ran correctly with the fix."
 else
-    echo "FAILURE: Validation script failed or produced unexpected output."
-    exit 1
+  echo "FAILURE: Validation script failed or produced unexpected output."
+  exit 1
 fi

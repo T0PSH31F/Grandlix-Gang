@@ -1,7 +1,9 @@
-# layers/20-services/22-ai/25-harness-control/everos.nix
-# EverOS Memory Engine service (github.com/EverMind-AI/EverOS)
-# Binds to localhost:8092, indexes the canonical Markdown vault, provides memory retrieval API.
-
+# Tier: 73-memory
+# Module: everos.nix
+# Purpose: EverOS long-term memory consolidation & dream-cycle background engine.
+# Option Path: layers.layer-73.memory.everos
+# Enabling Host Tags: pkb-node, ai-agent, homelab
+# RAM Footprint: medium (300MB-1GB)
 {
   config,
   lib,

@@ -1,4 +1,9 @@
-# vLLM Inference Server NixOS Service
+# Tier: 74-ai-infra
+# Module: vllm.nix
+# Purpose: High-throughput distributed GPU inference engine for vLLM models.
+# Option Path: services.vllm-server
+# Enabling Host Tags: gpu-compute, ai-server
+# RAM Footprint: heavy (>1GB)
 {
   config,
   lib,
