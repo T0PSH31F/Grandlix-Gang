@@ -302,6 +302,8 @@
           Restart = "on-failure";
           User = "postgres";
           EnvironmentFile = secretFile;
+          MemoryMax = "1G";
+          MemoryHigh = "800M";
         };
       };
 

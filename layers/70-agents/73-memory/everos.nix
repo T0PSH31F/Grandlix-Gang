@@ -191,6 +191,8 @@ with lib;
           Restart = "always";
           RestartSec = 5;
           WorkingDirectory = cfg.dataDir;
+          MemoryMax = "800M";
+          MemoryHigh = "600M";
         };
       };
 

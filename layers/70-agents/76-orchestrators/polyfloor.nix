@@ -163,6 +163,9 @@ with lib;
 
           EnvironmentFile = mkIf (cfg.environmentFile != null) cfg.environmentFile;
 
+          MemoryMax = "1500M";
+          MemoryHigh = "1200M";
+
           NoNewPrivileges = true;
           PrivateTmp = true;
           ProtectSystem = "strict";

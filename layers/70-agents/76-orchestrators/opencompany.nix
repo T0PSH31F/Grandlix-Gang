@@ -87,6 +87,8 @@
           Group = "opencompany";
           WorkingDirectory = cfg.dataDir;
           StateDirectory = "opencompany";
+          MemoryMax = "1500M";
+          MemoryHigh = "1200M";
           NoNewPrivileges = true;
           PrivateTmp = true;
           ProtectSystem = "full";

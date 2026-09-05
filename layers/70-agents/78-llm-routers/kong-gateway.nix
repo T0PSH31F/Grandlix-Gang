@@ -623,38 +623,42 @@ in
       # DB-less mode with merged declarative config file:
       # ExecStartPre merges structural kongYml + sops-rendered consumers into /var/lib/kong/declarative.json
       systemd.services.podman-kong = {
-        serviceConfig.ExecStartPre = [
-          "+${pkgs.writeShellScript "kong-merge-declarative-config" ''
-            set -euo pipefail
-            mkdir -p ${cfg.dataDir}
-            # Base structural config first; consumer keys and the ExtremeRouter
-            # upstream auth header are sops-rendered fragments merged alongside.
-            # deep_merge concatenates Kong's declarative array keys (services,
-            # routes, upstreams, plugins, consumers) instead of overwriting them,
-            # which plain jq `*` would do.
-            ${pkgs.jq}/bin/jq -s '
-              def deep_merge($a; $b):
-                if ($a | type) == "object" and ($b | type) == "object" then
-                  reduce ($b | keys_unsorted[]) as $k (
-                    $a;
-                    if (.[$k] | type) == "array" and ($b[$k] | type) == "array" then
-                      .[$k] = (.[$k] + $b[$k])
-                    elif has($k) and (.[$k] | type) == "object" and ($b[$k] | type) == "object" then
-                      .[$k] = deep_merge(.[$k]; $b[$k])
-                    else
-                      .[$k] = $b[$k]
-                    end
-                  )
-                else
-                  $b
-                end;
-              reduce .[] as $item ({}; deep_merge(.; $item))
-            ' ${kongYml} "${config.sops.templates."kong-consumers".path}" "${
-              config.sops.templates."kong-extremerouter-auth".path
-            }" > ${cfg.dataDir}/declarative.json
-            chmod 0644 ${cfg.dataDir}/declarative.json
-          ''}"
-        ];
+        serviceConfig = {
+          MemoryMax = "1G";
+          MemoryHigh = "800M";
+          ExecStartPre = [
+            "+${pkgs.writeShellScript "kong-merge-declarative-config" ''
+              set -euo pipefail
+              mkdir -p ${cfg.dataDir}
+              # Base structural config first; consumer keys and the ExtremeRouter
+              # upstream auth header are sops-rendered fragments merged alongside.
+              # deep_merge concatenates Kong's declarative array keys (services,
+              # routes, upstreams, plugins, consumers) instead of overwriting them,
+              # which plain jq `*` would do.
+              ${pkgs.jq}/bin/jq -s '
+                def deep_merge($a; $b):
+                  if ($a | type) == "object" and ($b | type) == "object" then
+                    reduce ($b | keys_unsorted[]) as $k (
+                      $a;
+                      if (.[$k] | type) == "array" and ($b[$k] | type) == "array" then
+                        .[$k] = (.[$k] + $b[$k])
+                      elif has($k) and (.[$k] | type) == "object" and ($b[$k] | type) == "object" then
+                        .[$k] = deep_merge(.[$k]; $b[$k])
+                      else
+                        .[$k] = $b[$k]
+                      end
+                    )
+                  else
+                    $b
+                  end;
+                reduce .[] as $item ({}; deep_merge(.; $item))
+              ' ${kongYml} "${config.sops.templates."kong-consumers".path}" "${
+                config.sops.templates."kong-extremerouter-auth".path
+              }" > ${cfg.dataDir}/declarative.json
+              chmod 0644 ${cfg.dataDir}/declarative.json
+            ''}"
+          ];
+        };
       };
 
       virtualisation.oci-containers.containers.kong = {
