@@ -7,7 +7,6 @@
   ...
 }:
 let
-  cfg = osConfig.layers.layer-30.theming.cursor;
   sonic-hyprcursor = pkgs.stdenv.mkDerivation {
     pname = "sonic-hyprcursor";
     version = "1.0.0";
@@ -22,7 +21,7 @@ in
   options.layers.layer-30.theming.cursor = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
+      default = false;
       description = "Enable custom cursor themes";
     };
 
@@ -34,39 +33,47 @@ in
   };
 
   # System level packages for cursor
-  nixos = lib.mkIf cfg.enable {
-    environment.systemPackages = [ sonic-hyprcursor ];
-  };
+  nixos =
+    let
+      cfg = osConfig.layers.layer-30.theming.cursor;
+    in
+    lib.mkIf cfg.enable {
+      environment.systemPackages = [ sonic-hyprcursor ];
+    };
 
   # Home Manager pointerCursor settings
-  home = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      hyprcursor
-      sonic-hyprcursor
-    ];
+  home =
+    let
+      cfg = osConfig.layers.layer-30.theming.cursor;
+    in
+    lib.mkIf cfg.enable {
+      home.packages = with pkgs; [
+        hyprcursor
+        sonic-hyprcursor
+      ];
 
-    home.activation.cleanSonicCursor = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-      for target in "Sonic-Hyprcursor" "rose-pine"; do
-        for path in "$HOME/.local/share/icons/$target" "$HOME/.icons/$target"; do
-          if [ -d "$path" ] && [ ! -L "$path" ]; then
-            echo "Removing physical directory $path to avoid Home Manager symlink conflict"
-            rm -rf "$path"
-          fi
+      home.activation.cleanSonicCursor = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+        for target in "Sonic-Hyprcursor" "rose-pine"; do
+          for path in "$HOME/.local/share/icons/$target" "$HOME/.icons/$target"; do
+            if [ -d "$path" ] && [ ! -L "$path" ]; then
+              echo "Removing physical directory $path to avoid Home Manager symlink conflict"
+              rm -rf "$path"
+            fi
+          done
         done
-      done
-    '';
+      '';
 
-    home.pointerCursor = {
-      enable = lib.mkForce true; # explicit — relying on non-null to auto-enable is deprecated
-      package = lib.mkForce sonic-hyprcursor;
-      name = lib.mkForce "Sonic-Hyprcursor";
-      size = lib.mkForce cfg.size;
-      gtk.enable = lib.mkForce true;
-      x11.enable = lib.mkForce true;
-      hyprcursor = {
-        enable = lib.mkForce true;
+      home.pointerCursor = {
+        enable = lib.mkForce true; # explicit — relying on non-null to auto-enable is deprecated
+        package = lib.mkForce sonic-hyprcursor;
+        name = lib.mkForce "Sonic-Hyprcursor";
         size = lib.mkForce cfg.size;
+        gtk.enable = lib.mkForce true;
+        x11.enable = lib.mkForce true;
+        hyprcursor = {
+          enable = lib.mkForce true;
+          size = lib.mkForce cfg.size;
+        };
       };
     };
-  };
 }

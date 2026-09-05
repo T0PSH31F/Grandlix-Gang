@@ -12,7 +12,7 @@ in
   options.layers.layer-60.gui.browsers.google-chrome = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" clanTags;
+      default = false;
       description = "Enable Google Chrome browser";
     };
   };

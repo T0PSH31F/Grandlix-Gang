@@ -1,6 +1,4 @@
-{ lib, mkDendriticModule, ... }:
+{ mkDendriticModule, mkDendriticTree, ... }:
 {
-  imports = [
-    (mkDendriticModule "mcp-catalog" ./server-catalog.nix)
-  ];
+  imports = mkDendriticTree mkDendriticModule ./.;
 }

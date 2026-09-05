@@ -31,7 +31,7 @@
   services.ai-services.brain-service.enable = lib.mkForce false;
 
   # === gno: retrieval/workspace/graph OCI container (always-on, indexes luffy corpus) ===
-  layers.layer-20.services.gno = {
+  layers.layer-73.memory.gno = {
     enable = true;
     port = 3456;
     dataDir = "/var/lib/gno";

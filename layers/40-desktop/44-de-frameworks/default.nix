@@ -19,8 +19,16 @@
     vicinae = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = builtins.elem "desktop" (config.machine.tags or [ ]);
+        default = false;
         description = "Enable Vicinae launcher";
+      };
+    };
+
+    which-key = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable wlr-which-key visual keybinding popup (Vimjoyer vid74)";
       };
     };
   };
@@ -32,6 +40,7 @@
   home = {
     imports = [
       ./vicinae.nix
+      ./which-key.nix
     ];
   };
 }

@@ -47,19 +47,19 @@ in
   options.layers.layer-40.desktop.hyprland = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
+      default = false;
       description = "Enable Hyprland Desktop Environment";
     };
 
     isNvidia = lib.mkOption {
       type = lib.types.bool;
-      default = osConfig.hardware.nvidia.enable or false;
+      default = false;
       description = "Internal: True if the machine has NVIDIA hardware enabled";
     };
 
     isLaptop = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "laptop" (osConfig.machine.tags or [ ]);
+      default = false;
       description = "Internal: True if the machine is a laptop";
     };
   };

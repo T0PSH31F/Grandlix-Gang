@@ -11,6 +11,11 @@
       };
       layer-70.agent = {
         antigravity.enable = lib.mkDefault true;
+        claude-code.enable = lib.mkDefault true;
+        codex.enable = lib.mkDefault true;
+        dsh.enable = lib.mkDefault true;
+        gemini-cli.enable = lib.mkDefault true;
+        kiro-cli.enable = lib.mkDefault true;
         opencode = {
           enable = lib.mkDefault true;
           desktop = lib.mkDefault true;
@@ -21,6 +26,12 @@
         dev-tools.enable = lib.mkDefault true;
         brave.enable = lib.mkDefault true;
       };
+      layer-75.mcp.enable = lib.mkDefault true;
+      layer-76.hermes = {
+        enable = lib.mkDefault true;
+        enableDesktop = lib.mkDefault true;
+      };
+      layer-79.skills.llm-agents-catalog.enable = lib.mkDefault true;
       layer-20.services.config = {
         ci.auto-update.enable = lib.mkDefault true;
         ci.github-runner.enable = lib.mkDefault true;

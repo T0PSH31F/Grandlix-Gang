@@ -28,3 +28,4 @@ system_packages.txt
 session-state.json
 
 .slim/deepwork/
+.codegraph/

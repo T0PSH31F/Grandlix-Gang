@@ -56,7 +56,22 @@ let
           else
             [ (mkDendriticModule moduleName path) ]
         else if type == "directory" && builtins.pathExists (path + "/default.nix") then
-          [ (mkDendriticModule name path) ]
+          let
+            raw = import (path + "/default.nix");
+            isPureAggregator =
+              builtins.isFunction raw
+              && (
+                let
+                  fargs = builtins.functionArgs raw;
+                in
+                (builtins.hasAttr "mkDendriticTree" fargs || builtins.hasAttr "mkDendriticModule" fargs)
+                && !(builtins.hasAttr "config" fargs || builtins.hasAttr "pkgs" fargs)
+              );
+          in
+          if isPureAggregator then
+            [ path ]
+          else
+            [ (mkDendriticModule name path) ]
         else
           [ ];
 

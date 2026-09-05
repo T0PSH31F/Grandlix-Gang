@@ -86,16 +86,6 @@
       open-webui.enable = lib.mkForce false;
       localai.enable = lib.mkForce false;
       chromadb.enable = lib.mkForce false;
-
-      # These are mkEnableOption (default false) — override only needed
-      # to be explicit about z0r0's intent. Can be removed once tags are stable.
-      kong-gateway.enable = lib.mkForce false;
-      kong-gateway.environmentFile = config.sops.templates."kong-env".path;
-      freellmpool.enable = lib.mkForce false;
-      freellmpool.environmentFile = config.sops.templates."kong-env".path;
-      freellmpool.port = lib.mkForce 8083;
-      polyfloor.enable = lib.mkForce false;
-      polyfloor.environmentFile = config.sops.templates."polyfloor-env".path;
     };
   };
 

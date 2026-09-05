@@ -24,10 +24,7 @@ in
   options.layers.layer-10.system.peripherals = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default =
-        builtins.elem "workstation" clanTags
-        || builtins.elem "laptop" clanTags
-        || builtins.elem "desktop" clanTags;
+      default = false;
       description = "Master enable toggle for all physical hardware peripherals";
     };
 

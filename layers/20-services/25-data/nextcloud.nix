@@ -28,8 +28,8 @@ with lib;
     };
 
     adminPasswordFile = mkOption {
-      type = types.path;
-      default = config.clan.core.vars.generators.nextcloud.files."admin-password".path;
+      type = types.nullOr types.path;
+      default = null;
       description = ''
         Path to the file containing the Nextcloud admin password.
         By default, this is automatically generated using a Clan vars generator.
@@ -56,7 +56,11 @@ with lib;
 
       config = {
         adminuser = config.services.nextcloud-server.adminUser;
-        adminpassFile = config.services.nextcloud-server.adminPasswordFile;
+        adminpassFile =
+          if config.services.nextcloud-server.adminPasswordFile != null then
+            config.services.nextcloud-server.adminPasswordFile
+          else
+            config.clan.core.vars.generators.nextcloud.files."admin-password".path;
 
         dbtype = "pgsql";
         dbhost = "/run/postgresql";

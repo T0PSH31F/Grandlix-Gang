@@ -84,6 +84,11 @@ with lib;
       systemd.services.libvirtd = {
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
+        serviceConfig = {
+          # libvirtd exits with status 1 after 120s idle timeout.
+          # Socket activation restarts it on demand.
+          SuccessExitStatus = "1";
+        };
       };
 
       # The GUI to manage the VM

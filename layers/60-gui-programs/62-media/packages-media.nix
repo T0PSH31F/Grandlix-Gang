@@ -12,12 +12,7 @@ let
 in
 {
   options.layers.layer-60.gui.media-packages = {
-    enable = lib.mkEnableOption "Media server packages" // {
-      default =
-        builtins.elem "media" clanTags
-        || builtins.elem "media-server" clanTags
-        || builtins.elem "desktop" clanTags;
-    };
+    enable = lib.mkEnableOption "Media server packages";
   };
 
   config = lib.mkIf config.layers.layer-60.gui.media-packages.enable {

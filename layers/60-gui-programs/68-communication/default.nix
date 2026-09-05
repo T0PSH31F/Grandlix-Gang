@@ -12,9 +12,7 @@ in
   options.layers.layer-60.gui.communication = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default =
-        builtins.elem "desktop" (osConfig.machine.tags or [ ])
-        || builtins.elem "workstation" (osConfig.machine.tags or [ ]);
+      default = false;
       description = "Enable communication & messaging applications";
     };
   };

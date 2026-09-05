@@ -43,7 +43,7 @@ in
         "noctalia"
         "tokyo-night"
       ];
-      default = if hasNoctalia then "noctalia" else "wallpaper";
+      default = "wallpaper";
       description = "Color scheme source for Matugen";
     };
   };

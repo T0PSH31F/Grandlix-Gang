@@ -9,7 +9,7 @@
   options.layers.layer-60.gui.feh = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" (config.machine.tags or [ ]);
+      default = false;
       description = "Enable feh image viewer and wallpaper tool";
     };
   };

@@ -12,7 +12,7 @@ in
   options.layers.layer-50.cli.gedit = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
+      default = false;
       description = "Enable Gedit text editor with custom dconf settings";
     };
   };

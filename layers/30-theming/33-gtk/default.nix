@@ -6,20 +6,21 @@
   osConfig ? config,
   ...
 }:
-let
-  cfg = osConfig.layers.layer-30.theming.gtk;
-in
 {
   options.layers.layer-30.theming.gtk = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
+      default = false;
       description = "Enable GTK theming engine and configuration";
     };
   };
 
   # Home Manager GTK configuration
-  home = lib.mkIf cfg.enable {
+  home =
+    let
+      cfg = osConfig.layers.layer-30.theming.gtk;
+    in
+    lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       adw-gtk3
       nwg-look

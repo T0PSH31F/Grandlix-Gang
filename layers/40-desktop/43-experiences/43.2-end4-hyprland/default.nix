@@ -13,7 +13,7 @@ in
   options.layers.desktop.end4 = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = isEnabled;
+      default = false;
       description = "Enable end-4 Hyprland desktop experience adapter";
     };
   };

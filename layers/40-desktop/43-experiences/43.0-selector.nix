@@ -18,7 +18,7 @@ in
         "noctalia-hyprland"
         "end4-hyprland"
       ];
-      default = if hasDesktopTag then "noctalia-hyprland" else "none";
+      default = "none";
       description = "Selected desktop user experience suite";
     };
 
@@ -28,17 +28,19 @@ in
         "hyprland"
         "niri"
       ];
-      readOnly = true;
-      default =
-        if exp == "noctalia-hyprland" || exp == "end4-hyprland" || exp == "minimal-hyprland" then
-          "hyprland"
-        else
-          "none";
+      default = "none";
       description = "Compositor engine derived from selected experience";
     };
   };
 
   config = {
+    layers.desktop.compositor = lib.mkDefault (
+      if exp == "noctalia-hyprland" || exp == "end4-hyprland" || exp == "minimal-hyprland" then
+        "hyprland"
+      else
+        "none"
+    );
+
     assertions = [
       {
         assertion = !(hasServerTag && !hasDesktopTag && exp != "none");

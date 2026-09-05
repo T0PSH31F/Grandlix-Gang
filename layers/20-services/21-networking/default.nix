@@ -9,6 +9,6 @@
     ./headscale.nix
     ./ssh-agent.nix
     ./tailscale.nix
-    ./zerotier.nix
+    # ./zerotier.nix
   ];
 }

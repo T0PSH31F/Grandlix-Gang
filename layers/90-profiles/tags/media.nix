@@ -13,6 +13,7 @@
       audio.enable = lib.mkDefault true;
       mpv.enable = lib.mkDefault true;
       kodi.enable = lib.mkDefault true;
+      vlc.enable = lib.mkDefault true;
       mopidy = {
         enable = lib.mkDefault true;
         port = lib.mkDefault 6680;

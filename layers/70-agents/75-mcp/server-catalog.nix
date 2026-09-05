@@ -5,9 +5,6 @@
   pkgs,
   ...
 }:
-let
-  cfg = config.layers.layer-75.mcp;
-in
 {
   options.layers.layer-75.mcp = {
     enable = lib.mkEnableOption "MCP server catalog and gateway";
@@ -30,7 +27,11 @@ in
 
   nixos = { };
 
-  home = lib.mkIf cfg.enable {
+  home =
+    let
+      cfg = config.layers.layer-75.mcp;
+    in
+    lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       picoclaw
       zeroclaw

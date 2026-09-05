@@ -1,17 +1,13 @@
 {
   config,
   lib,
-  osConfig ? config,
   ...
 }:
-let
-  clanTags = osConfig.machine.tags or [ ];
-in
 {
   options.layers.layer-30.theming.sfx = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" clanTags;
+      default = false;
       description = "Enable UI sound effects daemon";
     };
 

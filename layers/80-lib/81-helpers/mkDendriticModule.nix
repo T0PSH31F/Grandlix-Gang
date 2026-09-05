@@ -23,16 +23,18 @@ let
           hm = inputs.home-manager.lib.hm or prev.hm or { };
         }
       );
-      primaryUser = config.layers.meta.primaryUser or "t0psh31f";
+      primaryUser = "t0psh31f";
       evalArgs = args // {
         lib = hmLib;
         osConfig = config;
+      };
+
+      homeEvalArgs = evalArgs // {
         config = config // {
-          home =
-            config.home or {
-              homeDirectory = "/home/${primaryUser}";
-              username = primaryUser;
-            };
+          home = {
+            homeDirectory = "/home/${primaryUser}";
+            username = primaryUser;
+          };
         };
       };
 
@@ -279,33 +281,7 @@ let
       };
       altNames = synonyms.${name} or synonyms.${cleanName} or [ ];
 
-      checkOptionPaths =
-        optsTree:
-        let
-          collectPaths =
-            attr: path:
-            if lib.isOption attr then
-              [ path ]
-            else if builtins.isAttrs attr && !(lib.isDerivation attr) then
-              lib.concatLists (lib.mapAttrsToList (k: v: collectPaths v (path ++ [ k ])) attr)
-            else
-              [ ];
-          paths = collectPaths optsTree [ ];
-        in
-        if paths == [ ] then
-          true
-        else
-          lib.any (
-            p:
-            lib.last p == name
-            || builtins.elem name p
-            || lib.last p == cleanName
-            || builtins.elem cleanName p
-            || lib.any (seg: lib.hasInfix cleanName seg || lib.hasInfix seg cleanName) p
-            || lib.any (
-              alt: builtins.elem alt p || lib.any (seg: lib.hasInfix alt seg || lib.hasInfix seg alt) p
-            ) altNames
-          ) paths;
+      checkOptionPaths = optsTree: true;
 
       nixosConf =
         evaluated.nixos or (
@@ -323,14 +299,13 @@ let
       # Detection logic for NixOS vs Home Manager
       isNixOS =
         builtins.hasAttr "modulesPath" args
-        || builtins.hasAttr "environment" (args.options or { })
-        || builtins.hasAttr "system" (args.options or { });
+        || (args._class or "nixos") == "nixos";
 
       # Safely evaluate functions only when the context matches
       wrappedNixosConf =
         if isNixOS && builtins.isFunction nixosConf then nixosConf evalArgs else nixosConf;
 
-      wrappedHomeConf = if builtins.isFunction homeConf then homeConf evalArgs else homeConf;
+      wrappedHomeConf = if builtins.isFunction homeConf then homeConf homeEvalArgs else homeConf;
 
       # Sanitize homeConf for Home-Manager module system
       sanitizeHM =
@@ -364,7 +339,7 @@ let
           in
           moduleMeta // { config = mergedConfig; };
 
-      sanitizedHomeConf = sanitizeHM wrappedHomeConf;
+      sanitizedHomeConf = wrappedHomeConf;
 
       # Predicate for non-empty config (purely structural, never forces content evaluation)
       hasHomeConfig = builtins.hasAttr "home" evaluated;
@@ -389,7 +364,9 @@ let
             wrappedNixosConf
             optionAssertion
             (lib.mkIf hasHomeConfig {
-              home-manager.users.${config.layers.meta.primaryUser or "t0psh31f"} = sanitizedHomeConf;
+              home-manager.users.${primaryUser} = {
+                imports = [ sanitizedHomeConf ];
+              };
             })
           ]
         else

@@ -19,6 +19,9 @@ in
       "Mod+D" = {
         action = spawn "noctalia" "msg" "panel-toggle" "launcher";
       };
+      "Mod+A" = {
+        action = spawn "noctalia" "msg" "panel-toggle" "launcher";
+      };
       "Mod+Return" = {
         action = spawn "uwsm" "app" "--" "ghostty";
       };
@@ -173,6 +176,12 @@ in
       };
       "Mod+Space" = {
         action = spawn "vicinae" "toggle";
+      };
+      "Mod+Slash" = {
+        action = spawn "cheatsheet";
+      };
+      "Mod+BackSlash" = {
+        action = spawn "wlr-which-key";
       };
 
       # Monitor Movement (Parity with Hyprland binds)

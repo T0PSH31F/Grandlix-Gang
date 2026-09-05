@@ -11,20 +11,28 @@ let
 in
 {
   options.layers.layer-60.gui.dev-tools = {
-    enable = lib.mkEnableOption "GUI development tools" // {
-      default = builtins.elem "development" clanTags || builtins.elem "dev" clanTags;
-    };
+    enable = lib.mkEnableOption "GUI development tools";
   };
 
   nixos = { };
 
   home = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
-      postman
-      httpie
+      abtop
+      beadwork
+      cc-switch
+      crush
       curlie
-      yq
+      cyberstrike
+      devin-desktop
+      hcom
+      httpie
+      ketch
+      kiro
+      obscura
+      postman
       vhs
+      yq
 
       # Database GUI Managers
       beekeeper-studio

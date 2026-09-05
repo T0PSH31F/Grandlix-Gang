@@ -27,19 +27,21 @@ let
     "server"
     "workstation"
   ];
-
-  machineTags = config.machine.tags or [ ];
-  invalidTags = builtins.filter (tag: !(builtins.elem tag validTags)) machineTags;
 in
 {
   imports = mkDendriticTree mkDendriticModule ./.;
 
-  config = {
-    assertions = [
-      {
-        assertion = invalidTags == [ ];
-        message = "Invalid machine tag(s): ${builtins.concatStringsSep ", " invalidTags}. Valid tags: ${builtins.concatStringsSep ", " validTags}";
-      }
-    ];
-  };
+  config =
+    let
+      machineTags = config.machine.tags or [ ];
+      invalidTags = builtins.filter (tag: !(builtins.elem tag validTags)) machineTags;
+    in
+    {
+      assertions = [
+        {
+          assertion = invalidTags == [ ];
+          message = "Invalid machine tag(s): ${builtins.concatStringsSep ", " invalidTags}. Valid tags: ${builtins.concatStringsSep ", " validTags}";
+        }
+      ];
+    };
 }

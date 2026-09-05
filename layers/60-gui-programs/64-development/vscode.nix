@@ -10,9 +10,7 @@ let
 in
 {
   options.layers.layer-60.gui.vscode = {
-    enable = lib.mkEnableOption "VS Code" // {
-      default = builtins.elem "dev" clanTags;
-    };
+    enable = lib.mkEnableOption "VS Code";
   };
 
   home = lib.mkIf config.layers.layer-60.gui.vscode.enable {

@@ -48,10 +48,9 @@
 
 ### 20-services
 - `21-networking`: Tailscale, Headscale, DNS, proxy
-- `22-ai`: LLM routers, inference, vector DBs, MCP
 - `23-media`: Jellyfin, Sonarr, Radarr, Audio
 - `24-communication`: Matrix, Signal, Element
-- `25-data`: PostgreSQL, Restic backups, Redis
+- `25-data`: PostgreSQL, Vector DBs (ChromaDB, LokB, Qdrant), Restic backups, Redis
 - `26-monitoring`: Prometheus, Grafana, dashboards
 - `27-automation`: n8n, Home Assistant, Crawl4AI
 - `28-clan-services`: Clan module wrappers
@@ -98,13 +97,15 @@
 - `68-communication`: Discord, Telegram, Vesktop
 
 ### 70-agents
-- `71-coding`: OpenCode, Claude Code, Cursor agent
-- `72-voice`: Voxtype, GLaDOS TTS, Whisper ASR
-- `73-tooling`: Agent helper tools & discovery
-- `74-ai-infra`: Local LLM catalogs & model specs
-- `75-mcp`: Shared Model Context Protocol servers
-- `76-hermes-agent`: Hermes agent gateway & runtime
-- `skills`: Hermes & OpenCode agent skill packs
+- `71-harness`: Agent runtime harnesses (OpenCode, Hermes-Agent, Supergraph)
+- `72-voice`: Agent voice, ASR, TTS, Wyoming
+- `73-memory`: PKB, corpus, knowledge graph, memory vault, EverOS, brain-service, context-forge, GNO
+- `74-ai-infra`: Local LLM backends (Ollama, llama-cpp, llama-swap, vllm, localai) & sandbox
+- `75-mcp`: Shared Model Context Protocol servers (MCP catalog, Headroom, Mistral MCP)
+- `76-orchestrators`: Agent coordination & workflows (AionUI, LangGraph, Mission-Control, OpenCompany, Paperclip, Polyfloor)
+- `77-dash-desk-ui`: Web frontends & desktop UIs (Ollama-UI, Open-WebUI, SillyTavern, Cherry-Studio)
+- `78-llm-routers`: API routing & gateways (ExtremeRouter, FreeLLMAPI, FreeLLMPool, Kong, LiteLLM, Manifest, OmniRoute)
+- `79-skills`: Agent skills, catalog, master switches, productivity stubs (ai-packages, ai-services, Aider, Fabric AI, Jan, LM Studio, llm-agents, todo-system)
 
 ### 80-lib
 - `81-helpers`: mkDendriticModule & functional lib

@@ -6,9 +6,6 @@
   ...
 }:
 with lib;
-let
-  cfg = config.layers.layer-30.theming.themes.greeter;
-in
 {
   imports = [
     inputs.noctalia-greeter.nixosModules.default
@@ -16,8 +13,8 @@ in
 
   options.layers.layer-30.theming.themes.greeter = {
     # Greeter selection — mutually exclusive. Only one can be active.
-    type = mkOption {
-      type = types.enum [
+    type = lib.mkOption {
+      type = lib.types.enum [
         "sddm"
         "greetd"
         "noctalia-greeter"
@@ -32,23 +29,27 @@ in
     };
 
     greetd = {
-      background = mkOption {
-        type = types.path;
+      background = lib.mkOption {
+        type = lib.types.path;
         default = ../../00-cyberia/02-assets/sddm_background/fallback1.jpg;
         description = "Path to the background image for ReGreet (greetd only)";
       };
     };
 
     noctalia-greeter = {
-      session = mkOption {
-        type = types.str;
+      session = lib.mkOption {
+        type = lib.types.str;
         default = "hyprland-uwsm";
         description = "Default session to launch (hyprland-uwsm, niri-uwsm, etc.)";
       };
     };
   };
 
-  config = mkMerge [
+  config =
+    let
+      cfg = config.layers.layer-30.theming.themes.greeter;
+    in
+    lib.mkMerge [
     # SDDM Implementation
     (mkIf (cfg.type == "sddm") {
       services.xserver.enable = true;

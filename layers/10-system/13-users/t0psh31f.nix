@@ -460,9 +460,7 @@
         home.username = "t0psh31f";
         home.homeDirectory = "/home/t0psh31f";
 
-        home.packages = with pkgs; [
-          nextcloud-client
-          nextcloud-talk-desktop
+        home.packages = [
           # spacedrive — refused to evaluate in this nixpkgs rev
         ];
 

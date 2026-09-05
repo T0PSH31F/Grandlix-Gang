@@ -80,10 +80,6 @@
         pkgs.sigil
       ])
       (lib.optional config.layers.layer-60.gui.documents.notes.enable pkgs.obsidian)
-      (lib.optionals config.layers.layer-60.gui.documents.nextcloud.enable [
-        pkgs.nextcloud-client
-        pkgs.nextcloud-talk-desktop
-      ])
       (lib.optional config.layers.layer-60.gui.documents.zlibrary.enable pkgs.z-library-desktop)
       (lib.optional config.layers.layer-60.gui.documents.email.enable pkgs.tutanota-desktop)
       (lib.optional config.layers.layer-60.gui.documents.finance.enable pkgs.webull-desktop)

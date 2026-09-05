@@ -10,7 +10,7 @@ let
   cfg = osConfig.layers.layer-40.desktop.noctalia;
 in
 {
-  config = lib.mkIf (cfg.enable && cfg.backend == "hyprland") {
+  config = lib.mkIf cfg.enable {
     home.packages = [
       cfg.package
       (pkgs.writeShellApplication {
@@ -38,8 +38,10 @@ in
       '')
     ];
 
-    wayland.windowManager.hyprland.settings.env = [
-      "NOCTALIA_SOCKET,~/.cache/noctalia/noctalia.sock"
-    ];
+    wayland.windowManager.hyprland.settings.env =
+      lib.mkIf (cfg.backend == "hyprland" || cfg.backend == "both")
+        [
+          "NOCTALIA_SOCKET,~/.cache/noctalia/noctalia.sock"
+        ];
   };
 }

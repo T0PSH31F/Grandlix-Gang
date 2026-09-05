@@ -1,0 +1,45 @@
+# llama-swap Proxy NixOS Service
+{
+  config,
+  lib,
+  ...
+}:
+
+with lib;
+{
+  options.services.llama-swap-proxy = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to enable llama-swap Proxy service";
+    };
+
+    port = mkOption {
+      type = types.port;
+      default = 8085;
+      description = "Port to listen on";
+    };
+
+    settings = mkOption {
+      type = types.attrsOf types.anything;
+      default = { };
+      description = "Structured settings for llama-swap (e.g. server, models, groups)";
+    };
+  };
+
+  config =
+    let
+      cfg = config.services.llama-swap-proxy;
+    in
+    mkIf cfg.enable {
+      services.llama-swap = {
+        enable = true;
+        inherit (cfg) port;
+        inherit (cfg) settings;
+      };
+
+      systemd.services.llama-swap.serviceConfig.ProcSubset = lib.mkForce "all";
+
+      networking.firewall.allowedTCPPorts = [ cfg.port ];
+    };
+}

@@ -14,6 +14,7 @@ in
       "$terminal" = "ghostty";
       "$fileManager" = "dolphin";
       "$browser" = "brave";
+      "$ipc" = "noctalia msg";
 
       bind = [
         # ── Core App Launchers ─────────────────────────────────────────
@@ -37,6 +38,7 @@ in
 
         "$mod, Space, exec, vicinae toggle"
         "$mod, slash, exec, cheatsheet"
+        "$mod, BackSlash, exec, wlr-which-key"
 
         # Scratchpads (Pyprland)
         # Ghostty Dropdown (Alt+T or Alt+Enter)

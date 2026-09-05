@@ -12,9 +12,9 @@
       codegraph.enable = lib.mkDefault true;
       kiro-cli.enable = lib.mkDefault true;
       dsh.enable = lib.mkDefault true;
-      asr-tts.enable = lib.mkDefault false;
-      ai-agent-stack.enable = lib.mkDefault true;
     };
+
+    layers.layer-72.voice.voice.enable = lib.mkDefault false;
 
     layers.layer-75.mcp.enable = lib.mkDefault true;
     layers.layer-76.hermes.enable = lib.mkDefault true;
@@ -25,19 +25,18 @@
     layers.layer-76.open-skills.enable = lib.mkDefault true;
 
     # Orchestration & control plane services
-    layers.layer-20.services.llm-agents-catalog.enable = lib.mkDefault true;
-    layers.layer-20.services.mission-control.enable = lib.mkDefault true;
-    layers.layer-20.services.aionui.enable = lib.mkDefault true;
-    layers.layer-20.services.paperclip.enable = lib.mkDefault true;
+    layers.layer-79.skills.llm-agents-catalog.enable = lib.mkDefault true;
+    layers.layer-76.orchestrators.mission-control.enable = lib.mkDefault true;
+    layers.layer-76.orchestrators.aionui.enable = lib.mkDefault true;
+    layers.layer-76.orchestrators.paperclip.enable = lib.mkDefault true;
 
     # Memory chassis & gateway services
-    layers.layer-20.services.memory-vault.enable = lib.mkDefault true;
-    layers.layer-20.services.memory-governance.enable = lib.mkDefault true;
-    # EverOS + context-forge retired (folded into brain-service/µmemory-vault; see audit)
+    layers.layer-73.memory.memory-vault.enable = lib.mkDefault true;
+    layers.layer-73.memory.memory-governance.enable = lib.mkDefault true;
     layers.layer-70.agent.sandbox.enable = lib.mkDefault true;
 
     # Agent productivity & messaging daemons
-    layers.layer-20.services.todo-system.enable = lib.mkDefault true;
+    layers.layer-79.skills.todo-system.enable = lib.mkDefault true;
     layers.layer-20.services.communication.signal-cli-daemon = {
       enable = lib.mkDefault true;
       port = lib.mkDefault 8080;

@@ -13,7 +13,7 @@ in
   options.layers.desktop.noctalia-hyprland = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = isEnabled;
+      default = false;
       description = "Enable Noctalia Hyprland desktop experience adapter";
     };
   };

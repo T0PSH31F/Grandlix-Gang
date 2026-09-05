@@ -9,6 +9,7 @@ let
         "laptop"
         "development"
         "gaming"
+        "ai-agent"
         "intel-12th-gen"
       ];
       deploy.targetHost = "root@127.0.0.1";
@@ -26,7 +27,7 @@ let
         "media"
         "intel-9th-gen"
       ];
-      deploy.targetHost = "root@100.80.146.120"; # Tailscale IP
+      deploy.targetHost = "root@192.168.1.54"; # LAN IP (Tailscale offline)
     };
 
     # SANJI — Cloud control-plane (always-on AI gateway, agent orchestration)
@@ -73,20 +74,20 @@ in
         };
       };
 
-      zerotier = {
-        module = {
-          name = "zerotier";
-          input = "clan-core";
-        };
-        roles = {
-          controller.machines.luffy = {
-            settings = {
-              public = true; # Allow open membership for easy device joining
-            };
-          };
-          peer.tags.all = { }; # All machines are peers
-        };
-      };
+      # zerotier = {
+      #   module = {
+      #     name = "zerotier";
+      #     input = "clan-core";
+      #   };
+      #   roles = {
+      #     controller.machines.luffy = {
+      #       settings = {
+      #         public = true; # Allow open membership for easy device joining
+      #       };
+      #     };
+      #     peer.tags.all = { }; # All machines are peers
+      #   };
+      # };
 
       wifi = {
         module = {

@@ -14,7 +14,7 @@ in
   options.layers.layer-40.desktop.noctalia = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = hasDesktopTag;
+      default = false;
       description = "Enable Noctalia Desktop Shell (v5)";
     };
 

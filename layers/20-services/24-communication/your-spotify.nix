@@ -40,7 +40,7 @@ in
 
     spotifySecretFile = mkOption {
       type = types.nullOr types.path;
-      default = config.clan.core.vars.generators.your-spotify.files."spotify-secret".path;
+      default = null;
       description = ''
         Path to file containing Spotify application secret.
         By default, this is automatically generated/prompted via Clan vars generator.
@@ -86,7 +86,11 @@ in
         MONGO_ENDPOINT = "mongodb://localhost:27017/your_spotify";
       };
 
-      spotifySecretFile = mkDefault cfg.spotifySecretFile;
+      spotifySecretFile =
+        if cfg.spotifySecretFile != null then
+          cfg.spotifySecretFile
+        else
+          config.clan.core.vars.generators.your-spotify.files."spotify-secret".path;
       inherit (cfg) nginxVirtualHost;
     };
 

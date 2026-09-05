@@ -12,17 +12,32 @@
           bluetooth.enable = lib.mkDefault true;
         };
       };
-      layer-30.theming.themes.greeter = {
-        type = lib.mkDefault "noctalia-greeter";
-        noctalia-greeter.session = lib.mkDefault "hyprland-uwsm";
+      layer-30.theming = {
+        cursor.enable = lib.mkDefault true;
+        gtk.enable = lib.mkDefault true;
+        qt.enable = lib.mkDefault true;
+        sfx.enable = lib.mkDefault true;
+        themes.greeter = {
+          type = lib.mkDefault "noctalia-greeter";
+          noctalia-greeter.session = lib.mkDefault "hyprland-uwsm";
+        };
       };
       layer-40.desktop = {
-        frameworks.portals.enable = lib.mkDefault true;
-        noctalia.backend = lib.mkDefault "hyprland";
+        hyprland.enable = lib.mkDefault true;
+        frameworks = {
+          portals.enable = lib.mkDefault true;
+          which-key.enable = lib.mkDefault true;
+        };
+        noctalia = {
+          enable = lib.mkDefault true;
+          backend = lib.mkDefault "hyprland";
+        };
       };
       layer-50.cli.terminal-toys.enable = lib.mkDefault true;
       layer-60.gui = {
         documents.enable = lib.mkDefault true;
+        feh.enable = lib.mkDefault true;
+        librewolf.enable = lib.mkDefault true;
         wl_shimeji.enable = lib.mkDefault true;
         lmms.enable = lib.mkDefault true;
       };

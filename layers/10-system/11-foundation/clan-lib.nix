@@ -10,14 +10,17 @@
   options.machine.lib = {
     hasTag = lib.mkOption {
       type = lib.types.functionTo lib.types.bool;
-      default = tag: lib.elem tag config.machine.tags;
       description = "Helper to check if a machine has a specific tag";
     };
 
     hasTags = lib.mkOption {
       type = lib.types.functionTo lib.types.bool;
-      default = tags: lib.any (tag: lib.elem tag config.machine.tags) tags;
       description = "Helper to check if a machine has any of the specific tags";
     };
+  };
+
+  config.machine.lib = {
+    hasTag = tag: lib.elem tag config.machine.tags;
+    hasTags = tags: lib.any (tag: lib.elem tag config.machine.tags) tags;
   };
 }

@@ -11,7 +11,7 @@ in
   options.layers.layer-60.gui.zathura = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = hasDesktopTag;
+      default = false;
       description = "Enable Zathura PDF viewer";
     };
   };

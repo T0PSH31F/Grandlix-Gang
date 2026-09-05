@@ -6,21 +6,20 @@
   osConfig ? config,
   ...
 }:
-let
-  clanTags = osConfig.machine.tags or [ ];
-  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in
 {
   options.layers.layer-60.gui.spicetify = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = builtins.elem "desktop" clanTags;
+      default = false;
       description = "Enable Spicetify";
     };
   };
 
   home =
     { config, osConfig, ... }:
+    let
+      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    in
     {
       imports = [
         inputs.spicetify-nix.homeManagerModules.default

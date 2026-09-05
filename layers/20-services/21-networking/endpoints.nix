@@ -40,7 +40,7 @@ in
       langfuse = mkEndpoint "127.0.0.1" 3005 "";
       matrix = mkEndpoint "matrix.local" 8008 "";
       polyfloor = mkEndpoint "127.0.0.1" (config.services.ai-services.polyfloor.port or 8001) "";
-      gno = mkEndpoint "127.0.0.1" (config.layers.layer-20.services.gno.port or 3456) "";
+      gno = mkEndpoint "127.0.0.1" (config.layers.layer-73.memory.gno.port or 3456) "";
     };
     description = "Central registry for service network endpoints across the fleet.";
   };

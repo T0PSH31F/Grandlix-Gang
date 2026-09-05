@@ -17,9 +17,7 @@ let
 in
 {
   options.layers.layer-60.gui.gaming = {
-    enable = mkEnableOption "Gaming support with Proton, Lutris, and emulators" // {
-      default = builtins.elem "gaming" clanTags;
-    };
+    enable = mkEnableOption "Gaming support with Proton, Lutris, and emulators";
     enableSteam = mkOption {
       type = types.bool;
       default = true;
