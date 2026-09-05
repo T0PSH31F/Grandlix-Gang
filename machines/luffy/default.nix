@@ -324,7 +324,7 @@ in
           handle @kavita { reverse_proxy localhost:5000 }
 
           @headscale host headscale.lovelain.duckdns.org
-          handle @headscale { reverse_proxy localhost:8086 }
+          handle @headscale { reverse_proxy http://47.254.90.69:8086 }
 
           @chat host chat.lovelain.duckdns.org
           handle @chat { reverse_proxy localhost:3004 }
@@ -348,7 +348,7 @@ in
           handle @spotify { reverse_proxy localhost:3457 }
 
           @missionctrl host mission-control.lovelain.duckdns.org
-          handle @missionctrl { reverse_proxy localhost:3099 }
+          handle @missionctrl { reverse_proxy http://47.254.90.69:3099 }
         '';
       };
       virtualHosts."element.local" = {

@@ -55,37 +55,37 @@ with lib;
       };
     in
     mkIf cfg.enable {
-    home.packages = [ evaluatorScript ];
+      home.packages = [ evaluatorScript ];
 
-    # Systemd service
-    systemd.user.services.hermes-evaluator = {
-      Unit = {
-        Description = "Hermes Evaluator — Daily Audit & Benchmarking";
-        After = [ "network.target" ];
+      # Systemd service
+      systemd.user.services.hermes-evaluator = {
+        Unit = {
+          Description = "Hermes Evaluator — Daily Audit & Benchmarking";
+          After = [ "network.target" ];
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = "${evaluatorScript}/bin/hermes-evaluator-harness";
+          TimeoutStartSec = 600;
+          Nice = 19;
+          IOSchedulingClass = "idle";
+        };
       };
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${evaluatorScript}/bin/hermes-evaluator-harness";
-        TimeoutStartSec = 600;
-        Nice = 19;
-        IOSchedulingClass = "idle";
+
+      # Systemd timer
+      systemd.user.timers.hermes-evaluator = {
+        Unit = {
+          Description = "Hermes Evaluator — Daily Timer";
+          Requires = [ "hermes-evaluator.service" ];
+        };
+        Timer = {
+          OnCalendar = cfg.schedule;
+          Persistent = true;
+          RandomizedDelaySec = 300;
+        };
+        Install = {
+          WantedBy = [ "timers.target" ];
+        };
       };
     };
-
-    # Systemd timer
-    systemd.user.timers.hermes-evaluator = {
-      Unit = {
-        Description = "Hermes Evaluator — Daily Timer";
-        Requires = [ "hermes-evaluator.service" ];
-      };
-      Timer = {
-        OnCalendar = cfg.schedule;
-        Persistent = true;
-        RandomizedDelaySec = 300;
-      };
-      Install = {
-        WantedBy = [ "timers.target" ];
-      };
-    };
-  };
 }

@@ -43,36 +43,36 @@
       cfg = config.services.ai-services.mistral-mcp;
     in
     lib.mkIf cfg.enable {
-    systemd.services.mistral-mcp = {
-      description = "Mistral MCP Server (Streamable HTTP)";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
+      systemd.services.mistral-mcp = {
+        description = "Mistral MCP Server (Streamable HTTP)";
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
 
-      environment = {
-        HOME = "/tmp"; # npx needs writable HOME for cache (DynamicUser defaults HOME=/)
-        MCP_TRANSPORT = "http";
-        MCP_HTTP_PORT = toString cfg.port;
-        MCP_HTTP_HOST = cfg.host;
-        MCP_HTTP_PATH = "/mcp";
-        MISTRAL_MCP_PROFILE = cfg.profile;
+        environment = {
+          HOME = "/tmp"; # npx needs writable HOME for cache (DynamicUser defaults HOME=/)
+          MCP_TRANSPORT = "http";
+          MCP_HTTP_PORT = toString cfg.port;
+          MCP_HTTP_HOST = cfg.host;
+          MCP_HTTP_PATH = "/mcp";
+          MISTRAL_MCP_PROFILE = cfg.profile;
+        };
+
+        serviceConfig = {
+          ExecStart = "${pkgs.nodejs_22}/bin/npx -y mistral-mcp@latest";
+          Restart = "on-failure";
+          RestartSec = 5;
+          DynamicUser = true;
+          EnvironmentFile = lib.optional (cfg.environmentFile != null) cfg.environmentFile;
+          NoNewPrivileges = true;
+          PrivateTmp = true;
+          MemoryDenyWriteExecute = false;
+        };
+
+        # npx needs sh and node in PATH for downloaded packages
+        path = [
+          pkgs.bash
+          pkgs.nodejs_22
+        ];
       };
-
-      serviceConfig = {
-        ExecStart = "${pkgs.nodejs_22}/bin/npx -y mistral-mcp@latest";
-        Restart = "on-failure";
-        RestartSec = 5;
-        DynamicUser = true;
-        EnvironmentFile = lib.optional (cfg.environmentFile != null) cfg.environmentFile;
-        NoNewPrivileges = true;
-        PrivateTmp = true;
-        MemoryDenyWriteExecute = false;
-      };
-
-      # npx needs sh and node in PATH for downloaded packages
-      path = [
-        pkgs.bash
-        pkgs.nodejs_22
-      ];
     };
-  };
 }

@@ -29,7 +29,7 @@ in
       address = "0.0.0.0";
       settings = {
         dns = {
-          magic_dns = true;
+          magic_dns = false;
           base_domain = cfg.baseDomain;
           nameservers = {
             global = [
@@ -46,6 +46,8 @@ in
         };
       };
     };
+
+    layers.layer-20.services.config.reverseProxy.routes.headscale = cfg.port;
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
 

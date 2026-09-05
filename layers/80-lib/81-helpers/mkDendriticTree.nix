@@ -68,10 +68,7 @@ let
                 && !(builtins.hasAttr "config" fargs || builtins.hasAttr "pkgs" fargs)
               );
           in
-          if isPureAggregator then
-            [ path ]
-          else
-            [ (mkDendriticModule name path) ]
+          if isPureAggregator then [ path ] else [ (mkDendriticModule name path) ]
         else
           [ ];
 

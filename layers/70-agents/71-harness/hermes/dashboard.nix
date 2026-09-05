@@ -30,30 +30,30 @@
       hermesBin = "${hermesPkg}/bin/hermes";
     in
     lib.mkIf cfg.enable {
-    systemd.services.hermes-dashboard = {
-      description = "Hermes Agent Web Dashboard";
-      wantedBy = [ "multi-user.target" ];
-      after = [
-        "network.target"
-        "hermes-agent.service"
-      ];
+      systemd.services.hermes-dashboard = {
+        description = "Hermes Agent Web Dashboard";
+        wantedBy = [ "multi-user.target" ];
+        after = [
+          "network.target"
+          "hermes-agent.service"
+        ];
 
-      environment = {
-        HERMES_HOME = hermesState;
+        environment = {
+          HERMES_HOME = hermesState;
+        };
+
+        serviceConfig = {
+          Type = "simple";
+          User = "t0psh31f";
+          Group = "users";
+          WorkingDirectory = config.services.hermes-agent.stateDir;
+          ExecStart = "${hermesBin} dashboard --port ${toString cfg.port} --host ${cfg.host} --insecure --skip-build";
+          EnvironmentFile = "${hermesState}/.env";
+          Restart = "on-failure";
+          RestartSec = "5s";
+        };
       };
 
-      serviceConfig = {
-        Type = "simple";
-        User = "t0psh31f";
-        Group = "users";
-        WorkingDirectory = config.services.hermes-agent.stateDir;
-        ExecStart = "${hermesBin} dashboard --port ${toString cfg.port} --host ${cfg.host} --insecure --skip-build";
-        EnvironmentFile = "${hermesState}/.env";
-        Restart = "on-failure";
-        RestartSec = "5s";
-      };
+      networking.firewall.allowedTCPPorts = [ cfg.port ];
     };
-
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
-  };
 }

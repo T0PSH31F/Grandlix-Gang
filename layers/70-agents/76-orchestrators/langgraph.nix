@@ -122,9 +122,11 @@ with lib;
       users.groups.langgraph = { };
 
       # Persist data
-      environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-        directories = [ cfg.dataDir ];
-      };
+      environment.persistence."/persist" =
+        mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+          {
+            directories = [ cfg.dataDir ];
+          };
 
       # Budget config file
       environment.etc."langgraph/budgets.json".source = budgetConfig;

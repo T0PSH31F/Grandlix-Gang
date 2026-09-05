@@ -37,34 +37,34 @@
       ]);
     in
     lib.mkIf cfg.enable {
-    systemd.services.hermes-workspace = {
-      description = "Hermes WebUI — nesquena/hermes-webui";
-      wantedBy = [ "multi-user.target" ];
-      after = [
-        "network.target"
-        "hermes-agent.service"
-      ];
+      systemd.services.hermes-workspace = {
+        description = "Hermes WebUI — nesquena/hermes-webui";
+        wantedBy = [ "multi-user.target" ];
+        after = [
+          "network.target"
+          "hermes-agent.service"
+        ];
 
-      environment = {
-        HERMES_WEBUI_PORT = toString cfg.port;
-        HERMES_WEBUI_HOST = cfg.host;
-        HERMES_WEBUI_AGENT_DIR = config.services.hermes-agent.stateDir;
-        HERMES_WEBUI_PYTHON = "${webuiPython}/bin/python";
-        HERMES_HOME = hermesState;
+        environment = {
+          HERMES_WEBUI_PORT = toString cfg.port;
+          HERMES_WEBUI_HOST = cfg.host;
+          HERMES_WEBUI_AGENT_DIR = config.services.hermes-agent.stateDir;
+          HERMES_WEBUI_PYTHON = "${webuiPython}/bin/python";
+          HERMES_HOME = hermesState;
+        };
+
+        serviceConfig = {
+          Type = "simple";
+          User = "t0psh31f";
+          Group = "users";
+          WorkingDirectory = cfg.workspaceDir;
+          ExecStart = "${webuiPython}/bin/python ${cfg.workspaceDir}/server.py";
+          EnvironmentFile = "${hermesState}/.env";
+          Restart = "on-failure";
+          RestartSec = "5s";
+        };
       };
 
-      serviceConfig = {
-        Type = "simple";
-        User = "t0psh31f";
-        Group = "users";
-        WorkingDirectory = cfg.workspaceDir;
-        ExecStart = "${webuiPython}/bin/python ${cfg.workspaceDir}/server.py";
-        EnvironmentFile = "${hermesState}/.env";
-        Restart = "on-failure";
-        RestartSec = "5s";
-      };
+      networking.firewall.allowedTCPPorts = [ cfg.port ];
     };
-
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
-  };
 }

@@ -68,8 +68,12 @@ let
   # ---------------------------------------------------------------------------
   # Address constants — mDNS / Tailscale hostnames for multi-device LAN access
   # ---------------------------------------------------------------------------
+  # ---------------------------------------------------------------------------
+  # Address constants — mDNS / Tailscale hostnames for multi-device LAN access
+  # ---------------------------------------------------------------------------
   z0r0 = "z0r0.local";
   luffy = "luffy.local";
+  sanji = "sanji.local";
 
   # The "other" machine — for glances remote stats widget
   remoteMachine = if hostName == "z0r0" then "luffy" else "z0r0";
@@ -90,9 +94,15 @@ let
     hermesDashboard = 9119;
     hermesWebui = 8788;
     aionUi = 3006;
+    glances = 61208;
+
+    # sanji — cloud control plane
+    headscale = 8086;
     paperclip = 3101;
     missionControl = 3099;
-    glances = 61208;
+    kongGateway = 8090;
+    omniroute = 20128;
+    gno = 3456;
 
     # luffy — media
     jellyfin = 8096;
@@ -119,7 +129,6 @@ let
 
     # luffy — infra
     vaultwarden = 8222;
-    headscale = 8086;
     searxng = 8888;
     filebrowser = 8089;
     spacedrive = 32768;
@@ -146,18 +155,16 @@ let
     opencompany = 5680;
 
     # z0r0 — AI routers & control plane
-    kongGateway = 8090;
     freellmpool = 8082;
     freellmapi = 3003;
     mistralMcp = 3333;
     extremeRouter = 20128;
-    omniroute = 20128;
     polyfloor = 8001;
     everos = 8092;
     contextForge = 8094;
   };
 
-  hostOf = machine: if machine == "z0r0" then z0r0 else luffy;
+  hostOf = machine: if machine == "z0r0" then z0r0 else if machine == "sanji" then sanji else luffy;
 
   mkService =
     name:
@@ -199,6 +206,14 @@ let
       icon = ic;
       description = "${desc} @luffy";
     };
+  sSrv =
+    n: p: ic: desc:
+    mkService n {
+      machine = "sanji";
+      port = ports.${p};
+      icon = ic;
+      description = "${desc} @sanji";
+    };
 
   zSrvW =
     n: p: ic: desc: widget:
@@ -218,6 +233,15 @@ let
       description = "${desc} @luffy";
       inherit widget;
     };
+  sSrvW =
+    n: p: ic: desc: widget:
+    mkService n {
+      machine = "sanji";
+      port = ports.${p};
+      icon = ic;
+      description = "${desc} @sanji";
+      inherit widget;
+    };
 
   # ---------------------------------------------------------------------------
   # Service groups  —  Speeddial at top, then Observability, AI, Infra, Comms, Media, Auto
@@ -227,7 +251,7 @@ let
       (zSrv "Hermes Workspace" "hermesWorkspace" "mdi-robot-outline" "Agent Command Center")
       (lSrv "Open WebUI" "openWebui" "open-webui.png" "Local LLM Chat")
       (lSrv "SearXNG" "searxng" "searxng.png" "Meta Search Engine")
-      (zSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
+      (sSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
       (zSrvW "Grafana" "grafana" "grafana.png" "Dashboards & Visualization" {
         type = "grafana";
         url = "http://${hostOf "z0r0"}:${toString ports.grafana}";
@@ -249,9 +273,9 @@ let
         username = "admin";
         password = "admin";
       })
-      (zSrvW "AdGuard Home" "adguard" "adguard-home.png" "DNS Filtering" {
+      (lSrvW "AdGuard Home" "adguard" "adguard-home.png" "DNS Filtering" {
         type = "adguard";
-        url = "http://${hostOf "z0r0"}:${toString ports.adguard}";
+        url = "http://${hostOf "luffy"}:${toString ports.adguard}";
         username = "admin";
         password = "admin";
       })
@@ -275,12 +299,13 @@ let
       (zSrv "Brain Service" "brainService" "mdi-brain" "AI Brain Layer")
       (zSrv "Hermes WebUI" "hermesWebui" "mdi-react" "Web UI Dashboard")
       (zSrv "AionUi" "aionUi" "mdi-account-group" "AI Agent Cowork UI")
-      (zSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
-      (zSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
-      (zSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
+      (sSrv "Paperclip" "paperclip" "mdi-paperclip" "AI Team Orchestration")
+      (sSrv "Mission Control" "missionControl" "mdi-rocket-launch" "Agent Control Plane")
+      (sSrv "Kong Gateway" "kongGateway" "mdi-api" "Unified LLM/API Gateway")
       (zSrv "ExtremeRouter" "extremeRouter" "mdi-router-network"
         "AI Gateway — 154+ Providers, RTK Savings"
       )
+      (sSrv "OmniRoute" "omniroute" "mdi-routes" "Sanji AI Router")
       (zSrv "FreeLLMPool" "freellmpool" "mdi-pool" "Free-Tier LLM Pool")
       (zSrv "FreeLLMAPI" "freellmapi" "mdi-api" "Free-Tier LLM Router")
       (zSrv "Mistral MCP" "mistralMcp" "mdi-brain" "Mistral AI Tool Server")
@@ -288,13 +313,14 @@ let
       (zSrv "Polyfloor OS" "polyfloor" "mdi-layers-triple" "Multi-floor AI Agent OS")
       (zSrv "EverOS Memory Engine" "everos" "mdi-brain-freeze" "Memory Chassis & Engine")
       (zSrv "ContextForge Gateway" "contextForge" "mdi-router-wireless" "MCP Context Gateway")
+      (sSrv "gno Memory Storage" "gno" "mdi-database-search" "Cloud Knowledge Index")
     ];
 
     Infrastructure = [
       (lSrv "Vaultwarden" "vaultwarden" "vaultwarden.png" "Password Manager")
-      (lSrvW "Headscale" "headscale" "headscale.png" "Tailscale Control Server" {
+      (sSrvW "Headscale" "headscale" "headscale.png" "Tailscale Control Server" {
         type = "headscale";
-        url = "http://${hostOf "luffy"}:${toString ports.headscale}";
+        url = "http://${hostOf "sanji"}:${toString ports.headscale}";
         nodeId = "\${HOMEPAGE_HEADSCALE_NODE_ID}";
         key = "\${HOMEPAGE_HEADSCALE_KEY}";
       })

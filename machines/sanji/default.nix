@@ -22,13 +22,13 @@
 
   # === Headscale — fleet VPN control server (via network-router tag) ===
   services.headscale-server = {
-    serverUrl = "https://headscale.lovelain.duckdns.org";
-    # Update the above to Sanji's public IP/domain once DNS is pointed here.
+    serverUrl = "http://headscale.lovelain.duckdns.org";
   };
 
-  # === Privacy-gate: memory services stay on luffy ===
+  # === Privacy-gate: memory services stay on luffy; DNS filtering stays on luffy ===
   services.honcho.enable = lib.mkForce false;
   services.ai-services.brain-service.enable = lib.mkForce false;
+  layers.layer-20.services.config.adguard.enable = lib.mkForce false;
 
   # === gno: retrieval/workspace/graph OCI container (always-on, indexes luffy corpus) ===
   layers.layer-73.memory.gno = {
@@ -59,6 +59,7 @@
     80 # Caddy HTTP (ACME challenges)
     443 # Caddy HTTPS (Headscale, Homepage)
     3456 # gno
+    8086 # Headscale API
   ];
 
   # === Restic backups ===

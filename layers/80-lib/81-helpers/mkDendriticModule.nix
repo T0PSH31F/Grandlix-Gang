@@ -297,9 +297,7 @@ let
       imports = evaluated.imports or [ ];
 
       # Detection logic for NixOS vs Home Manager
-      isNixOS =
-        builtins.hasAttr "modulesPath" args
-        || (args._class or "nixos") == "nixos";
+      isNixOS = builtins.hasAttr "modulesPath" args || (args._class or "nixos") == "nixos";
 
       # Safely evaluate functions only when the context matches
       wrappedNixosConf =

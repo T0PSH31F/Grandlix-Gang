@@ -23,9 +23,9 @@ with lib;
       };
     in
     mkIf cfg.enable {
-    home.file.".hermes/open-skills" = {
-      source = openSkillsSrc;
-      recursive = true;
+      home.file.".hermes/open-skills" = {
+        source = openSkillsSrc;
+        recursive = true;
+      };
     };
-  };
 }

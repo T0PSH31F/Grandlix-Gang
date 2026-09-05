@@ -8,15 +8,15 @@ let
   hasDesktopTag = builtins.elem "desktop" (osConfig.machine.tags or [ ]);
 in
 {
-  options.layers.layer-60.gui.zathura = {
+  options.layers.layer-60.gui.documents.zathura = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = true;
       description = "Enable Zathura PDF viewer";
     };
   };
 
-  home = lib.mkIf config.layers.layer-60.gui.zathura.enable {
+  home = lib.mkIf (config.layers.layer-60.gui.documents.enable && config.layers.layer-60.gui.documents.zathura.enable) {
     programs.zathura = {
       enable = true;
       options = {

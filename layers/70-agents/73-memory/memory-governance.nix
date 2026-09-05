@@ -81,14 +81,14 @@ with lib;
       };
     in
     mkIf cfg.enable {
-    environment.systemPackages = [
-      govScript
-    ];
+      environment.systemPackages = [
+        govScript
+      ];
 
-    # Enable dependency services if governance is enabled
-    # EverOS + context-forge retired from the memory stack (2026-09) — see
-    # memory-platform-audit.md. memory-vault remains the git-backed storage
-    # substrate; per-agent scoping now lives in brain-service MCP RBAC.
-    layers.layer-73.memory.memory-vault.enable = mkDefault true;
-  };
+      # Enable dependency services if governance is enabled
+      # EverOS + context-forge retired from the memory stack (2026-09) — see
+      # memory-platform-audit.md. memory-vault remains the git-backed storage
+      # substrate; per-agent scoping now lives in brain-service MCP RBAC.
+      layers.layer-73.memory.memory-vault.enable = mkDefault true;
+    };
 }

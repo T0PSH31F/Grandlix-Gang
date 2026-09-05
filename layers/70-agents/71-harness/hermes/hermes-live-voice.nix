@@ -26,49 +26,49 @@ with lib;
       cfg = config.layers.layer-76.hermes-live-voice;
     in
     mkIf cfg.enable {
-    # Install hermes-live-voice globally
-    environment.systemPackages = [
-      (pkgs.writeShellScriptBin "hermes-live" ''
-        exec ${pkgs.nodejs}/bin/npx hermes-live-voice "$@"
-      '')
-    ];
-
-    # Run hermes-live gateway as a systemd service
-    systemd.services.hermes-live-gateway = {
-      description = "Hermes Live Voice gateway";
-      after = [
-        "network.target"
-        "hermes-agent.service"
-      ];
-      wants = [ "hermes-agent.service" ];
-      wantedBy = [ "multi-user.target" ];
-      path = with pkgs; [
-        nodejs
-        bash
-        git
-        coreutils
-        gnugrep
-        gnutar
-        gzip
+      # Install hermes-live-voice globally
+      environment.systemPackages = [
+        (pkgs.writeShellScriptBin "hermes-live" ''
+          exec ${pkgs.nodejs}/bin/npx hermes-live-voice "$@"
+        '')
       ];
 
-      serviceConfig = {
-        ExecStart = "${pkgs.nodejs}/bin/npx hermes-live-voice serve --port ${toString cfg.port}";
-        Restart = "always";
-        RestartSec = 5;
-        EnvironmentFile = [ config.sops.templates."hermes-env".path ];
-        Environment = [
-          "HERMES_HOME=/var/lib/hermes/.hermes"
-          "HERMES_LIVE_PORT=${toString cfg.port}"
-          "NODE_ENV=production"
+      # Run hermes-live gateway as a systemd service
+      systemd.services.hermes-live-gateway = {
+        description = "Hermes Live Voice gateway";
+        after = [
+          "network.target"
+          "hermes-agent.service"
         ];
-      };
-      preStart = ''
-        export HERMES_AGENT_API_SERVER_KEY="''${API_SERVER_KEY:-}"
-      '';
-    };
+        wants = [ "hermes-agent.service" ];
+        wantedBy = [ "multi-user.target" ];
+        path = with pkgs; [
+          nodejs
+          bash
+          git
+          coreutils
+          gnugrep
+          gnutar
+          gzip
+        ];
 
-    # Open firewall port
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
-  };
+        serviceConfig = {
+          ExecStart = "${pkgs.nodejs}/bin/npx hermes-live-voice serve --port ${toString cfg.port}";
+          Restart = "always";
+          RestartSec = 5;
+          EnvironmentFile = [ config.sops.templates."hermes-env".path ];
+          Environment = [
+            "HERMES_HOME=/var/lib/hermes/.hermes"
+            "HERMES_LIVE_PORT=${toString cfg.port}"
+            "NODE_ENV=production"
+          ];
+        };
+        preStart = ''
+          export HERMES_AGENT_API_SERVER_KEY="''${API_SERVER_KEY:-}"
+        '';
+      };
+
+      # Open firewall port
+      networking.firewall.allowedTCPPorts = [ cfg.port ];
+    };
 }

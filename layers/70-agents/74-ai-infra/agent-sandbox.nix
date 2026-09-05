@@ -114,18 +114,19 @@ with lib;
           "d ${cfg.dataDir}/tmp 0755 root root -"
         ];
 
-      environment.persistence."/persist" =
-        mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
-          {
-            directories = [
-              cfg.dataDir
-            ];
-          };
+        environment.persistence."/persist" =
+          mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+            {
+              directories = [
+                cfg.dataDir
+              ];
+            };
 
-      environment.systemPackages = [
-        sandboxRunner
-      ];
-    })
+        environment.systemPackages = [
+          sandboxRunner
+        ];
+      }
+    )
 
     (mkIf (config.layers.layer-70.agent.sandbox.ai-agent-stack.enable or false) {
       services.ai-services = {

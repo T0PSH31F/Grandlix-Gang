@@ -214,9 +214,11 @@ with lib;
         helperPkg
       ];
 
-      environment.persistence."/persist" = mkIf (config.layers.layer-10.system.config.impermanence.enable or false) {
-        directories = [ cfg.dataDir ];
-      };
+      environment.persistence."/persist" =
+        mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+          {
+            directories = [ cfg.dataDir ];
+          };
 
       systemd.tmpfiles.rules = [
         "d ${cfg.dataDir} 0700 root root -"

@@ -109,6 +109,11 @@
 
       allowPing = true;
       logRefusedConnections = false;
+
+      # Allow full traffic from trusted LAN subnet
+      extraInputRules = ''
+        ip saddr 192.168.1.0/24 accept;
+      '';
     };
   };
 

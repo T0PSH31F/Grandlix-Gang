@@ -50,93 +50,93 @@ with lib;
       cfg = config.layers.layer-30.theming.themes.greeter;
     in
     lib.mkMerge [
-    # SDDM Implementation
-    (mkIf (cfg.type == "sddm") {
-      services.xserver.enable = true;
-      services.displayManager.sddm = {
-        enable = true;
-        wayland.enable = true;
-        theme = "sddm-astronaut-theme";
-      };
+      # SDDM Implementation
+      (mkIf (cfg.type == "sddm") {
+        services.xserver.enable = true;
+        services.displayManager.sddm = {
+          enable = true;
+          wayland.enable = true;
+          theme = "sddm-astronaut-theme";
+        };
 
-      environment.systemPackages = [
-        (pkgs.sddm-astronaut.override {
-          themeConfig = {
-            Background = "../../00-cyberia/02-assets/sddm_background/fallback1.jpg";
-          };
-        })
-      ];
-    })
+        environment.systemPackages = [
+          (pkgs.sddm-astronaut.override {
+            themeConfig = {
+              Background = "../../00-cyberia/02-assets/sddm_background/fallback1.jpg";
+            };
+          })
+        ];
+      })
 
-    # Greetd Implementation (cage + regreet per best practice)
-    (mkIf (cfg.type == "greetd") {
-      services.greetd = {
-        enable = true;
-        settings = {
-          default_session = {
-            # Minimal, stable Wayland greeter host (cage kiosk)
-            command = "${pkgs.cage}/bin/cage -s -- ${pkgs.regreet}/bin/regreet";
-            user = "greeter";
+      # Greetd Implementation (cage + regreet per best practice)
+      (mkIf (cfg.type == "greetd") {
+        services.greetd = {
+          enable = true;
+          settings = {
+            default_session = {
+              # Minimal, stable Wayland greeter host (cage kiosk)
+              command = "${pkgs.cage}/bin/cage -s -- ${pkgs.regreet}/bin/regreet";
+              user = "greeter";
+            };
           };
         };
-      };
 
-      programs.regreet = {
-        enable = true;
-        settings = {
-          background = {
-            path = toString cfg.greetd.background;
-            fit = "Cover";
-          };
-          GTK = lib.mkDefault {
-            icon_theme_name = "candy-icons";
-            theme_name = "adw-gtk3-dark";
-          };
-        };
-      };
-    })
-
-    # Noctalia Greeter Implementation
-    (mkIf (cfg.type == "noctalia-greeter") {
-      users.users.greeter = {
-        isSystemUser = true;
-        group = "greeter";
-      };
-      users.groups.greeter = { };
-
-      services.greetd.settings.default_session.user = "greeter";
-
-      programs.noctalia-greeter = {
-        enable = true;
-        package =
-          inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
-            (old: {
-              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
-              buildInputs = (old.buildInputs or [ ]) ++ [
-                pkgs.linuxHeaders
-                pkgs.util-linux.lib
-                (lib.getLib pkgs.libselinux)
-              ];
-            });
-        greeter-args = "--session ${cfg.noctalia-greeter.session}";
-        settings = {
-          cursor = {
-            theme = "Bibata-Modern-Ice";
-            size = 24;
-            path = "${pkgs.bibata-cursors}/share/icons";
-          };
-          keyboard = {
-            layout = "us";
-          };
-          appearance = {
-            password_style = "random";
+        programs.regreet = {
+          enable = true;
+          settings = {
+            background = {
+              path = toString cfg.greetd.background;
+              fit = "Cover";
+            };
+            GTK = lib.mkDefault {
+              icon_theme_name = "candy-icons";
+              theme_name = "adw-gtk3-dark";
+            };
           };
         };
-      };
+      })
 
-      environment.systemPackages = [
-        pkgs.bibata-cursors
-      ];
-    })
-  ];
+      # Noctalia Greeter Implementation
+      (mkIf (cfg.type == "noctalia-greeter") {
+        users.users.greeter = {
+          isSystemUser = true;
+          group = "greeter";
+        };
+        users.groups.greeter = { };
+
+        services.greetd.settings.default_session.user = "greeter";
+
+        programs.noctalia-greeter = {
+          enable = true;
+          package =
+            inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+              (old: {
+                nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.linuxHeaders ];
+                buildInputs = (old.buildInputs or [ ]) ++ [
+                  pkgs.linuxHeaders
+                  pkgs.util-linux.lib
+                  (lib.getLib pkgs.libselinux)
+                ];
+              });
+          greeter-args = "--session ${cfg.noctalia-greeter.session}";
+          settings = {
+            cursor = {
+              theme = "Bibata-Modern-Ice";
+              size = 24;
+              path = "${pkgs.bibata-cursors}/share/icons";
+            };
+            keyboard = {
+              layout = "us";
+            };
+            appearance = {
+              password_style = "random";
+            };
+          };
+        };
+
+        environment.systemPackages = [
+          pkgs.bibata-cursors
+        ];
+      })
+    ];
 }

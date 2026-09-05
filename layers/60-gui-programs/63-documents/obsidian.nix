@@ -6,8 +6,7 @@
   osConfig ? config,
   ...
 }:
-let
-{
+let {
   options.layers.layer-60.gui.obsidian = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -21,6 +20,6 @@ let
       cfg = config.layers.layer-60.gui.obsidian;
     in
     lib.mkIf cfg.enable {
-    home.packages = [ pkgs.obsidian ];
-  };
+      home.packages = [ pkgs.obsidian ];
+    };
 }

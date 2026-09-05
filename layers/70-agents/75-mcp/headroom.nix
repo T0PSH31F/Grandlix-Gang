@@ -37,29 +37,29 @@ with lib;
       cfg = config.services.ai-services.headroom;
     in
     mkIf cfg.enable {
-    # Install headroom globally
-    environment.systemPackages = [ cfg.package ];
+      # Install headroom globally
+      environment.systemPackages = [ cfg.package ];
 
-    # Run headroom proxy as a systemd service
-    systemd.services.headroom-proxy = {
-      description = "Headroom context compression proxy";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
+      # Run headroom proxy as a systemd service
+      systemd.services.headroom-proxy = {
+        description = "Headroom context compression proxy";
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
 
-      serviceConfig = {
-        ExecStart = "${cfg.package}/bin/headroom proxy --port ${toString cfg.port}";
-        Restart = "always";
-        RestartSec = 5;
-        Environment = [
-          "HEADROOM_PORT=${toString cfg.port}"
-          "HEADROOM_HOST=127.0.0.1"
-          "OPENAI_BASE_URL=http://127.0.0.1:20128/v1"
-          "EXTREMEROUTER_BASE_URL=http://127.0.0.1:20128/v1"
-        ];
+        serviceConfig = {
+          ExecStart = "${cfg.package}/bin/headroom proxy --port ${toString cfg.port}";
+          Restart = "always";
+          RestartSec = 5;
+          Environment = [
+            "HEADROOM_PORT=${toString cfg.port}"
+            "HEADROOM_HOST=127.0.0.1"
+            "OPENAI_BASE_URL=http://127.0.0.1:20128/v1"
+            "EXTREMEROUTER_BASE_URL=http://127.0.0.1:20128/v1"
+          ];
+        };
       };
-    };
 
-    # Open firewall port
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
-  };
+      # Open firewall port
+      networking.firewall.allowedTCPPorts = [ cfg.port ];
+    };
 }

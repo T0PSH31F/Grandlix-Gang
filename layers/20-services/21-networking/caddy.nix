@@ -50,6 +50,8 @@ with lib;
   };
 
   config = mkIf config.services.caddy-server.enable {
+    security.acme.acceptTerms = true;
+
     services.caddy = {
       enable = true;
 
@@ -59,26 +61,17 @@ with lib;
 
       virtualHosts =
         let
-          baseVirtualHosts = mapAttrs (_name: value: {
-            inherit (value) extraConfig useACMEHost serverAliases;
-          }) config.services.caddy-server.virtualHosts;
+          baseVirtualHosts = mapAttrs (_name: value:
+            filterAttrs (_: v: v != null) {
+              inherit (value) extraConfig useACMEHost serverAliases;
+            }
+          ) config.services.caddy-server.virtualHosts;
 
-          registryRoutes = {
-            "*.${config.layers.meta.domain or "lovelain.duckdns.org"}" = {
-              useACMEHost = config.layers.meta.domain or "lovelain.duckdns.org";
-              extraConfig = ''
-                encode zstd gzip
-                header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-
-                ${concatStringsSep "\n" (
-                  mapAttrsToList (subdomain: port: ''
-                    @${subdomain} host ${subdomain}.${config.layers.meta.domain or "lovelain.duckdns.org"}
-                    handle @${subdomain} { reverse_proxy localhost:${toString port} }
-                  '') config.layers.layer-20.services.config.reverseProxy.routes
-                )}
-              '';
-            };
-          };
+          registryRoutes = mapAttrs' (subdomain: port: nameValuePair "http://${subdomain}.${config.layers.meta.domain or "lovelain.duckdns.org"}" {
+            extraConfig = ''
+              reverse_proxy localhost:${toString port}
+            '';
+          }) config.layers.layer-20.services.config.reverseProxy.routes;
         in
         if config.layers.layer-20.services.config.reverseProxy.routes != { } then
           lib.mkMerge [

@@ -7,7 +7,8 @@
   ...
 }:
 let
-  cfg = osConfig.layers.layer-40.desktop.frameworks.which-key
+  cfg =
+    osConfig.layers.layer-40.desktop.frameworks.which-key
       or config.layers.layer-40.desktop.frameworks.which-key or { };
   hasDesktopTag = builtins.elem "desktop" (osConfig.machine.tags or config.machine.tags or [ ]);
 in

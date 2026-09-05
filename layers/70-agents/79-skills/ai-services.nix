@@ -37,15 +37,15 @@ with lib;
       cfg = config.services.ai-services;
     in
     mkIf cfg.enable {
-    services.ai-services = {
-      postgresql.enable = mkDefault true;
-      open-webui.enable = mkDefault true;
-      qdrant.enable = mkDefault false; # Deactivated fleet-wide — memory moved to Honcho + brain-service (PostgreSQL/pgvector)
-      chromadb.enable = mkDefault false; # Deactivated fleet-wide — see qdrant note
-      localai.enable = mkDefault true;
-      ollama.enable = mkDefault true;
-      ollama-ui.enable = mkDefault true;
-      # extreme-router.enable is controlled by kong-gateway.routers.codingRouter
+      services.ai-services = {
+        postgresql.enable = mkDefault true;
+        open-webui.enable = mkDefault true;
+        qdrant.enable = mkDefault false; # Deactivated fleet-wide — memory moved to Honcho + brain-service (PostgreSQL/pgvector)
+        chromadb.enable = mkDefault false; # Deactivated fleet-wide — see qdrant note
+        localai.enable = mkDefault true;
+        ollama.enable = mkDefault true;
+        ollama-ui.enable = mkDefault true;
+        # extreme-router.enable is controlled by kong-gateway.routers.codingRouter
+      };
     };
-  };
 }

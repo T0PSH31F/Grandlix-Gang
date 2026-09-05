@@ -21,17 +21,17 @@
       cfg = osConfig.layers.layer-30.theming.qt;
     in
     lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      qt5.qtwayland
-      qt6.qtwayland
-      qt6Packages.qt5compat
-      qt6Packages.qt6ct
-    ];
+      home.packages = with pkgs; [
+        qt5.qtwayland
+        qt6.qtwayland
+        qt6Packages.qt5compat
+        qt6Packages.qt6ct
+      ];
 
-    qt = {
-      enable = true;
-      platformTheme.name = "qtct";
-      style.name = "kvantum";
+      qt = {
+        enable = true;
+        platformTheme.name = "qtct";
+        style.name = "kvantum";
+      };
     };
-  };
 }

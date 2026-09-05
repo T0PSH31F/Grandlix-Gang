@@ -96,6 +96,14 @@ in
         filtering = {
           rewrites = [
             {
+              domain = "headscale.lovelain.duckdns.org";
+              answer = "47.254.90.69";
+            }
+            {
+              domain = "mission-control.lovelain.duckdns.org";
+              answer = "47.254.90.69";
+            }
+            {
               domain = "*.lovelain.duckdns.org";
               answer = cfg.gatewayIp;
             }

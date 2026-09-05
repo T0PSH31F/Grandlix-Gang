@@ -99,59 +99,59 @@ with lib;
       };
     in
     mkIf cfg.enable {
-    # Ensure memory group exists for user & service agent access
-    users.groups.memory = { };
+      # Ensure memory group exists for user & service agent access
+      users.groups.memory = { };
 
-    # Add primary user and agents to memory group
-    users.users = {
-      t0psh31f.extraGroups = [ "memory" ];
-    };
+      # Add primary user and agents to memory group
+      users.users = {
+        t0psh31f.extraGroups = [ "memory" ];
+      };
 
-    # Systemd tmpfiles rule to create vault and seed directories with correct group permissions
-    systemd.tmpfiles.rules = [
-      "d ${cfg.vaultPath} 0775 ${primaryUser} users -"
-      "d ${cfg.vaultPath}/knowledge 0775 ${primaryUser} users -"
-      "d ${cfg.vaultPath}/decisions 0775 ${primaryUser} users -"
-      "d ${cfg.vaultPath}/people 0775 ${primaryUser} users -"
-      "d ${cfg.vaultPath}/projects 0775 ${primaryUser} users -"
-      "d ${cfg.vaultPath}/inbox 0775 ${primaryUser} users -"
-      "d ${cfg.vaultPath}/scratch 0775 ${primaryUser} users -"
-    ];
+      # Systemd tmpfiles rule to create vault and seed directories with correct group permissions
+      systemd.tmpfiles.rules = [
+        "d ${cfg.vaultPath} 0775 ${primaryUser} users -"
+        "d ${cfg.vaultPath}/knowledge 0775 ${primaryUser} users -"
+        "d ${cfg.vaultPath}/decisions 0775 ${primaryUser} users -"
+        "d ${cfg.vaultPath}/people 0775 ${primaryUser} users -"
+        "d ${cfg.vaultPath}/projects 0775 ${primaryUser} users -"
+        "d ${cfg.vaultPath}/inbox 0775 ${primaryUser} users -"
+        "d ${cfg.vaultPath}/scratch 0775 ${primaryUser} users -"
+      ];
 
-    # Impermanence persistence for memory vault
-    environment.persistence."/persist" =
-      mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
-        {
-          directories = [
-            "/var/lib/memory"
-          ];
+      # Impermanence persistence for memory vault
+      environment.persistence."/persist" =
+        mkIf (config.layers.layer-10.system.config.impermanence.enable or false)
+          {
+            directories = [
+              "/var/lib/memory"
+            ];
+          };
+
+      environment.systemPackages = [
+        syncScript
+      ];
+
+      # Systemd sync service and timer
+      systemd.services.memory-vault-sync = {
+        description = "Sync canonical memory vault via Git mesh";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${syncScript}/bin/memory-vault-sync";
+          User = primaryUser;
+          Group = "users";
+          UMask = "0002";
         };
+      };
 
-    environment.systemPackages = [
-      syncScript
-    ];
-
-    # Systemd sync service and timer
-    systemd.services.memory-vault-sync = {
-      description = "Sync canonical memory vault via Git mesh";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${syncScript}/bin/memory-vault-sync";
-        User = primaryUser;
-        Group = "users";
-        UMask = "0002";
+      systemd.timers.memory-vault-sync = {
+        description = "Timer for memory vault mesh synchronization";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = cfg.syncInterval;
+          Persistent = true;
+        };
       };
     };
-
-    systemd.timers.memory-vault-sync = {
-      description = "Timer for memory vault mesh synchronization";
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnCalendar = cfg.syncInterval;
-        Persistent = true;
-      };
-    };
-  };
 }

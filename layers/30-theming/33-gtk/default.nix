@@ -21,30 +21,30 @@
       cfg = osConfig.layers.layer-30.theming.gtk;
     in
     lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      adw-gtk3
-      nwg-look
-      candy-icons
-      hicolor-icon-theme
-    ];
+      home.packages = with pkgs; [
+        adw-gtk3
+        nwg-look
+        candy-icons
+        hicolor-icon-theme
+      ];
 
-    gtk = {
-      gtk4.theme = null;
-      enable = true;
-      theme = {
-        name = "adw-gtk3-dark";
-        package = pkgs.adw-gtk3;
-      };
-      iconTheme = {
-        name = "candy-icons";
-        package = pkgs.candy-icons;
-      };
-      gtk4.extraConfig = {
-        gtk-application-prefer-dark-theme = 1;
-      };
-      gtk3.extraConfig = {
-        gtk-application-prefer-dark-theme = 1;
+      gtk = {
+        gtk4.theme = null;
+        enable = true;
+        theme = {
+          name = "adw-gtk3-dark";
+          package = pkgs.adw-gtk3;
+        };
+        iconTheme = {
+          name = "candy-icons";
+          package = pkgs.candy-icons;
+        };
+        gtk4.extraConfig = {
+          gtk-application-prefer-dark-theme = 1;
+        };
+        gtk3.extraConfig = {
+          gtk-application-prefer-dark-theme = 1;
+        };
       };
     };
-  };
 }

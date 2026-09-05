@@ -5,6 +5,7 @@
 {
   config = lib.mkIf (lib.elem "network-router" config.machine.tags) {
     services.headscale-server.enable = lib.mkDefault true;
+    services.caddy-server.enable = lib.mkDefault true;
     layers.layer-20.services.config = {
       homepage-dashboard.enable = lib.mkDefault true;
       tailscale.enable = lib.mkDefault true;
